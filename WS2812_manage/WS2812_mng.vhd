@@ -4,6 +4,8 @@ use ieee.std_logic_1164.all;
 -----Entite-----------
 
 Entity WS2812_mng is
+			generic(T0H : integer := 18;
+						T1H : integer := 35);
 			Port( 	clk, rst_n 		: in std_logic;										-- Clock, reset
 						start				: in std_logic;										-- Démarrage trame
 						led_config		: in std_logic_vector(23 downto 0);				-- Configuration de la trame RGB
@@ -18,8 +20,8 @@ end WS2812_mng;
 Architecture WS2812_mng of WS2812_mng is
 
 -- Compteurs => T_clk = 20ns
-constant T0H 			: integer := 18;
-constant T1H 			: integer := 35;
+--constant T0H 			: integer := 18;
+--constant T1H 			: integer := 35;
 constant max_T 		: integer := 63;
 constant T_reset 		: integer := 2500;			-- 50µs
 signal cpt_H 			: integer range 0 to max_T;
@@ -40,7 +42,7 @@ Begin
 						begin
 								if(rst_n = '0') then
 										start_s 		<= '0';
-										trame_done	<= '0';
+										trame_done	<= '1';
 								elsif(rising_edge(clk)) then
 										if(start = '1') then
 												start_s 		<= '1';
