@@ -45,7 +45,31 @@ Begin
 							
 							wait for 55us;
 							start	<= '1', '0' after 100ns;
+							led_config <= x"000000";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
+							led_config <= x"7EEAAA";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
 							led_config <= x"FFFFFF";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
+							led_config <= x"123456";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
+							led_config <= x"987654";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
+							led_config <= x"DEDEDE";
+							
+							wait for 55us;
+							start	<= '1', '0' after 100ns;
+							led_config <= x"B0B0B5";
 					
 					end process;
 					
