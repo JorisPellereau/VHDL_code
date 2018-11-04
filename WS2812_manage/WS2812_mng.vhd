@@ -1,7 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
------Entite-----------
+library work;
+use work.pkg_ws2812.all;
+
 
 Entity WS2812_mng is
 			generic(T0H : integer := 18;
@@ -9,7 +11,7 @@ Entity WS2812_mng is
 			Port( 	clk, rst_n 		: in std_logic;										-- Clock, reset
 						start				: in std_logic;										-- Démarrage trame
 						led_config		: in std_logic_vector(23 downto 0);				-- Configuration de la trame RGB
-						trame_done		: out std_logic;
+						trame_done		: out std_logic;										-- Info' trame envoyée
 						d_out				: out std_logic										-- Sortie PWM, génère un 1 ou 0 suivant le WS2812
 					);
 end WS2812_mng;
@@ -17,7 +19,7 @@ end WS2812_mng;
 
 -------Achitecture--------
 
-Architecture WS2812_mng of WS2812_mng is
+Architecture arch_WS2812_mng of WS2812_mng is
 
 -- Compteurs => T_clk = 20ns
 --constant T0H 			: integer := 18;
@@ -28,7 +30,7 @@ signal cpt_H 			: integer range 0 to max_T;
 signal cpt_reset 		: integer range 0 to T_reset;
 signal cpt_bits 		: integer range 0 to 23;
 
-type mode is (mode_0, mode_1, reset);
+
 signal mode_led : mode;
 
 signal run, run_flag, done 	: std_logic;
@@ -63,29 +65,31 @@ Begin
 								if(rst_n = '0') then
 										cpt_bits <= 23;
 										run <= '0';
-										mode_led <= mode_0;
+										mode_led <= mode_sel(led_config(23)); -- mode_0;
 								elsif(rising_edge(clk)) then
 								
 									
 											if(start_s = '1') then
-												if(done = '1') then										
-														if(led_config(cpt_bits) = '1') then
-																	mode_led <= mode_1;
-														else
-																	mode_led <= mode_0;
-														end if;
-												
+												if(done = '1') then
 												
 														if(cpt_bits > 0) then
+																if(led_config(cpt_bits) = '1') then
+																			mode_led <= mode_1;
+																else
+																			mode_led <= mode_0;
+																end if;														
 																cpt_bits <= cpt_bits - 1;
 														else
 																cpt_bits <= 23;
-														end if;	
+														end if;
+													
+													
 												elsif(done = '0') then
 														run <= '1';
 												end if;
 											else
 														run <= '0';
+														cpt_bits <= 23;
 											end if;
 										
 										
@@ -156,4 +160,4 @@ Begin
 					end process;
 					
 
-end WS2812_mng ;
+end arch_WS2812_mng ;
