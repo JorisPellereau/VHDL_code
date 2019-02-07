@@ -1,11 +1,11 @@
 --=======================================
---	PIXIUM-VISION
+--	
 --	filename 	: laser_emulator.vhd
 --	Created		: 01/02/2019
 --	Description	: Laser com. UART emulation
 	
---	Author 		: Joris Pellereau - Elsys Design
---	Contact		: joris.pellereau@elsys-design.com
+--	Author 		: Joris Pellereau
+--	Contact		: 
 --=======================================
 
 

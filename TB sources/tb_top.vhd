@@ -1,11 +1,11 @@
 --=======================================
---	PIXIUM-VISION
+--	
 --	filename 	: tb_top.vhd
 --	Created		: 01/02/2019
 --	Description	: tb_top
 	
---	Author 		: Joris Pellereau - Elsys Design
---	Contact		: joris.pellereau@elsys-design.com
+--	Author 		: Joris Pellereau
+--	Contact		: 
 --=======================================
 
 

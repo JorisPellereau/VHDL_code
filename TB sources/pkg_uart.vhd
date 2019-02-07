@@ -1,11 +1,11 @@
 --=======================================
---	PIXIUM-VISION
+--	
 --	filename 	: pkg_uart.vhd
 --	Created		: 01/02/2019
 --	Description	: package UART
 	
---	Author 		: Joris Pellereau - Elsys Design
---	Contact		: joris.pellereau@elsys-design.com
+--	Author 		: Joris Pellereau
+--	Contact		: 
 --=======================================
 
 

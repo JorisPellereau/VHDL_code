@@ -1,11 +1,11 @@
 --=======================================
---	PIXIUM-VISION
+--	
 --	filename 	: rgb_dmd_sync.vhd
 --	Created		: 01/02/2019
 --	Description	: RGB_SYNC - DMD_SYNCH emulation
 	
---	Author 		: Joris Pellereau - Elsys Design
---	Contact		: joris.pellereau@elsys-design.com
+--	Author 		: Joris Pellereau
+--	Contact		: 
 --=======================================
 
 -- == LIBRARY ==
