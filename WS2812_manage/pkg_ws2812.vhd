@@ -4,8 +4,10 @@ use ieee.std_logic_1164.all;
 
 package pkg_ws2812 is
 
+	-- == NEW TYPES ==
     type mode is (mode_0, mode_1);							-- Modes d'envoie (0 ou 1)
-
+	type fsm_t is (idle, sel, gen0, gen1, stop);
+	
     component WS2812_mng is
 			generic(T0H : integer := 18;
 						T1H : integer := 35);

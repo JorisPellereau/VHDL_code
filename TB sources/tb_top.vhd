@@ -49,6 +49,9 @@ signal data			:  std_logic_vector(nb_data - 1 downto 0);
 signal tx_done 		: std_logic := '0';
 signal TX_laser 	: std_logic := '0';
 
+type byte_array is array(0 to 3) of std_logic_vector(7 downto 0);
+signal data_array : byte_array := (x"AA", x"FF", x"66", x"89");
+
 begin
 	-- == TX INST ==
 	tx_uart_inst : tx_uart generic map(
@@ -65,14 +68,20 @@ begin
 	-- == TB ==
 		test_p : 	process
 					begin
-						data 		<= x"7F";
 						en 			<= '0';
 						start_tx 	<= '0';
 						wait for 10 us;
-						en <= '1', '0' after 20 us;
-						start_tx <= '1', '0' after 10 us;
-						wait for 400 us;
-						wait for 1 ns;
+						for i in 0 to 3 loop
+							data 		<= data_array(i);
+							--en 			<= '0';
+							--start_tx 	<= '0';
+							--wait for 10 us;
+							en <= '1', '0' after 20 us;
+							start_tx <= '1', '0' after 10 us;
+							--wait for 400 us;
+							wait until tx_done'event;-- and tx_done = '1';
+							wait for 1 ns;
+						end loop;
 					end process;
 							
 

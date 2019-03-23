@@ -8,11 +8,12 @@ use work.pkg_ws2812.all;
 Entity WS2812_mng is
 			generic(T0H : integer := 18;
 						T1H : integer := 35);
-			Port( 	clk, rst_n 		: in std_logic;										-- Clock, reset
-						start				: in std_logic;										-- Démarrage trame
+			Port( 		clk				: in std_logic;
+						rst_n 			: in std_logic;										-- Clock, reset
+						start			: in std_logic;										-- Démarrage trame
 						led_config		: in std_logic_vector(23 downto 0);				-- Configuration de la trame RGB
 						trame_done		: out std_logic;										-- Info' trame envoyée
-						d_out				: out std_logic										-- Sortie PWM, génère un 1 ou 0 suivant le WS2812
+						d_out			: out std_logic										-- Sortie PWM, génère un 1 ou 0 suivant le WS2812
 					);
 end WS2812_mng;
 
@@ -27,137 +28,136 @@ Architecture arch_WS2812_mng of WS2812_mng is
 constant max_T 		: integer := 63;
 constant T_reset 		: integer := 2500;			-- 50µs
 signal cpt_H 			: integer range 0 to max_T;
-signal cpt_reset 		: integer range 0 to T_reset;
-signal cpt_bits , cpt		: integer range 0 to 24;
 
-
-signal mode_led : mode;
-
-signal run, run_flag, done 	: std_logic;
+-- ==
 signal start_s 					: std_logic;
+signal led_config_s				: std_logic_vector(23 downto 0);
+signal fsm 						: fsm_t;
+signal cnt_24					: integer range 0 to 24;
+signal tick_24					: std_logic;
+signal d_out_s					: std_logic;
+signal gen_done					: std_logic;
+signal trame_done_s				: std_logic;
 
-signal start_dout : std_logic;
-signal bit_send : std_logic;
 Begin 
 
-	-- start_mng_p
-	--	gestion du démarrage de l'envoi d'une trame
-	--
-	start_mng_p : 	process(clk, rst_n)
-						begin
-								if(rst_n = '0') then
-										start_s 		<= '0';
-										trame_done	<= '1';
-								elsif(rising_edge(clk)) then
-										if(start = '1') then
-												start_s 		<= '1';
-												trame_done		<= '0';
-										elsif(cpt = 24) then
-												start_s 		<= '0';
-												trame_done		<= '1';
-										end if;
-								end if;
-						end process;
-	
-	start_gen_p : 	process(clk, rst_n)
-					begin
-					
-							if(rst_n = '0') then
-									start_dout <= '0';
-							elsif(rising_edge(clk)) then
-								
-									if(start_s = '1') then
-										if(cpt_bits = 24) then			-- 1er start
-												start_dout <= '1';
-										elsif(done = '1' ) then
-												start_dout <= '0';
-										elsif(done = '0' or cpt_bits = 0) then
-												start_dout <= '1';
-										end if;
-									end if;
-							end if;
-					
-					end process;
-	
-	
-	mode_gen_p: process(done, rst_n, start)
+
+	-- == FSM Manage ==
+	fsm_mng_p :	process(clk, rst_n)
 				begin
-						if(rst_n = '0') then							
-								cpt_bits <= 24;
-								cpt <= 0;
-						elsif(start = '1') then
-								cpt_bits <= 23;
-								cpt <= 0;
-								mode_led <= mode_sel(led_config(23));							
-						elsif(rising_edge(done)) then								
-										
-										if(cpt_bits > 0) then
-												cpt_bits <= cpt_bits - 1;
-												mode_led <= mode_sel(led_config(cpt_bits - 1));
-										else--if(cpt_bits = 0) then
-												mode_led <= mode_sel(led_config(0));
-												cpt_bits <= 24;
-										end if;
-										
-										if(cpt < 24) then
-												cpt <= cpt + 1;
-										else
-											cpt <= 0;
-										end if;
-										
+						if(rst_n = '0') then
+								fsm <= idle;													-- RAZ FSM
+								trame_done_s	<= '0';
+						elsif(rising_edge(clk)) then
+								case fsm is
+										when idle =>
+												trame_done_s <= '0';
+												if(start = '1') then
+														led_config_s 	<= led_config;
+														fsm 			<= sel;
+												end if;
+										when sel  =>
+												if(cnt_24 < 24) then
+													if(led_config_s(cnt_24) = '0') then
+															fsm <= gen0;
+													elsif(led_config_s(cnt_24) = '1') then
+															fsm <= gen1;
+													end if;
+												elsif(cnt_24 = 24) then
+														fsm <= stop;
+												end if;
+										when gen0 =>
+												if(gen_done = '1') then
+														fsm <= sel;
+												end if;
+										when gen1 =>
+												if(gen_done = '1') then
+														fsm <= sel;
+												end if;
+										when stop =>
+												trame_done_s <= '1';
+												fsm <= idle;
+										when others => NULL;
+								end case;
 						end if;
 				end process;
-			
-					
-	d_out_gen_p : 	process(clk, rst_n)
-						variable d_out_var : std_logic;
-						begin
-					
-					
-					
+				trame_done <= trame_done_s;
+
+	-- == SEL manage ==
+	-- counter 24
+	--
+	sel_mng_p :	process(clk, rst_n)
+				begin
 						if(rst_n = '0') then
-								done <= '0';
+								cnt_24 	<= 0;
+								tick_24 <= '0';
 						elsif(rising_edge(clk)) then
-						
-									if( (start_dout = '1' and done = '0')) then
-											   if(mode_led = mode_0) then					-- Generation du 0 logique
-															if(cpt_H < T0H) then											
-																	d_out_var := '1';												
-															else
-																	d_out_var := '0';												
-															end if;
-															
-															if(cpt_H < max_T) then
-																cpt_H <= cpt_H + 1;
-															elsif(cpt_H = max_T) then
-																	cpt_H <= 0;
-																	run_flag <= '0';			-- Raz Flag
-																	done <= '1';				-- Génération terminée
-															end if;
-												elsif(mode_led = mode_1) then				-- Generation du 1 logique
-												
-															if(cpt_H < T1H) then											
-																	d_out_var := '1';												
-															else
-																	d_out_var := '0';												
-															end if;
-															
-															if(cpt_H < max_T) then
-																cpt_H <= cpt_H + 1;
-															elsif(cpt_H = max_T) then
-																	cpt_H <= 0;
-																	run_flag <= '0';			-- Raz Flag
-																	done <= '1';				-- Generation terminée
-															end if;
-												end if;
-												d_out <= d_out_var;
-									elsif(start_dout = '0') then
-												done <= '0';
-									end if;
+								if(fsm = sel) then
+										if(cnt_24 < 24) then
+												cnt_24 	<= cnt_24 + 1;
+												tick_24 <= '0';
+										else
+												cnt_24 	<= 0;
+												tick_24 <= '1';
+										end if;
+								else
+										tick_24 <= '0';
+								end if;
 						end if;
-					
-					
+				end process;
+				
+	
+	
+	
+	
+	
+			
+	-- == OUTPUT GENERATION ==				
+	d_out_gen_p : 	process(clk, rst_n)
+					begin
+							if(rst_n = '0') then
+									d_out_s <= '0';
+									gen_done <= '0';
+									cpt_H	<= 0;
+							elsif(rising_edge(clk)) then
+									if(fsm = gen0) then																						
+											if(cpt_H < max_T) then
+													cpt_H <= cpt_H + 1;
+													gen_done <= '0';
+											else
+													gen_done <= '1';
+													cpt_H <= 0;
+											end if;
+										
+											if(cpt_H < T0H) then
+													d_out_s <= '1';
+											else
+													d_out_s <= '0';
+											end if;
+									elsif(fsm = gen1) then
+											if(cpt_H < max_T) then
+													cpt_H <= cpt_H + 1;
+													gen_done <= '0';
+											else
+													gen_done <= '1';
+													cpt_H <= 0;
+											end if;
+										
+											if(cpt_H < T1H) then
+													d_out_s <= '1';
+											else
+													d_out_s <= '0';
+											end if;
+									else
+											d_out_s <= '0';
+									end if;
+							end if;
 					end process;
-					
+					d_out <= d_out_s;	
+						
+						
+						
+						
+	
 
 end arch_WS2812_mng ;
