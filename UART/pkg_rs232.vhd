@@ -26,7 +26,23 @@ package pkg_rs232 is
 
   -- NEW TYPES
   type t_rs232_tx_fsm is (IDLE, START_BIT_GEN, DATA_GEN, PARITY_GEN, STOP_BIT_GEN, STOP);  -- State of the TX FSM
-  type t_baudrate is (b9600, b115200);  -- Definition of the possible baudrate
+  type t_baudrate is (
+    b110,
+    b300,
+    b1200,
+    b2400,
+    b4800,
+    b9600,
+    b19200,
+    b38400,
+    b57600,
+    b115200,
+    b230400,
+    b460800,
+    b921600,
+    b1843200,
+    b3686400);                          -- Definition of the possible baudrate
+
   type t_parity is (even, odd, none);   -- Parity definition
   type t_first_bit is (lsb_first, msb_first);
 
@@ -76,10 +92,36 @@ package body pkg_rs232 is
   begin  -- function compute_bit_duration
 
     case baudrate is
+      when b110 =>
+        bit_duration := clock_frequency/110;
+      when b300 =>
+        bit_duration := clock_frequency/300;
+      when b1200 =>
+        bit_duration := clock_frequency/1200;
+      when b2400 =>
+        bit_duration := clock_frequency/2400;
+      when b4800 =>
+        bit_duration := clock_frequency/4800;
       when b9600 =>
         bit_duration := clock_frequency/9600;
+      when b19200 =>
+        bit_duration := clock_frequency/19200;
+      when b38400 =>
+        bit_duration := clock_frequency/38400;
+      when b57600 =>
+        bit_duration := clock_frequency/57600;
       when b115200 =>
         bit_duration := clock_frequency/115200;
+      when b230400 =>
+        bit_duration := clock_frequency/230400;
+      when b460800 =>
+        bit_duration := clock_frequency/460800;
+      when b921600 =>
+        bit_duration := clock_frequency/921600;
+      when b1843200 =>
+        bit_duration := clock_frequency/1843200;
+      when b3686400 =>
+        bit_duration := clock_frequency/3686400;
       when others => null;
     end case;
 
@@ -99,7 +141,7 @@ package body pkg_rs232 is
     number_of_bit := stop_bit_number + data_size;
 
     case parity is
-      
+
       when none =>
         number_of_bit := number_of_bit + 0;
       when even =>
@@ -111,6 +153,6 @@ package body pkg_rs232 is
 
     return number_of_bit;
   end function number_of_bit_computation;
-  
-  
+
+
 end package body pkg_rs232;

@@ -234,6 +234,7 @@ begin  -- architecture arch
         tx_done_s    <= '1';
         cnt_data     <= 0;
         cnt_stop_bit <= 0;
+        parity_value <= '0';
       end if;
     end if;
   end process p_tx_gen;
