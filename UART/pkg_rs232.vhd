@@ -141,7 +141,6 @@ package body pkg_rs232 is
     number_of_bit := stop_bit_number + data_size;
 
     case parity is
-
       when none =>
         number_of_bit := number_of_bit + 0;
       when even =>
