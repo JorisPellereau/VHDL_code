@@ -26,7 +26,7 @@ package pkg_rs232 is
 
   -- NEW TYPES
   type t_rs232_tx_fsm is (IDLE, START_BIT_GEN, DATA_GEN, PARITY_GEN, STOP_BIT_GEN, STOP);  -- State of the TX FSM
-  type t_rx_fsm is(IDLE, WAIT_START, READ_START, READ_DATA, READ_PARITY, READ_STOP, STOP);  -- States of the RX FSM
+  type t_rx_fsm is(IDLE, WAIT_START, READ_START, READ_DATA, READ_PARITY, READ_STOP_BIT, STOP);  -- States of the RX FSM
   type t_baudrate is (
     b110,
     b300,

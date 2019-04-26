@@ -1,0 +1,5 @@
+# Ingoner les fichiers ~ de Emacs
+*.vhd~
+UART/#pkg_rs232\.vhd#
+
+UART/\.#pkg_rs232\.vhd
