@@ -96,6 +96,8 @@ architecture arch of rx_uart is
               rx_fsm <= READ_STOP_BIT;
             end if;
           end if;
+        when READ_PARITY =>
+          
         when others => null;
       end case;
     end if;
@@ -156,10 +158,20 @@ architecture arch of rx_uart is
   -- purpose: This process count the data to received 
   p_data_cnt : process (clock, reset_n) is
   begin  -- process p_data_cnt
-    if reset_n = '0' then               -- asynchronous reset (active low)
-
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_data <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-
+      if(rx_fsm = READ_DATA) then
+        if(tick_data = '1') then
+          if(cnt_data < data_size) then
+            cnt_data <= cnt_data + 1;       -- INC cnt
+          else
+            cnt_data <= 0;
+          end if;
+        end if;
+      else
+        cnt_data <= 0;
+      end if;
     end if;
   end process p_data_cnt;
 
