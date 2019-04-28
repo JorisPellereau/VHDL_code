@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-26
--- Last update: 2019-04-26
+-- Last update: 2019-04-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -37,12 +37,12 @@ entity rx_uart is
     clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
 
   port (
-    reset_n     : in  std_logic;        -- Asynchronous reset
-    clock       : in  std_logic;        -- Clock
-    rx          : in  std_logic;        -- Serial input
+    reset_n     : in  std_logic;   -- Asynchronous reset
+    clock       : in  std_logic;   -- Clock
+    rx          : in  std_logic;   -- Serial input
     rx_data     : out std_logic_vector(data_size - 1 downto 0);  -- Received data
-    rx_done     : out std_logic;        -- Flag for a received data
-    parity_rcvd : out std_logic);       -- Parity received
+    rx_done     : out std_logic;   -- Flag for a received data
+    parity_rcvd : out std_logic);  -- Parity received
 
 end entity rx_uart;
 
@@ -53,10 +53,10 @@ architecture arch of rx_uart is
   constant number_of_bits    : integer := number_of_bit_computation(stop_bit_number, parity, data_size);  -- number of bit in the transaction
 
   -- SIGNALS
-  signal rx_fsm       : t_rx_fsm;       -- RX uart FSM
-  signal rx_old       : std_logic;      -- Latch RX input
-  signal start_rx_fe  : std_logic;      -- Start bit Falling edge detected
-  signal start_rx_re  : std_logic;      -- Start_bit rising edge detected
+  signal rx_fsm       : t_rx_fsm;   -- RX uart FSM
+  signal rx_old       : std_logic;  -- Latch RX input
+  signal start_rx_fe  : std_logic;  -- Start bit Falling edge detected
+  signal start_rx_re  : std_logic;  -- Start_bit rising edge detected
   signal start_cnt    : std_logic;  -- Start counter in order to generate Tick
   signal tick_data    : std_logic;  -- Tick data in order to read the RX input
   signal rx_data_s    : std_logic_vector(data_size - 1 downto 0);  -- Save the RX data input
@@ -97,7 +97,7 @@ architecture arch of rx_uart is
             end if;
           end if;
         when READ_PARITY =>
-          
+
         when others => null;
       end case;
     end if;
@@ -127,6 +127,7 @@ architecture arch of rx_uart is
   p_tick_read_data : process (clock, reset_n) is
   begin  -- process p_tick_read_data
     if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_bit      <= 0;
       cnt_half_bit <= 0;
       start_cnt    <= '0';
       tick_data    <= '0';
@@ -176,12 +177,7 @@ architecture arch of rx_uart is
   end process p_data_cnt;
 
 
---   if reset_n = '0' then                 -- asynchronous reset (active low)
 
---   elsif clock'event and clock = '1' then  -- rising clock edge
-
---   end if;
--- end process p_read_rx;
 
 
 end architecture arch;
