@@ -3,3 +3,7 @@
 UART/#pkg_rs232\.vhd#
 
 UART/\.#pkg_rs232\.vhd
+
+UART/#rx_uart\.vhd#
+
+UART/\.#rx_uart\.vhd
