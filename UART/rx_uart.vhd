@@ -245,7 +245,8 @@ begin
           end if;
         end if;
       elsif(rx_fsm = STOP) then
-        rx_done_s <= '1';
+        rx_done_s    <= '1';
+        cnt_stop_bit <= 0;
       end if;
     end if;
   end process p_rx_mng;
