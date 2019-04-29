@@ -3,10 +3,10 @@
 -- Project    : 
 -------------------------------------------------------------------------------
 -- File       : test_rx_rs232.vhd
--- Author     :   
+-- Author     :   <lore@modelsim-31>
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-04-25
+-- Last update: 2019-04-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,11 +34,14 @@ end entity test_tx_rs232;
 architecture arch of test_tx_rs232 is
 
   -- Inst Signals
-  signal reset_n  : std_logic;
-  signal clock    : std_logic := '0';
+  signal reset_n : std_logic;
+  signal clock   : std_logic := '0';
+
+  -- TX common
   signal start_tx : std_logic;
   signal tx_data  : std_logic_vector(7 downto 0);
 
+  -- TX Inst
   -- Inst1
   signal tx_1      : std_logic;
   signal tx_done_1 : std_logic;
@@ -62,7 +65,14 @@ architecture arch of test_tx_rs232 is
   -- Inst6
   signal tx_6      : std_logic;
   signal tx_done_6 : std_logic;
-  
+
+  -- RX Inst common
+  signal rx : std_logic;
+
+  -- RX Inst 1
+  signal rx_data_1     : std_logic_vector(7 downto 0);
+  signal rx_done_1     : std_logic;
+  signal parity_rcvd_1 : std_logic;
   
 begin  -- architecture arch
 
@@ -177,6 +187,24 @@ begin  -- architecture arch
       tx       => tx_6,
       tx_done  => tx_done_6);
 
+
+-- RX UART instanciation 1
+  inst_rx_uart_1 : rx_uart
+    generic map(
+      stop_bit_number => 2,
+      parity          => even,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => lsb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_1,
+      rx_data     => rx_data_1,
+      rx_done     => rx_done_1,
+      parity_rcvd => parity_rcvd_1);
+
   -- Clock gen
   p_gen_clock : process
   begin
@@ -206,7 +234,7 @@ begin  -- architecture arch
 
     wait until rising_edge(tx_done_1);
 
-    wait for 100 us;
+    wait for 200 us;
     tx_data  <= x"98";
     start_tx <= '1', '0' after 100 ns;
 

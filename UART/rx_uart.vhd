@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-26
--- Last update: 2019-04-28
+-- Last update: 2019-04-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -37,12 +37,12 @@ entity rx_uart is
     clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
 
   port (
-    reset_n     : in  std_logic;   -- Asynchronous reset
-    clock       : in  std_logic;   -- Clock
-    rx          : in  std_logic;   -- Serial input
+    reset_n     : in  std_logic;        -- Asynchronous reset
+    clock       : in  std_logic;        -- Clock
+    rx          : in  std_logic;        -- Serial input
     rx_data     : out std_logic_vector(data_size - 1 downto 0);  -- Received data
-    rx_done     : out std_logic;   -- Flag for a received data
-    parity_rcvd : out std_logic);  -- Parity received
+    rx_done     : out std_logic;        -- Flag for a received data
+    parity_rcvd : out std_logic);       -- Parity received
 
 end entity rx_uart;
 
@@ -53,21 +53,26 @@ architecture arch of rx_uart is
   constant number_of_bits    : integer := number_of_bit_computation(stop_bit_number, parity, data_size);  -- number of bit in the transaction
 
   -- SIGNALS
-  signal rx_fsm       : t_rx_fsm;   -- RX uart FSM
-  signal rx_old       : std_logic;  -- Latch RX input
-  signal start_rx_fe  : std_logic;  -- Start bit Falling edge detected
-  signal start_rx_re  : std_logic;  -- Start_bit rising edge detected
-  signal start_cnt    : std_logic;  -- Start counter in order to generate Tick
-  signal tick_data    : std_logic;  -- Tick data in order to read the RX input
-  signal rx_data_s    : std_logic_vector(data_size - 1 downto 0);  -- Save the RX data input
+  signal rx_fsm        : t_rx_fsm;      -- RX uart FSM
+  signal rx_old        : std_logic;     -- Latch RX input
+  signal start_rx_fe   : std_logic;     -- Start bit Falling edge detected
+  signal start_rx_re   : std_logic;     -- Start_bit rising edge detected
+  signal start_cnt     : std_logic;  -- Start counter in order to generate Tick
+  signal tick_data     : std_logic;  -- Tick data in order to read the RX input
+  signal rx_data_s     : std_logic_vector(data_size - 1 downto 0);  -- Save the RX data input
+  signal parity_rcvd_s : std_logic;     -- Received Parity in input
+  signal rx_done_s     : std_logic;     -- Data received
+
   -- COUNTERS
   signal cnt_half_bit : integer range 0 to half_bit_duration;  -- Counter halft bit in order to sample the data
   signal cnt_bit      : integer range 0 to bit_duration;  -- Counter bit duration
   signal cnt_data     : integer range 0 to data_size;  -- Counter of the data
+  signal cnt_stop_bit : integer range 0 to stop_bit_number;  -- Counter of stop bit
+begin
 
   -- purpose : This process manages the FSM on the RX UART
-  p_rx_fsm_mng : process (clock, reset_n) is
-  begin  -- process p_rx_fsm_mng
+  p_rx_fsm_mng : process(clock, reset_n)
+  begin
     if reset_n = '0' then                   -- asynchronous reset (active low)
       rx_fsm <= IDLE;
     elsif clock'event and clock = '1' then  -- rising clock edge
@@ -97,7 +102,15 @@ architecture arch of rx_uart is
             end if;
           end if;
         when READ_PARITY =>
-
+          if(tick_data = '1') then
+            rx_fsm <= READ_STOP_BIT;
+          end if;
+        when READ_STOP_BIT =>
+          if(tick_data = '1' and cnt_stop_bit = stop_bit_number - 1) then
+            rx_fsm <= STOP;
+          end if;
+        when STOP =>
+          rx_fsm <= WAIT_START;
         when others => null;
       end case;
     end if;
@@ -105,7 +118,7 @@ architecture arch of rx_uart is
 
 
   -- purpose: This process detect the start of an UART reception 
-  p_start_detect : process (clock, reset_n) is
+  p_start_detect : process (clock, reset_n)
   begin  -- process p_start_detect
     if reset_n = '0' then                   -- asynchronous reset (active low)
       rx_old <= '0';
@@ -124,7 +137,7 @@ architecture arch of rx_uart is
 
 
   -- purpose: This process generates ticks in order to read the input data 
-  p_tick_read_data : process (clock, reset_n) is
+  p_tick_read_data : process (clock, reset_n)
   begin  -- process p_tick_read_data
     if reset_n = '0' then                   -- asynchronous reset (active low)
       cnt_bit      <= 0;
@@ -152,12 +165,33 @@ architecture arch of rx_uart is
           cnt_bit   <= 0;
           tick_data <= '1';
         end if;
+      elsif(rx_fsm = READ_PARITY) then
+        if(cnt_bit < bit_duration) then
+          cnt_bit   <= cnt_bit + 1;
+          tick_data <= '0';
+        else
+          cnt_bit   <= 0;
+          tick_data <= '1';
+        end if;
+      elsif(rx_fsm = READ_STOP_BIT) then
+        if(cnt_bit < bit_duration) then
+          cnt_bit   <= cnt_bit + 1;         -- Inc cnt
+          tick_data <= '0';
+        else
+          cnt_bit   <= 0;                   -- RAZ cnt
+          tick_data <= '1';
+        end if;
+      elsif(rx_fsm = STOP) then
+        cnt_bit      <= 0;
+        tick_data    <= '0';
+        cnt_half_bit <= 0;
+        start_cnt    <= '0';
       end if;
     end if;
   end process p_tick_read_data;
 
   -- purpose: This process count the data to received 
-  p_data_cnt : process (clock, reset_n) is
+  p_data_cnt : process (clock, reset_n)
   begin  -- process p_data_cnt
     if reset_n = '0' then                   -- asynchronous reset (active low)
       cnt_data <= 0;
@@ -177,7 +211,48 @@ architecture arch of rx_uart is
   end process p_data_cnt;
 
 
+  -- purpose: This process read the RX input
+  p_rx_mng : process (clock, reset_n)
+  begin  -- process p_rx_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      rx_data_s     <= (others => '0');
+      parity_rcvd_s <= '0';
+      cnt_stop_bit  <= 0;
+      rx_done_s     <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(rx_fsm = READ_START) then
+        rx_data_s     <= (others => '0');   -- Raz data
+        parity_rcvd_s <= '0';               -- Raz parity
+        rx_done_s     <= '0';               -- Raz done flag
+      elsif(rx_fsm = READ_DATA) then
+        if(tick_data = '1') then
+          if(first_bit = lsb_first) then
+            rx_data_s(cnt_data) <= rx;
+          elsif(first_bit = msb_first) then
+            rx_data_s(7 - cnt_data) <= rx;
+          end if;
+        end if;
+      elsif(rx_fsm = READ_PARITY) then
+        if(tick_data = '1') then
+          parity_rcvd_s <= rx;
+        end if;
+      elsif(rx_fsm = READ_STOP_BIT) then
+        if(tick_data = '1') then
+          if(cnt_stop_bit < stop_bit_number) then
+            cnt_stop_bit <= cnt_stop_bit + 1;
+          else
+            cnt_stop_bit <= 0;
+          end if;
+        end if;
+      elsif(rx_fsm = STOP) then
+        rx_done_s <= '1';
+      end if;
+    end if;
+  end process p_rx_mng;
 
-
+  -- Outputs affectation
+  parity_rcvd <= parity_rcvd_s;
+  rx_data     <= rx_data_s;
+  rx_done     <= rx_done_s;
 
 end architecture arch;
