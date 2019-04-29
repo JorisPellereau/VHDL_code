@@ -6,7 +6,7 @@
 -- Author     :   
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-04-28
+-- Last update: 2019-04-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ package pkg_rs232 is
       clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
     port (
       reset_n     : in  std_logic;      -- Asynchronous reset
-      coc         : in  std_logic :     -- Clock
+      clock       : in  std_logic;      -- Clock
       rx          : in  std_logic;      -- Serial input
       rx_data     : out std_logic_vector(data_size - 1 downto 0);  -- Received data
       rx_done     : out std_logic;      -- Flag for a received data
