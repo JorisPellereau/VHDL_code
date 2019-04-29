@@ -73,10 +73,41 @@ architecture arch of test_tx_rs232 is
   signal rx_data_1     : std_logic_vector(7 downto 0);
   signal rx_done_1     : std_logic;
   signal parity_rcvd_1 : std_logic;
+
+  -- RX inst 2
+  signal rx_data_2     : std_logic_vector(7 downto 0);
+  signal rx_done_2     : std_logic;
+  signal parity_rcvd_2 : std_logic;
+
+  -- RX Inst 3
+  signal rx_data_3     : std_logic_vector(7 downto 0);
+  signal rx_done_3     : std_logic;
+  signal parity_rcvd_3 : std_logic;
+
+  -- RX inst 4
+  signal rx_data_4     : std_logic_vector(7 downto 0);
+  signal rx_done_4     : std_logic;
+  signal parity_rcvd_4 : std_logic;
+
+-- RX Inst 5
+  signal rx_data_5     : std_logic_vector(7 downto 0);
+  signal rx_done_5     : std_logic;
+  signal parity_rcvd_5 : std_logic;
+
+  -- RX inst 6
+  signal rx_data_6     : std_logic_vector(7 downto 0);
+  signal rx_done_6     : std_logic;
+  signal parity_rcvd_6 : std_logic;
+  
   
 begin  -- architecture arch
 
-  -- TX RS232 instanciation
+
+  -- =========================
+  -- Transmitter Instanciation
+  -- =========================
+
+  -- TX RS232 instanciation 1
   inst_tx_rs232_1 : tx_rs232
     generic map (
       stop_bit_number => 2,
@@ -94,7 +125,7 @@ begin  -- architecture arch
       tx       => tx_1,
       tx_done  => tx_done_1);
 
-  -- TX RS232 instanciation
+  -- TX RS232 instanciation 2
   inst_tx_rs232_2 : tx_rs232
     generic map (
       stop_bit_number => 2,
@@ -113,7 +144,7 @@ begin  -- architecture arch
       tx_done  => tx_done_2);
 
 
-  -- TX RS232 instanciation
+  -- TX RS232 instanciation 3
   inst_tx_rs232_3 : tx_rs232
     generic map (
       stop_bit_number => 1,
@@ -131,7 +162,7 @@ begin  -- architecture arch
       tx       => tx_3,
       tx_done  => tx_done_3);
 
-  -- TX RS232 instanciation
+  -- TX RS232 instanciation 4
   inst_tx_rs232_4 : tx_rs232
     generic map (
       stop_bit_number => 1,
@@ -150,7 +181,7 @@ begin  -- architecture arch
       tx_done  => tx_done_4);
 
 
--- TX RS232 instanciation
+-- TX RS232 instanciation 5
   inst_tx_rs232_5 : tx_rs232
     generic map (
       stop_bit_number => 1,
@@ -169,7 +200,7 @@ begin  -- architecture arch
       tx_done  => tx_done_5);
 
 
-  -- TX RS232 instanciation
+  -- TX RS232 instanciation 6
   inst_tx_rs232_6 : tx_rs232
     generic map (
       stop_bit_number => 1,
@@ -187,8 +218,11 @@ begin  -- architecture arch
       tx       => tx_6,
       tx_done  => tx_done_6);
 
+  -- =========================
+  -- Receiver Instanciation
+  -- =========================
 
--- RX UART instanciation 1
+  -- RX UART instanciation 1
   inst_rx_uart_1 : rx_uart
     generic map(
       stop_bit_number => 2,
@@ -204,6 +238,96 @@ begin  -- architecture arch
       rx_data     => rx_data_1,
       rx_done     => rx_done_1,
       parity_rcvd => parity_rcvd_1);
+
+  -- RX UART instanciation 2
+  inst_rx_uart_2 : rx_uart
+    generic map(
+      stop_bit_number => 2,
+      parity          => even,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => msb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_2,
+      rx_data     => rx_data_2,
+      rx_done     => rx_done_2,
+      parity_rcvd => parity_rcvd_2);
+
+
+  -- RX UART instanciation 3
+  inst_rx_uart_3 : rx_uart
+    generic map(
+      stop_bit_number => 1,
+      parity          => even,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => lsb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_3,
+      rx_data     => rx_data_3,
+      rx_done     => rx_done_3,
+      parity_rcvd => parity_rcvd_3);
+
+
+  -- RX UART instanciation 4
+  inst_rx_uart_4 : rx_uart
+    generic map(
+      stop_bit_number => 1,
+      parity          => even,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => msb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_4,
+      rx_data     => rx_data_4,
+      rx_done     => rx_done_4,
+      parity_rcvd => parity_rcvd_4);
+
+  -- RX UART instanciation 5
+  inst_rx_uart_5 : rx_uart
+    generic map(
+      stop_bit_number => 1,
+      parity          => odd,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => msb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_5,
+      rx_data     => rx_data_5,
+      rx_done     => rx_done_5,
+      parity_rcvd => parity_rcvd_5);
+
+
+  -- RX UART instanciation 6
+  inst_rx_uart_6 : rx_uart
+    generic map(
+      stop_bit_number => 1,
+      parity          => odd,
+      baudrate        => b115200,
+      data_size       => 8,
+      first_bit       => lsb_first,
+      clock_frequency => 48000000)
+    port map(
+      reset_n     => reset_n,
+      clock       => clock,
+      rx          => tx_6,
+      rx_data     => rx_data_6,
+      rx_done     => rx_done_6,
+      parity_rcvd => parity_rcvd_6);
+
+
 
   -- Clock gen
   p_gen_clock : process
