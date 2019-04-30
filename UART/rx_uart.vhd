@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-26
--- Last update: 2019-04-29
+-- Last update: 2019-04-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ entity rx_uart is
     stop_bit_number : integer range 1 to 2 := 1;  -- Stop bit number
     parity          : t_parity             := even;       -- Type of the parity
     baudrate        : t_baudrate           := b9600;      -- Baudrate
-    data_size       : integer range 0 to 9 := 8;  -- Size of the data to received
+    data_size       : integer range 5 to 9 := 8;  -- Size of the data to received
     polarity        : std_logic            := '1';  -- Polarity on idle state
     first_bit       : t_first_bit          := lsb_first;  -- LSB or MSB first
     clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
