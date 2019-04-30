@@ -6,7 +6,7 @@
 -- Author     :   
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-04-29
+-- Last update: 2019-04-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package pkg_rs232 is
 
@@ -59,6 +60,15 @@ package pkg_rs232 is
     constant parity          : t_parity;  -- Parity of the configuration
     constant data_size       : integer range 5 to 9)  -- Number of data in the RS232 transaction
     return integer;
+
+  function parity_computation (
+    constant number : integer range 0 to 511;  -- Number input [0:511] => 2^9
+    constant parity : t_parity)                -- Parity configuration
+    return std_logic;
+
+  function stdl_to_string (
+    constant in_stdl : std_logic)       -- Input std_logic
+    return string;
 
   -- COMPONENTS
   component tx_rs232 is
@@ -107,7 +117,9 @@ package body pkg_rs232 is
     constant clock_frequency : integer;     -- Input clock frequency
     constant baudrate        : t_baudrate)  -- Baudrate
     return integer is
-    variable bit_duration : integer := 0;   -- Bit duration
+
+    variable bit_duration : integer := 0;  -- Bit duration
+    
   begin  -- function compute_bit_duration
 
     case baudrate is
@@ -154,7 +166,9 @@ package body pkg_rs232 is
     constant parity          : t_parity;  -- Parity of the configuration
     constant data_size       : integer range 5 to 9)  -- Number of data in the RS232 transaction
     return integer is
-    variable number_of_bit : integer := 0;            -- Number of bit
+
+    variable number_of_bit : integer := 0;  -- Number of bit
+    
   begin
 
     number_of_bit := stop_bit_number + data_size;
@@ -173,4 +187,42 @@ package body pkg_rs232 is
   end function number_of_bit_computation;
 
 
+  -- purpose: This function computes the parity bit according to the input number and the parity config.
+  function parity_computation (
+    constant number : integer range 0 to 511;  -- Input number [0:511]
+    constant parity : t_parity)                -- Parity configuration
+    return std_logic is
+
+    variable stdlv_number  : std_logic_vector(8 downto 0) := (others => '0');  -- Number input in stdlv
+    variable parity_result : std_logic                    := '0';  -- Parity computation result
+    
+  begin  -- function parity_computation
+
+    stdlv_number  := std_logic_vector(to_unsigned(number, stdlv_number'length));
+    parity_result := ((((((((stdlv_number(8) xor stdlv_number(7)) xor stdlv_number(6)) xor stdlv_number(5)) xor stdlv_number(4)) xor stdlv_number(3)) xor stdlv_number(2)) xor stdlv_number(1)) xor stdlv_number(0));
+    if(parity = odd) then
+      parity_result := not parity_result;
+    end if;
+    return parity_result;
+  end function parity_computation;
+
+
+  -- purpose: This function converts a std_logic into a string
+  function stdl_to_string (
+    constant in_stdl : std_logic)       -- Input std_logic
+    return string is
+
+    variable str : string(1 to 3) := "'0'";
+    
+  begin  -- function stdl_to_string
+
+    if(in_stdl = '0') then
+      str := "'0'";
+    elsif(in_stdl = '1') then
+      str := "'1'";
+    end if;
+    return str;
+  end function stdl_to_string;
+
+  
 end package body pkg_rs232;
