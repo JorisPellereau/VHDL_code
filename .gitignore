@@ -7,3 +7,7 @@ UART/\.#pkg_rs232\.vhd
 UART/#rx_uart\.vhd#
 
 UART/\.#rx_uart\.vhd
+
+I2C/\.#pkg_i2c\.vhd
+
+I2C/#pkg_i2c\.vhd#
