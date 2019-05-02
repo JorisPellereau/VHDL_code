@@ -40,7 +40,7 @@ package pkg_i2c is
   component master_i2c is
     generic (
       scl_frequency   : t_i2c_frequency;  -- Frequency of SCL clock
-      clock_frequency : intger);        -- Input clock frequency
+      clock_frequency : integer);       -- Input clock frequency
     port (
       reset_n   : in    std_logic;      -- Asynchronous reset
       clock     : in    std_logic;      -- Input clock
