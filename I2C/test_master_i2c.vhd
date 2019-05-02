@@ -35,27 +35,28 @@ architecture behv_master_i2c of test_master_i2c is
   constant T_clock : time := 50 ns;     -- Clock period : 20 MHz
 
   -- SIGNALS
-  signal reset_n   : std_logic                    := '1';  -- Asynchronous reset
-  signal clock     : std_logic                    := '0';  -- Sytem clock
-  signal start_i2c : std_logic                    := '0';  -- Start an I2C transaction
-  signal rw        : std_logic                    := '0';  -- Read/Write order
-  signal chip_addr : std_logic_vector(6 downto 0) := (others => '0');  -- Chip address
-  signal nb_data   : integer range 1 to max_array := 2;  -- Number of byte to read or write
-  signal wdata     : t_byte_array                 := (others => (others => '0'));  -- Array of byte to write on the bus
-  signal i2c_done  : std_logic;         -- Flag i2c trasaction done
-  signal rdata     : t_byte_array;      -- Array of data read on the I2C bus
-  signal scl       : std_logic;         -- scl line
-  signal sda       : std_logic;         -- sda line
+  signal reset_n    : std_logic                    := '1';  -- Asynchronous reset
+  signal clock      : std_logic                    := '0';  -- Sytem clock
+  signal start_i2c  : std_logic                    := '0';  -- Start an I2C transaction
+  signal rw         : std_logic                    := '0';  -- Read/Write order
+  signal chip_addr  : std_logic_vector(6 downto 0) := (others => '0');  -- Chip address
+  signal nb_data    : integer range 1 to max_array := 2;  -- Number of byte to read or write
+  signal wdata      : t_byte_array                 := (others => (others => '0'));  -- Array of byte to write on the bus
+  signal i2c_done   : std_logic;        -- Flag i2c trasaction done
+  signal sack_error : std_logic;        -- Indicates error if SACK not received
+  signal rdata      : t_byte_array;     -- Array of data read on the I2C bus
+  signal scl        : std_logic;        -- scl line
+  signal sda        : std_logic;        -- sda line
 
   -- Slave emul signals
-  signal cnt_9 : integer range 0 to 9 := 0;  -- data + ack cnt
+  signal cnt_9   : integer range 0 to 9 := 0;  -- data + ack cnt
+  signal scl_re  : std_logic;                  -- scl RE detect
+  signal scl_old : std_logic;                  -- latch scl
 
   -- Master I2C
 
 begin  -- architecture behv_master_i2c
 
-  scl <= 'H';
-  sda <= 'H';
 
   -- Master I2C instance
   inst_master_i2c : master_i2c
@@ -63,17 +64,18 @@ begin  -- architecture behv_master_i2c
       scl_frequency   => f100k,
       clock_frequency => 20000000)
     port map (
-      reset_n   => reset_n,
-      clock     => clock,
-      start_i2c => start_i2c,
-      rw        => rw,
-      chip_addr => chip_addr,
-      nb_data   => nb_data,
-      wdata     => wdata,
-      i2c_done  => i2c_done,
-      rdata     => rdata,
-      scl       => scl,
-      sda       => sda);
+      reset_n    => reset_n,
+      clock      => clock,
+      start_i2c  => start_i2c,
+      rw         => rw,
+      chip_addr  => chip_addr,
+      nb_data    => nb_data,
+      wdata      => wdata,
+      i2c_done   => i2c_done,
+      sack_error => sack_error,
+      rdata      => rdata,
+      scl        => scl,
+      sda        => sda);
 
 
   -- This process generates the input clock
@@ -85,33 +87,36 @@ begin  -- architecture behv_master_i2c
 
 
   -- purpose: This process emulates an I2C Slave
-  p_slave_emul : process(scl, reset_n)
+  p_slave_emul : process(clock, reset_n)
     --variable cnt_9 : integer range 0 to 9 := 0;    -- data + ack cnt
     variable rw : std_logic := '0';     -- rw recover
   begin  -- process p_slave_emul
 
     if(reset_n = '0') then
-      sda <= 'Z';
-    elsif(rising_edge(SCL)) then
-
-      if(cnt_9 < 9) then
-        cnt_9 <= cnt_9 + 1;
-      else
-        cnt_9 <= 0;
+      sda     <= 'Z';
+      scl_old <= '0';
+    elsif(rising_edge(clock)) then
+      scl_old <= scl;
+      if(scl_re = '1') then
+        if(cnt_9 < 9) then
+          cnt_9 <= cnt_9 + 1;
+        else
+          cnt_9 <= 1;
+        end if;
       end if;
-
       -- Wait for start condition
-      if(cnt_9 = 8) then
-        sda <= '0';
-      else
-        sda <= 'Z';
-      end if;
+      -- if(cnt_9 = 8) then
+      --   sda <= '0';
+      -- else
+      --   sda <= 'Z';
+      -- end if;
 
-      
+
     end if;
   end process p_slave_emul;
-
-
+  scl_re <= (scl and not scl_old) when reset_n = '1'             else '0';
+  scl    <= 'H';
+  sda    <= '0'                   when (cnt_9 = 1 and scl = 'H') else 'H';
 
 
 
@@ -134,9 +139,9 @@ begin  -- architecture behv_master_i2c
     -- Reset system
     reset_n <= '0', '1' after 100 ns;
 
-    chip_addr <= b"1001001";
+    chip_addr <= b"1011011";
     rw        <= '0';                   -- Write order
-    wdata     <= (0 => x"AA", 1 => x"99", others => x"00");
+    wdata     <= (0 => x"E9", 1 => x"99", others => x"00");
     start_i2c <= '1', '0' after 10 us;
     wait until rising_edge(i2c_done) for 50 ms;
 
