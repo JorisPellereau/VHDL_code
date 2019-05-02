@@ -23,7 +23,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 library lib_i2c;
-use lib_i2c.pkh_i2c.all;
+use lib_i2c.pkg_i2c.all;
 
 entity test_master_i2c is
 
@@ -47,6 +47,9 @@ architecture behv_master_i2c of test_master_i2c is
   signal scl       : std_logic;         -- scl line
   signal sda       : std_logic;         -- sda line
 
+  -- Slave emul signals
+  signal cnt_9 : integer range 0 to 9 := 0;  -- data + ack cnt
+
   -- Master I2C
 
 begin  -- architecture behv_master_i2c
@@ -59,7 +62,7 @@ begin  -- architecture behv_master_i2c
     generic map (
       scl_frequency   => f100k,
       clock_frequency => 20000000)
-    port (
+    port map (
       reset_n   => reset_n,
       clock     => clock,
       start_i2c => start_i2c,
@@ -80,9 +83,46 @@ begin  -- architecture behv_master_i2c
     wait for T_clock / 2;
   end process;
 
+
+  -- purpose: This process emulates an I2C Slave
+  p_slave_emul : process(scl, reset_n)
+    --variable cnt_9 : integer range 0 to 9 := 0;    -- data + ack cnt
+    variable rw : std_logic := '0';     -- rw recover
+  begin  -- process p_slave_emul
+
+    if(reset_n = '0') then
+      sda <= 'Z';
+    elsif(rising_edge(SCL)) then
+
+      if(cnt_9 < 9) then
+        cnt_9 <= cnt_9 + 1;
+      else
+        cnt_9 <= 0;
+      end if;
+
+      -- Wait for start condition
+      if(cnt_9 = 8) then
+        sda <= '0';
+      else
+        sda <= 'Z';
+      end if;
+
+      
+    end if;
+  end process p_slave_emul;
+
+
+
+
+
+
+
   -- This process generates stimuli
   p_test : process
   begin  -- process p_test
+
+
+    report "Constante : " & integer'image(compute_scl_period(f100k, 20000000));
 
     -- Init signals
     start_i2c <= '0';
@@ -96,7 +136,7 @@ begin  -- architecture behv_master_i2c
 
     chip_addr <= b"1001001";
     rw        <= '0';                   -- Write order
-    wdata     <= (0 => x"AA", 1 => x"99");
+    wdata     <= (0 => x"AA", 1 => x"99", others => x"00");
     start_i2c <= '1', '0' after 10 us;
     wait until rising_edge(i2c_done) for 50 ms;
 
