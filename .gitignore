@@ -15,3 +15,5 @@ I2C/#pkg_i2c\.vhd#
 I2C/\.#test_master_i2c\.vhd
 
 I2C/~\$\$I2C_UART\.~vsdx
+
+I2C/master_i2c\.vhd\.bak
