@@ -11,3 +11,5 @@ UART/\.#rx_uart\.vhd
 I2C/\.#pkg_i2c\.vhd
 
 I2C/#pkg_i2c\.vhd#
+
+I2C/\.#test_master_i2c\.vhd
