@@ -42,17 +42,18 @@ package pkg_i2c is
       scl_frequency   : t_i2c_frequency;  -- Frequency of SCL clock
       clock_frequency : integer);       -- Input clock frequency
     port (
-      reset_n   : in    std_logic;      -- Asynchronous reset
-      clock     : in    std_logic;      -- Input clock
-      start_i2c : in    std_logic;      -- Start an I2C transaction
-      rw        : in    std_logic;      -- Read/Write command
-      chip_addr : in    std_logic_vector(6 downto 0);  -- Chip addr [0 : 126]<type>
-      nb_data   : in    integer;        -- range 1 to max_array
-      wdata     : in    t_byte_array;   -- Array of byte to write on the bus
-      i2c_done  : out   std_logic;      -- I2C transaction done
-      rdata     : out   t_byte_array;  -- Output data read from an I2C transaction
-      scl       : inout std_logic;      -- I2C clock
-      sda       : inout std_logic);     -- Data line
+      reset_n    : in    std_logic;     -- Asynchronous reset
+      clock      : in    std_logic;     -- Input clock
+      start_i2c  : in    std_logic;     -- Start an I2C transaction
+      rw         : in    std_logic;     -- Read/Write command
+      chip_addr  : in    std_logic_vector(6 downto 0);  -- Chip addr [0 : 126]<type>
+      nb_data    : in    integer;       -- range 1 to max_array
+      wdata      : in    t_byte_array;  -- Array of byte to write on the bus
+      i2c_done   : out   std_logic;     -- I2C transaction done
+      sack_error : out   std_logic;     --Sack fom slave not received
+      rdata      : out   t_byte_array;  -- Output data read from an I2C transaction
+      scl        : inout std_logic;     -- I2C clock
+      sda        : inout std_logic);    -- Data line
   end component master_i2c;
 
 
