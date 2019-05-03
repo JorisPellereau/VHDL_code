@@ -57,9 +57,18 @@ architecture arch_master_spi of master_spi is
   signal start_spi_s  : std_logic;      -- Latch start_spi input
   signal start_spi_re : std_logic;  -- Pulse that indicate a start_spi Rising edge
 
+  -- Clock gen
+  signal tick_clock         : std_logic;                    -- Tick clock
+  signal cnt_half_spi_clock : integer range 0 to T_2_sclk;  -- Counter that counts until Half Period of SCLK
+
   -- Input to latch
   signal ssi_s   : std_logic_vector(slave_number - 1 downto 0);  -- Latch slave select input
   signal wdata_s : std_logic_vector(data_size - 1 downto 0);     -- Latch wdata
+
+  -- Controls
+  signal start_ss : std_logic;          -- Start Slave select
+
+
 
 begin  -- architecture arch_master_spi
 
@@ -80,14 +89,42 @@ begin  -- architecture arch_master_spi
   p_latch_inputs : process (clock, reset_n) is
   begin  -- process p_latch_inputs
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      ssi_s   <= (others => '0');
-      wdata_s <= (others => '0');
+      ssi_s    <= (others => '0');
+      wdata_s  <= (others => '0');
+      start_ss <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_spi_re = '1') then
-        ssi_s   <= ssi;
-        wdata_s <= wdata;
+        ssi_s    <= ssi;
+        wdata_s  <= wdata;
+        start_ss <= '1';
+      elsif() then                          -- RAZ start_ss
       end if;
     end if;
   end process p_latch_inputs;
+
+
+  ssn <= ssi_s when start_ss = '1' else (others => '1');  -- '1' : idle state
+
+  -- purpose: This process generates tick clock in order to generates the output clock 
+  p_tick_clock_gen : process (clock, reset_n) is
+  begin  -- process p_tick_clock_gen
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      tick_clock         <= '0';
+      cnt_half_spi_clock <= 0;
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(start_ss = '1') then
+        if(cnt_half_spi_clock < T_2_sclk) then
+          cnt_half_spi_clock <= cnt_half_spi_clock + 1;
+          tick_clock         <= '0';
+        else
+          cnt_half_spi_clock <= 0;
+          tick_clock         <= '1';
+        end if;
+      else
+        cnt_half_spi_clock <= 0;
+        tick_clock         <= '0';
+      end if;
+    end if;
+  end process p_tick_clock_gen;
 
 end architecture arch_master_spi;
