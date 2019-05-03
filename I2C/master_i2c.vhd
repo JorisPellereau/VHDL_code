@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-02
+-- Last update: 2019-05-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ architecture arch_macter_i2c of master_i2c is
   signal rw_s        : std_logic;       -- Latch rw input
   signal chip_addr_s : std_logic_vector(6 downto 0);  -- Latch Chip addr input
   signal nb_data_s   : integer range 1 to max_array;  -- Latch nb_data to R/W
+  signal wdata_s     : t_byte_array;    -- Latch wdata
   signal byte_ctrl   : std_logic_vector(7 downto 0);  -- Control byte, chip add & RW
 
   signal sack_ok : std_logic;  -- sack_ok = '0' => KO - sack_ok = '1' => ok
