@@ -22,16 +22,16 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-use lib_spi;
+library lib_spi;
 use lib_spi.pkg_spi.all;
 
 entity master_spi is
 
   generic (
-    cpol         : bit     := '0';                        -- Clock Polarity
-    cpha         : bit     := '0';                        -- Clock phase
-    data_size    : integer := 8;                          -- Size of the data
-    slave_number : integer range 1 to max_slave_number);  -- Number of slave
+    cpol         : std_logic                           := '0';  -- Clock Polarity
+    cpha         : std_logic                           := '0';  -- Clock phase
+    data_size    : integer                             := 8;  -- Size of the data
+    slave_number : integer range 1 to max_slave_number := max_slave_number);  -- Number of slave
 
   port (
     reset_n   : in  std_logic;          -- Asynchronous reset
@@ -69,9 +69,9 @@ architecture arch_master_spi of master_spi is
   signal wdata_s : std_logic_vector(data_size - 1 downto 0);     -- Latch wdata
 
   -- Controls
-  signal start_ss : std_logic;          -- Start transaction
+  signal en_transaction : std_logic;    -- Start transaction
 
-
+  signal cnt_data : integer range 0 to data_size;  -- Counter that counts until the number of bit to transmit
 
 begin  -- architecture arch_master_spi
 
@@ -80,12 +80,19 @@ begin  -- architecture arch_master_spi
   p_start_detect : process (clock, reset_n) is
   begin  -- process p_start_detect
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      start_spi_s <= '0';
+      start_spi_s  <= '0';
+      start_spi_re <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       start_spi_s <= start_spi;
+
+      if(start_spi = '1' and start_spi_s = '0') then
+        start_spi_re <= '1';
+      else
+        start_spi_re <= '0';
+      end if;
     end if;
   end process p_start_detect;
-  start_spi_re <= start_spi and not start_spi_s;
+--  start_spi_re <= start_spi and not start_spi_s;
 
 
   -- purpose: This process latch the input when a rising edge of start_spi occurs
@@ -100,7 +107,10 @@ begin  -- architecture arch_master_spi
         ssi_s          <= ssi;
         wdata_s        <= wdata;
         en_transaction <= '1';
-      elsif() then                          -- RAZ en_transaction
+      elsif(cnt_data = data_size) then      -- RAZ en_transaction
+        en_transaction <= '0';
+        ssi_s          <= (others => '0');
+        wdata_s        <= (others => '0');
       end if;
     end if;
   end process p_latch_inputs;
@@ -141,6 +151,7 @@ begin  -- architecture arch_master_spi
         sclk_s <= '1';
       end if;
       cnt_period_clock_spi <= 0;
+      cnt_data             <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(en_transaction = '1') then
         if(cnt_period_clock_spi < T_sclk) then
@@ -155,7 +166,7 @@ begin  -- architecture arch_master_spi
           elsif(cpol = '1') then
             sclk_s <= '0';
           end if;
-        elsif(cnt_period_clock_spi < T_sclk) then
+        elsif(cnt_period_clock_spi <= T_sclk) then
           if(cpol = '0') then
             sclk_s <= '0';
           elsif(cpol = '1') then
@@ -163,8 +174,15 @@ begin  -- architecture arch_master_spi
           end if;
         end if;
 
+        if(cnt_data < data_size) then
+          if(cnt_period_clock_spi = T_sclk) then
+            cnt_data <= cnt_data + 1;
+          end if;
+        end if;
+        
       elsif(en_transaction = '0') then
         cnt_period_clock_spi <= 0;
+        cnt_data             <= 0;
         if(cpol = '0') then
           sclk_s <= '0';
         elsif(cpol = '1') then
@@ -174,5 +192,8 @@ begin  -- architecture arch_master_spi
     end if;
   end process p_clock_gen;
 
-  sclk <= sclk_s;
+  sclk <= sclk_s when en_transaction = '1' else
+          '1' when cpol = '1' and en_transaction = '0' else
+          '0' when cpol = '0' and en_transaction = '0';  -- Output affectation
+  
 end architecture arch_master_spi;
