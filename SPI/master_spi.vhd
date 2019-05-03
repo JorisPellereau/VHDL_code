@@ -61,12 +61,15 @@ architecture arch_master_spi of master_spi is
   signal tick_clock         : std_logic;                    -- Tick clock
   signal cnt_half_spi_clock : integer range 0 to T_2_sclk;  -- Counter that counts until Half Period of SCLK
 
+  signal sclk_s               : std_logic;  -- Serial clock Signal
+  signal cnt_period_clock_spi : integer range 0 to T_sclk;  -- Counter that counts until t_sclk
+
   -- Input to latch
   signal ssi_s   : std_logic_vector(slave_number - 1 downto 0);  -- Latch slave select input
   signal wdata_s : std_logic_vector(data_size - 1 downto 0);     -- Latch wdata
 
   -- Controls
-  signal start_ss : std_logic;          -- Start Slave select
+  signal start_ss : std_logic;          -- Start transaction
 
 
 
@@ -89,21 +92,21 @@ begin  -- architecture arch_master_spi
   p_latch_inputs : process (clock, reset_n) is
   begin  -- process p_latch_inputs
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      ssi_s    <= (others => '0');
-      wdata_s  <= (others => '0');
-      start_ss <= '0';
+      ssi_s          <= (others => '0');
+      wdata_s        <= (others => '0');
+      en_transaction <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_spi_re = '1') then
-        ssi_s    <= ssi;
-        wdata_s  <= wdata;
-        start_ss <= '1';
-      elsif() then                          -- RAZ start_ss
+        ssi_s          <= ssi;
+        wdata_s        <= wdata;
+        en_transaction <= '1';
+      elsif() then                          -- RAZ en_transaction
       end if;
     end if;
   end process p_latch_inputs;
 
 
-  ssn <= ssi_s when start_ss = '1' else (others => '1');  -- '1' : idle state
+  ssn <= ssi_s when en_transaction = '1' else (others => '1');  -- '1' : idle state
 
   -- purpose: This process generates tick clock in order to generates the output clock 
   p_tick_clock_gen : process (clock, reset_n) is
@@ -112,7 +115,7 @@ begin  -- architecture arch_master_spi
       tick_clock         <= '0';
       cnt_half_spi_clock <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_ss = '1') then
+      if(en_transaction = '1') then
         if(cnt_half_spi_clock < T_2_sclk) then
           cnt_half_spi_clock <= cnt_half_spi_clock + 1;
           tick_clock         <= '0';
@@ -127,4 +130,49 @@ begin  -- architecture arch_master_spi
     end if;
   end process p_tick_clock_gen;
 
+
+  -- purpose: This process generates SCLK 
+  p_clock_gen : process (clock, reset_n) is
+  begin  -- process p_clock_gen
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      if(cpol = '0') then
+        sclk_s <= '0';
+      elsif(cpol = '1') then
+        sclk_s <= '1';
+      end if;
+      cnt_period_clock_spi <= 0;
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(en_transaction = '1') then
+        if(cnt_period_clock_spi < T_sclk) then
+          cnt_period_clock_spi <= cnt_period_clock_spi + 1;
+        else
+          cnt_period_clock_spi <= 0;
+        end if;
+
+        if(cnt_period_clock_spi <= T_2_sclk) then
+          if(cpol = '0') then
+            sclk_s <= '1';
+          elsif(cpol = '1') then
+            sclk_s <= '0';
+          end if;
+        elsif(cnt_period_clock_spi < T_sclk) then
+          if(cpol = '0') then
+            sclk_s <= '0';
+          elsif(cpol = '1') then
+            sclk_s <= '1';
+          end if;
+        end if;
+
+      elsif(en_transaction = '0') then
+        cnt_period_clock_spi <= 0;
+        if(cpol = '0') then
+          sclk_s <= '0';
+        elsif(cpol = '1') then
+          sclk_s <= '1';
+        end if;
+      end if;
+    end if;
+  end process p_clock_gen;
+
+  sclk <= sclk_s;
 end architecture arch_master_spi;
