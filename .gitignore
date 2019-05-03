@@ -17,3 +17,7 @@ I2C/\.#test_master_i2c\.vhd
 I2C/~\$\$I2C_UART\.~vsdx
 
 I2C/master_i2c\.vhd\.bak
+
+SPI/#master_spi\.vhd#
+
+SPI/\.#master_spi\.vhd
