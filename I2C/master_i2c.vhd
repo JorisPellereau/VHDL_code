@@ -140,7 +140,7 @@ begin  -- architecture arch_macter_i2c
         when SACK_WR =>
           if(cnt_9 = 9) then
             if(sack_ok = '1') then
-              if(cnt_nb_data = max_array) then
+              if(cnt_nb_data = nb_data_s) then
                 i2c_master_fsm <= STOP_GEN;
               else
                 i2c_master_fsm <= WR_DATA;
@@ -280,7 +280,8 @@ begin  -- architecture arch_macter_i2c
       cnt_tick_data_2 <= 0;
       cnt_tick_data_3 <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_fsm = WR_CHIP) then
+      if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = WR_DATA) then
+        cnt_tick_data_3 <= 0;
         if(sel_cnt_1_2 = '0') then
           if(cnt_tick_data_1 < T_2_scl / 2) then
             cnt_tick_data_1 <= cnt_tick_data_1 + 1;
@@ -299,7 +300,9 @@ begin  -- architecture arch_macter_i2c
             tick_data       <= '1';
           end if;
         end if;
-      elsif(i2c_master_fsm = SACK_CHIP) then
+      elsif(i2c_master_fsm = SACK_CHIP or i2c_master_fsm = SACK_WR) then
+        cnt_tick_data_1 <= 0;
+        cnt_tick_data_2 <= 0;
         if(cnt_tick_data_3 < 3*T_scl/4) then
           cnt_tick_data_3 <= cnt_tick_data_3 + 1;
           tick_data       <= '0';
@@ -378,7 +381,7 @@ begin  -- architecture arch_macter_i2c
           en_scl  <= '0';  -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';  -- Write '0' on SCL line
+          en_scl  <= '1';                   -- Write '0' on SCL line
         end if;
       end if;
     end if;
@@ -445,7 +448,7 @@ begin  -- architecture arch_macter_i2c
         if(tick_data = '1') then
           if(sda_in = '0') then
             sack_ok <= '1';
-            if(cnt_nb_data < max_array) then
+            if(cnt_nb_data < nb_data_s) then
               cnt_nb_data <= cnt_nb_data + 1;
             else
               cnt_nb_data <= 0;
