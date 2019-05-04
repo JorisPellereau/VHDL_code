@@ -68,6 +68,7 @@ architecture arch_macter_i2c of master_i2c is
   signal chip_addr_s : std_logic_vector(6 downto 0);  -- Latch Chip addr input
   signal nb_data_s   : integer range 1 to max_array;  -- Latch nb_data to R/W
   signal wdata_s     : t_byte_array;    -- Latch data to transmit
+  signal rdata_s     : t_byte_array;    -- Lact read data
   signal byte_ctrl   : std_logic_vector(7 downto 0);  -- Control byte, chip add & RW
 
   signal sack_ok : std_logic;  -- sack_ok = '0' => KO - sack_ok = '1' => ok
@@ -180,6 +181,7 @@ begin  -- architecture arch_macter_i2c
           rw_s        <= rw;
           chip_addr_s <= chip_addr;
           nb_data_s   <= nb_data;
+          wdata_s     <= wdata;
         end if;
       elsif(i2c_master_fsm = START_GEN) then
         byte_ctrl <= chip_addr_s & rw_s;
@@ -255,7 +257,7 @@ begin  -- architecture arch_macter_i2c
       cnt_tick_clock <= 0;
       tick_clock     <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = SACK_CHIP or i2c_master_fsm = WR_DATA or i2c_master_fsm = SACK_WR)then
+      if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = SACK_CHIP or i2c_master_fsm = WR_DATA or i2c_master_fsm = SACK_WR or i2c_master_fsm = RD_DATA)then
         if(cnt_tick_clock < T_2_scl) then
           cnt_tick_clock <= cnt_tick_clock + 1;
           tick_clock     <= '0';
@@ -310,6 +312,31 @@ begin  -- architecture arch_macter_i2c
           cnt_tick_data_3 <= 0;
           tick_data       <= '1';
         end if;
+      elsif(i2c_master_fsm = RD_DATA) then
+
+        -- To do !
+        -- cnt_tick_data_1 <= 0;
+        -- if(sel_cnt_1_2 = '0') then
+        --   if(cnt_tick_data_3 < 3*T_2_scl/4) then
+        --     cnt_tick_data_3 <= cnt_tick_data_3 + 1;
+        --     tick_data       <= '0';
+        --   else
+        --     cnt_tick_data_1 <= 0;
+        --     tick_data       <= '1';
+        --     sel_cnt_1_2     <= '1';
+        --   end if;
+        -- elsif(sel_cnt_1_2 = '1') then
+        --   if(cnt_tick_data_2 < T_scl) then
+        --     cnt_tick_data_2 <= cnt_tick_data_2 + 1;
+        --     tick_data       <= '0';
+        --   else
+        --     cnt_tick_data_2 <= 0;
+        --     tick_data       <= '1';
+        --   end if;
+        -- end if;
+
+
+
       end if;
     end if;
   end process p_tick_data_gen;
@@ -378,7 +405,7 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
           en_scl  <= '1';                   -- Write '0' on SCL line
@@ -396,6 +423,7 @@ begin  -- architecture arch_macter_i2c
       sda_out     <= '0';
       sack_ok     <= '0';
       cnt_nb_data <= 0;
+      rdata_s     <= (others => (others => '0'));
     elsif clock'event and clock = '1' then          -- rising clock edge
       if(i2c_master_fsm = IDLE) then
         en_sda  <= '0';
@@ -458,6 +486,24 @@ begin  -- architecture arch_macter_i2c
           end if;
         end if;
 
+      elsif(i2c_master_fsm = RD_DATA) then
+        en_sda  <= '0';
+        sda_out <= '0';                 -- Release the bus
+        if(tick_data = '1') then
+          if(cnt_9 < 8) then
+            rdata_s(cnt_nb_data)(cnt_9) <= sda_in;
+          end if;
+        end if;
+      elsif(i2c_master_fsm = MACK) then
+        en_sda  <= '0';
+        sda_out <= '0';                 -- Release the bus
+        if(tick_data = '1') then
+          if(cnt_nb_data < nb_data_s) then
+            cnt_nb_data <= cnt_nb_data + 1;
+          else
+            cnt_nb_data <= 0;
+          end if;
+        end if;
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop = start_stop_duration) then
           en_sda  <= '0';               -- Set 'Z' => '1' on the sda line
@@ -477,4 +523,8 @@ begin  -- architecture arch_macter_i2c
   sda_in <= sda;
 
 end architecture arch_macter_i2c;
+
+
+
+
 
