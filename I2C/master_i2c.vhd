@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-02
+-- Last update: 2019-05-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ architecture arch_macter_i2c of master_i2c is
   signal rw_s        : std_logic;       -- Latch rw input
   signal chip_addr_s : std_logic_vector(6 downto 0);  -- Latch Chip addr input
   signal nb_data_s   : integer range 1 to max_array;  -- Latch nb_data to R/W
+  signal wdata_s     : t_byte_array;    -- Latch data to transmit
   signal byte_ctrl   : std_logic_vector(7 downto 0);  -- Control byte, chip add & RW
 
   signal sack_ok : std_logic;  -- sack_ok = '0' => KO - sack_ok = '1' => ok
@@ -172,6 +173,7 @@ begin  -- architecture arch_macter_i2c
       chip_addr_s <= (others => '0');
       nb_data_s   <= 1;
       byte_ctrl   <= (others => '0');
+      wdata_s     <= (others => (others => '0'));
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_fsm = IDLE) then
         if(start_i2c_re = '1') then
@@ -373,10 +375,10 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';                   -- Write '0' on SCL line
+          en_scl  <= '1';  -- Write '0' on SCL line
         end if;
       end if;
     end if;
@@ -414,6 +416,8 @@ begin  -- architecture arch_macter_i2c
           end if;
         end if;
       elsif(i2c_master_fsm = SACK_CHIP) then
+        en_sda  <= '0';
+        sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
           if(sda_in = '0') then
             sack_ok <= '1';
@@ -424,8 +428,20 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = WR_DATA) then
         sack_ok <= '0';                 -- RAZ sack_ok
 
-      elsif(i2c_master_fsm = SACK_WR) then
+        -- MSB first
+        if(cnt_9 < 8) then
+          if(wdata_s(cnt_nb_data)(7 - cnt_9) = '1') then     -- 'Z' generation
+            en_sda  <= '0';
+            sda_out <= '0';
+          elsif(wdata_s(cnt_nb_data)(7 - cnt_9) = '0') then  -- '0' generation
+            en_sda  <= '1';
+            sda_out <= '0';
+          end if;
+        end if;
 
+      elsif(i2c_master_fsm = SACK_WR) then
+        en_sda  <= '0';
+        sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
           if(sda_in = '0') then
             sack_ok <= '1';
