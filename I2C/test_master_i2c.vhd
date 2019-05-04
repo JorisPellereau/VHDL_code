@@ -140,7 +140,7 @@ begin  -- architecture behv_master_i2c
     reset_n <= '0', '1' after 100 ns;
 
     chip_addr <= b"1011011";
-    rw        <= '0';                   -- Write order
+    rw        <= '1';                   -- Write order
     wdata     <= (0 => x"E9", 1 => x"99", others => x"00");
     start_i2c <= '1', '0' after 10 us;
     wait until rising_edge(i2c_done) for 50 ms;
