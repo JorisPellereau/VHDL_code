@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-02
--- Last update: 2019-05-02
+-- Last update: 2019-05-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ begin  -- architecture behv_master_i2c
   p_clock : process
   begin
     clock <= not clock;
-    wait for T_clock / 2;
+    wait for T_clock / 2.0;
   end process;
 
 
@@ -115,8 +115,8 @@ begin  -- architecture behv_master_i2c
     end if;
   end process p_slave_emul;
   scl_re <= (scl and not scl_old) when reset_n = '1'             else '0';
-  scl    <= 'H';
-  sda    <= '0'                   when (cnt_9 = 1 and scl = 'H') else 'H';
+  scl    <= 'H'                   when reset_n = '1'             else '0';
+  sda    <= '0'                   when (cnt_9 = 9 and scl = 'H') else 'H';
 
 
 
