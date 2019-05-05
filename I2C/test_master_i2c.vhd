@@ -161,6 +161,13 @@ begin  -- architecture behv_master_i2c
 
     wait for 100 us;
     rw        <= '1';
+    wait for 1 us;
+    start_i2c <= '1', '0' after 10 us;
+    wait until rising_edge(i2c_done) for 50 ms;
+
+    chip_addr <= b"1011011";
+    rw        <= '0';                   -- Write or read order
+    wdata     <= (0 => x"AA", 1 => x"7E", others => x"00");
     start_i2c <= '1', '0' after 10 us;
     wait until rising_edge(i2c_done) for 50 ms;
 
