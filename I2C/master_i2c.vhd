@@ -207,15 +207,16 @@ begin  -- architecture arch_macter_i2c
   begin
     if reset_n = '0' then               -- asynchronous reset (active low)
       start_i2c_old <= '0';
-    elsif clock'event and clock = '1' then          -- rising clock edge
+    elsif clock'event and clock = '1' then                 -- rising clock edge
       if(i2c_master_fsm = IDLE) then
         start_i2c_old <= start_i2c;
-      else
-        start_i2c_old <= '0';
+        -- else
+        --   start_i2c_old <= '0';
+        start_i2c_re  <= start_i2c and not start_i2c_old;  -- start I2C 
       end if;
     end if;
   end process p_start_i2c_detect;
-  start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C 
+  -- start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C 
 
 
   -- purpose: This process detects the rising edge of en_scl signal
@@ -454,6 +455,7 @@ begin  -- architecture arch_macter_i2c
         sda_out     <= '0';
         cnt_nb_data <= 0;
       elsif(i2c_master_fsm = START_GEN) then
+        sack_error_s <= '0';
         if(cnt_start_stop = start_stop_duration / 2) then
           en_sda  <= '1';
           sda_out <= '0';               -- Write '0' on the bus
@@ -476,9 +478,11 @@ begin  -- architecture arch_macter_i2c
         sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
           if(sda_in = '0') then
-            sack_ok <= '1';
+            sack_ok      <= '1';
+            sack_error_s <= '0';
           else
-            sack_ok <= '0';
+            sack_ok      <= '0';
+            sack_error_s <= '1';
           end if;
         end if;
       elsif(i2c_master_fsm = WR_DATA) then
