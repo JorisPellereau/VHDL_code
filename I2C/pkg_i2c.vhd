@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-04
+-- Last update: 2019-05-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ package pkg_i2c is
       start_i2c  : in    std_logic;     -- Start an I2C transaction
       rw         : in    std_logic;     -- Read/Write command
       chip_addr  : in    std_logic_vector(6 downto 0);  -- Chip addr [0 : 126]<type>
-      nb_data    : in    integer;       -- range 1 to max_array
+      nb_data    : in    integer range 1 to max_array;  -- Number of sata to R/W
       wdata      : in    t_byte_array;  -- Array of byte to write on the bus
       i2c_done   : out   std_logic;     -- I2C transaction done
       sack_error : out   std_logic;     --Sack fom slave not received
