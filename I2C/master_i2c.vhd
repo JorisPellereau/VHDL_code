@@ -155,7 +155,13 @@ begin  -- architecture arch_macter_i2c
             i2c_master_fsm <= MACK;
           end if;
         when MACK =>
-
+          if(cnt_9 = 9) then
+            if(cnt_nb_data = nb_data_s) then
+              i2c_master_fsm <= STOP_GEN;
+            else
+              i2c_master_fsm <= RD_DATA;
+            end if;
+          end if;
         when STOP_GEN =>
           if(start_gen_done = '1') then
             i2c_master_fsm <= IDLE;
@@ -303,9 +309,10 @@ begin  -- architecture arch_macter_i2c
             tick_data       <= '1';
           end if;
         end if;
-      elsif(i2c_master_fsm = SACK_CHIP or i2c_master_fsm = SACK_WR) then
+      elsif(i2c_master_fsm = SACK_CHIP or i2c_master_fsm = SACK_WR or i2c_master_fsm = MACK) then
         cnt_tick_data_1 <= 0;
         cnt_tick_data_2 <= 0;
+        sel_cnt_1_2     <= '0';             -- RAZ  sel
         if(cnt_tick_data_3 < 3*T_scl/4) then
           cnt_tick_data_3 <= cnt_tick_data_3 + 1;
           tick_data       <= '0';
@@ -314,29 +321,25 @@ begin  -- architecture arch_macter_i2c
           tick_data       <= '1';
         end if;
       elsif(i2c_master_fsm = RD_DATA) then
-
-        -- To do !
-        -- cnt_tick_data_1 <= 0;
-        -- if(sel_cnt_1_2 = '0') then
-        --   if(cnt_tick_data_3 < 3*T_2_scl/4) then
-        --     cnt_tick_data_3 <= cnt_tick_data_3 + 1;
-        --     tick_data       <= '0';
-        --   else
-        --     cnt_tick_data_1 <= 0;
-        --     tick_data       <= '1';
-        --     sel_cnt_1_2     <= '1';
-        --   end if;
-        -- elsif(sel_cnt_1_2 = '1') then
-        --   if(cnt_tick_data_2 < T_scl) then
-        --     cnt_tick_data_2 <= cnt_tick_data_2 + 1;
-        --     tick_data       <= '0';
-        --   else
-        --     cnt_tick_data_2 <= 0;
-        --     tick_data       <= '1';
-        --   end if;
-        -- end if;
-
-
+        cnt_tick_data_3 <= 0;
+        if(sel_cnt_1_2 = '0') then
+          if(cnt_tick_data_2 < 3*T_scl/4) then
+            cnt_tick_data_2 <= cnt_tick_data_2 + 1;
+            tick_data       <= '0';
+          else
+            cnt_tick_data_2 <= 0;
+            tick_data       <= '1';
+            sel_cnt_1_2     <= '1';
+          end if;
+        elsif(sel_cnt_1_2 = '1') then
+          if(cnt_tick_data_2 < T_scl) then
+            cnt_tick_data_2 <= cnt_tick_data_2 + 1;
+            tick_data       <= '0';
+          else
+            cnt_tick_data_2 <= 0;
+            tick_data       <= '1';
+          end if;
+        end if;
 
       end if;
     end if;
@@ -492,8 +495,12 @@ begin  -- architecture arch_macter_i2c
         en_sda  <= '0';
         sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
+
+          -- MSB first
           if(cnt_9 < 8) then
-            rdata_s(cnt_nb_data)(cnt_9) <= sda_in;
+            rdata_s(cnt_nb_data)(7 - cnt_9) <= sda_in;
+          elsif(cnt_9 = 9) then
+            rdata_s(cnt_nb_data)(7) <= sda_in;
           end if;
         end if;
       elsif(i2c_master_fsm = MACK) then
