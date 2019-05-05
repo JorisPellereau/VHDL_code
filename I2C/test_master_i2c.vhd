@@ -32,7 +32,7 @@ end entity test_master_i2c;
 architecture behv_master_i2c of test_master_i2c is
 
   -- TB signals
-  constant T_clock : time := 50 ns;     -- Clock period : 20 MHz
+  constant T_clock : time := 20 ns;     -- Clock period : 50 MHz
 
   -- SIGNALS
   signal reset_n    : std_logic                    := '1';  -- Asynchronous reset
@@ -62,8 +62,8 @@ begin  -- architecture behv_master_i2c
   -- Master I2C instance
   inst_master_i2c : master_i2c
     generic map (
-      scl_frequency   => f100k,
-      clock_frequency => 20000000)
+      scl_frequency   => f400k,
+      clock_frequency => 50000000)
     port map (
       reset_n    => reset_n,
       clock      => clock,
@@ -101,6 +101,7 @@ begin  -- architecture behv_master_i2c
       wr_chip_detect := '0';
       cnt_bytes      := 0;
       gen_sack       <= '0';
+      cnt_9          <= 0;
     elsif(rising_edge(clock)) then
       scl_old <= scl;
       if(scl_re = '1') then
@@ -124,6 +125,15 @@ begin  -- architecture behv_master_i2c
         gen_sack <= '0';
       else
         gen_sack <= '1';
+      end if;
+
+      if(i2c_done = '1') then
+        sda            <= 'Z';
+        scl_old        <= '0';
+        wr_chip_detect := '0';
+        cnt_bytes      := 0;
+        gen_sack       <= '0';
+        cnt_9          <= 0;
       end if;
 
     end if;
