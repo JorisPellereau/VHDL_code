@@ -64,12 +64,14 @@ architecture arch_macter_i2c of master_i2c is
   signal en_scl_old : std_logic;        -- Latch en_scl
   signal en_scl_re  : std_logic;  -- Flag that indicates a rising edge of en_scl
 
-  signal rw_s        : std_logic;       -- Latch rw input
-  signal chip_addr_s : std_logic_vector(6 downto 0);  -- Latch Chip addr input
-  signal nb_data_s   : integer range 1 to max_array;  -- Latch nb_data to R/W
-  signal wdata_s     : t_byte_array;    -- Latch data to transmit
-  signal rdata_s     : t_byte_array;    -- Lact read data
-  signal byte_ctrl   : std_logic_vector(7 downto 0);  -- Control byte, chip add & RW
+  signal rw_s         : std_logic;      -- Latch rw input
+  signal chip_addr_s  : std_logic_vector(6 downto 0);  -- Latch Chip addr input
+  signal nb_data_s    : integer range 1 to max_array;  -- Latch nb_data to R/W
+  signal wdata_s      : t_byte_array;   -- Latch data to transmit
+  signal rdata_s      : t_byte_array;   -- Lact read data
+  signal i2c_done_s   : std_logic;  -- Flag that indicates if a i2c transaction is done
+  signal sack_error_s : std_logic;      -- Sack error flag
+  signal byte_ctrl    : std_logic_vector(7 downto 0);  -- Control byte, chip add & RW
 
   signal sack_ok : std_logic;  -- sack_ok = '0' => KO - sack_ok = '1' => ok
 
@@ -104,6 +106,7 @@ begin  -- architecture arch_macter_i2c
   begin  -- process p_fsm_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
       i2c_master_fsm <= IDLE;
+      i2c_done_s     <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       case i2c_master_fsm is
         when IDLE =>
@@ -112,6 +115,7 @@ begin  -- architecture arch_macter_i2c
           end if;
 
         when START_GEN =>
+          i2c_done_s <= '0';
           if(start_gen_done = '1') then
             i2c_master_fsm <= WR_CHIP;
           end if;
@@ -164,6 +168,7 @@ begin  -- architecture arch_macter_i2c
           end if;
         when STOP_GEN =>
           if(start_gen_done = '1') then
+            i2c_done_s     <= '1';
             i2c_master_fsm <= IDLE;
           end if;
         when others => null;
@@ -171,6 +176,7 @@ begin  -- architecture arch_macter_i2c
     end if;
   end process p_fsm_mng;
 
+  i2c_done <= i2c_done_s;               -- Output affectation
 
   -- purpose: This process latches the inputs
   p_latch_inputs : process (clock, reset_n) is
@@ -236,7 +242,10 @@ begin  -- architecture arch_macter_i2c
       en_cnt_9 <= '0';
       cnt_9    <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_fsm /= IDLE or i2c_master_fsm /= START_GEN or i2c_master_fsm /= STOP_GEN) then
+      if(i2c_master_fsm = IDLE) then
+        cnt_9    <= 0;
+        en_cnt_9 <= '0';
+      elsif(i2c_master_fsm /= IDLE or i2c_master_fsm /= START_GEN or i2c_master_fsm /= STOP_GEN) then
         --if(en_scl_re = '1') then
         if(tick_clock = '1') then
           if(en_cnt_9 = '1') then
@@ -250,14 +259,15 @@ begin  -- architecture arch_macter_i2c
             en_cnt_9 <= '1';
           end if;
         end if;
-      -- else
-      --   cnt_9 <= 0;
+      -- elsif(i2c_master_fsm = IDLE) then
+      --   cnt_9    <= 0;
+      --   en_cnt_9 <= '0';
       end if;
     end if;
   end process p_count_data_and_ack;
 
 
--- purpose: This process generates tick in order to generate the SCL clock
+  -- purpose: This process generates tick in order to generate the SCL clock
   p_tick_clock_gen : process (clock, reset_n)
   begin  -- process p_tick_clock_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -273,6 +283,9 @@ begin  -- architecture arch_macter_i2c
           tick_clock     <= '1';
         end if;
       elsif(i2c_master_fsm = STOP_GEN) then
+        cnt_tick_clock <= 0;
+        tick_clock     <= '0';
+      elsif(i2c_master_fsm = IDLE) then
         cnt_tick_clock <= 0;
         tick_clock     <= '0';
       end if;
@@ -340,7 +353,12 @@ begin  -- architecture arch_macter_i2c
             tick_data       <= '1';
           end if;
         end if;
-
+      elsif(i2c_master_fsm = IDLE) then
+        sel_cnt_1_2     <= '0';
+        tick_data       <= '0';
+        cnt_tick_data_1 <= 0;
+        cnt_tick_data_2 <= 0;
+        cnt_tick_data_3 <= 0;
       end if;
     end if;
   end process p_tick_data_gen;
@@ -371,6 +389,7 @@ begin  -- architecture arch_macter_i2c
         end if;
       else
         start_gen_done <= '0';
+        cnt_start_stop <= 0;
       end if;
     end if;
   end process p_tick_start_stop;
@@ -409,10 +428,10 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';  -- Write '0' on SCL line
+          en_scl  <= '1';                   -- Write '0' on SCL line
         end if;
       end if;
     end if;
@@ -423,15 +442,17 @@ begin  -- architecture arch_macter_i2c
   p_sda_gen : process (clock, reset_n)
   begin  -- process p_sda_gen
     if reset_n = '0' then               -- asynchronous reset (active low)
-      en_sda      <= '0';
-      sda_out     <= '0';
-      sack_ok     <= '0';
-      cnt_nb_data <= 0;
-      rdata_s     <= (others => (others => '0'));
+      en_sda       <= '0';
+      sda_out      <= '0';
+      sack_ok      <= '0';
+      cnt_nb_data  <= 0;
+      sack_error_s <= '0';
+      rdata_s      <= (others => (others => '0'));
     elsif clock'event and clock = '1' then          -- rising clock edge
       if(i2c_master_fsm = IDLE) then
-        en_sda  <= '0';
-        sda_out <= '0';
+        en_sda      <= '0';
+        sda_out     <= '0';
+        cnt_nb_data <= 0;
       elsif(i2c_master_fsm = START_GEN) then
         if(cnt_start_stop = start_stop_duration / 2) then
           en_sda  <= '1';
@@ -479,14 +500,16 @@ begin  -- architecture arch_macter_i2c
         sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
           if(sda_in = '0') then
-            sack_ok <= '1';
+            sack_ok      <= '1';
+            sack_error_s <= '0';
             if(cnt_nb_data < nb_data_s) then
               cnt_nb_data <= cnt_nb_data + 1;
             else
               cnt_nb_data <= 0;
             end if;
           else
-            sack_ok <= '0';
+            sack_ok      <= '0';
+            sack_error_s <= '1';
           end if;
         end if;
 
@@ -524,6 +547,9 @@ begin  -- architecture arch_macter_i2c
       end if;
     end if;
   end process p_sda_gen;
+
+  rdata      <= rdata_s;
+  sack_error <= sack_error_s;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output

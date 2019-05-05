@@ -154,11 +154,17 @@ begin  -- architecture behv_master_i2c
     reset_n <= '0', '1' after 100 ns;
 
     chip_addr <= b"1011011";
-    rw        <= '1';                   -- Write or read order
+    rw        <= '0';                   -- Write or read order
     wdata     <= (0 => x"E9", 1 => x"99", others => x"00");
     start_i2c <= '1', '0' after 10 us;
     wait until rising_edge(i2c_done) for 50 ms;
 
+    wait for 100 us;
+    rw        <= '1';
+    start_i2c <= '1', '0' after 10 us;
+    wait until rising_edge(i2c_done) for 50 ms;
+
     assert false report "end of test !!!" severity failure;
+    wait;
   end process p_test;
 end architecture behv_master_i2c;
