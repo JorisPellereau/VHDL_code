@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-04
+-- Last update: 2019-05-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -203,10 +203,11 @@ begin  -- architecture arch_macter_i2c
       end if;
     end if;
   end process p_start_i2c_detect;
-  start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C RE detect
+  start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C 
 
 
-  -- purpose: This process detects the rising edge of en_scl signal 
+  -- purpose: This process detects the rising edge of en_scl signal
+  -- -- usless
   p_en_scl_fe_detect : process (clock, reset_n)
   begin  -- process p_en_scl_fe_detect
     if reset_n = '0' then               -- asynchronous reset (active low)
@@ -257,7 +258,7 @@ begin  -- architecture arch_macter_i2c
       cnt_tick_clock <= 0;
       tick_clock     <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = SACK_CHIP or i2c_master_fsm = WR_DATA or i2c_master_fsm = SACK_WR or i2c_master_fsm = RD_DATA)then
+      if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = SACK_CHIP or i2c_master_fsm = WR_DATA or i2c_master_fsm = SACK_WR or (i2c_master_fsm = RD_DATA) or i2c_master_fsm = MACK) then
         if(cnt_tick_clock < T_2_scl) then
           cnt_tick_clock <= cnt_tick_clock + 1;
           tick_clock     <= '0';
@@ -265,7 +266,7 @@ begin  -- architecture arch_macter_i2c
           cnt_tick_clock <= 0;
           tick_clock     <= '1';
         end if;
-      else
+      elsif(i2c_master_fsm = STOP_GEN) then
         cnt_tick_clock <= 0;
         tick_clock     <= '0';
       end if;
@@ -341,7 +342,7 @@ begin  -- architecture arch_macter_i2c
     end if;
   end process p_tick_data_gen;
 
--- purpose: This process counts until the start duration and generates a tick
+  -- purpose: This process counts until the start duration and generates a tick
   p_tick_start_stop : process (clock, reset_n)
   begin  -- process p_tick_start_stop
     if (reset_n = '0') then             -- asynchronous reset (active low)
@@ -405,10 +406,10 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';                   -- Write '0' on SCL line
+          en_scl  <= '1';  -- Write '0' on SCL line
         end if;
       end if;
     end if;
@@ -487,6 +488,7 @@ begin  -- architecture arch_macter_i2c
         end if;
 
       elsif(i2c_master_fsm = RD_DATA) then
+        sack_ok <= '0';                 -- Raz sack_ok
         en_sda  <= '0';
         sda_out <= '0';                 -- Release the bus
         if(tick_data = '1') then
