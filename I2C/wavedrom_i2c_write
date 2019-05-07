@@ -1,0 +1,16 @@
+{  
+  signal: [
+  {name: 'SCL'  , wave: 'z...0.1.0.1.0.1.0.1.0.1.0.1.0.1.0.1.0.1.0'},
+  {name: 'SDA'  , wave: 'z..0.....1...0...1...0...............2...3.........', data: ['SACK']},
+  {name: 'STATE', wave: '=..3..4.........................4....5...', data: ['IDLE', 'START', 'CHIP_ADDR', 'RW', 'SACK']},
+  ],
+  config: { hscale: 1 },
+    
+    
+  head:{
+  text:'Write transaction - Chip@ : 0x50 - Data to write : 0xEE, 0x99',
+  tick:0}
+    
+    
+
+}
