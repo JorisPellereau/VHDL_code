@@ -21,3 +21,9 @@ I2C/master_i2c\.vhd\.bak
 SPI/#master_spi\.vhd#
 
 SPI/\.#master_spi\.vhd
+
+WS2812_manage/~\$\$ws2812_fsm\.~vsdx
+
+WS2812_manage/#WS2812_mng\.vhd#
+
+WS2812_manage/\.#WS2812_mng\.vhd
