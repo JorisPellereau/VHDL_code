@@ -36,8 +36,11 @@ architecture arch_WS2812_mng of WS2812_mng is
   signal next_state : fsm_t;            -- Next state
   signal cur_state  : fsm_t;            -- Current state
 
-  signal led_config_s : std_logic_vector(23 downto 0);
-  signal fsm          : fsm_t;
+  signal led_config_s : std_logic_vector(23 downto 0);  -- Latch config
+  signal fsm          : fsm_t;                          -- States of the FSM
+
+  signal cnt_max_T : integer range 0 to max_T;  -- Counter that counts until Max_t
+
   signal cnt_24       : integer range 0 to 24;
   signal tick_24      : std_logic;
   signal d_out_s      : std_logic;
@@ -53,21 +56,41 @@ begin
     if reset_n = '0' then                   -- asynchronous reset (active low)
       start_s <= '0';                       -- Init to '0'
     elsif clock'event and clock = '1' then  -- rising clock edge
-
+      if(fsm = idle) then
+        start_s <= start_s;
+      else
+        start_s <= '0';
+      end if;
     end if;
   end process p_start_re_manage;
+  start_re <= start and not start_s;        -- RE detect
+
+
+  -- purpose: This process latch the inputs during the RE of start
+  p_inputs_latch : process (clock, reset_n) is
+  begin  -- process p_inputs_latch
+    if reset = '0' then                     -- asynchronous reset (active low)
+      led_config_s <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(start_re = '1') then
+        led_config_s <= led_config;
+      end if;
+    end if;
+  end process p_inputs_latch;
+
 
 
   -- purpose: This process affects the next state 
-  p_next_state_affect : process (clock, reset_n) is
+  p_state_affect : process (clock, reset_n) is
   begin  -- process p_next_state_affect
     if reset_n = '0' then                   -- asynchronous reset (active low)
       cur_state  <= idle;
       next_state <= idle;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      next_state <= cur_state;
+      cur_state <= next_state;
     end if;
   end process p_next_state_affect;
+
 
 
   -- This process manages the states
@@ -77,7 +100,11 @@ begin
 
     elsif clock'event and clock = '1' then  -- rising clock edge
       case cur_state is
-        when ilde =>;
+        when ilde =>
+          if(start_re = '1') then
+            -- next_state <= 
+            else
+          end if;
 
         when others => null;
       end case;
@@ -85,6 +112,39 @@ begin
   end process p_states_manage;
 
 
+
+
+  -- purpose: This process generate a 0 
+  p_gen_pwm : process (clock, reset_n) is
+  begin  -- process p_gen_0
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_max_T <= 0;
+      d_out_s   <= 0;
+    elsif clock'event and clock = '1' then  -- rising clock edge
+
+      if(fsm = gen0 or fsm = gen1) then
+        cnt_max_T <= cnt_max_T + 1;
+      else
+        cnt_max_T <= 0;
+      end if;
+
+      if(fsm = gen0) then
+        if(cnt_max_T <= T0H) then
+          d_out_s <= '1';
+        else
+          d_out_s <= '0';
+        end if;
+      elsif(fsm = gen1) then
+        if(cnt_max_T <= T1H) then
+          d_out_s <= '1';
+        else
+          d_out_s <= '0';
+        end if;
+      else
+        d_out_s <= '0';
+      end if;
+    end if;
+  end process p_gen_0;
 
 
   -- == FSM Manage ==
