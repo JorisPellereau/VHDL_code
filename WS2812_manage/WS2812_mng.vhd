@@ -128,7 +128,7 @@ begin
           frame_done_s <= '0';
         else
           cnt_24       <= 23;               -- Init cnt
-          frame_done_s <= '1';
+          frame_done_s <= '1';              -- Flag
         end if;
       elsif(fsm = idle or fsm = gen_reset) then
         frame_done_s <= '0';                -- RAZ
@@ -136,10 +136,10 @@ begin
     end if;
   end process p_counter24;
 
-  en_gen0 <= '1' when led_config_s(cnt_24) = '0' and fsm = gen_frame else '0';  -- and fsm = gen_frame else
+  en_gen0 <= '1' when led_config_s(cnt_24) = '0' and fsm = gen_frame and frame_done_s = '0' else '0';  -- and fsm = gen_frame else
   -- '0' when fsm = idle or fsm = gen_reset;
 
-  en_gen1 <= '1' when led_config_s(cnt_24) = '1' and fsm = gen_frame else '0';  -- and fsm = gen_frame else
+  en_gen1 <= '1' when led_config_s(cnt_24) = '1' and fsm = gen_frame and frame_done_s = '0' else '0';  -- and fsm = gen_frame else
   -- '0' when fsm = idle or fsm = gen_reset;
 
 
@@ -147,7 +147,7 @@ begin
   p_gen0 : process (clock, reset_n) is
   begin  -- process p_gen0
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      gen0_out  <= '0';                     -- PWM output
+      -- gen0_out  <= '0';                     -- PWM output
       cnt_gen0  <= 0;                       -- Init counter
       gen0_done <= '0';                     -- Flag done
     elsif clock'event and clock = '1' then  -- rising clock edge
@@ -161,25 +161,27 @@ begin
           gen0_done <= '1';
         end if;
 
-        if(cnt_gen0 < T0H) then
-          gen0_out <= '1';
-        else
-          gen0_out <= '0';
-        end if;
+        -- if(cnt_gen0 < T0H) then
+        --   gen0_out <= '1';
+        -- else
+        --   gen0_out <= '0';
+        -- end if;
 
       else
         cnt_gen0  <= 0;                 -- RAZ cnt
-        gen0_out  <= '0';               -- RAZ output
+        -- gen0_out  <= '0';               -- RAZ output
         gen0_done <= '0';               -- Raz flag
       end if;
     end if;
   end process p_gen0;
 
+  gen0_out <= '1' when cnt_gen0 <= T0H and en_gen0 = '1' else '0';
+
   -- purpose: This process generates the logical 1 
   p_gen1 : process (clock, reset_n) is
   begin  -- process p_gen0
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      gen1_out  <= '0';                     -- PWM output
+      -- gen1_out  <= '0';                     -- PWM output
       cnt_gen1  <= 0;                       -- Init counter
       gen1_done <= '0';                     -- RAZ flag
     elsif clock'event and clock = '1' then  -- rising clock edge
@@ -193,20 +195,21 @@ begin
           gen1_done <= '1';             -- Set flag
         end if;
 
-        if(cnt_gen1 < T1H) then
-          gen1_out <= '1';
-        else
-          gen1_out <= '0';
-        end if;
+        -- if(cnt_gen1 < T1H) then
+        --   gen1_out <= '1';
+        -- else
+        --   gen1_out <= '0';
+        -- end if;
 
       else
         cnt_gen1  <= 0;                 -- RAZ cnt
-        gen1_out  <= '0';               -- RAZ output
+        -- gen1_out  <= '0';               -- RAZ output
         gen1_done <= '0';               -- RAZ flag
       end if;
     end if;
   end process p_gen1;
 
+  gen1_out <= '1' when cnt_gen1 <= T1H and en_gen1 = '1' else '0';
 
   -- purpose: This process detects the RE of the gen_done signals
   p_gen_done_detect : process (clock, reset_n) is
