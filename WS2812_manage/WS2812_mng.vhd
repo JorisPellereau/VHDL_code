@@ -8,12 +8,12 @@ use work.pkg_ws2812.all;
 entity WS2812_mng is
   generic(T0H : integer := 18;
           T1H : integer := 35);
-  port(clock      : in  std_logic;
-       reset_n    : in  std_logic;      -- Clock, reset
-       start      : in  std_logic;      -- Démarrage trame
-       led_config : in  std_logic_vector(23 downto 0);  -- Configuration de la trame RGB
-       trame_done : out std_logic;      -- Info' trame envoyée
-       d_out      : out std_logic  -- Sortie PWM, génère un 1 ou 0 suivant le WS2812
+  port(clock      : in  std_logic;                      -- Input clock
+       reset_n    : in  std_logic;                      -- Asynchronous reset
+       start      : in  std_logic;                      -- Start a frame
+       led_config : in  std_logic_vector(23 downto 0);  -- Led configuration
+       frame_done : out std_logic;                      -- Frame terminated
+       d_out      : out std_logic                       -- Serial output
        );
 end WS2812_mng;
 
@@ -25,9 +25,10 @@ architecture arch_WS2812_mng of WS2812_mng is
 -- Compteurs => T_clk = 20ns
 --constant T0H                  : integer := 18;
 --constant T1H                  : integer := 35;
-  constant max_T   : integer := 63;
-  constant T_reset : integer := 2500;   -- 50µs
-  signal cpt_H     : integer range 0 to max_T;
+  -- constant max_T   : integer := 63;
+  -- constant T_reset : integer := 2500;   -- 50µs
+
+  signal cpt_H : integer range 0 to max_T;
 
   -- Signal
   signal start_s  : std_logic;          -- Old start input
@@ -41,7 +42,7 @@ architecture arch_WS2812_mng of WS2812_mng is
 
   signal cnt_max_T : integer range 0 to max_T;  -- Counter that counts until Max_t
 
-  signal cnt_24       : integer range 0 to 24;
+  signal cnt_24       : integer range 0 to 24;  -- Counter that counts the  number of bit to transmit
   signal tick_24      : std_logic;
   signal d_out_s      : std_logic;
   signal gen_done     : std_logic;
@@ -102,8 +103,9 @@ begin
       case cur_state is
         when ilde =>
           if(start_re = '1') then
-            -- next_state <= 
-            else
+            next_state <= latch_inputs;
+          else
+            next_state <= cur_state;
           end if;
 
         when others => null;
