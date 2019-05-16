@@ -48,12 +48,16 @@ architecture arch_WS2812_mng of WS2812_mng is
   signal cnt_gen0 : integer range 0 to max_T0;  -- Counter for the gen0
   signal cnt_gen1 : integer range 0 to max_T1;  -- Counter or the gen1
 
+  signal cnt_reset : integer range 0 to T_reset;  -- Counters for the reset between 2 frames
+
   signal led_config_s : std_logic_vector(23 downto 0);  -- Latch config
   signal fsm          : fsm_t;                          -- States of the FSM
 
-  signal cnt_24       : integer range 0 to 23;  -- deCounter that counts the  number of bit to transmit
-  signal d_out_s      : std_logic;      -- To output
-  signal trame_done_s : std_logic;
+  signal cnt_24 : integer range 0 to 23;  -- deCounter that counts the  number of bit to transmit
+
+  signal d_out_s        : std_logic;    -- To output
+  signal frame_done_s   : std_logic;    -- Frame done
+  signal frame_done_out : std_logic;    -- Frame done to output
 
 begin
 
@@ -77,7 +81,7 @@ begin
   -- purpose: This process latch the inputs during the RE of start
   p_inputs_latch : process (clock, reset_n) is
   begin  -- process p_inputs_latch
-    if reset = '0' then                     -- asynchronous reset (active low)
+    if reset_n = '0' then                   -- asynchronous reset (active low)
       led_config_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_re = '1') then
@@ -98,11 +102,13 @@ begin
             fsm <= gen_frame;
           end if;
         when gen_frame =>
-          if(cnt_24 = 23) then
+          if(frame_done_s = '1') then
             fsm <= gen_reset;
           end if;
         when gen_reset =>
-        when stop =>
+          if(frame_done_out = '1') then
+            fsm <= idle;
+          end if;
         when others => null;
       end case;
     end if;
@@ -113,20 +119,28 @@ begin
   p_counter24 : process (clock, reset_n) is
   begin  -- process p_counter24
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      cnt_24 <= 23;
+      cnt_24       <= 23;
+      frame_done_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(gen0_done_re = '1' or gen1_done_re = '1') then
         if(cnt_24 > 0) then
-          cnt_24 <= cnt_24 - 1;             -- Dec cnt
+          cnt_24       <= cnt_24 - 1;       -- Dec cnt
+          frame_done_s <= '0';
         else
-          cnt_24 <= 23;                     -- Init cnt
+          cnt_24       <= 23;               -- Init cnt
+          frame_done_s <= '1';
         end if;
+      elsif(fsm = idle or fsm = gen_reset) then
+        frame_done_s <= '0';                -- RAZ
       end if;
     end if;
   end process p_counter24;
 
-  en_gen0 <= '1' when led_config_s(cnt_24) = '0' else '0';
-  en_gen1 <= '1' when led_config_s(cnt_24) = '1' else '0';
+  en_gen0 <= '1' when led_config_s(cnt_24) = '0' and fsm = gen_frame else '0';  -- and fsm = gen_frame else
+  -- '0' when fsm = idle or fsm = gen_reset;
+
+  en_gen1 <= '1' when led_config_s(cnt_24) = '1' and fsm = gen_frame else '0';  -- and fsm = gen_frame else
+  -- '0' when fsm = idle or fsm = gen_reset;
 
 
   -- purpose: This process generates the logical 0 
@@ -147,7 +161,7 @@ begin
           gen0_done <= '1';
         end if;
 
-        if(cnt_gen0 <= T0H) then
+        if(cnt_gen0 < T0H) then
           gen0_out <= '1';
         else
           gen0_out <= '0';
@@ -179,7 +193,7 @@ begin
           gen1_done <= '1';             -- Set flag
         end if;
 
-        if(cnt_gen1 <= T1H) then
+        if(cnt_gen1 < T1H) then
           gen1_out <= '1';
         else
           gen1_out <= '0';
@@ -191,13 +205,13 @@ begin
         gen1_done <= '0';               -- RAZ flag
       end if;
     end if;
-  end process p_gen0;
+  end process p_gen1;
 
 
   -- purpose: This process detects the RE of the gen_done signals
-  p_gen_done_detect : process (clock, reset) is
+  p_gen_done_detect : process (clock, reset_n) is
   begin  -- process p_gen_done_detect
-    if reset = '0' then                     -- asynchronous reset (active low)
+    if reset_n = '0' then                   -- asynchronous reset (active low)
       gen0_done_old <= '0';
       gen1_done_old <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
@@ -211,10 +225,37 @@ begin
   gen1_done_re <= gen1_done and not gen1_done_old;
 
   -- Outputs affectation
-  d_out_s <= gen0_out when en_gen0 = '1' else
-             gen1_out when en_gen1 = '1' else
-             '0';                       -- Default : '0'
+  d_out_s <= gen0_out when en_gen0 = '1'else   -- and fsm = gen_frame else
+             gen1_out when en_gen1 = '1' else  -- and fsm = gen_frame else
+             '0';  --      when fsm = gen_reset or fsm = idle;  -- Default : '0'
 
   d_out <= d_out_s;
 
+
+  -- purpose: This process generates the reset after sending a frame 
+  p_reset_gen : process (clock, reset_n) is
+  begin  -- process p_reset_gen
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_reset      <= 0;
+      frame_done_out <= '1';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(fsm = gen_reset) then
+        if(cnt_reset < T_reset) then
+          cnt_reset      <= cnt_reset + 1;
+          frame_done_out <= '0';
+        else
+          cnt_reset      <= 0;
+          frame_done_out <= '1';
+        end if;
+      elsif(fsm = gen_frame) then
+        frame_done_out <= '0';
+        cnt_reset      <= 0;
+      elsif(fsm = idle) then
+        frame_done_out <= '1';
+        cnt_reset      <= 0;
+      end if;
+    end if;
+  end process p_reset_gen;
+
+  frame_done <= frame_done_out;         -- Output affectation
 end arch_WS2812_mng;
