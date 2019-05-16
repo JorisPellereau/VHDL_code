@@ -239,7 +239,7 @@ begin
       cnt_reset      <= 0;
       frame_done_out <= '1';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(fsm = gen_reset) then
+      if(fsm = gen_reset and frame_done_out = '0') then
         if(cnt_reset < T_reset) then
           cnt_reset      <= cnt_reset + 1;
           frame_done_out <= '0';

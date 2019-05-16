@@ -63,35 +63,11 @@ begin
     wait for 100*t_reset_n;
     led_config <= x"000000";
     start      <= '1', '0' after 100 ns;
-    -- led_config <= x"FFFFFF";
 
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"000000";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"7EEAAA";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"FFFFFF";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"123456";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"987654";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"DEDEDE";
-
-                                        -- wait for 55us;
-                                        -- start      <= '1', '0' after 100 ns;
-                                        -- led_config <= x"B0B0B5";
+    wait until rising_edge(frame_done);
+    wait for 100*t_reset_n;
+    led_config <= x"ABCDEF";
+    start      <= '1', '0' after 100 ns;
 
     wait;
   end process;
