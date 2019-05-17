@@ -123,6 +123,11 @@ begin
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_re = '1') then
         load_TH <= '1';
+        if(led_config_s(23) = '1') then     -- Init the first bit to send
+          curr_TH <= T1H;
+        elsif(led_config_s(23) = '0') then
+          curr_TH <= T0H;
+        end if;
       end if;
 
       if(frame_gen = '1') then
@@ -166,6 +171,9 @@ begin
         else
           d_out_s <= '1';
         end if;
+      else
+        d_out_s <= '0';
+        cnt_pwm <= 0;
       end if;
     end if;
   end process p_pwm_cnt;
