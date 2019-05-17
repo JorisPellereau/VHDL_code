@@ -38,7 +38,8 @@ architecture arch_WS2812_mng_2 of WS2812_mng_2 is
 
   signal cnt_24 : integer range 0 to 23;  -- Counter 23 until 0
 
-  signal frame_gen : std_logic;         -- Gen frame when = '1'
+  signal frame_gen_s : std_logic;       -- Gen frame _s
+  signal frame_gen   : std_logic;       -- Gen frame when = '1'
 
   -- Signals
   signal start_s  : std_logic;          -- Old start input
@@ -81,15 +82,20 @@ begin
   p_gen_frame_mng : process (clock, reset_n) is
   begin  -- process p_gen_frame_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      frame_gen <= '0';
+      frame_gen   <= '0';
+      frame_gen_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_re = '1') then
-        frame_gen <= '1';
+        frame_gen_s <= '1';
+      elsif(frame_gen_s = '1') then
+        frame_gen   <= frame_gen_s;
+        frame_gen_s <= '0';
       elsif(cnt_24 = 0 and pwm_done = '1') then
         frame_gen <= '0';
       end if;
     end if;
   end process p_gen_frame_mng;
+
 
   -- purpose: This process counts the transmitted bits 
   p_bit_counter : process (clock, reset_n) is
@@ -123,7 +129,10 @@ begin
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_re = '1') then
         load_TH <= '1';
-        if(led_config_s(23) = '1') then     -- Init the first bit to send
+      end if;
+
+      if(frame_gen_s = '1') then
+        if(led_config_s(23) = '1') then  -- Init the first bit to send
           curr_TH <= T1H;
         elsif(led_config_s(23) = '0') then
           curr_TH <= T0H;
@@ -165,6 +174,12 @@ begin
           cnt_pwm  <= cnt_pwm + 1;      -- Inc cnt
           pwm_done <= '0';
         end if;
+
+        -- if(cnt_pwm = max_T - 1) then
+        --   pwm_done <= '1';
+        -- else
+        --   pwm_done <= '0';
+        -- end if;
 
         if(cnt_pwm >= TH_s) then
           d_out_s <= '0';

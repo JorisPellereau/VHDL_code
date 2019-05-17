@@ -64,7 +64,7 @@ begin
     -- report "Conversion : " & integer'image(compute_time_duration(t_reset_n, 50000000));
 
     led_config   <= x"FFFFFF";
-    led_config_2 <= x"F0AF0A";
+    led_config_2 <= x"70AF0A";
     reset_n      <= '0', '1' after t_reset_n;  -- Reset_n
     wait for 100*t_reset_n;
     start        <= '1', '0' after 100 ns;
