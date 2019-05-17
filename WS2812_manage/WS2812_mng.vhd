@@ -69,7 +69,7 @@ begin
       start_s <= '0';                       -- Init to '0'
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(fsm = idle) then
-        start_s <= start_s;
+        start_s <= start;
       else
         start_s <= '0';
       end if;

@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-05-16
+-- Last update: 2019-05-17
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -94,6 +94,21 @@ package pkg_ws2812 is
 
   -- COMPONENTS
   component WS2812_mng is
+    generic(T0H : integer := T0H;
+            T0L : integer := T0L;
+            T1H : integer := T1H;
+            T1L : integer := T1L
+            );
+    port(clock      : in  std_logic;                      -- Input clock
+         reset_n    : in  std_logic;                      -- Asynchronous reset
+         start      : in  std_logic;                      -- Start a frame
+         led_config : in  std_logic_vector(23 downto 0);  -- Led configuration
+         frame_done : out std_logic;                      -- Frame terminated
+         d_out      : out std_logic                       -- Serial output
+         );
+  end component;
+
+  component WS2812_mng_2 is
     generic(T0H : integer := T0H;
             T0L : integer := T0L;
             T1H : integer := T1H;
