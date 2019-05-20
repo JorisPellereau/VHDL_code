@@ -84,10 +84,10 @@ begin
     -- start        <= '1', '0' after 100 ns;
 
     led_config_2   <= (others => '0');
-    reset_duration <= x"0000FFFF";
+    reset_duration <= x"0000000F";
     reset_n        <= '0', '1' after t_reset_n;  -- Reset_n
     for i in 1000 to 1005 loop
-      wait for 100*t_reset_n;
+      wait for 100*t_reset_n;  -- to_integer(unsigned(reset_duration))*t_reset_n;  --100*t_reset_n;
       led_config_2 <= std_logic_vector(to_unsigned(i, led_config_2'length));
       start        <= '1', '0' after 100 ns;
       wait until rising_edge(frame_done_2);
