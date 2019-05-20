@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-16
--- Last update: 2019-05-17
+-- Last update: 2019-05-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -64,20 +64,22 @@ begin
     -- report "Conversion : " & integer'image(compute_time_duration(t_reset_n, 50000000));
 
     led_config   <= x"FFFFFF";
-    led_config_2 <= x"70AF0A";
+    led_config_2 <= x"80AF0A";
     reset_n      <= '0', '1' after t_reset_n;  -- Reset_n
     wait for 100*t_reset_n;
     start        <= '1', '0' after 100 ns;
 
     wait until rising_edge(frame_done);
     wait for 100*t_reset_n;
-    led_config <= x"000000";
-    start      <= '1', '0' after 100 ns;
+    led_config   <= x"000000";
+    led_config_2 <= x"FFFFFF";
+    start        <= '1', '0' after 100 ns;
 
     wait until rising_edge(frame_done);
     wait for 100*t_reset_n;
-    led_config <= x"ABCDEF";
-    start      <= '1', '0' after 100 ns;
+    led_config   <= x"ABCDEF";
+    led_config_2 <= x"000000";
+    start        <= '1', '0' after 100 ns;
 
     wait;
   end process;

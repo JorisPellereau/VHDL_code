@@ -25,26 +25,22 @@ architecture arch_WS2812_mng_2 of WS2812_mng_2 is
   -- CONSTANTS
   constant max_T0 : integer := T0H + T0L;  -- Max duration of the 0 logical
   constant max_T1 : integer := T1H + T1L;  -- Max duration of the 1 logical
+  constant max_T  : integer := 62;         -- Max period of the PWM
 
-
-  constant max_T : integer := 62;       -- Max period of the PWM
-
+  -- SIGNALS
   signal cnt_pwm : integer range 0 to max_T;  -- Counter for the PWM period
   signal TH_s    : integer range 0 to max_T;  -- Time on
-  signal load_TH : std_logic;  -- Signal that load the new duty cycle when = '1'
 
-  signal curr_TH  : integer range 0 to max_T;  -- The current TH to set
   signal pwm_done : std_logic;  -- Flag that indicates when a period of PWM is over
+  signal cnt_24   : integer range 0 to 23;  -- Counter 23 until 0
 
-  signal cnt_24 : integer range 0 to 23;  -- Counter 23 until 0
+  signal start_init_s : std_logic;      -- This signal Init the TH duty cycle
+  signal frame_done_s : std_logic;      -- Frame done signal
 
-  signal frame_gen_s : std_logic;       -- Gen frame _s
-  signal frame_gen   : std_logic;       -- Gen frame when = '1'
+  signal frame_gen : std_logic;         -- Gen frame when = '1'
+  signal start_s   : std_logic;         -- Old start input
 
-  -- Signals
-  signal start_s  : std_logic;          -- Old start input
-  signal start_re : std_logic;          -- Flag that indicates the RE of start
-
+  signal start_re     : std_logic;      -- Flag that indicates the RE of start
   signal led_config_s : std_logic_vector(23 downto 0);  -- Latch config
 
   signal d_out_s : std_logic;           -- To output
@@ -70,31 +66,49 @@ begin
   begin  -- process p_inputs_latch
     if reset_n = '0' then                   -- asynchronous reset (active low)
       led_config_s <= (others => '0');
+      start_init_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_re = '1') then
+      if(start_re = '1' and frame_gen = '0') then
         led_config_s <= led_config;
+        start_init_s <= '1';
+      else
+        start_init_s <= '0';                -- RAZ
       end if;
     end if;
   end process p_inputs_latch;
 
 
-  -- purpose: This process manages the frame generation
-  p_gen_frame_mng : process (clock, reset_n) is
-  begin  -- process p_gen_frame_mng
+  -- purpose: This process manages the duty cycle for the PWM module
+  -- type   : sequential
+  -- inputs : clock, reset_n
+  -- outputs: 
+  p_set_duty_cycle : process (clock, reset_n) is
+  begin  -- process p_set_duty_cycle
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      frame_gen   <= '0';
-      frame_gen_s <= '0';
+      TH_s         <= 0;
+      frame_gen    <= '0';
+      frame_done_s <= '1';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_re = '1') then
-        frame_gen_s <= '1';
-      elsif(frame_gen_s = '1') then
-        frame_gen   <= frame_gen_s;
-        frame_gen_s <= '0';
+      if(start_init_s = '1') then
+        frame_done_s <= '0';
+        if(led_config_s(23) = '1') then     -- Init the first bit to send
+          TH_s <= T1H;
+        elsif(led_config_s(23) = '0') then
+          TH_s <= T0H;
+        end if;
+        frame_gen <= '1';
+      elsif(pwm_done = '0') then
+        if(led_config_s(cnt_24) = '1') then
+          TH_s <= T1H;
+        elsif(led_config_s(cnt_24) = '0') then
+          TH_s <= T0H;
+        end if;
       elsif(cnt_24 = 0 and pwm_done = '1') then
-        frame_gen <= '0';
+        frame_gen    <= '0';
+        frame_done_s <= '1';
       end if;
     end if;
-  end process p_gen_frame_mng;
+  end process p_set_duty_cycle;
 
 
   -- purpose: This process counts the transmitted bits 
@@ -115,42 +129,9 @@ begin
       else
         cnt_24 <= 23;
       end if;
+
     end if;
   end process p_bit_counter;
-
-
-
-  -- purpose: This process select the duration of the HIGH level of the PWM 
-  p_sel_th : process (clock, reset_n) is
-  begin  -- process p_sel_th
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      load_TH <= '0';
-      curr_TH <= 0;
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_re = '1') then
-        load_TH <= '1';
-      end if;
-
-      if(frame_gen_s = '1') then
-        if(led_config_s(23) = '1') then  -- Init the first bit to send
-          curr_TH <= T1H;
-        elsif(led_config_s(23) = '0') then
-          curr_TH <= T0H;
-        end if;
-      end if;
-
-      if(frame_gen = '1') then
-        if(pwm_done = '1') then
-          if(led_config_s(cnt_24) = '1') then
-            curr_TH <= T1H;
-          elsif(led_config_s(cnt_24) = '0') then
-            curr_TH <= T0H;
-          end if;
-        end if;
-      end if;
-
-    end if;
-  end process p_sel_th;
 
 
   -- This process counts until Max_T and generates the PWM output
@@ -158,14 +139,11 @@ begin
   begin  -- process p_pwm_cnt
     if reset_n = '0' then                   -- asynchronous reset (active low)
       cnt_pwm  <= 0;
-      TH_s     <= 0;
+      -- TH_s     <= 0;
       d_out_s  <= '0';
       pwm_done <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(frame_gen = '1') then
-        if(load_TH = '1') then
-          TH_s <= curr_TH;
-        end if;
 
         if(cnt_pwm = max_T) then
           cnt_pwm  <= 0;                -- RAZ
@@ -174,12 +152,6 @@ begin
           cnt_pwm  <= cnt_pwm + 1;      -- Inc cnt
           pwm_done <= '0';
         end if;
-
-        -- if(cnt_pwm = max_T - 1) then
-        --   pwm_done <= '1';
-        -- else
-        --   pwm_done <= '0';
-        -- end if;
 
         if(cnt_pwm >= TH_s) then
           d_out_s <= '0';
@@ -193,7 +165,7 @@ begin
     end if;
   end process p_pwm_cnt;
 
-  d_out <= d_out_s;
-
+  d_out      <= d_out_s and not frame_done_s;
+  frame_done <= frame_done_s;
 
 end arch_WS2812_mng_2;
