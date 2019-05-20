@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_ws2812;
 use lib_ws2812.pkg_ws2812.all;
@@ -11,12 +12,13 @@ entity WS2812_mng_2 is
           T1H : integer := T1H;
           T1L : integer := T1L
           );
-  port(clock      : in  std_logic;                      -- Input clock
-       reset_n    : in  std_logic;                      -- Asynchronous reset
-       start      : in  std_logic;                      -- Start a frame
-       led_config : in  std_logic_vector(23 downto 0);  -- Led configuration
-       frame_done : out std_logic;                      -- Frame terminated
-       d_out      : out std_logic                       -- Serial output
+  port(clock          : in  std_logic;  -- Input clock
+       reset_n        : in  std_logic;  -- Asynchronous reset
+       start          : in  std_logic;  -- Start a frame
+       led_config     : in  std_logic_vector(23 downto 0);  -- Led configuration
+       reset_duration : in  std_logic_vector(31 downto 0);  -- Reset duration
+       frame_done     : out std_logic;  -- Frame terminated
+       d_out          : out std_logic   -- Serial output
        );
 end WS2812_mng_2;
 
@@ -43,8 +45,11 @@ architecture arch_WS2812_mng_2 of WS2812_mng_2 is
   signal start_re     : std_logic;      -- Flag that indicates the RE of start
   signal led_config_s : std_logic_vector(23 downto 0);  -- Latch config
 
-  signal d_out_s : std_logic;           -- To output
+  signal d_out_s          : std_logic;  -- To output
+  signal reset_duration_s : std_logic_vector(31 downto 0);  -- Signal that saves the reset duration
 
+  signal cnt_reset_duration : unsigned(31 downto 0);  -- Counter for the reset generation
+  signal reset_done_s       : std_logic;  -- Flag for the end of the reset
 
 begin
 
@@ -65,12 +70,14 @@ begin
   p_inputs_latch : process (clock, reset_n) is
   begin  -- process p_inputs_latch
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      led_config_s <= (others => '0');
-      start_init_s <= '0';
+      led_config_s     <= (others => '0');
+      start_init_s     <= '0';
+      reset_duration_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(start_re = '1' and frame_gen = '0') then
-        led_config_s <= led_config;
-        start_init_s <= '1';
+        led_config_s     <= led_config;
+        start_init_s     <= '1';
+        reset_duration_s <= reset_duration;
       else
         start_init_s <= '0';                -- RAZ
       end if;
@@ -165,7 +172,30 @@ begin
     end if;
   end process p_pwm_cnt;
 
-  d_out      <= d_out_s and not frame_done_s;
-  frame_done <= frame_done_s;
+  -- This process generate the reset after sending 24 bits
+  p_reset_gen : process (clock, reset_n) is
+  begin  -- process p_reset_gen
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_reset_duration <= (others => '0');
+      reset_done_s       <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(frame_done_s = '1') then
+        if(cnt_reset_duration = unsigned(reset_duration_s)) then
+          cnt_reset_duration <= (others => '0');
+          reset_done_s       <= '1';
+        else
+          cnt_reset_duration <= cnt_reset_duration + 1;
+          reset_done_s       <= '0';
+        end if;
+      else
+        cnt_reset_duration <= (others => '0');
+      -- reset_done_s       <= '0';
+      end if;
+    end if;
+  end process p_reset_gen;
+
+  d_out <= d_out_s and not frame_done_s;
+
+  frame_done <= frame_done_s;           -- and reset_done_s;
 
 end arch_WS2812_mng_2;

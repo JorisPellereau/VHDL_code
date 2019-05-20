@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-05-17
+-- Last update: 2019-05-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -114,12 +114,13 @@ package pkg_ws2812 is
             T1H : integer := T1H;
             T1L : integer := T1L
             );
-    port(clock      : in  std_logic;                      -- Input clock
-         reset_n    : in  std_logic;                      -- Asynchronous reset
-         start      : in  std_logic;                      -- Start a frame
-         led_config : in  std_logic_vector(23 downto 0);  -- Led configuration
-         frame_done : out std_logic;                      -- Frame terminated
-         d_out      : out std_logic                       -- Serial output
+    port(clock          : in  std_logic;  -- Input clock
+         reset_n        : in  std_logic;  -- Asynchronous reset
+         start          : in  std_logic;  -- Start a frame
+         led_config     : in  std_logic_vector(23 downto 0);  -- Led configuration
+         reset_duration : in  std_logic_vector(31 downto 0);  -- Reset duration
+         frame_done     : out std_logic;  -- Frame terminated
+         d_out          : out std_logic   -- Serial output
          );
   end component;
 
