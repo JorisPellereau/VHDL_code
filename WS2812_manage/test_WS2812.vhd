@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-16
--- Last update: 2019-05-20
+-- Last update: 2019-05-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -26,8 +26,6 @@ use ieee.numeric_std.all;
 
 library lib_ws2812;
 use lib_ws2812.pkg_ws2812.all;
-use lib_ws2812.ws2812_function.all;
-
 
 entity test_WS2812 is
 end test_WS2812;
@@ -47,11 +45,10 @@ architecture arch_test_WS2812 of test_WS2812 is
   signal d_out      : std_logic;
 
   -- Instance 2
-  signal start_2        : std_logic                     := '0';
-  signal led_config_2   : std_logic_vector(23 downto 0);
-  signal reset_duration : std_logic_vector(31 downto 0) := (others => '0');  -- Duration of the reset after sending 24 bits
-  signal frame_done_2   : std_logic;
-  signal d_out_2        : std_logic;
+  signal start_2      : std_logic := '0';
+  signal led_config_2 : std_logic_vector(23 downto 0);
+  signal frame_done_2 : std_logic;
+  signal d_out_2      : std_logic;
 
 begin
 
@@ -62,35 +59,15 @@ begin
   simu_p : process
   begin
 
-    -- test de la fonctions
-    -- report "Conversion : " & integer'image(compute_time_duration(t_reset_n, 50000000));
-
-    -- led_config   <= x"FFFFFF";
-    -- led_config_2 <= x"80AF0A";
-    -- reset_n      <= '0', '1' after t_reset_n;  -- Reset_n
-    -- wait for 100*t_reset_n;
-    -- start        <= '1', '0' after 100 ns;
-
-    -- wait until rising_edge(frame_done);
-    -- wait for 100*t_reset_n;
-    -- led_config   <= x"000000";
-    -- led_config_2 <= x"FFFFFF";
-    -- start        <= '1', '0' after 100 ns;
-
-    -- wait until rising_edge(frame_done);
-    -- wait for 100*t_reset_n;
-    -- led_config   <= x"ABCDEF";
-    -- led_config_2 <= x"000000";
-    -- start        <= '1', '0' after 100 ns;
-
-    led_config_2   <= (others => '0');
-    reset_duration <= x"0000000F";
-    reset_n        <= '0', '1' after t_reset_n;  -- Reset_n
+    led_config   <= (others => '0');
+    led_config_2 <= (others => '0');
+    reset_n      <= '0', '1' after t_reset_n;  -- Reset_n
     for i in 1000 to 1005 loop
       wait for 100*t_reset_n;  -- to_integer(unsigned(reset_duration))*t_reset_n;  --100*t_reset_n;
+      led_config   <= std_logic_vector(to_unsigned(i, led_config'length));
       led_config_2 <= std_logic_vector(to_unsigned(i, led_config_2'length));
       start        <= '1', '0' after 100 ns;
-      wait until rising_edge(frame_done_2);
+      wait until rising_edge(frame_done);
     end loop;
 
     assert false report "end of simu !!!" severity failure;
@@ -100,7 +77,7 @@ begin
 
 
   -- Instance 1
-  WS2812_mng_inst_1 : WS2812_mng
+  WS2812_1 : WS2812
     generic map(T0H => T0H,
                 T0L => T0L,
                 T1H => T1H,
@@ -119,12 +96,11 @@ begin
                 T0L => T0L,
                 T1H => T1H,
                 T1L => T1L)
-    port map (clock          => clock,
-              reset_n        => reset_n,
-              start          => start,
-              led_config     => led_config_2,
-              reset_duration => reset_duration,
-              frame_done     => frame_done_2,
-              d_out          => d_out_2);
+    port map (clock      => clock,
+              reset_n    => reset_n,
+              start      => start,
+              led_config => led_config_2,
+              frame_done => frame_done_2,
+              d_out      => d_out_2);
 
 end arch_test_WS2812;
