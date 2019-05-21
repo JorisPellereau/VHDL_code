@@ -45,6 +45,9 @@ architecture arch_ws2812_ctrl of ws2812_controller is
 
   -- SIGNALS
 
+  signal enable_i_s  : std_logic;       -- Old enabe input
+  signal enable_i_re : std_logic;  -- Flag that inicates the RE of enbale_i
+
   -- ws2812 instanciation signals
   signal start_s      : std_logic;      -- Start a frame
   signal led_config_s : std_logic_vector(23 downto 0);  -- Led configuration
@@ -52,6 +55,19 @@ architecture arch_ws2812_ctrl of ws2812_controller is
   signal d_out_s      : std_logic;      -- Connected to the output
 
 begin  -- architecture arch_ws2812_ctrl
+
+
+  -- purpose: This process latches the input in order to detect its rising edge
+  p_enable_re_detect : process (clock, reset_n)
+  begin  -- process p_enable_re_detect
+    if reset_n = '0' then               -- asynchronous reset (active low)
+      enable_i_s <= '0';
+    elsif clock'event and clock = '1' then     -- rising clock edge
+      enable_i_s <= enable_i;
+    end if;
+  end process p_enable_re_detect;
+  enable_i_re <= enable_i and not enable_i_s;  -- RE detect
+
 
   -- WS2812 Instanciation
   ws2812_inst : ws2812
