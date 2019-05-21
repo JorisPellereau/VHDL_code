@@ -69,6 +69,19 @@ begin  -- architecture arch_ws2812_ctrl
   enable_i_re <= enable_i and not enable_i_s;  -- RE detect
 
 
+  -- purpose: This process latches the inputs 
+  p_latch_inputs : process (clock, reset_n) is
+  begin  -- process p_latch_inputs
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      led_config_s <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(enable_i_re = '1') then
+        led_config_s <= green_i & red_i & blue_i;
+      end if;
+    end if;
+  end process p_latch_inputs;
+
+
   -- WS2812 Instanciation
   ws2812_inst : ws2812
     generic map(T0H => T0H,
