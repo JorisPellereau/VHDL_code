@@ -34,9 +34,11 @@ entity ws2812_controller is
     green_i          : in  std_logic_vector(7 downto 0);  -- Green configuration
     red_i            : in  std_logic_vector(7 downto 0);  -- Red configuration
     blue_i           : in  std_logic_vector(7 downto 0);  -- Blue configuration
+    load_grb_i       : in  std_logic;   -- Load the new led configuration
     reset_duration_i : in  unsigned(31 downto 0);  -- Duration of the reset between each frames
     modes_i          : in  std_logic_vector(1 downto 0);  -- Mode for the led controller
-    d_out            : out std_logic);  -- Serial output for the leds configuration
+    d_out            : out std_logic;  -- Serial output for the leds configuration
+    busy_o           : out std_logic);  -- 
 
 end entity ws2812_controller;
 
@@ -58,28 +60,28 @@ begin  -- architecture arch_ws2812_ctrl
 
 
   -- purpose: This process latches the input in order to detect its rising edge
-  p_enable_re_detect : process (clock, reset_n)
-  begin  -- process p_enable_re_detect
-    if reset_n = '0' then               -- asynchronous reset (active low)
-      enable_i_s <= '0';
-    elsif clock'event and clock = '1' then     -- rising clock edge
-      enable_i_s <= enable_i;
-    end if;
-  end process p_enable_re_detect;
-  enable_i_re <= enable_i and not enable_i_s;  -- RE detect
+  -- p_enable_re_detect : process (clock, reset_n)
+  -- begin  -- process p_enable_re_detect
+  --   if reset_n = '0' then               -- asynchronous reset (active low)
+  --     enable_i_s <= '0';
+  --   elsif clock'event and clock = '1' then     -- rising clock edge
+  --     enable_i_s <= enable_i;
+  --   end if;
+  -- end process p_enable_re_detect;
+  -- enable_i_re <= enable_i and not enable_i_s;  -- RE detect
 
 
   -- purpose: This process latches the inputs 
-  p_latch_inputs : process (clock, reset_n) is
-  begin  -- process p_latch_inputs
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      led_config_s <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(enable_i_re = '1') then
-        led_config_s <= green_i & red_i & blue_i;
-      end if;
-    end if;
-  end process p_latch_inputs;
+  -- p_latch_inputs : process (clock, reset_n) is
+  -- begin  -- process p_latch_inputs
+  --   if reset_n = '0' then                   -- asynchronous reset (active low)
+  --     led_config_s <= (others => '0');
+  --   elsif clock'event and clock = '1' then  -- rising clock edge
+  --     if(enable_i_re = '1') then
+  --       led_config_s <= green_i & red_i & blue_i;
+  --     end if;
+  --   end if;
+  -- end process p_latch_inputs;
 
 
   -- WS2812 Instanciation

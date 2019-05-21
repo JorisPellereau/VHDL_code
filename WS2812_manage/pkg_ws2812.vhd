@@ -27,6 +27,7 @@ package pkg_ws2812 is
   -- CONSTANTS
   constant clock_frequency : integer := 50000000;  -- Input clock frequency : 50MHz
 
+  -- WS2812 CONSTANTS ===================================================================================================
   -- WS2812
   -- TH + TL = 1.25 us +- 600 us
   -- T0H : 0.35 us => clock_frequency*0.35*10^6
@@ -35,25 +36,31 @@ package pkg_ws2812 is
   -- T1L : 0.6  us => clock_frequency*0.6*10^6
 
   -- WS2812 integer constants
-  constant T0H : integer := 18;  --compute_time_duration(T0H_time, clock_frequency);  -- Duration converts into integer
-  constant T0L : integer := 40;  --compute_time_duration(T0L_time, clock_frequency);  -- Duration converts into integer
-  constant T1H : integer := 35;  --compute_time_duration(T1H_time, clock_frequency);  -- Duration converts into integer
-  constant T1L : integer := 30;  --compute_time_duration(T1L_time, clock_frequency);  -- Duration converts into integer
+  constant T0H : integer := 18;
+  constant T0L : integer := 40;
+  constant T1H : integer := 35;
+  constant T1L : integer := 30;
 
   -- WS2812b
   -- TH + TL = 1.25 us +- 600 us
-  -- T0H : 0.4  us => clock_frequency*0.4*10^6
-  -- T0L : 0.85 us => clock_frequency*0.85*10^6
-  -- T1H : 0.8  us => clock_frequency*0.8*10^6
-  -- T1L : 0.45 us => clock_frequency*0.45*10^6
+  -- T0Hb : 0.4  us => clock_frequency*0.4*10^6
+  -- T0Lb : 0.85 us => clock_frequency*0.85*10^6
+  -- T1Hb : 0.8  us => clock_frequency*0.8*10^6
+  -- T1Lb : 0.45 us => clock_frequency*0.45*10^6
 
   -- WS2812b integer constants
-  constant T0Hb : integer := 20;  --compute_time_duration(T0Hb_time, clock_frequency);  -- Duration converts into integer
-  constant T0Lb : integer := 43;  --compute_time_duration(T0Lb_time, clock_frequency);  -- Duration converts into integer
-  constant T1Hb : integer := 40;  --compute_time_duration(T1Hb_time, clock_frequency);  -- Duration converts into integer
-  constant T1Lb : integer := 23;  --compute_time_duration(T1Lb_time, clock_frequency);  -- Duration converts into integer
+  constant T0Hb : integer := 20;
+  constant T0Lb : integer := 43;
+  constant T1Hb : integer := 40;
+  constant T1Lb : integer := 23;
 
   constant max_T : integer := 63;  -- Maximum period : TH + TL for each WS2812
+
+  -- =====================================================================================================================
+
+  -- WS2812_controller constants
+
+
 
   -- COMPONENTS
   component WS2812 is
