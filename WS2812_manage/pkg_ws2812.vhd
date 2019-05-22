@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-05-21
+-- Last update: 2019-05-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -60,6 +60,7 @@ package pkg_ws2812 is
 
   -- WS2812_controller constants
 
+  constant C_50us : unsigned(31 downto 0) := x"000009C4";  -- 50Hz*50us = 2500 => 0x9C4
 
 
   -- COMPONENTS
