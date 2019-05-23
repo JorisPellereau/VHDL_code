@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-21
--- Last update: 2019-05-22
+-- Last update: 2019-05-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,6 +48,9 @@ architecture arch_ws2812_ctrl of ws2812_controller is
   -- SIGNALS
   signal enable_i_s    : std_logic;     -- Old enabe input
   signal enable_i_re_s : std_logic;  -- Flag that inicates the RE of enbale_i
+
+  signal cnt_leds_s : integer range 0 to led_number;  -- count until the number of led, in order to generate the frame
+
 
   -- Internal timer counter signals
   signal reset_duration_i_s : unsigned(31 downto 0);  -- Reset_duration signal
@@ -121,6 +124,22 @@ begin  -- architecture arch_ws2812_ctrl
   frame_done_re_s <= frame_done_s and not frame_done_old_s;
 
 
+  -- purpose: This process count the number of frame to transmit
+  p_led_cnt : process (clock, reset_n)
+  begin  -- process p_led_cnt
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_leds_s <= 0;                      -- Init to 0
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(frame_done_re_s = '1') then
+        if(cnt_leds_s = led_number) then
+          cnt_leds_s <= 0;                  -- RAZ cnt
+        else
+          cnt_leds_s <= cnt_leds_s + 1;     -- Inc cnt
+        end if;
+      end if;
+    end if;
+  end process p_led_cnt;
+
 
   -- purpose: This process runs the timer when a frame has been done
   -- p_timer_gen : process (clock, reset_n)
@@ -131,7 +150,7 @@ begin  -- architecture arch_ws2812_ctrl
   --     timer_done_s <= '0';
   --   elsif clock'event and clock = '1' then  -- rising clock edge
 
-  --     if(frame_done_re_s = '1') then  -- Enable is set when en frame is terminated
+  --     if(cnt_leds_s = led_number) then  -- 
   --       en_timer_s <= '1';
   --     end if;
 
