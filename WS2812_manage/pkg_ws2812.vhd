@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-05-22
+-- Last update: 2019-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package pkg_ws2812 is
 
@@ -60,11 +61,14 @@ package pkg_ws2812 is
 
   -- WS2812_controller constants
 
-  constant C_50us : unsigned(31 downto 0) := x"000009C4";  -- 50Hz*50us = 2500 => 0x9C4
+  constant C_50us     : unsigned(31 downto 0) := x"000009C4";  -- 50Hz*50us = 2500 => 0x9C4
+  constant led_number : integer               := 2;  -- Number of serial leds
 
+  -- TYPES
+  type t_led_config_array is array (0 to led_number - 1) of std_logic_vector(23 downto 0);  -- Array for the led configration
 
   -- COMPONENTS
-  component WS2812 is
+  component ws2812 is
     generic(T0H : integer := T0H;
             T0L : integer := T0L;
             T1H : integer := T1H;
@@ -79,35 +83,25 @@ package pkg_ws2812 is
          );
   end component;
 
-  component WS2812_mng is
-    generic(T0H : integer := T0H;
-            T0L : integer := T0L;
-            T1H : integer := T1H;
-            T1L : integer := T1L
-            );
-    port(clock      : in  std_logic;                      -- Input clock
-         reset_n    : in  std_logic;                      -- Asynchronous reset
-         start      : in  std_logic;                      -- Start a frame
-         led_config : in  std_logic_vector(23 downto 0);  -- Led configuration
-         frame_done : out std_logic;                      -- Frame terminated
-         d_out      : out std_logic                       -- Serial output
-         );
+  component ws2812_controller is
+    port (
+      clock            : in  std_logic;  -- system clock
+      reset_n          : in  std_logic;  -- Asynchronous reset active low
+      enable_i         : in  std_logic;  -- Enable of the block
+      start_leds_i     : in  std_logic;  -- Start the leds
+      leds_config_i    : in  t_led_config_array;  -- Array of leds configuration
+      load_config_i    : in  std_logic;  -- Load the new led configuration
+      reset_duration_i : in  unsigned(31 downto 0);  -- Duration of the reset between each frames
+      d_out            : out std_logic;  -- serial output for the leds configuration
+      busy_o           : out std_logic);          -- Controller is busy 
   end component;
 
-  component WS2812_mng_2 is
-    generic(T0H : integer := T0H;
-            T0L : integer := T0L;
-            T1H : integer := T1H;
-            T1L : integer := T1L
-            );
-    port(clock      : in  std_logic;    -- Input clock
-         reset_n    : in  std_logic;    -- Asynchronous reset
-         start      : in  std_logic;    -- Start a frame
-         led_config : in  std_logic_vector(23 downto 0);  -- Led configuration      
-         frame_done : out std_logic;    -- Frame terminated
-         d_out      : out std_logic     -- Serial output
-         );
-  end component;
 
+
+  component top_led_cmd is
+    port(clock   : in  std_logic;
+         reset_n : in  std_logic;
+         d_out   : out std_logic);
+  end component;
 
 end package pkg_ws2812;

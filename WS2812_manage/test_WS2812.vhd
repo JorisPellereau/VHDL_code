@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-16
--- Last update: 2019-05-22
+-- Last update: 2019-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -38,17 +38,23 @@ architecture arch_test_WS2812 of test_WS2812 is
   signal clock   : std_logic := '0';
   signal reset_n : std_logic := '0';
 
-  -- Instance 1
+  -- Instance ws2812
   signal start      : std_logic := '0';
   signal led_config : std_logic_vector(23 downto 0);
   signal frame_done : std_logic;
   signal d_out      : std_logic;
 
-  -- Instance 2
-  signal start_2      : std_logic := '0';
-  signal led_config_2 : std_logic_vector(23 downto 0);
-  signal frame_done_2 : std_logic;
-  signal d_out_2      : std_logic;
+  -- Instance top_cmd_led
+  signal d_out_top : std_logic;         -- Output from the top
+
+  -- Instance ws2812_controller
+  signal enable_i         : std_logic;
+  signal start_leds_i     : std_logic;
+  signal leds_config_i    : t_led_config_array;
+  signal load_config_i    : std_logic;
+  signal reset_duration_i : unsigned(31 downto 0);
+  signal d_out_controller : std_logic;
+  signal busy_o           : std_logic;
 
 begin
 
@@ -59,14 +65,12 @@ begin
   simu_p : process
   begin
 
-    led_config   <= (others => '0');
-    led_config_2 <= (others => '0');
-    reset_n      <= '0', '1' after t_reset_n;  -- Reset_n
+    led_config <= (others => '0');
+    reset_n    <= '0', '1' after t_reset_n;  -- Reset_n
     wait for 2*t_reset_n;
     for i in 1000 to 1005 loop
       -- wait for 100*t_reset_n;  -- to_integer(unsigned(reset_duration))*t_reset_n;  --100*t_reset_n;
-      led_config   <= std_logic_vector(to_unsigned(i, led_config'length));
-      led_config_2 <= std_logic_vector(to_unsigned(i, led_config_2'length));
+      led_config <= std_logic_vector(to_unsigned(i, led_config'length));
 
       start <= '1', '0' after 100 ns;
       wait until rising_edge(frame_done);
@@ -78,7 +82,16 @@ begin
   end process;
 
 
-  -- Instance 1
+  -- purpose: This process manages the inputs of the ws2812_controller 
+  p_ws_controller_stim : process
+  begin  -- process p_ws_controller_stim
+
+
+  end process p_ws_controller_stim;
+
+
+
+  -- Instance ws2812
   WS2812_1 : WS2812
     generic map(T0H => T0H,
                 T0L => T0L,
@@ -92,17 +105,24 @@ begin
               d_out      => d_out);
 
 
-  -- Instance 2
-  WS2812_mng_inst_2 : WS2812_mng_2
-    generic map(T0H => T0H,
-                T0L => T0L,
-                T1H => T1H,
-                T1L => T1L)
-    port map (clock      => clock,
-              reset_n    => reset_n,
-              start      => start,
-              led_config => led_config_2,
-              frame_done => frame_done_2,
-              d_out      => d_out_2);
+  -- Instance top
+  top_isnt : top_led_cmd
+    port map(clock   => clock,
+             reset_n => reset_n,
+             d_out   => d_out_top);
+
+
+  -- ws2812_controller inst
+  ws2812_controller_inst : ws2812_controller
+    generic map(led_number => led_numer)
+    port map(clock            => clock,
+             reset_n          => reset_n,
+             enable_i         => enable_i,
+             start_leds_i     => start_leds_i,
+             leds_config_i    => leds_config_i,
+             load_config_i    => load_config_i,
+             reset_duration_i => reset_duration_i,
+             d_out            => d_out_controller,
+             busy_o           => busy_o);
 
 end arch_test_WS2812;

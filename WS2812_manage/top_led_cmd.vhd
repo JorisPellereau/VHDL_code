@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-23
--- Last update: 2019-05-23
+-- Last update: 2019-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,6 +22,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_ws2812;
 use lib_ws2812.pkg_ws2812.all;
@@ -39,8 +40,8 @@ end entity top_led_cmd;
 architecture arch_top_led_cmd of top_led_cmd is
 
   -- CONSTANTS
-  constant C_led_config : std_logic_vector(23 downto 0) := x"0000FF";  -- Blue config
-  constant C_max_timer  : integer                       := 500000000;  -- Max timer for 1 second
+  constant C_led_config : std_logic_vector(23 downto 0) := x"0F0F0F";  -- Led config
+  constant C_max_timer  : integer                       := 500;  -- Max timer for 1 second
 
   -- SIGNALS
   signal cnt_timer : integer range 0 to C_max_timer;  -- Counter for the timer
