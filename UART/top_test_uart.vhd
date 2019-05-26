@@ -28,9 +28,10 @@ use lib_rs232.pkg_rs232.all;
 entity top_test_uart is
 
   port (
-    clock   : in  std_logic;            -- Input system clock
-    reset_n : in  std_logic;            -- Active low asynchronous reset
-    tx      : out std_logic);           -- TX output
+    clock      : in  std_logic;         -- Input system clock
+    reset_n    : in  std_logic;         -- Active low asynchronous reset
+    start_tx_i : in  std_logic;         -- Button to start a transaction
+    tx         : out std_logic);        -- TX output
 
 end entity top_test_uart;
 
@@ -38,7 +39,7 @@ architecture arch_top_test_uart of top_test_uart is
 
   -- CONSTANTS
   constant C_uart_data : std_logic_vector(7 downto 0) := x"EF";  -- DAta to transmit for test
-  constant C_max_cnt   : integer                      := 50000;  -- Max counter
+  constant C_max_cnt   : integer                      := 50000000;  -- Max counter
 
   -- SIGNALS
   signal cnt_s : integer range 0 to C_max_cnt;  -- Counter Timer
@@ -59,22 +60,31 @@ begin  -- architecture arch_top_test_uart
       start_tx_s <= '0';
       cnt_s      <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(tx_done_s = '1') then
 
-        if(cnt_s = C_max_cnt) then
-          cnt_s      <= 0;
-          start_tx_s <= '1';            -- Set the start
-        else
-          cnt_s      <= cnt_s + 1;
-          start_tx_s <= '0';
-        end if;
-      else
-        --start_tx_s <= '0';
-        cnt_s      <= 0;
+      if(tx_done_s = '1') then
+        start_tx_s <= '1';
       end if;
+      -- if(cnt_s = C_max_cnt) then
+      --   cnt_s      <= 0;
+      --   start_tx_s <= '1';
+      -- else
+      --   cnt_s <= cnt_s + 1;
+      -- end if;
+
+      -- -- if(cnt_s <= C_max_cnt / 2) then
+      -- --   start_tx_s <= '0';
+      -- -- else
+      -- --   start_tx_s <= '1';
+      -- end if;
+      -- else
+      --   start_tx_s <= '0';
+      -- end if;
+
+
     end if;
   end process p_start_gen;
 
+  -- start_tx_s <= not start_tx_i;
 
   tx_data_s <= C_uart_data;
 

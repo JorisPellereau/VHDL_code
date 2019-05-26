@@ -6,7 +6,7 @@
 -- Author     :  
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-04-29
+-- Last update: 2019-05-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -114,11 +114,21 @@ begin  -- architecture arch
     if reset_n = '0' then                   -- asynchronous reset (active low)
       start_tx_old <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(tx_fsm = idle) then
+
+      if(tx_fsm = idle or tx_fsm = DATA_GEN) then
         start_tx_old <= start_tx;
-      else
+      elsif(tx_fsm = stop) then
         start_tx_old <= '0';
       end if;
+
+
+      -- Modif
+      -- if(tx_fsm = stop) then
+      --   start_tx_re <= '0';
+      -- elsif(start_tx = '1') then
+      --   start_tx_re <= '1';
+      -- end if;
+
     end if;
   end process p_start_tx_re_gen;
 
