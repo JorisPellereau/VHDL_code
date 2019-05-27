@@ -65,7 +65,9 @@ architecture arch_master_i2c_24lc02b of master_i2c_24lc02b is
   signal en_scl_old : std_logic;        -- Latch en_scl
   signal en_scl_re  : std_logic;  -- Flag that indicates a rising edge of en_scl
 
-  signal rdm_rd_sel_s : std_logic;      -- Selector for the random read
+  signal rdm_rd_sel_s  : std_logic;     -- Selector for the random read
+  signal seq_rd_sel_s  : std_logic;     -- Selector for the sequencial read
+  signal nb_data_seq_s : integer range 1 to max_array;  -- Number of data to read in seq mode
 
   signal rw_s         : std_logic;      -- Latch rw input
   signal rd_mode_s    : std_logic_vector(1 downto 0);  -- Latch read_mode
@@ -112,6 +114,7 @@ begin  -- architecture arch_macter_i2c
       i2c_master_fsm <= IDLE;
       i2c_done_s     <= '0';
       rdm_rd_sel_s   <= '0';
+      seq_rd_sel_s   <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       case i2c_master_fsm is
         when IDLE =>
@@ -133,9 +136,9 @@ begin  -- architecture arch_macter_i2c
         when SACK_CHIP =>
           if(cnt_9 = 9) then
             if(sack_ok = '1') then
-              if(rw_s = '1' and (rd_mode_s = "00" or (rd_mode = "01" and rdm_rd_sel_s = '1'))) then
+              if(rw_s = '1' and (rd_mode_s = "00" or (rd_mode_s = "01" and rdm_rd_sel_s = '1'))) then
                 i2c_master_fsm <= RD_DATA;
-              elsif(rw_s = '0' or (rw_s = '1' and rd_mode = "01" and rdm_rd_sel_s = '0')) then
+              elsif(rw_s = '0' or (rw_s = '1' and rd_mode_s = "01" and rdm_rd_sel_s = '0')) then
                 i2c_master_fsm <= WR_DATA;
               end if;
             else
@@ -151,8 +154,11 @@ begin  -- architecture arch_macter_i2c
           if(cnt_9 = 9) then
             if(sack_ok = '1') then
               -- modif :
-              if(rd_mode_s = "01") then  -- In random read
+              if(rd_mode_s = "01") then     -- In random read
                 rdm_rd_sel_s   <= '1';
+                i2c_master_fsm <= START_GEN;
+              elsif(rd_mode_s = "10") then  -- In seq mode
+                seq_rd_sel_s   <= '1';
                 i2c_master_fsm <= START_GEN;
               elsif(cnt_nb_data = nb_data_s) then
                 i2c_master_fsm <= STOP_GEN;
@@ -186,6 +192,7 @@ begin  -- architecture arch_macter_i2c
         when STOP_GEN =>
           if(start_gen_done = '1') then
             rdm_rd_sel_s   <= '0';
+            seq_rd_sel_s   <= '0';
             i2c_done_s     <= '1';
             i2c_master_fsm <= IDLE;
           end if;
@@ -200,12 +207,13 @@ begin  -- architecture arch_macter_i2c
   p_latch_inputs : process (clock, reset_n) is
   begin  -- process p_latch_inputs
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      rw_s        <= '0';
-      chip_addr_s <= (others => '0');
-      nb_data_s   <= 1;
-      byte_ctrl   <= (others => '0');
-      wdata_s     <= (others => (others => '0'));
-      rd_mode_s   <= (others => '0');
+      rw_s          <= '0';
+      chip_addr_s   <= (others => '0');
+      nb_data_s     <= 1;
+      byte_ctrl     <= (others => '0');
+      wdata_s       <= (others => (others => '0'));
+      rd_mode_s     <= (others => '0');
+      nb_data_seq_s <= 1;
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_fsm = IDLE) then
         if(start_i2c_re = '1') then
@@ -228,6 +236,14 @@ begin  -- architecture arch_macter_i2c
           else
             byte_ctrl <= chip_addr_s & '1';  -- Read then
           end if;
+
+        -- In sequential read mode
+        elsif(rw_s = '1' and rd_mode_s = "10") then
+          if(seq_rd_sel_s = '0') then
+            byte_ctrl <= chip_addr_s & '0';  -- Write first
+          else
+            byte_ctrl <= chip_addr_s & '1';  -- Read the
+          end if;
         end if;
 
       end if;
@@ -236,6 +252,15 @@ begin  -- architecture arch_macter_i2c
       -- In current address and random address read cases
       if((rd_mode_s = "00" or rd_mode_s = "01") and rw_s = '1') then
         nb_data_s <= 1;                 -- Only 1 data to read in these 2 cases
+
+      -- In sequential read
+      elsif(rd_mode_s = "10" and rw_s = '1') then
+        if(seq_rd_sel_s = '0') then
+          nb_data_seq_s <= nb_data_s;  -- Save the number of data to read in seq
+          nb_data_s     <= 1;           -- Only 1 data to read in these 2 cases
+        else
+          nb_data_s <= nb_data_seq_s;
+        end if;
       end if;
 
     end if;
@@ -469,7 +494,7 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
           en_scl  <= '1';                   -- Write '0' on SCL line
