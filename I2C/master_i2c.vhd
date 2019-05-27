@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-05
+-- Last update: 2019-05-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ entity master_i2c is
 end entity master_i2c;
 
 
-architecture arch_macter_i2c of master_i2c is
+architecture arch_master_i2c of master_i2c is
 
   -- CONSTANTS
   constant T_scl               : integer := compute_scl_period(scl_frequency, clock_frequency);  -- SCL period according to the I2C config and the input clock freq.
@@ -561,7 +561,7 @@ begin  -- architecture arch_macter_i2c
   scl_in <= scl;
   sda_in <= sda;
 
-end architecture arch_macter_i2c;
+end architecture arch_master_i2c;
 
 
 
