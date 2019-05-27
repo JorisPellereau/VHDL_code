@@ -154,12 +154,14 @@ begin  -- architecture arch_macter_i2c
           if(cnt_9 = 9) then
             if(sack_ok = '1') then
               -- modif :
-              if(rd_mode_s = "01") then     -- In random read
+              if(rd_mode_s = "01") then  -- In random read
                 rdm_rd_sel_s   <= '1';
                 i2c_master_fsm <= START_GEN;
-              elsif(rd_mode_s = "10") then  -- In seq mode
+              elsif(rd_mode_s = "10" and seq_rd_sel_s = '0') then  -- In seq mode
                 seq_rd_sel_s   <= '1';
                 i2c_master_fsm <= START_GEN;
+              elsif(rd_mode_s = "10" and seq_rd_sel_s = '1') then
+                i2c_master_fsm <= RD_DATA;
               elsif(cnt_nb_data = nb_data_s) then
                 i2c_master_fsm <= STOP_GEN;
               else
@@ -178,8 +180,10 @@ begin  -- architecture arch_macter_i2c
             end if;
           end if;
         when RD_DATA =>
-          if(cnt_9 = 8) then
+          if(cnt_9 = 8 and (rd_mode_s = "00" or rd_mode_s = "10")) then
             i2c_master_fsm <= MACK;
+          elsif(cnt_9 = 8 and rd_mode_s = "10") then
+            i2c_master_fsm <= SACK_WR;
           end if;
         when MACK =>
           if(cnt_9 = 9) then
