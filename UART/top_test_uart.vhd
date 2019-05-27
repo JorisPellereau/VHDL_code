@@ -80,6 +80,7 @@ begin  -- architecture arch_top_test_uart
         end if;
       else
         start_tx_s <= '0';
+        cnt_s      <= 0;
       end if;
 
       -- if(tx_done_s = '1') then
