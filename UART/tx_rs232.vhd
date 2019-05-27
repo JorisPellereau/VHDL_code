@@ -214,9 +214,10 @@ begin  -- architecture arch
       if(tx_fsm = idle) then
         tx_s      <= polarity;
         tx_done_s <= '1';
-      elsif(tx_fsm = START_BIT_GEN) then
-        tx_s      <= '0';
+      elsif(tx_fsm = LATCH_INPUTS) then
         tx_done_s <= '0';
+      elsif(tx_fsm = START_BIT_GEN) then
+        tx_s <= '0';
       elsif(tx_fsm = DATA_GEN) then
         if(cnt_data < data_size) then
           if(first_bit = lsb_first) then
