@@ -21,6 +21,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+-- use ieee.std_logic_arith.all;
 
 library lib_rs232;
 use lib_rs232.pkg_rs232.all;
@@ -37,11 +39,12 @@ end entity top_test_uart;
 architecture arch_top_test_uart of top_test_uart is
 
   -- CONSTANTS
-  constant C_uart_data : std_logic_vector(7 downto 0) := x"A1";  -- DAta to transmit for test
-  constant C_max_cnt   : integer                      := 500000;  -- Max counter
+  -- constant C_uart_data : std_logic_vector(7 downto 0) := x"A1";  -- DAta to transmit for test
+  constant C_max_cnt : integer := 5000;  -- Max counter
 
   -- SIGNALS
-  signal cnt_s : integer range 0 to C_max_cnt;  -- Counter Timer
+  signal cnt_s    : integer range 0 to C_max_cnt;  -- Counter Timer
+  signal cnt_data : unsigned(7 downto 0);          -- Counter to send data
 
   -- TX uart inst
   signal start_tx_s : std_logic;        -- Start an UART transaction
@@ -58,12 +61,20 @@ begin  -- architecture arch_top_test_uart
     if reset_n = '0' then                   -- asynchronous reset (active low)
       start_tx_s <= '0';
       cnt_s      <= 0;
+      cnt_data   <= (others => '0');
+      tx_data_s  <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
 
       if(tx_done_s = '1') then
         if(cnt_s = C_max_cnt) then
           start_tx_s <= '1';
           cnt_s      <= 0;              -- RAZ cnt
+          if(cnt_data < x"FF") then
+            cnt_data  <= cnt_data + 1;
+            tx_data_s <= std_logic_vector(cnt_data);
+          else
+            cnt_data <= (others => '0');
+          end if;
         else
           cnt_s <= cnt_s + 1;           -- INC cnt
         end if;
@@ -95,7 +106,7 @@ begin  -- architecture arch_top_test_uart
   end process p_start_gen;
 
 
-  tx_data_s <= C_uart_data;
+  -- tx_data_s <= C_uart_data;
 
   tx_rx232_inst : tx_rs232
     generic map (
