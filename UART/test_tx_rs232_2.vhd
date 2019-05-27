@@ -6,7 +6,7 @@
 -- Author     :   <lore@modelsim-31>
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-05-26
+-- Last update: 2019-05-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,6 +47,17 @@ architecture arch of test_tx_rs232_2 is
   signal tx_done_1 : std_logic;
 
 
+  -- TX on DE NANO inst
+  signal clock_de : std_logic := '0';
+  signal tx_de    : std_logic;
+
+  component top_test_uart is
+    port (
+      clock   : in  std_logic;          -- Input system clock
+      reset_n : in  std_logic;          -- Active low asynchronous reset
+      tx      : out std_logic);         -- TX output
+  end component;
+
 
 begin  -- architecture arch
 
@@ -64,7 +75,7 @@ begin  -- architecture arch
       data_size       => 8,
       polarity        => '1',
       first_bit       => lsb_first,
-      clock_frequency => 5000000)
+      clock_frequency => 50000000)
     port map (
       reset_n  => reset_n,
       clock    => clock,
@@ -74,11 +85,18 @@ begin  -- architecture arch
       tx_done  => tx_done_1);
 
 
+
+  -- Inst top DE NANO
+  top_test_uart_inst : top_test_uart
+    port map(clock   => clock,
+             reset_n => reset_n,
+             tx      => tx_de);
+
   -- Clock gen
   p_gen_clock : process
   begin
     clock <= not clock;
-    wait for 100 ns;                    -- 5MHz
+    wait for 10 ns;                     -- 50MHz
   end process;
 
 
@@ -98,7 +116,7 @@ begin  -- architecture arch
 
 
     tx_data  <= x"99";
-    wait for 23.7 us;
+    wait for 20 us;
     start_tx <= '1';
     wait for 10 us;
     start_tx <= '0';
@@ -107,7 +125,7 @@ begin  -- architecture arch
     wait until rising_edge(tx_done_1);
 
     tx_data  <= x"98";
-    wait for 216.666 us;
+    wait for 200 us;
     start_tx <= '1';
     wait for 10 us;
     start_tx <= '0';
