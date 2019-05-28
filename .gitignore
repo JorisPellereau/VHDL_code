@@ -41,3 +41,7 @@ UART/#top_test_uart\.vhd#
 UART/\.#top_test_uart\.vhd
 
 I2C/~\$\$I2C_fsm\.~vsdx
+
+I2C/#i2c_slave\.vhd#
+
+I2C/\.#i2c_slave\.vhd
