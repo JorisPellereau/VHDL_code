@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-27
+-- Last update: 2019-05-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -371,7 +371,7 @@ begin  -- architecture arch_macter_i2c
       cnt_start_stop <= 0;
       start_gen_done <= '0';
     elsif (rising_edge(clock)) then     -- rising clock edge
-      if(i2c_master_fsm = START_GEN) then
+      if(i2c_master_fsm = START_GEN and start_gen_done = '0') then
         if(cnt_start_stop < start_stop_duration) then
           cnt_start_stop <= cnt_start_stop + 1;
           start_gen_done <= '0';
@@ -380,7 +380,7 @@ begin  -- architecture arch_macter_i2c
           start_gen_done <= '1';
         end if;
 
-      elsif(i2c_master_fsm = STOP_GEN) then
+      elsif(i2c_master_fsm = STOP_GEN and start_gen_done = '0') then
         if(cnt_start_stop < start_stop_duration) then
           cnt_start_stop <= cnt_start_stop + 1;
           start_gen_done <= '0';
@@ -541,8 +541,8 @@ begin  -- architecture arch_macter_i2c
           end if;
         end if;
       elsif(i2c_master_fsm = STOP_GEN) then
-        if(cnt_start_stop = start_stop_duration) then
-          en_sda  <= '0';               -- Set 'Z' => '1' on the sda line
+        if(cnt_start_stop >= start_stop_duration) then
+          en_sda  <= '0';  -- Set 'Z' => '1' on the sda line
           sda_out <= '0';
         else
           en_sda  <= '1';

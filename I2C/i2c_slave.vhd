@@ -53,8 +53,9 @@ architecture arch_i2c_slave of i2c_slave is
 
   signal cnt_8 : integer range 0 to 8;  -- Counts from 0 to 8
 
-  -- SDA falling_edge detect
+  -- SDA RE and falling_edge detect
   signal sda_old_s : std_logic;         -- Old sda
+  signal sda_re_s  : std_logic;         -- Flag for RE detect
   signal sda_fe_s  : std_logic;         -- Flag for the FE of sda
 
   -- SCL Rising_edge  an Falling edge detect
@@ -104,6 +105,20 @@ begin  -- architecture arch_i2c_slave
               fsm <= SLV_WR;
             end if;
           end if;
+
+        when SLV_RD =>
+          if(cnt_8 = 8 and scl_fe_s = '1') then
+            fsm <= ACK;
+          end if;
+
+        when ACK =>
+          if(scl_fe_s = '1') then
+            fsm <= RD_STOP;
+          end if;
+
+        when RD_STOP =>
+          if(scl_in = '1' and sda_re_s = '1') then
+          end if;
         when others => null;
       end case;
     end if;
@@ -122,6 +137,7 @@ begin  -- architecture arch_i2c_slave
     end if;
   end process p_start_detect;
   sda_fe_s <= not sda_in and sda_old_s;
+  sda_re_s <= sda_in and not sda_old_s;
 
 
   -- purpose: This process detect the RE on SCL
@@ -155,6 +171,12 @@ begin  -- architecture arch_i2c_slave
       elsif(fsm = SLV_RD) then
         en_sda  <= '0';                 -- Release the bus => 'Z'
         sda_out <= '0';
+      elsif(fsm = ACK) then
+        en_sda  <= '1';
+        sda_out <= '0';
+      elsif(fsm = RD_STOP) then
+        en_sda  <= '0';                 -- Release the bus => 'Z'
+        sda_out <= '0';
       end if;
     end if;
   end process p_sda_manage;
@@ -176,7 +198,6 @@ begin  -- architecture arch_i2c_slave
           else
             cnt_8 <= 0;
           end if;
-
         end if;
       elsif(fsm = SLV_RD) then
         if(scl_re_s = '1') then
