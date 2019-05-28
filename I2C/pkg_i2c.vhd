@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-05
+-- Last update: 2019-05-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,6 +36,9 @@ package pkg_i2c is
                             STOP_GEN);  -- States of the I2C FSM
   type t_i2c_frequency is (f100k, f400k);  -- I2C frequency : 100 kHz or 400 kHz
 
+  type t_i2c_slave_fsm is (IDLE, RD_ADDR_RW, ACK_ADDR_RW, SLV_RD, SLV_WR, ACK, RD_MACK, RD_STOP);
+
+
   -- COMPONENTS
   component master_i2c is
     generic (
@@ -56,6 +59,19 @@ package pkg_i2c is
       sda        : inout std_logic);    -- Data line
   end component master_i2c;
 
+  component i2c_slave is
+    generic (
+      slave_addr : std_logic_vector(6 downto 0) := "1111110");  -- Slave Address
+    port (
+      clock_i              : in    std_logic;  -- Input system clock
+      reset_n_i            : in    std_logic;  -- Active low asynchronous reset
+      data_to_master_i     : in    std_logic_vector(7 downto 0);  -- Data to send to the I2C Master
+      set_data_to_master_o : out   std_logic;  -- Request to set the data to send           
+      data_valid_o         : out   std_logic;  -- Data ready to be read
+      data_from_master_o   : out   std_logic_vector(7 downto 0);  -- Data from master
+      scl                  : inout std_logic;  -- I2C Clock
+      sda                  : inout std_logic);                  -- I2C SDA
+  end component;
 
   -- FUNCTIONS
   function compute_scl_period (
