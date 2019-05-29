@@ -45,3 +45,5 @@ I2C/~\$\$I2C_fsm\.~vsdx
 I2C/#i2c_slave\.vhd#
 
 I2C/\.#i2c_slave\.vhd
+
+ADC128S022/~\$\$adc128s022_block\.~vsdx
