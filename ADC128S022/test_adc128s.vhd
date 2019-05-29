@@ -90,14 +90,14 @@ begin
     -- Start conversion
     report "Start a conversion";
     en <= '1';
-    wait for 20*C_T_adc_sclk;
+    wait for 200*C_T_adc_sclk;
     en <= '0';
 
     wait for 100 us;
 
     report "Start a conversion";
     en <= '1';
-    wait for 15*C_T_adc_sclk;
+    wait for 50*C_T_adc_sclk;
     en <= '0';
 
     report "end of test !!!!";
