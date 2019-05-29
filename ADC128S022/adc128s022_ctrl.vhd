@@ -49,11 +49,11 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
   constant C_half_T : integer := C_max_T/2;  -- Half T of sclk
 
   -- SIGNALS
-  signal run_conv  : std_logic;         -- Run the conversion when = '1'
-  signal stop_conv : std_logic;         -- Stop the conversion
+  signal run_conv : std_logic;          -- Run the conversion when = '1'
 
-  signal cnt_sclk : integer range 0 to C_max_T;  -- Counts from 0 to 50
-  signal cnt_16   : integer range 0 to 16;       -- Counts 16 bits
+  signal cnt_sclk  : integer range 0 to C_max_T;  -- Counts from 0 to 50
+  signal cnt_16_re : integer range 0 to 16;       -- Counts until 16 on RE
+  signal cnt_16_fe : integer range 0 to 16;       -- Counts untils 16 on FE
 
   signal adc_cs_n_s : std_logic;        -- Chip select signal
   signal adc_sclk_s : std_logic;        -- ADC SCLK signal
@@ -62,6 +62,10 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
   signal adc_sclk_old_s : std_logic;    -- Old adc_sclk_s
   signal adc_sclk_re_s  : std_logic;    -- RE of adc_sclk
   signal adc_sclk_fe_s  : std_logic;    -- FE of adc sclk
+
+
+  signal adc_data_16b_s : std_logic_vector(15 downto 0);  -- Save the entire data from ADC
+  signal adc_data_s     : std_logic_vector(11 downto 0);  -- Save the data from adc_sdat input
 
 begin
 
@@ -72,15 +76,12 @@ begin
     if reset_n = '0' then                   -- asynchronous reset (active low)
       adc_cs_n_s <= '1';                    -- Set to '1' on reset
       run_conv   <= '0';
-      stop_conv  <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(en = '1') then
         adc_cs_n_s <= '0';
         run_conv   <= '1';
-        stop_conv  <= '0';
-      elsif(en = '0' and cnt_16 = 16) then
+      elsif(en = '0' and cnt_16_re = 16) then
         adc_cs_n_s <= '1';
-        stop_conv  <= '1';
         run_conv   <= '0';
       end if;
     end if;
@@ -97,17 +98,15 @@ begin
       cnt_sclk   <= 0;
       adc_sclk_s <= '1';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(stop_conv = '1') then
+      if(run_conv = '0') then
         cnt_sclk   <= 0;
         adc_sclk_s <= '1';
       else
-        if(run_conv = '1') then
-          if(cnt_sclk = C_half_T) then
-            adc_sclk_s <= not adc_sclk_s;
-            cnt_sclk   <= 0;
-          else
-            cnt_sclk <= cnt_sclk + 1;
-          end if;
+        if(cnt_sclk = C_half_T) then
+          adc_sclk_s <= not adc_sclk_s;
+          cnt_sclk   <= 0;
+        else
+          cnt_sclk <= cnt_sclk + 1;
         end if;
       end if;
 
@@ -134,20 +133,49 @@ begin
   p_cnt16_mng : process (clock, reset_n)
   begin  -- process p_cnt16_ng
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      cnt_16 <= 0;
+      cnt_16_re <= 0;
+      cnt_16_fe <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(stop_conv = '1') then
-        cnt_16 <= 0;
+      if(run_conv = '0') then
+        cnt_16_re <= 0;
+        cnt_16_fe <= 0;
       else
         if(adc_sclk_re_s = '1') then
-          if(cnt_16 = 16) then
-            cnt_16 <= 1;
+          if(cnt_16_re = 16) then
+            cnt_16_re <= 1;
           else
-            cnt_16 <= cnt_16 + 1;
+            cnt_16_re <= cnt_16_re + 1;
           end if;
         end if;
+
+        if(adc_sclk_fe_s = '1') then
+          if(cnt_16_fe = 16) then
+            cnt_16_fe <= 1;
+          else
+            cnt_16_fe <= cnt_16_fe + 1;
+          end if;
+        end if;
+
       end if;
     end if;
   end process p_cnt16_mng;
 
+
+  -- purpose: This process save the data from adc_sdat 
+  p_adc_sdat_mng : process (clock, reset_n) is
+  begin  -- process p_adc_sdat_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      adc_data_s     <= (others => '0');
+      adc_data_16b_s <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(run_conv = '0') then
+      else
+        if(adc_sclk_re_s = '1') then
+          adc_data_16b_s(16 - cnt_16_fe) <= adc_sdat;
+        end if;
+      end if;
+    end if;
+  end process p_adc_sdat_mng;
+
+  adc_data <= adc_data_16b_s(11 downto 0);
 end architecture arch_adc128s022_ctrl;

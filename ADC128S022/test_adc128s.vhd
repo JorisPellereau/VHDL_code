@@ -53,7 +53,7 @@ architecture arch_test_adc128s of test_adc128s is
   -- ADC signals
   signal clock       : std_logic := '0';               -- Input system clock
   signal reset_n     : std_logic;       -- Active low asynchronous reset
-  signal adc_sdat    : std_logic;       -- ADC serial data
+  signal adc_sdat    : std_logic := '1';               -- ADC serial data
   signal channel_sel : std_logic_vector(2 downto 0);   -- ADC channel selector
   signal conv_mode   : std_logic_vector(1 downto 0);   -- Conversion mode
   signal en          : std_logic;       -- Enable - Start conversion
@@ -76,7 +76,6 @@ begin
   p_stimuli_test : process
   begin
     -- INITS inputs
-    adc_sdat    <= '0';
     channel_sel <= (others => '0');
     conv_mode   <= (others => '0');
     en          <= '0';
@@ -105,6 +104,24 @@ begin
     wait;
   end process p_stimuli_test;
 
+
+  -- purpose: This process generates data on sdat_in
+  p_adc_sdat_gen : process
+    variable v_cnt_16 : integer range 0 to 16 := 0;  -- Counter of sclk
+  begin  -- process p_adc_sdat_gen
+    wait until falling_edge(adc_sclk);
+    if(v_cnt_16 < 16) then
+      v_cnt_16    := v_cnt_16 + 1;                   -- INC
+      if(v_cnt_16 <= 4) then
+        adc_sdat <= '0';
+      else
+        adc_sdat <= not adc_sdat;
+      end if;
+    else
+      v_cnt_16 := 0;                                 -- RAZ
+    end if;
+
+  end process p_adc_sdat_gen;
 
   -- ADC inst
   adc128s_ctrl_inst : adc128s022_ctrl
