@@ -70,6 +70,7 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
   signal adc_sclk_fe_s  : std_logic;    -- FE of adc sclk
 
   signal adc_data_16b_s : std_logic_vector(15 downto 0);  -- Save the entire data from ADC
+  signal adc_saddr_s    : std_logic_vector(15 downto 0);  -- Data to send to the ADC
   signal adc_data_s     : std_logic_vector(11 downto 0);  -- Save the data from adc_sdat input
 
   signal data_valid_s  : std_logic;     -- Data valid flag
@@ -253,10 +254,13 @@ begin
   -- purpose: This process manages the data to send the the ADC CTRL reg 
   p_adc_saddr_mng : process (clock, reset_n) is
   begin  -- process p_adc_saddr_mng
-    if reset_n = '0' then               -- asynchronous reset (active low)
-
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      adc_saddr_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
-
+      if(run_conv = '1') then
+        if(conv_mode_s = "00") then
+        end if;
+      end if;
     end if;
   end process p_adc_saddr_mng;
 
