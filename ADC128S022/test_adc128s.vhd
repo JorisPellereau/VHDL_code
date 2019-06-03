@@ -98,7 +98,7 @@ begin
     reset_n <= '1';
 
     wait for 10 us;
-    start_prbs <= '1', '0' after 1 us;
+    start_prbs <= '0', '1' after 1 us;
 
 
     for i in 0 to 7 loop
