@@ -23,6 +23,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library lib_prbs;
+use lib_prbs.pkg_prbs.all;
+
 entity test_adc128s is
 
 end entity test_adc128s;
@@ -50,6 +53,12 @@ architecture arch_test_adc128s of test_adc128s is
       data_valid  : out std_logic);     -- Data and Current channel available
   end component;
 
+
+  -- PRBS signals
+  signal lfsr_s     : std_logic_vector(2 downto 0);  -- Output of lfsr
+  signal d_out_lfsr : std_logic;
+  signal start_prbs : std_logic;                     -- Start prbs
+
   -- ADC signals
   signal clock       : std_logic                    := '0';  -- Input system clock
   signal reset_n     : std_logic;       -- Active low asynchronous reset
@@ -76,21 +85,30 @@ begin
   p_stimuli_test : process
   begin
     -- INITS inputs    
-    conv_mode <= (others => '0');
-    en        <= '0';
-    reset_n   <= '1';
+    conv_mode  <= (others => '0');
+    en         <= '0';
+    reset_n    <= '1';
+    start_prbs <= '0';
 
     wait for 10 ns;
 
+    -- Gen reset
     reset_n <= '0';
     wait for 10 us;
     reset_n <= '1';
 
-    -- Start conversion
-    report "Start a conversion";
-    en <= '1';
-    wait for 200*C_T_adc_sclk;
-    en <= '0';
+    wait for 10 us;
+    start_prbs <= '1', '0' after 1 us;
+
+
+    for i in 0 to 7 loop
+      -- Start conversion
+      report "Start a conversion";
+      en <= '1';
+      wait for 2*C_T_adc_sclk;
+      en <= '0';
+      wait for 20*C_T_adc_sclk;
+    end loop;
 
     wait for 100 us;
 
@@ -124,20 +142,29 @@ begin
 
 
   -- purpose: This process manages the channels
-  p_channels_manages : process
-    variable v_cnt_7 : integer range 0 to 7 := 0;  -- Counter to sel the channel    
-  begin
+  -- p_channels_manages : process
+  --   variable v_cnt_7 : integer range 0 to 7 := 0;  -- Counter to sel the channel    
+  -- begin
 
-    if(v_cnt_7 < 7) then
-      v_cnt_7 := v_cnt_7 + 1;
-    else
-      v_cnt_7 := 0;
-    end if;
-    channel_sel <= std_logic_vector(to_unsigned(v_cnt_7, channel_sel'length));
-    wait until falling_edge(data_valid);
+  --   if(v_cnt_7 < 7) then
+  --     v_cnt_7 := v_cnt_7 + 1;
+  --   else
+  --     v_cnt_7 := 0;
+  --   end if;
+  --   channel_sel <= std_logic_vector(to_unsigned(v_cnt_7, channel_sel'length));
+  --   wait until falling_edge(data_valid);
 
-  end process p_channels_manages;
+  -- end process p_channels_manages;
 
+  -- PRBS inst
+  prbs_inst : prbs
+    generic map(prbs_i => 3)
+    port map(lfsr_preload => "110",
+             clk          => data_valid,
+             rst_n        => reset_n,
+             start        => start_prbs,
+             lfsr         => channel_sel,
+             d_out        => d_out_lfsr);
 
   -- ADC inst
   adc128s_ctrl_inst : adc128s022_ctrl
