@@ -245,11 +245,12 @@ begin
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(en_re_s = '1' or data_valid_re_s = '1') then
         next_channel_sel_s <= channel_sel;
+        curr_channel_s     <= next_channel_sel_s;
       end if;
 
-      if(data_valid_fe_s = '1') then
-        curr_channel_s <= next_channel_sel_s;
-      end if;
+    -- if(data_valid_fe_s = '1') then
+    -- curr_channel_s <= next_channel_sel_s;
+    -- end if;
     end if;
   end process p_channel_sel_mng;
 
