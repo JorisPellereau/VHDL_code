@@ -248,8 +248,8 @@ begin
         curr_channel_s     <= next_channel_sel_s;
       end if;
 
-    -- if(data_valid_fe_s = '1') then
-    -- curr_channel_s <= next_channel_sel_s;
+    -- if(data_valid_re_s = '1') then
+    --   curr_channel_s <= next_channel_sel_s;
     -- end if;
     end if;
   end process p_channel_sel_mng;
