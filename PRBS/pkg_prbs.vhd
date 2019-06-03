@@ -22,9 +22,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library lib_prbs;
-use lib_prbs.pkg_prbs.all;
-
 package pkg_prbs is
 
   type int_array is array(0 to 3) of integer range 0 to 32;
