@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-29
--- Last update: 2019-05-29
+-- Last update: 2019-06-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -30,7 +30,6 @@ entity adc128s022_ctrl is
     reset_n     : in  std_logic;        -- Active low asynchronous reset
     adc_sdat    : in  std_logic;        -- ADC serial data
     channel_sel : in  std_logic_vector(2 downto 0);   -- ADC channel selector
-    conv_mode   : in  std_logic_vector(1 downto 0);   -- Conversion mode
     en          : in  std_logic;        -- Enable - Start conversion
     adc_cs_n    : out std_logic;        -- ADC Chip select
     adc_sclk    : out std_logic;        -- ADC Serial Clock
@@ -44,6 +43,9 @@ end entity adc128s022_ctrl;
 
 
 architecture arch_adc128s022_ctrl of adc128s022_ctrl is
+
+
+  -- System Clock : 50Mhz : 20 ns
 
   -- CONSTANTS
   constant C_max_T  : integer := 50;    -- Max counter for the SCLK generation
@@ -69,13 +71,18 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
   signal adc_sclk_re_s  : std_logic;    -- RE of adc_sclk
   signal adc_sclk_fe_s  : std_logic;    -- FE of adc sclk
 
-  signal adc_data_16b_s : std_logic_vector(15 downto 0);  -- Save the entire data from ADC
-  signal adc_saddr_s    : std_logic_vector(15 downto 0);  -- Data to send to the ADC
-  signal adc_data_s     : std_logic_vector(11 downto 0);  -- Save the data from adc_sdat input
+  signal adc_data_16b_s   : std_logic_vector(15 downto 0);  -- Save the entire data from ADC
+  signal adc_saddr_data_s : std_logic_vector(15 downto 0);  -- Data to send to the ADC
+  signal adc_data_s       : std_logic_vector(11 downto 0);  -- Save the data from adc_sdat input
+  signal adc_saddr_s      : std_logic;  -- To output
 
-  signal data_valid_s  : std_logic;     -- Data valid flag
-  signal channel_sel_s : std_logic_vector(2 downto 0);  -- Channel sel signal
-  signal conv_mode_s   : std_logic_vector(1 downto 0);  -- Conversion moe signal
+  signal data_valid_s     : std_logic;  -- Data valid flag
+  signal data_valid_old_s : std_logic;  -- Old data valid_s
+  signal data_valid_re_s  : std_logic;  -- RE of data_valid_s
+  signal data_valid_fe_s  : std_logic;  -- FE of data_valid_s
+
+  signal next_channel_sel_s : std_logic_vector(2 downto 0);  -- Channel sel signal
+  signal curr_channel_s     : std_logic_vector(2 downto 0);  -- Current channel
 
 begin
 
@@ -181,6 +188,7 @@ begin
       adc_data_16b_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(run_conv = '0') then
+
       else
         if(adc_sclk_re_s = '1') then
           adc_data_16b_s(16 - cnt_16_fe) <= adc_sdat;
@@ -189,11 +197,11 @@ begin
     end if;
   end process p_adc_sdat_mng;
 
-  adc_data <= adc_data_16b_s(11 downto 0);
+  adc_data <= adc_data_16b_s(11 downto 0);  -- 12 LSB to output
 
 
   -- purpose: This process manages the datavalid output
-  p_data_valid_mng : process (clock, reset_n) is
+  p_data_valid_mng : process (clock, reset_n)
   begin  -- process p_data_valid_mng
     if reset_n = '0' then               -- asynchronous reset (active low)
       data_valid_s <= '0';
@@ -215,53 +223,68 @@ begin
   data_valid <= data_valid_s;
 
 
-  -- purpose: This process latches the inputs on RE of en
-  p_latch_inputs : process (clock, reset_n) is
-  begin  -- process p_latch_inputs
+  -- purpose: This process manages the RE and FE of data valid
+  p_data_valid_re_fe_mng : process (clock, reset_n)
+  begin  -- process p_data_valid_re_fe_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      conv_mode_s <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge      
-      if(en_re_s = '1') then
-        conv_mode_s <= conv_mode;
+      data_valid_old_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      data_valid_old_s <= data_valid_s;
+    end if;
+  end process p_data_valid_re_fe_mng;
+  data_valid_re_s <= data_valid_s and not data_valid_old_s;
+  data_valid_fe_s <= not data_valid_s and data_valid_old_s;
+
+
+  -- purpose: This process manages the channel selection
+  p_channel_sel_mng : process (clock, reset_n)
+  begin  -- process p_channel_sel_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      next_channel_sel_s <= (others => '0');
+      curr_channel_s     <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(en_re_s = '1' or data_valid_re_s = '1') then
+        next_channel_sel_s <= channel_sel;
+      end if;
+
+      if(data_valid_fe_s = '1') then
+        curr_channel_s <= next_channel_sel_s;
       end if;
     end if;
-  end process p_latch_inputs;
+  end process p_channel_sel_mng;
 
+  adc_channel <= curr_channel_s;
 
-  -- purpose: This process manages the addr to send to the ADC
-  p_mode_sel_mng : process (clock, reset_n) is
-  begin  -- process p_mode_sel_mng
+  -- purpose: This process manages the data to transmit on adc_saddr
+  p_saddr_data_manage : process (clock, reset_n)
+  begin  -- process p_saddr_manage
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      channel_sel_s <= (others => '0');
-      cnt_7         <= 0;
+      adc_saddr_data_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(run_conv = '1') then
-        if(conv_mode_s = "00") then
-          if(cnt_16_re = 16 and adc_sclk_fe_s = '1') then
-            if(cnt_7 = 7) then
-              cnt_7 <= 0;
-            else
-              cnt_7 <= cnt_7 + 1;
-            end if;
-          end if;
-          channel_sel_s <= std_logic_vector(to_unsigned(cnt_7, channel_sel_s'length));
+      adc_saddr_data_s(13 downto 11) <= next_channel_sel_s;
+    end if;
+  end process p_saddr_data_manage;
+
+  -- purpose: This process manages the saddr output 
+  p_saddr_mng : process (clock, reset_n)
+  begin  -- process p_saddr_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      adc_saddr_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+
+
+
+      if(adc_sclk_fe_s = '1') then
+        if(cnt_16_re < 8) then
+          adc_saddr_s <= adc_saddr_data_s(15 - cnt_16_re);
+        else
+          adc_saddr_s <= '0';
         end if;
       end if;
     end if;
-  end process p_mode_sel_mng;
+  end process p_saddr_mng;
 
 
-  -- purpose: This process manages the data to send the the ADC CTRL reg 
-  p_adc_saddr_mng : process (clock, reset_n) is
-  begin  -- process p_adc_saddr_mng
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      adc_saddr_s <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(run_conv = '1') then
-        if(conv_mode_s = "00") then
-        end if;
-      end if;
-    end if;
-  end process p_adc_saddr_mng;
+  adc_saddr <= adc_saddr_s;
 
 end architecture arch_adc128s022_ctrl;
