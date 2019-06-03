@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-29
--- Last update: 2019-05-29
+-- Last update: 2019-06-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 entity test_adc128s is
 
@@ -39,29 +40,28 @@ architecture arch_test_adc128s of test_adc128s is
       clock       : in  std_logic;      -- Input system clock
       reset_n     : in  std_logic;      -- Active low asynchronous reset
       adc_sdat    : in  std_logic;      -- ADC serial data
-      channel_sel : in  std_logic_vector(2 downto 0);   -- ADC channel selector
-      conv_mode   : in  std_logic_vector(1 downto 0);   -- Conversion mode
+      channel_sel : in  std_logic_vector(2 downto 0);  -- ADC channel selector   
       en          : in  std_logic;      -- Enable - Start conversion
       adc_cs_n    : out std_logic;      -- ADC Chip select
       adc_sclk    : out std_logic;      -- ADC Serial Clock
       adc_saddr   : out std_logic;      -- ADC d_in controller
       adc_data    : out std_logic_vector(11 downto 0);  -- ADC data
-      adc_channel : out std_logic_vector(2 downto 0);   -- Current ADC channel
+      adc_channel : out std_logic_vector(2 downto 0);  -- Current ADC channel
       data_valid  : out std_logic);     -- Data and Current channel available
   end component;
 
   -- ADC signals
-  signal clock       : std_logic := '0';               -- Input system clock
+  signal clock       : std_logic                    := '0';  -- Input system clock
   signal reset_n     : std_logic;       -- Active low asynchronous reset
-  signal adc_sdat    : std_logic := '1';               -- ADC serial data
-  signal channel_sel : std_logic_vector(2 downto 0);   -- ADC channel selector
-  signal conv_mode   : std_logic_vector(1 downto 0);   -- Conversion mode
+  signal adc_sdat    : std_logic                    := '1';  -- ADC serial data
+  signal channel_sel : std_logic_vector(2 downto 0) := (others => '0');  -- ADC channel selector
+  signal conv_mode   : std_logic_vector(1 downto 0);  -- Conversion mode
   signal en          : std_logic;       -- Enable - Start conversion
   signal adc_cs_n    : std_logic;       -- ADC Chip select
   signal adc_sclk    : std_logic;       -- ADC Serial Clock
   signal adc_saddr   : std_logic;       -- ADC d_in controller
-  signal adc_data    : std_logic_vector(11 downto 0);  -- ADC data
-  signal adc_channel : std_logic_vector(2 downto 0);   -- Current ADC channel
+  signal adc_data    : std_logic_vector(11 downto 0);        -- ADC data
+  signal adc_channel : std_logic_vector(2 downto 0);  -- Current ADC channel
   signal data_valid  : std_logic;       -- Data and Current channel available
 
 begin
@@ -75,11 +75,10 @@ begin
 
   p_stimuli_test : process
   begin
-    -- INITS inputs
-    channel_sel <= (others => '0');
-    conv_mode   <= (others => '0');
-    en          <= '0';
-    reset_n     <= '1';
+    -- INITS inputs    
+    conv_mode <= (others => '0');
+    en        <= '0';
+    reset_n   <= '1';
 
     wait for 10 ns;
 
@@ -123,13 +122,29 @@ begin
 
   end process p_adc_sdat_gen;
 
+
+  -- purpose: This process manages the channels
+  p_channels_manages : process
+    variable v_cnt_7 : integer range 0 to 7 := 0;  -- Counter to sel the channel    
+  begin
+
+    if(v_cnt_7 < 7) then
+      v_cnt_7 := v_cnt_7 + 1;
+    else
+      v_cnt_7 := 0;
+    end if;
+    channel_sel <= std_logic_vector(to_unsigned(v_cnt_7, channel_sel'length));
+    wait until falling_edge(data_valid);
+
+  end process p_channels_manages;
+
+
   -- ADC inst
   adc128s_ctrl_inst : adc128s022_ctrl
     port map(clock       => clock,
              reset_n     => reset_n,
              adc_sdat    => adc_sdat,
              channel_sel => channel_sel,
-             conv_mode   => conv_mode,
              en          => en,
              adc_cs_n    => adc_cs_n,
              adc_sclk    => adc_sclk,
