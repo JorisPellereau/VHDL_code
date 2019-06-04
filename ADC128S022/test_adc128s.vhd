@@ -103,7 +103,7 @@ begin
 
     report "Start a conversion";
     en <= '1';
-    wait for 40*C_T_adc_sclk;
+    wait for 60*C_T_adc_sclk;
     en <= '0';
     wait for 20*C_T_adc_sclk;
 
