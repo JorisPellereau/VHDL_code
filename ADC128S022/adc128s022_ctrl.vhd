@@ -224,66 +224,66 @@ begin
 
 
   -- purpose: This process manages the RE and FE of data valid
-  p_data_valid_re_fe_mng : process (clock, reset_n)
-  begin  -- process p_data_valid_re_fe_mng
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      data_valid_old_s <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      data_valid_old_s <= data_valid_s;
-    end if;
-  end process p_data_valid_re_fe_mng;
-  data_valid_re_s <= data_valid_s and not data_valid_old_s;
-  data_valid_fe_s <= not data_valid_s and data_valid_old_s;
+  -- p_data_valid_re_fe_mng : process (clock, reset_n)
+  -- begin  -- process p_data_valid_re_fe_mng
+  --   if reset_n = '0' then                   -- asynchronous reset (active low)
+  --     data_valid_old_s <= '0';
+  --   elsif clock'event and clock = '1' then  -- rising clock edge
+  --     data_valid_old_s <= data_valid_s;
+  --   end if;
+  -- end process p_data_valid_re_fe_mng;
+  -- data_valid_re_s <= data_valid_s and not data_valid_old_s;
+  -- data_valid_fe_s <= not data_valid_s and data_valid_old_s;
 
 
   -- purpose: This process manages the channel selection
-  p_channel_sel_mng : process (clock, reset_n)
-  begin  -- process p_channel_sel_mng
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      next_channel_sel_s <= (others => '0');
-      curr_channel_s     <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(en_re_s = '1' or data_valid_re_s = '1') then
-        next_channel_sel_s <= channel_sel;
-        curr_channel_s     <= next_channel_sel_s;
-      end if;
+  -- p_channel_sel_mng : process (clock, reset_n)
+  -- begin  -- process p_channel_sel_mng
+  --   if reset_n = '0' then                   -- asynchronous reset (active low)
+  --     next_channel_sel_s <= (others => '0');
+  --     curr_channel_s     <= (others => '0');
+  --   elsif clock'event and clock = '1' then  -- rising clock edge
+  --     if(en_re_s = '1' or data_valid_re_s = '1') then
+  --       next_channel_sel_s <= channel_sel;
+  --       curr_channel_s     <= next_channel_sel_s;
+  --     end if;
 
-    -- if(data_valid_re_s = '1') then
-    --   curr_channel_s <= next_channel_sel_s;
-    -- end if;
-    end if;
-  end process p_channel_sel_mng;
+  --   -- if(data_valid_re_s = '1') then
+  --   --   curr_channel_s <= next_channel_sel_s;
+  --   -- end if;
+  --   end if;
+  -- end process p_channel_sel_mng;
 
   adc_channel <= curr_channel_s;
 
   -- purpose: This process manages the data to transmit on adc_saddr
-  p_saddr_data_manage : process (clock, reset_n)
-  begin  -- process p_saddr_manage
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      adc_saddr_data_s <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      adc_saddr_data_s(13 downto 11) <= next_channel_sel_s;
-    end if;
-  end process p_saddr_data_manage;
+  -- p_saddr_data_manage : process (clock, reset_n)
+  -- begin  -- process p_saddr_manage
+  --   if reset_n = '0' then                   -- asynchronous reset (active low)
+  --     adc_saddr_data_s <= (others => '0');
+  --   elsif clock'event and clock = '1' then  -- rising clock edge
+  --     adc_saddr_data_s(13 downto 11) <= next_channel_sel_s;
+  --   end if;
+  -- end process p_saddr_data_manage;
 
   -- purpose: This process manages the saddr output 
-  p_saddr_mng : process (clock, reset_n)
-  begin  -- process p_saddr_mng
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      adc_saddr_s <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
+  -- p_saddr_mng : process (clock, reset_n)
+  -- begin  -- process p_saddr_mng
+  --   if reset_n = '0' then                   -- asynchronous reset (active low)
+  --     adc_saddr_s <= '0';
+  --   elsif clock'event and clock = '1' then  -- rising clock edge
 
 
 
-      if(adc_sclk_fe_s = '1') then
-        if(cnt_16_re < 8) then
-          adc_saddr_s <= adc_saddr_data_s(15 - cnt_16_re);
-        else
-          adc_saddr_s <= '0';
-        end if;
-      end if;
-    end if;
-  end process p_saddr_mng;
+  --     if(adc_sclk_fe_s = '1') then
+  --       if(cnt_16_re < 8) then
+  --         adc_saddr_s <= adc_saddr_data_s(15 - cnt_16_re);
+  --       else
+  --         adc_saddr_s <= '0';
+  --       end if;
+  --     end if;
+  --   end if;
+  -- end process p_saddr_mng;
 
 
   adc_saddr <= adc_saddr_s;
