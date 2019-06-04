@@ -140,7 +140,7 @@ begin
         cnt_sclk   <= 0;
         adc_sclk_s <= '1';
       else
-        if(cnt_sclk = C_half_T) then
+        if(cnt_sclk = C_half_T - 1) then
           adc_sclk_s <= not adc_sclk_s;
           cnt_sclk   <= 0;
         else
