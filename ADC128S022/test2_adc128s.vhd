@@ -23,19 +23,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library lib_prbs;
-use lib_prbs.pkg_prbs.all;
+entity test2_adc128s is
 
-entity test_adc128s is
-
-end entity test_adc128s;
+end entity test2_adc128s;
 
 
-architecture arch_test_adc128s of test_adc128s is
+architecture arch_test2_adc128s of test2_adc128s is
 
   -- CONSTANTS
-  constant max_T        : time := 20 ns;  -- Clock Period duration
-  constant C_T_adc_sclk : time := 1 us;   -- ADC sclk T
+  constant max_T        : time := 20 ns;    -- Clock Period duration
+  constant C_T_adc_sclk : time := 0.32 us;  -- Fsclk = 3.125MHz T=0.32us
 
   -- Component
   component adc128s022_ctrl is
@@ -54,10 +51,6 @@ architecture arch_test_adc128s of test_adc128s is
   end component;
 
 
-  -- PRBS signals
-  signal lfsr_s     : std_logic_vector(2 downto 0);  -- Output of lfsr
-  signal d_out_lfsr : std_logic;
-  signal start_prbs : std_logic;                     -- Start prbs
 
   -- ADC signals
   signal clock       : std_logic                    := '0';  -- Input system clock
@@ -85,10 +78,11 @@ begin
   p_stimuli_test : process
   begin
     -- INITS inputs    
-    conv_mode  <= (others => '0');
-    en         <= '0';
-    reset_n    <= '1';
-    start_prbs <= '0';
+    conv_mode   <= (others => '0');
+    en          <= '0';
+    adc_sdat    <= '0';
+    reset_n     <= '1';
+    channel_sel <= (others => '0');
 
     wait for 10 ns;
 
@@ -97,44 +91,22 @@ begin
     wait for 10 us;
     reset_n <= '1';
 
+    channel_sel <= "101";
+
     wait for 10 us;
-    start_prbs <= '0', '1' after 1 us;
-
-
-    report "Start a conversion";
-    en <= '1';
-    wait for 60*C_T_adc_sclk;
-    en <= '0';
-    wait for 20*C_T_adc_sclk;
-
-
-
-
-    for i in 0 to 4 loop
-      -- Start conversion
-      report "Start a conversion";
-      en <= '1';
-      wait for 2*C_T_adc_sclk;
-      en <= '0';
-      wait for 20*C_T_adc_sclk;
-    end loop;
-
-    start_prbs <= '0';
-    wait for 100 us;
-
-    wait;
-
-    -- Start conversion
-    report "Start a conversion";
-    en <= '1';
-    wait for 50*C_T_adc_sclk;
-    en <= '0';
-    wait for 20*C_T_adc_sclk;
-
 
     report "Start a conversion";
     en <= '1';
     wait for 50*C_T_adc_sclk;
+    en <= '0';
+
+    channel_sel <= "110";
+
+    wait for 10 us;
+
+    report "Start a conversion";
+    en <= '1';
+    wait for 10*C_T_adc_sclk;
     en <= '0';
 
     report "end of test !!!!";
@@ -142,51 +114,12 @@ begin
   end process p_stimuli_test;
 
 
-  -- purpose: This process generates data on sdat_in
-  p_adc_sdat_gen : process
-    variable v_cnt_16 : integer range 0 to 16 := 0;  -- Counter of sclk
-  begin  -- process p_adc_sdat_gen
-    wait until falling_edge(adc_sclk);
-    if(v_cnt_16 < 16) then
-      v_cnt_16    := v_cnt_16 + 1;                   -- INC
-      if(v_cnt_16 <= 4) then
-        adc_sdat <= '0';
-      else
-        adc_sdat <= not adc_sdat;
-      end if;
-    else
-      v_cnt_16 := 0;                                 -- RAZ
-    end if;
-
-  end process p_adc_sdat_gen;
 
 
-  -- purpose: This process manages the channels
-  -- p_channels_manages : process
-  --   variable v_cnt_7 : integer range 0 to 7 := 0;  -- Counter to sel the channel    
-  -- begin
 
-  --   if(v_cnt_7 < 7) then
-  --     v_cnt_7 := v_cnt_7 + 1;
-  --   else
-  --     v_cnt_7 := 0;
-  --   end if;
-  --   channel_sel <= std_logic_vector(to_unsigned(v_cnt_7, channel_sel'length));
-  --   wait until falling_edge(data_valid);
 
-  -- end process p_channels_manages;
 
-  -- PRBS inst
-  prbs_inst : prbs
-    generic map(prbs_i => 3)
-    port map(lfsr_preload => "110",
-             clk          => data_valid,
-             rst_n        => reset_n,
-             start        => start_prbs,
-             lfsr         => channel_sel,
-             d_out        => d_out_lfsr);
-
-  -- ADC inst
+-- ADC inst
   adc128s_ctrl_inst : adc128s022_ctrl
     port map(clock       => clock,
              reset_n     => reset_n,
@@ -200,4 +133,4 @@ begin
              adc_channel => adc_channel,
              data_valid  => data_valid);
 
-end architecture arch_test_adc128s;
+end architecture arch_test2_adc128s;
