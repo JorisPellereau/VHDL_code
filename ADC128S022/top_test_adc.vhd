@@ -22,12 +22,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library lib_rs232;
+use lib_rs232.pkg_rs232.all;
 
 entity top_test_adc is
 
   port (
     clock     : in  std_logic;          -- System clock
     reset_n   : in  std_logic;          -- Active low asynchronous reset
+    adc_sdat  : in  std_logic;          -- From ADC
     tx        : out std_logic;          -- TX uart output
     adc_cs_n  : out std_logic;          -- ADC chip select
     adc_sclk  : out std_logic;          -- ADC Clock
@@ -55,21 +58,70 @@ architecture arch_top_test_adc of top_test_adc is
 
 
   -- ADC SIGNALS
-  signal adc_sdat_s    : std_logic;
   signal channel_sel_s : std_logic_vector(2 downto 0);
   signal en_s          : std_logic;
   signal adc_data_s    : std_logic_vector(11 downto 0);
   signal adc_channel_s : std_logic_vector(2 downto 0);
   signal data_valid_s  : std_logic;
 
+
+  -- TX UART signals
+  signal start_tx_s : std_logic;
+  signal tx_data_s  : std_logic_vector(7 downto 0);
+  signal tx_done_s  : std_logic;
+
+
+  -- SIGNALS
+  signal data_ctrl_s : std_logic;       -- Control the data to send
+
 begin  -- architecture arch_top_test_adc
+
+
+  -- purpose: This process manages the ADC 
+  p_adc_manage : process (clock, reset_n) is
+  begin  -- process p_adc_manage
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      channel_sel_s <= (others => '0');
+      en_s          <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      channel_sel_s <= "000";
+      en_s          <= '1';
+    end if;
+  end process p_adc_manage;
+
+
+  -- purpose: This process manage the data to send
+  p_uart_mng : process (clock, reset_n) is
+  begin  -- process p_uart_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      data_ctrl_s <= '0';
+      start_tx_s  <= '0';
+      tx_data_s   <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(data_ctrl_s = '0') then
+        if(tx_done_s = '1') then            -- UART available to send
+          if(data_valid_s = '1') then       -- Latch data when ok
+            tx_data_s   <= adc_data_s(7 downto 0);
+            data_ctrl_s <= '1';
+          end if;
+        end if;
+      else
+        if(tx_done_s = '1') then
+          start_tx_s <= '1';
+        elsif(tx_done_s = '0') then
+          start_tx_s  <= '0';
+          data_ctrl_s <= '0';
+        end if;
+      end if;
+    end if;
+  end process p_uart_mng;
 
 
   -- ADC inst
   adc_ctrl_inst : adc128s022_ctrl
     port map(clock       => clock,
              reset_n     => reset_n,
-             adc_sdat    => adc_sdat_s,
+             adc_sdat    => adc_sdat,
              channel_sel => channel_sel_s,
              en          => en_s,
              adc_cs_n    => adc_cs_n,
@@ -79,5 +131,21 @@ begin  -- architecture arch_top_test_adc
              adc_channel => adc_channel_s,
              data_valid  => data_valid_s);
 
+
+  -- TX UART inst
+  tx_rs232_inst : tx_rs232
+    generic map(stop_bit_number => 1,
+                parity          => none,
+                baudrate        => b115200,
+                data_size       => 8,
+                polarity        => '1',
+                first_bit       => lsb_first,
+                clock_frequency => 50000000)
+    port map(reset_n  => reset_n,
+             clock    => clock,
+             start_tx => start_tx_s,
+             tx_data  => tx_data_s,
+             tx       => tx,
+             tx_done  => tx_done_s);
 
 end architecture arch_top_test_adc;
