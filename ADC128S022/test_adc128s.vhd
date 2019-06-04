@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-29
--- Last update: 2019-06-03
+-- Last update: 2019-06-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -100,6 +100,16 @@ begin
     wait for 10 us;
     start_prbs <= '0', '1' after 1 us;
 
+
+    report "Start a conversion";
+    en <= '1';
+    wait for 20*C_T_adc_sclk;
+    en <= '0';
+    wait for 20*C_T_adc_sclk;
+
+
+    report "End";
+    wait;
 
     for i in 0 to 20 loop
       -- Start conversion

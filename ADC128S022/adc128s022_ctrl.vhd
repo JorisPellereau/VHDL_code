@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-29
--- Last update: 2019-06-03
+-- Last update: 2019-06-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ begin
 
 
   -- purpose: This process save the data from adc_sdat 
-  p_adc_sdat_mng : process (clock, reset_n) is
+  p_adc_sdat_mng : process (clock, reset_n)
   begin  -- process p_adc_sdat_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
       adc_data_s     <= (others => '0');
