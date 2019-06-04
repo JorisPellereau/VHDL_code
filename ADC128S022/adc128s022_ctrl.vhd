@@ -78,13 +78,11 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
   signal adc_data_s       : std_logic_vector(11 downto 0);  -- Save the data from adc_sdat input
   signal adc_saddr_s      : std_logic;  -- To output
 
-  signal data_valid_s     : std_logic;  -- Data valid flag
-  signal data_valid_old_s : std_logic;  -- Old data valid_s
-  signal data_valid_re_s  : std_logic;  -- RE of data_valid_s
-  signal data_valid_fe_s  : std_logic;  -- FE of data_valid_s
+  signal data_valid_s : std_logic;      -- Data valid flag
 
-  signal next_channel_sel_s : std_logic_vector(2 downto 0);  -- Channel sel signal
-  signal curr_channel_s     : std_logic_vector(2 downto 0);  -- Current channel
+  signal curr_channel_s : std_logic_vector(2 downto 0);  -- Current channel
+
+  signal channel_sel_s : std_logic_vector(2 downto 0);  -- Latch channel_sel
 
 begin
 
@@ -200,8 +198,6 @@ begin
   adc_data <= adc_data_16b_s(11 downto 0);  -- 12 LSB to output
 
 
-
-
   -- purpose: This process manages the datavalid output
   p_data_valid_mng : process (clock, reset_n)
   begin  -- process p_data_valid_mng
@@ -234,9 +230,47 @@ begin
   data_valid <= data_valid_s;
 
 
+
+  -- purpose: This process latches the channel in input 
+  p_latch_channel_sel : process (clock, reset_n)
+  begin  -- process p_latch_channel_sel
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      channel_sel_s    <= (others => '0');
+      adc_saddr_data_s <= (others => '0');
+      curr_channel_s   <= (others => '0');
+    elsif clock'event and clock = '1' then  -- rising clock edge
+
+
+      if(en_re_s = '1' or (data_valid_s = '1' and run_conv = '1')) then
+        channel_sel_s <= channel_sel;
+      end if;
+      adc_saddr_data_s(13 downto 11) <= channel_sel;
+
+      if(data_valid_s = '1' and run_conv = '1') then
+        curr_channel_s <= channel_sel_s;
+      end if;
+
+    end if;
+  end process p_latch_channel_sel;
+
+
   adc_channel <= curr_channel_s;
 
+  p_saddr_mng : process (clock, reset_n)
+  begin  -- process p_saddr_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      adc_saddr_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
 
+      if(adc_sclk_fe_s = '1') then
+        if(cnt_16_re < 8) then
+          adc_saddr_s <= adc_saddr_data_s(15 - cnt_16_re);
+        else
+          adc_saddr_s <= '0';
+        end if;
+      end if;
+    end if;
+  end process p_saddr_mng;
   adc_saddr <= adc_saddr_s;
 
 end architecture arch_adc128s022_ctrl;

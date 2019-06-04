@@ -103,15 +103,14 @@ begin
 
     report "Start a conversion";
     en <= '1';
-    wait for 20*C_T_adc_sclk;
+    wait for 40*C_T_adc_sclk;
     en <= '0';
     wait for 20*C_T_adc_sclk;
 
 
-    report "End";
-    wait;
 
-    for i in 0 to 20 loop
+
+    for i in 0 to 4 loop
       -- Start conversion
       report "Start a conversion";
       en <= '1';
@@ -123,7 +122,7 @@ begin
     start_prbs <= '0';
     wait for 100 us;
 
-
+    wait;
 
     -- Start conversion
     report "Start a conversion";
