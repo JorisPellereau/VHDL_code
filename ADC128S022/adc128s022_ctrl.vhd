@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-29
--- Last update: 2019-06-04
+-- Last update: 2019-06-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ architecture arch_adc128s022_ctrl of adc128s022_ctrl is
 
   -- System Clock : 50Mhz : 20 ns
   -- CONSTANTS
-  constant C_max_T  : integer := 16;         -- 50 : 1 MHz 16 : 3.125 MHz
+  constant C_max_T  : integer := 50;         -- 50 : 1 MHz 16 : 3.125 MHz
   constant C_half_T : integer := C_max_T/2;  -- Half T of sclk
 
   -- SIGNALS
