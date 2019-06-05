@@ -109,7 +109,12 @@ compile_v_src : clean
 	$(VLOG1) $(LIB_TB_TOP) $(src_v);
 
 
-# Launch VHD simulation
+# Launch VHD simulation in GUI
 run_vhd_1 :	compile_vhd_src
 		cd $(WORK_DIR); \
 		vsim  -novopt -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
+
+# Launch modelsim Simulation in console
+run_csl_1 : 	compile_vhd_src
+		cd $(WORK_DIR); \
+		vsim -c -wlf wave.wlf -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
