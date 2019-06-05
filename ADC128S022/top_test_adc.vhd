@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-04
--- Last update: 2019-06-04
+-- Last update: 2019-06-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,7 +34,14 @@ entity top_test_adc is
     tx        : out std_logic;          -- TX uart output
     adc_cs_n  : out std_logic;          -- ADC chip select
     adc_sclk  : out std_logic;          -- ADC Clock
-    adc_saddr : out std_logic);         -- ADC addr
+    adc_saddr : out std_logic;          -- ADC addr
+
+    -- DEBUG : connected to the GPIO pins
+    adc_sdat_o  : out std_logic;
+    adc_cn_n_o  : out std_logic;
+    adc_sclk_o  : out std_logic;
+    adc_saddr_o : out std_logic);
+
 
 end entity top_test_adc;
 
@@ -71,8 +78,16 @@ architecture arch_top_test_adc of top_test_adc is
   signal tx_done_s  : std_logic;
 
 
-  -- SIGNALS
+  -- INTERNALS SIGNALS
   signal data_ctrl_s : std_logic;       -- Control the data to send
+  signal adc_sdat_s  : std_logic;
+  signal adc_cs_n_s  : std_logic;
+  signal adc_sclk_s  : std_logic;
+  signal adc_saddr_s : std_logic;
+
+
+  signal cnt_2 : integer range 0 to 1;  -- Counter
+  signal cnt   : integer range 0 to 50;
 
 begin  -- architecture arch_top_test_adc
 
@@ -83,56 +98,113 @@ begin  -- architecture arch_top_test_adc
     if reset_n = '0' then                   -- asynchronous reset (active low)
       channel_sel_s <= (others => '0');
       en_s          <= '0';
+      cnt_2         <= 0;
+      cnt           <= 0;
+      start_tx_s    <= '0';
+      tx_data_s     <= (others => '0');
+      cnt           <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
       channel_sel_s <= "000";
-      en_s          <= '1';
+
+      if(cnt = 50) then
+        en_s <= '0';
+      else
+        en_s <= '1';
+        cnt  <= cnt + 1;
+      end if;
+
+      if(data_valid_s = '1') then
+        tx_data_s  <= adc_data_s(7 downto 0);
+        start_tx_s <= '1';
+      -- cnt        <= 0;
+      elsif(tx_done_s = '1') then
+        start_tx_s <= '0';
+        cnt        <= 0;
+      end if;
+
+      -- if(data_valid_s = '1') then
+
+      --   en_s       <= '0';
+      --   tx_data_s  <= adc_data_s(7 downto 0);
+      --   start_tx_s <= '1';
+      -- elsif(tx_done_s = '1') then
+      --   start_tx_s <= '0';
+      --   en_s       <= '1';
+      -- end if;
+
+
+      -- if(cnt_2 = 1) then
+      --   cnt_2 <= 0;
+      --   en_s  <= '0';
+      -- else
+      --   cnt_2 <= cnt_2 + 1;
+      --   en_s  <= '1';
+      -- end if;
+      -- end if;
+
     end if;
   end process p_adc_manage;
 
 
-  -- purpose: This process manage the data to send
-  p_uart_mng : process (clock, reset_n) is
-  begin  -- process p_uart_mng
-    if reset_n = '0' then                   -- asynchronous reset (active low)
-      data_ctrl_s <= '0';
-      start_tx_s  <= '0';
-      tx_data_s   <= (others => '0');
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(data_ctrl_s = '0') then
-        if(tx_done_s = '1') then            -- UART available to send
-          if(data_valid_s = '1') then       -- Latch data when ok
-            tx_data_s   <= adc_data_s(7 downto 0);
-            data_ctrl_s <= '1';
-          end if;
-        end if;
-      else
-        if(tx_done_s = '1') then
-          start_tx_s <= '1';
-        elsif(tx_done_s = '0') then
-          start_tx_s  <= '0';
-          data_ctrl_s <= '0';
-        end if;
-      end if;
-    end if;
-  end process p_uart_mng;
+-- purpose: This process manage the data to send
+-- p_uart_mng : process (clock, reset_n) is
+-- begin  -- process p_uart_mng
+--   if reset_n = '0' then                   -- asynchronous reset (active low)
+--     data_ctrl_s <= '0';
+--     start_tx_s  <= '0';
+--     tx_data_s   <= (others => '0');
+--   elsif clock'event and clock = '1' then  -- rising clock edge
+--     if(data_ctrl_s = '0') then
+--       if(tx_done_s = '1') then            -- UART available to send
+--         if(data_valid_s = '1') then       -- Latch data when ok
+--           tx_data_s   <= adc_data_s(7 downto 0);
+--           data_ctrl_s <= '1';
+--         end if;
+--       end if;
+--     else
+--       if(tx_done_s = '1') then
+--         start_tx_s <= '1';
+--       elsif(tx_done_s = '0') then
+--         start_tx_s  <= '0';
+--         data_ctrl_s <= '0';
+--       end if;
+--     end if;
+--   end if;
+-- end process p_uart_mng;
 
 
-  -- ADC inst
+-- ADC inst
   adc_ctrl_inst : adc128s022_ctrl
     port map(clock       => clock,
              reset_n     => reset_n,
-             adc_sdat    => adc_sdat,
+             adc_sdat    => adc_sdat_s,
              channel_sel => channel_sel_s,
              en          => en_s,
-             adc_cs_n    => adc_cs_n,
-             adc_sclk    => adc_sclk,
-             adc_saddr   => adc_saddr,
+             adc_cs_n    => adc_cs_n_s,
+             adc_sclk    => adc_sclk_s,
+             adc_saddr   => adc_saddr_s,
              adc_data    => adc_data_s,
              adc_channel => adc_channel_s,
              data_valid  => data_valid_s);
 
 
-  -- TX UART inst
+-- From input
+  adc_sdat_s <= adc_sdat;
+
+-- To output  
+  adc_cs_n  <= adc_cs_n_s;
+  adc_sclk  <= adc_sclk_s;
+  adc_saddr <= adc_saddr_s;
+
+-- DEBUG
+  adc_sdat_o  <= adc_sdat_s;
+  adc_cn_n_o  <= adc_cs_n_s;
+  adc_sclk_o  <= adc_sclk_s;
+  adc_saddr_o <= adc_saddr_s;
+
+
+
+-- TX UART inst
   tx_rs232_inst : tx_rs232
     generic map(stop_bit_number => 1,
                 parity          => none,
@@ -147,5 +219,8 @@ begin  -- architecture arch_top_test_adc
              tx_data  => tx_data_s,
              tx       => tx,
              tx_done  => tx_done_s);
+
+
+
 
 end architecture arch_top_test_adc;
