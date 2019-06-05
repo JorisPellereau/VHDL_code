@@ -49,3 +49,5 @@ I2C/\.#i2c_slave\.vhd
 ADC128S022/~\$\$adc128s022_block\.~vsdx
 
 ADC128S022/adc_serial_control\.vhd
+
+Makefile/Makefile~
