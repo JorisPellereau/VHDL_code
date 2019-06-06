@@ -6,7 +6,7 @@
 -- Author     :  
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-05-27
+-- Last update: 2019-06-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ architecture arch of tx_rs232 is
   signal tx_data_s  : std_logic_vector(data_size - 1 downto 0);  -- Latch input data
 
   signal tx_s             : std_logic;  -- To TX output
-  signal cnt_bit_duration : integer range 0 to bit_duration;  -- Bit duration counter
+  signal cnt_bit_duration : integer range 0 to bit_duration - 1;  -- Bit duration counter
 
   signal tick_data : std_logic;         -- Tick in order to generate data
   signal cnt_data  : integer range 0 to data_size;  -- Data counter
@@ -164,7 +164,7 @@ begin  -- architecture arch
       tick_data        <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if (tx_fsm /= idle and tx_fsm /= LATCH_INPUTS and tx_fsm /= stop) then
-        if(cnt_bit_duration < bit_duration) then
+        if(cnt_bit_duration < bit_duration - 1) then
           cnt_bit_duration <= cnt_bit_duration + 1;
           tick_data        <= '0';
         else
