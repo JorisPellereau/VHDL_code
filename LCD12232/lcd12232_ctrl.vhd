@@ -127,7 +127,7 @@ begin  -- architecture arch_lcd12232_ctrl
         end if;
       else
         cnt_rst_s      <= (others => '0');
-        cnt_rst_done_s <= '0'
+        cnt_rst_done_s <= '0';
       end if;
     end if;
   end process p_cnt_rst_mng;
