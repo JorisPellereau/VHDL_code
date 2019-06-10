@@ -98,13 +98,13 @@ src_v=		$(SRC_DIR)/file_1.v \
 
 
 # Compile vhd files in LIB_TB_TOP
-compile_vhd_src : clean
+compile_vhd_src : clean libs
 	cd $(WORK_DIR); \
 	$(VCOM1) $(LIB_TB_TOP) $(src_vhd);
 
 
 # Compile v files in LIB_TB_TOP
-compile_v_src : clean
+compile_v_src : clean libs
 	cd $(WORK_DIR); \
 	$(VLOG1) $(LIB_TB_TOP) $(src_v);
 
