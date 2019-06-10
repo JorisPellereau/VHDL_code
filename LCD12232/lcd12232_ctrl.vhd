@@ -21,7 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 library lib_lcd12232;
 use lib_lcd12232.pkg_lcd12232.all;
@@ -44,9 +44,9 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
 
 
   -- SIGNALS
-  signal starts_rw_s : std_logic_vector;  -- Start a RW transaction on the bus
-  signal rw_s        : std_logic;         -- R/W command  
-  signal a0_s        : std_logic;         -- A0 signal
+  signal start_rw_s : std_logic;        -- Start a RW transaction on the bus
+  signal rw_s       : std_logic;        -- R/W command  
+  signal a0_s       : std_logic;        -- A0 signal
 
 
   signal fsm_rw_s : t_fsm_rw;           -- FSM states
@@ -81,20 +81,20 @@ begin  -- architecture arch_lcd12232_ctrl
   -- purpose: This process manages the bus RW
   p_fsm_rw_mng : process (clock_i, reset_n_i)
   begin  -- process p_fsm_rw_mng
-    if reset_n_i = '0' then                 -- asynchronous reset (active low)
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
       fsm_rw_s        <= IDLE;
       rw_o_s          <= '0';
       a0_s            <= '0';
-      en1_o_s         <= '1';               -- A verifier
+      en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';               -- Set 'Z' on the bus
+      en_data_io_s    <= '0';           -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       start_cnt_1us_s <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       case fsm_rw_s is
 
         when IDLE =>
-          if(starts_rw_s = '1') then
+          if(start_rw_s = '1') then
             fsm_rw_s        <= SET_RW_REG;
             en1_o_s         <= '0';
             en2_o_s         <= '0';
@@ -156,27 +156,27 @@ begin  -- architecture arch_lcd12232_ctrl
   reg_sel_o <= a0_s;
 
   -- DATA selector
-  data_io  <= data_o_s when en_data_io_s = '1' else 'Z';  -- Write on the bus
-  data_i_s <= data_io;                                    -- Read from the bus
+  data_io  <= data_o_s when en_data_io_s = '1' else (others => 'Z');  -- Write on the bus
+  data_i_s <= data_io;                  -- Read from the bus
 
 
 
   -- purpose : This process manages the counters for the FSM rw
   p_cnt_1us : process(clock_i, reset_n_i)
   begin  -- process p_cnt_1us
-    if reset_n_i = '0' then                 -- asynchronous reset (active low)
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
       cnt_1us_s          <= (others => '0');
       cnt_1us_done_s     <= '0';
       cnt_tacc_rd_s      <= (others => '0');
       cnt_tacc_rd_done_s <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_cnt_1us_s = '1') then        -- A voir
-        if(cnt_1us_s < C_MAX_CNT_1U) then
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      if(start_cnt_1us_s = '1') then    -- A voir
+        if(cnt_1us_s < C_MAX_CNT_1US) then
           cnt_1us_done_s <= '0';
           cnt_1us_s      <= cnt_1us_s + 1;
         else
           cnt_1us_done_s <= '1';
-          cnt_1us_s      <= 0;
+          cnt_1us_s      <= (others => '0');
         end if;
       else
         cnt_1us_s      <= (others => '0');
@@ -187,11 +187,11 @@ begin  -- architecture arch_lcd12232_ctrl
         if((cnt_tacc_rd_s < C_MAX_TACC_RD) and cnt_tacc_rd_done_s = '0') then
           cnt_tacc_rd_s <= cnt_tacc_rd_s + 1;  -- Inc cnt
         else
-          cnt_tacc_rd_s      <= '0';
+          cnt_tacc_rd_s      <= (others => '0');
           cnt_tacc_rd_done_s <= '1';
         end if;
       else
-        cnt_tacc_rd_s      <= '0';
+        cnt_tacc_rd_s      <= (others => '0');
         cnt_tacc_rd_done_s <= '0';
       end if;
 

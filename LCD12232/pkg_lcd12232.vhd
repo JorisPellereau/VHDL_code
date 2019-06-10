@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package pkg_lcd12232 is
 
@@ -47,7 +48,7 @@ package pkg_lcd12232 is
 
 
   -- 50*20ns = 1 us
-  constant C_MAX_CNT_1US : unsigned(5 downto 0) := x"32";  -- Max counter for 1 us
+  constant C_MAX_CNT_1US : unsigned(5 downto 0) := "110010";  -- Max counter for 1 us
 
   -- Max acces time : 90 ns => 100 ns
   constant C_MAX_TACC_RD : unsigned(2 downto 0) := "101";  -- MAX access time
