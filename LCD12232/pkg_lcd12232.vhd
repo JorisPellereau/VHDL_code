@@ -57,7 +57,7 @@ package pkg_lcd12232 is
   -- TYPES
   type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
 
-
+  type t_fsm_ctrl is (IDLE, RST_LCD, INIT_LCD, WAIT_LCD);  -- FSM states for the LCd controller
 
   -- COMPONENTS
 
