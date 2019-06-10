@@ -47,6 +47,29 @@ architecture arch_test_lcd12232_ctrl of test_lcd12232_ctrl is
 
 begin
 
+  p_clock_gen : process
+  begin  -- process p_clock_gen
+    clock <= not clock;
+    wait for 10 ns;
+  end process p_clock_gen;
+
+
+  p_stimulis : process is
+  begin  -- process p_stimulis
+
+    -- INIT inputs
+    reset_n <= '1';
+
+    wait for 10 us;
+    reset_n <= '0';
+    wait for 10 us;
+    reset_n <= '1';
+
+
+    
+    report "end of simu !!!";
+    wait;
+  end process p_stimulis;
 
   lcd_inst : lcd12232_ctrl
     port map(clock_i   => clock,
