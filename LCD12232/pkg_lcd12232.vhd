@@ -57,4 +57,20 @@ package pkg_lcd12232 is
   -- TYPES
   type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
 
+
+
+  -- COMPONENTS
+
+  component lcd12232_ctrl is
+    port (
+      clock_i   : in    std_logic;      -- System clock
+      reset_n_i : in    std_logic;      -- Active low asynchronous reset
+      reg_sel_o : out   std_logic;      -- Register sel (A0)
+      en1_o     : out   std_logic;      -- Enable for IC1
+      en2_o     : out   std_logic;      -- Enable for IC2
+      rw_o      : out   std_logic;      -- Read/Write selection
+      rst_o     : out   std_logic;      -- LCD reset
+      data_io   : inout std_logic_vector(7 downto 0));  -- Data to LCD
+  end component;
+
 end package pkg_lcd12232;
