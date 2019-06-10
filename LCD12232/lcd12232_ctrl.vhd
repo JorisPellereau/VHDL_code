@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-07
--- Last update: 2019-06-07
+-- Last update: 2019-06-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ entity lcd12232_ctrl is
   port (
     clock_i   : in    std_logic;        -- System clock
     reset_n_i : in    std_logic;        -- Active low asynchronous reset
-    reg_sel_o : out   std_logic;        -- Register sel
+    reg_sel_o : out   std_logic;        -- Register sel (A0)
     en1_o     : out   std_logic;        -- Enable for IC1
     en2_o     : out   std_logic;        -- Enable for IC2
     rw_o      : out   std_logic;        -- Read/Write selection
@@ -45,9 +45,11 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
 
   -- SIGNALS
   signal starts_rw_s : std_logic_vector;  -- Start a RW transaction on the bus
-  signal run_rw_s    : std_logic;         -- Run RW on the bus
   signal rw_s        : std_logic;         -- R/W command  
   signal a0_s        : std_logic;         -- A0 signal
+
+
+  signal fsm_rw_s : t_fsm_rw;           -- FSM states
 
   -- Data IO signals
   signal en_data_io_s : std_logic;      -- Enable the R or Write on db_o
@@ -64,56 +66,111 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal a0_i_s  : std_logic;                     -- a0 command
 
   -- COUNTERS
-  signal cnt_1us_s      : unsigned(5 downto 0);  -- Counter until 0x32
-  signal cnt_1us_done_s : std_logic;             -- Max cnt 1 us reach
+  signal cnt_1us_s       : unsigned(5 downto 0);  -- Counter until 0x32
+  signal start_cnt_1us_s : std_logic;             -- Start counts
+  signal cnt_1us_done_s  : std_logic;             -- Max cnt 1 us reach
+
+  signal cnt_tacc_rd_s      : unsigned(2 downto 0);  -- Counter until 5
+  signal cnt_tacc_rd_done_s : std_logic;             -- Max cnt reach
+
 
 begin  -- architecture arch_lcd12232_ctrl
 
 
 
-  -- purpose: This process manages the Read or Write transaction on the bus
-  p_RW_manage : process (clock_i, reset_n_i) is
-  begin  -- process p_RW_manage
+  -- purpose: This process manages the bus RW
+  p_fsm_rw_mng : process (clock_i, reset_n_i)
+  begin  -- process p_fsm_rw_mng
     if reset_n_i = '0' then                 -- asynchronous reset (active low)
-      run_rw_s     <= '0';
-      en_data_io_s <= '0';
-      en1_o_s      <= '0';
-      en2_o_s      <= '0';
+      fsm_rw_s        <= IDLE;
+      rw_o_s          <= '0';
+      a0_s            <= '0';
+      en1_o_s         <= '1';               -- A verifier
+      en2_o_s         <= '1';
+      en_data_io_s    <= '0';               -- Set 'Z' on the bus
+      data_o_s        <= (others => '0');
+      start_cnt_1us_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(starts_rw_s = '1') then
-        run_rw_s <= '1';
-      end if;
+      case fsm_rw_s is
 
-      if(run_rw_s = '1') then
-        rw_o_s <= rw_i_s;
-        a0_s   <= a0_i_s;
-        if(cnt_1us_done_s = '1') then
-          en1_o_s <= not en1_o_s;
-          en2_o_s <= not en2_o_s;
-        end if;
+        when IDLE =>
+          if(starts_rw_s = '1') then
+            fsm_rw_s        <= SET_RW_REG;
+            en1_o_s         <= '0';
+            en2_o_s         <= '0';
+            start_cnt_1us_s <= '1';
+          end if;
 
-      end if;
+        when SET_RW_REG =>
+          rw_o_s <= rw_i_s;
+          a0_s   <= a0_i_s;
+          if(cnt_1us_done_s = '1') then
+            fsm_rw_s <= SET_ENi;
+          end if;
+
+        when SET_ENi =>
+          en1_o_s <= '1';
+          en2_o_s <= '1';
+          if(rw_o_s = '0') then
+            fsm_rw_s <= WR_DATA;
+          elsif(rw_o_s = '1') then
+            fsm_rw_s <= RD_DATA;
+          end if;
+
+        when WR_DATA =>
+          en_data_io_s <= '1';
+          data_o_s     <= wdata_s;
+          if(cnt_1us_done_s = '1') then
+            fsm_rw_s        <= RST_ENi;
+            start_cnt_1us_s <= '0';
+          end if;
+
+        when RD_DATA =>
+          if(cnt_tacc_rd_done_s = '1') then
+            rdata_s <= data_i_s;
+          end if;
+          if(cnt_1us_done_s = '1') then
+            fsm_rw_s        <= RST_ENi;
+            start_cnt_1us_s <= '0';
+          end if;
+
+        when RST_ENi =>
+          en1_o_s  <= '0';
+          en2_o_s  <= '0';
+          fsm_rw_s <= RST_DATA;
+
+        when RST_DATA =>
+          en_data_io_s <= '0';          -- Set 'Z' on the bus
+          data_o_s     <= (others => '0');
+          fsm_rw_s     <= IDLE;
+
+        when others => null;
+      end case;
     end if;
-  end process p_RW_manage;
+  end process p_fsm_rw_mng;
 
-
+  -- Output connection
   en1_o     <= en1_o_s;
   en2_o     <= en2_o_s;
   rw_o      <= rw_o_s;
   reg_sel_o <= a0_s;
 
+  -- DATA selector
   data_io  <= data_o_s when en_data_io_s = '1' else 'Z';  -- Write on the bus
   data_i_s <= data_io;                                    -- Read from the bus
 
 
-  -- purposeThis process counts until 50 in order to control enables outputs
+
+  -- purpose : This process manages the counters for the FSM rw
   p_cnt_1us : process(clock_i, reset_n_i)
   begin  -- process p_cnt_1us
     if reset_n_i = '0' then                 -- asynchronous reset (active low)
-      cnt_1us_s      <= (others => '0');
-      cnt_1us_done_s <= '0';
+      cnt_1us_s          <= (others => '0');
+      cnt_1us_done_s     <= '0';
+      cnt_tacc_rd_s      <= (others => '0');
+      cnt_tacc_rd_done_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(run_rw_s = '1') then
+      if(start_cnt_1us_s = '1') then        -- A voir
         if(cnt_1us_s < C_MAX_CNT_1U) then
           cnt_1us_done_s <= '0';
           cnt_1us_s      <= cnt_1us_s + 1;
@@ -124,6 +181,18 @@ begin  -- architecture arch_lcd12232_ctrl
       else
         cnt_1us_s      <= (others => '0');
         cnt_1us_done_s <= '0';
+      end if;
+
+      if(fsm_rw_s = RD_DATA) then
+        if((cnt_tacc_rd_s < C_MAX_TACC_RD) and cnt_tacc_rd_done_s = '0') then
+          cnt_tacc_rd_s <= cnt_tacc_rd_s + 1;  -- Inc cnt
+        else
+          cnt_tacc_rd_s      <= '0';
+          cnt_tacc_rd_done_s <= '1';
+        end if;
+      else
+        cnt_tacc_rd_s      <= '0';
+        cnt_tacc_rd_done_s <= '0';
       end if;
 
     end if;
