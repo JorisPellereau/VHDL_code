@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-07
--- Last update: 2019-06-07
+-- Last update: 2019-06-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -27,6 +27,8 @@ package pkg_lcd12232 is
   -- Inputs clock : 50MHz : Tclk = 20 ns
 
   -- CONSTANTS
+
+  -- LCD12232 Commands
   constant C_DISPLAY_ON       : std_logic_vector(7 downto 0) := x"AF";  -- Display on
   constant C_DISPLAY_OFF      : std_logic_vector(7 downto 0) := x"AE";  -- Display off
   constant C_SET_PAGE_0       : std_logic_vector(7 downto 0) := x"B8";  -- Page address set 0
@@ -44,7 +46,14 @@ package pkg_lcd12232 is
   constant C_RST_DISPLAY      : std_logic_vector(7 downto 0) := x"E2";  -- Reset display
 
 
-  constant C_MAX_CNT_1US : unsigned(5 downto 0) := x"32";  -- Max coutner for 1 us
+  -- 50*20ns = 1 us
+  constant C_MAX_CNT_1US : unsigned(5 downto 0) := x"32";  -- Max counter for 1 us
 
+  -- Max acces time : 90 ns => 100 ns
+  constant C_MAX_TACC_RD : unsigned(2 downto 0) := "101";  -- MAX access time
+
+
+  -- TYPES
+  type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
 
 end package pkg_lcd12232;
