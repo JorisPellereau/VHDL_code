@@ -54,6 +54,9 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal fsm_ctrl_s : t_fsm_ctrl;       -- FSM of the controller
 
 
+  -- Status REG
+  signal status_reg_s : std_logic_vector(7 downto 0);  -- Status register
+
 
   -- Data IO signals
   signal en_data_io_s : std_logic;      -- Enable the R or Write on db_o
@@ -216,6 +219,9 @@ begin  -- architecture arch_lcd12232_ctrl
         else
           start_rw_s <= '0';
         end if;
+      else
+        cnt_init_cmd_done_s <= '0';
+        cnt_init_cmd_s      <= (others => '0');
       end if;
 
     end if;
@@ -262,7 +268,7 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';           -- Set 'Z' on the bus
+      en_data_io_s    <= '0';  -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
