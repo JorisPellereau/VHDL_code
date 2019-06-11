@@ -81,6 +81,9 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal cnt_rst_s      : unsigned(7 downto 0);  -- LCd counter reset
   signal cnt_rst_done_s : std_logic;             -- Max cnt reset reach
 
+  signal cnt_init_cmd_s      : unsigned(2 downto 0);  -- Counts the INIt cmd to transmit
+  signal cnt_init_cmd_done_s : std_logic;             -- Coutner reach
+
 begin  -- architecture arch_lcd12232_ctrl
 
 
@@ -103,6 +106,8 @@ begin  -- architecture arch_lcd12232_ctrl
           end if;
 
         when INIT_LCD =>
+          if(cnt_init_cmd_done_s = '1') then
+          end if;
 
         when others => null;
       end case;
@@ -139,34 +144,96 @@ begin  -- architecture arch_lcd12232_ctrl
   rst_o <= rst_o_s;                     -- Rst output connection
 
 
+  -- purpose: This process set the commands to send on the bus in order to INIT the LCD
+  plcd_init_mng : process (clock_i, reset_n_i)
+  begin  -- process plcd_init_mng
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
+      cnt_init_cmd_done_s <= '0';
+      cnt_init_cmd_s      <= (others => '0');
+
+      start_rw_s <= '0';
+      rw_i_s     <= '0';
+      a0_i_s     <= '0';
+      wdata_s    <= (others => '0');
+
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      if(fsm_ctrl_s = INIT_LCD) then
+
+        if(rw_done_s = '1') then
+
+          -- Gestion du compteur
+          if(cnt_init_cmd_s < C_MAX_INIT_CMD - 1) then
+            cnt_init_cmd_s      <= cnt_init_cmd_s + 1;  -- Inc CNT
+            cnt_init_cmd_done_s <= '0';
+          else
+            cnt_init_cmd_done_s <= '1';
+            cnt_init_cmd_s      <= (others => '0');
+          end if;
+
+          -- Gestion des cmd INIT
+          if(cnt_init_cmd_s = "000") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_DUTY_1_32;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = "001") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_RIGHTWARD;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = "010") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_DISPLAY_LINE_0;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = "011") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_DISPLAY_ON;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = "100") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_END;
+            start_rw_s <= '1';
+          end if;
+
+        else
+          start_rw_s <= '0';
+        end if;
+      end if;
+
+    end if;
+  end process plcd_init_mng;
+
   -- ==== END MAIN FSM MANAGEMENT ==
 
 
 
 
   -- DEBUG purpose: This process manages the send of the command on the bus
-  p_start_rw_mng : process (clock_i, reset_n_i)
-    variable v_en_start : std_logic := '0';  -- init for test
-  begin  -- process p_start_rw_mng
-    if reset_n_i = '0' then                  -- asynchronous reset (active low)
-      start_rw_s <= '0';
-      rw_i_s     <= '0';
-      a0_i_s     <= '0';
-      wdata_s    <= (others => '0');
-      rdata_s    <= (others => '0');
-      v_en_start := '0';
+  -- p_start_rw_mng : process (clock_i, reset_n_i)
+  --   variable v_en_start : std_logic := '0';  -- init for test
+  -- begin  -- process p_start_rw_mng
+  --   if reset_n_i = '0' then                  -- asynchronous reset (active low)
+  --     start_rw_s <= '0';
+  --     rw_i_s     <= '0';
+  --     a0_i_s     <= '0';
+  --     wdata_s    <= (others => '0');
+  --     rdata_s    <= (others => '0');
+  --     v_en_start := '0';
 
-    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-      if(rw_done_s = '1' and v_en_start = '0') then
-        start_rw_s <= '1';
-        rw_i_s     <= '1';
-        a0_i_s     <= '1';
-        v_en_start := '1';
-      else
-        start_rw_s <= '0';
-      end if;
-    end if;
-  end process p_start_rw_mng;
+  --   elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+  --     if(rw_done_s = '1' and v_en_start = '0') then
+  --       start_rw_s <= '1';
+  --       rw_i_s     <= '1';
+  --       a0_i_s     <= '1';
+  --       v_en_start := '1';
+  --     else
+  --       start_rw_s <= '0';
+  --     end if;
+  --   end if;
+  -- end process p_start_rw_mng;
 
 
   -- ==== RW BUS MANAGEMENT ====
@@ -180,8 +247,9 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';           -- Set 'Z' on the bus
+      en_data_io_s    <= '0';  -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
+      rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
       rw_done_s       <= '1';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
