@@ -55,7 +55,7 @@ package pkg_lcd12232 is
   constant C_MAX_TACC_RD : unsigned(2 downto 0) := "101";  -- MAX access time
 
   -- Number of command sor the LCD init
-  constant C_MAX_INIT_CMD : unsigned(2 downto 0) := "101";  -- Number of command for INIT the LCd
+  constant C_MAX_INIT_CMD : unsigned(7 downto 0) := x"05";  -- Number of command for INIT the LCd
 
   -- TYPES
   type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
