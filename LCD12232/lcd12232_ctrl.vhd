@@ -81,7 +81,7 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal cnt_rst_s      : unsigned(7 downto 0);  -- LCd counter reset
   signal cnt_rst_done_s : std_logic;             -- Max cnt reset reach
 
-  signal cnt_init_cmd_s      : unsigned(2 downto 0);  -- Counts the INIt cmd to transmit
+  signal cnt_init_cmd_s      : unsigned(7 downto 0);  -- Counts the INIt cmd to transmit
   signal cnt_init_cmd_done_s : std_logic;             -- Coutner reach
 
 begin  -- architecture arch_lcd12232_ctrl
@@ -171,27 +171,42 @@ begin  -- architecture arch_lcd12232_ctrl
           end if;
 
           -- Gestion des cmd INIT
-          if(cnt_init_cmd_s = "000") then
+          if(cnt_init_cmd_s = x"00") then
             rw_i_s     <= '0';
             a0_i_s     <= '0';
-            wdata_s    <= C_DUTY_1_32;
+            wdata_s    <= C_DISPLAY_OFF;
             start_rw_s <= '1';
-          elsif(cnt_init_cmd_s = "001") then
-            rw_i_s     <= '0';
-            a0_i_s     <= '0';
-            wdata_s    <= C_RIGHTWARD;
-            start_rw_s <= '1';
-          elsif(cnt_init_cmd_s = "010") then
+          elsif(cnt_init_cmd_s = x"01") then
             rw_i_s     <= '0';
             a0_i_s     <= '0';
             wdata_s    <= C_DISPLAY_LINE_0;
             start_rw_s <= '1';
-          elsif(cnt_init_cmd_s = "011") then
+          elsif(cnt_init_cmd_s = x"02") then
             rw_i_s     <= '0';
             a0_i_s     <= '0';
-            wdata_s    <= C_DISPLAY_ON;
+            wdata_s    <= C_STATIC_DRIVE_OFF;
             start_rw_s <= '1';
-          elsif(cnt_init_cmd_s = "100") then
+          elsif(cnt_init_cmd_s = x"03") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_COL_ADDR_0;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = x"04") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_SET_PAGE_0;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = x"05") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_DUTY_1_32;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = x"06") then
+            rw_i_s     <= '0';
+            a0_i_s     <= '0';
+            wdata_s    <= C_RIGHTWARD;
+            start_rw_s <= '1';
+          elsif(cnt_init_cmd_s = x"07") then
             rw_i_s     <= '0';
             a0_i_s     <= '0';
             wdata_s    <= C_END;
@@ -247,7 +262,7 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';  -- Set 'Z' on the bus
+      en_data_io_s    <= '0';           -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
