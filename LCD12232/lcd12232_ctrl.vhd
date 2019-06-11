@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-07
--- Last update: 2019-06-10
+-- Last update: 2019-06-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -116,21 +116,27 @@ begin  -- architecture arch_lcd12232_ctrl
     if reset_n_i = '0' then             -- asynchronous reset (active low)
       cnt_rst_s      <= (others => '0');
       cnt_rst_done_s <= '0';
+      rst_o_s        <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(fsm_ctrl_s = RST_LCD) then
-        if(cnt_rst_s < C_MAX_CNT_1US - 1) then
+        if((cnt_rst_s < C_MAX_CNT_1US - 1) and cnt_rst_done_s = '0') then
           cnt_rst_s      <= cnt_rst_s + 1;
           cnt_rst_done_s <= '0';
+          rst_o_s        <= '1';
         else
           cnt_rst_s      <= (others => '0');
           cnt_rst_done_s <= '1';
+          rst_o_s        <= '0';
         end if;
       else
         cnt_rst_s      <= (others => '0');
         cnt_rst_done_s <= '0';
+        rst_o_s        <= '0';
       end if;
     end if;
   end process p_cnt_rst_mng;
+
+  rst_o <= rst_o_s;                     -- Rst output connection
 
 
   -- ==== END MAIN FSM MANAGEMENT ==
@@ -163,7 +169,7 @@ begin  -- architecture arch_lcd12232_ctrl
   end process p_start_rw_mng;
 
 
-  -- ==== RW BUS MANAGEMENT ==
+  -- ==== RW BUS MANAGEMENT ====
 
   -- purpose: This process manages the bus RW
   p_fsm_rw_mng : process (clock_i, reset_n_i)
@@ -292,7 +298,7 @@ begin  -- architecture arch_lcd12232_ctrl
     end if;
   end process p_cnt_1us;
 
-  -- == END RW BUS MANAGEMENT ==
+  -- ==== END RW BUS MANAGEMENT ====
 
 
 end architecture arch_lcd12232_ctrl;
