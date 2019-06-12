@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-07
--- Last update: 2019-06-11
+-- Last update: 2019-06-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ package pkg_lcd12232 is
   constant C_END              : std_logic_vector(7 downto 0) := x"EE";  -- Cancels RD_modif mode
   constant C_RST_DISPLAY      : std_logic_vector(7 downto 0) := x"E2";  -- Reset display
   constant C_DISPLAY_LINE_0   : std_logic_vector(7 downto 0) := x"C0";  -- Display start line 0
-
+  constant C_COL_ADDR_0       : std_logic_vector(7 downto 0) := x"00";  -- Set column 0
 
   -- 50*20ns = 1 us
   constant C_MAX_CNT_1US : unsigned(5 downto 0) := "110010";  -- Max counter for 1 us
@@ -55,7 +55,7 @@ package pkg_lcd12232 is
   constant C_MAX_TACC_RD : unsigned(2 downto 0) := "101";  -- MAX access time
 
   -- Number of command sor the LCD init
-  constant C_MAX_INIT_CMD : unsigned(7 downto 0) := x"05";  -- Number of command for INIT the LCd
+  constant C_MAX_INIT_CMD : unsigned(7 downto 0) := x"08";  -- Number of command for INIT the LCD
 
   -- TYPES
   type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
