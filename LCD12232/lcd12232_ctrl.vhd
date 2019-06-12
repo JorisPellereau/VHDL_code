@@ -59,7 +59,10 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
 
 
   -- Status REG
-  signal status_reg_s : std_logic_vector(7 downto 0);  -- Status register
+  signal read_status_done_s : std_logic;  -- Read status done
+  signal status_valid_s     : std_logic;  -- Indicates that the status is ready to read
+  signal status_reg_s       : std_logic_vector(7 downto 0);  -- Status register
+
 
 
   -- Data IO signals
@@ -115,10 +118,20 @@ begin  -- architecture arch_lcd12232_ctrl
 
         when INIT_LCD =>
           if(cnt_init_cmd_done_s = '1') then
-            fsm_ctrl_s <= WAIT_LCD;
+            fsm_ctrl_s <= READ_STATUS;
           end if;
 
-        when WAIT_LCD =>
+        when READ_STATUS =>
+          if(status_valid_s = '1') then
+            if(status_reg_s(7) = '1') then  -- LCD BUSY
+              fsm_ctrl_s <= READ_STATUS;
+            else
+              fsm_ctrl_s <= SET_DISPLAY;
+            end if;
+          end if;
+
+        when SET_DISPLAY =>
+
 
         when others => null;
       end case;
@@ -169,6 +182,9 @@ begin  -- architecture arch_lcd12232_ctrl
 
       init_done_s <= '0';
 
+      read_status_done_s <= '0';
+      status_reg_s       <= (others => '0');
+      status_valid_s     <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(fsm_ctrl_s = INIT_LCD) then
 
@@ -243,7 +259,30 @@ begin  -- architecture arch_lcd12232_ctrl
         else
           start_rw_s <= '0';
         end if;
+      elsif(fsm_ctrl_s = READ_STATUS) then
+
+        if(read_status_done_s = '0') then
+          rw_i_s             <= '1';
+          a0_i_s             <= '0';
+          start_rw_s         <= '1';
+          read_status_done_s <= '1';
+          status_valid_s     <= '0';
+
+        else
+          start_rw_s <= '0';
+
+          if(rw_done_re_s = '1') then
+            status_reg_s       <= rdata_s;
+            status_valid_s     <= '1';
+            read_status_done_s <= '0';
+          end if;
+        end if;
+
+
+      elsif(fsm_ctrl_s = SET_DISPLAY) then
+
       else
+
         init_done_s         <= '0';
         start_rw_s          <= '0';
         cnt_init_cmd_done_s <= '0';
@@ -407,8 +446,8 @@ begin  -- architecture arch_lcd12232_ctrl
         elsif(cnt_tacc_rd_s = C_MAX_TACC_RD - 1) then
           cnt_tacc_rd_s      <= (others => '0');
           cnt_tacc_rd_done_s <= '1';
-        elsif(cnt_tacc_rd_done_s = '1') then
-          cnt_tacc_rd_done_s <= '0';
+        -- elsif(cnt_tacc_rd_done_s = '1') then
+        --   cnt_tacc_rd_done_s <= '0';
         end if;
       else
         cnt_tacc_rd_s      <= (others => '0');
