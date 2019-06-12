@@ -78,7 +78,13 @@ begin
     wait until rising_edge(en1_o);
     if(rw_o = '1') then
       wait for 90 ns;
-      data_io <= x"ED";
+      if(v_cnt_data_io < 10) then
+        data_io       <= x"ED";
+        v_cnt_data_io := v_cnt_data_io + 1;
+      else
+        data_io       <= x"79";
+        v_cnt_data_io := 0;
+      end if;
       wait until falling_edge(en1_o);
       wait for 10 ns;
       data_io <= (others => 'Z');

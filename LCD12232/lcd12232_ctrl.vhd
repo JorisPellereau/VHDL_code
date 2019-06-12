@@ -91,9 +91,13 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal cnt_rst_s      : unsigned(7 downto 0);  -- LCd counter reset
   signal cnt_rst_done_s : std_logic;             -- Max cnt reset reach
 
-  signal init_done_s         : std_logic;  -- Indicates if the LCD init is done
+
   signal cnt_init_cmd_s      : unsigned(7 downto 0);  -- Counts the INIt cmd to transmit
   signal cnt_init_cmd_done_s : std_logic;  -- Coutner reach
+  signal init_done_s         : std_logic;  -- Indicates if the LCD init is done
+
+  signal cnt_half_panel : unsigned(7 downto 0);  -- Counts the number of column
+
 
 begin  -- architecture arch_lcd12232_ctrl
 
@@ -185,6 +189,9 @@ begin  -- architecture arch_lcd12232_ctrl
       read_status_done_s <= '0';
       status_reg_s       <= (others => '0');
       status_valid_s     <= '0';
+
+-- cnt_half_panel
+      
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(fsm_ctrl_s = INIT_LCD) then
 
@@ -202,15 +209,6 @@ begin  -- architecture arch_lcd12232_ctrl
 
 
         if(rw_done_s = '1' and init_done_s = '0') then
-
-          -- Gestion du compteur
-          -- if(cnt_init_cmd_s < C_MAX_INIT_CMD - 1) then
-          --   cnt_init_cmd_s      <= cnt_init_cmd_s + 1;  -- Inc CNT
-          --   cnt_init_cmd_done_s <= '0';
-          -- else
-          --   cnt_init_cmd_done_s <= '1';
-          --   cnt_init_cmd_s      <= (others => '0');
-          -- end if;
 
           -- Gestion des cmd INIT
           if(cnt_init_cmd_s = x"00") then
@@ -280,7 +278,11 @@ begin  -- architecture arch_lcd12232_ctrl
 
 
       elsif(fsm_ctrl_s = SET_DISPLAY) then
-
+        
+       
+        if(rw_done_s = '1') then
+          if(
+        end if;
       else
 
         init_done_s         <= '0';
@@ -296,32 +298,6 @@ begin  -- architecture arch_lcd12232_ctrl
 
 
 
-
-  -- DEBUG purpose: This process manages the send of the command on the bus
-  -- p_start_rw_mng : process (clock_i, reset_n_i)
-  --   variable v_en_start : std_logic := '0';  -- init for test
-  -- begin  -- process p_start_rw_mng
-  --   if reset_n_i = '0' then                  -- asynchronous reset (active low)
-  --     start_rw_s <= '0';
-  --     rw_i_s     <= '0';
-  --     a0_i_s     <= '0';
-  --     wdata_s    <= (others => '0');
-  --     rdata_s    <= (others => '0');
-  --     v_en_start := '0';
-
-  --   elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-  --     if(rw_done_s = '1' and v_en_start = '0') then
-  --       start_rw_s <= '1';
-  --       rw_i_s     <= '1';
-  --       a0_i_s     <= '1';
-  --       v_en_start := '1';
-  --     else
-  --       start_rw_s <= '0';
-  --     end if;
-  --   end if;
-  -- end process p_start_rw_mng;
-
-
   -- ==== RW BUS MANAGEMENT ====
 
   -- purpose: This process manages the bus RW
@@ -333,7 +309,7 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';           -- Set 'Z' on the bus
+      en_data_io_s    <= '0';  -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
