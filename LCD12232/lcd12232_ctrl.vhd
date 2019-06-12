@@ -96,7 +96,8 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal cnt_init_cmd_done_s : std_logic;  -- Coutner reach
   signal init_done_s         : std_logic;  -- Indicates if the LCD init is done
 
-  signal cnt_half_panel : unsigned(7 downto 0);  -- Counts the number of column
+  signal cnt_half_panel_s      : unsigned(7 downto 0);  -- Counts the number of column
+  signal cnt_half_panel_done_s : std_logic;             -- Max counter reach
 
 
 begin  -- architecture arch_lcd12232_ctrl
@@ -135,7 +136,11 @@ begin  -- architecture arch_lcd12232_ctrl
           end if;
 
         when SET_DISPLAY =>
+          if(cnt_half_panel_done_s = '1') then
+            fsm_ctrl_s <= WAIT_LCD;
+          end if;
 
+        when WAIT_LCD =>
 
         when others => null;
       end case;
@@ -190,8 +195,8 @@ begin  -- architecture arch_lcd12232_ctrl
       status_reg_s       <= (others => '0');
       status_valid_s     <= '0';
 
--- cnt_half_panel
-      
+      cnt_half_panel_s      <= (others => '0');
+      cnt_half_panel_done_s <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(fsm_ctrl_s = INIT_LCD) then
 
@@ -278,11 +283,49 @@ begin  -- architecture arch_lcd12232_ctrl
 
 
       elsif(fsm_ctrl_s = SET_DISPLAY) then
-        
-       
-        if(rw_done_s = '1') then
-          if(
+
+
+        if(rw_done_re_s = '1') then
+          if(cnt_half_panel_s < C_MAX_HALF_PANEL - 1) then
+            cnt_half_panel_s      <= cnt_half_panel_s + 1;
+            cnt_half_panel_done_s <= '0';
+          else
+            cnt_half_panel_s      <= (others => '0');
+            cnt_half_panel_done_s <= '1';
+          end if;
         end if;
+
+        if(rw_done_s = '1' and cnt_half_panel_done_s = '0') then
+          rw_i_s     <= '0';
+          a0_i_s     <= '1';
+          start_rw_s <= '1';
+          case cnt_half_panel_s is
+
+            when x"00" =>
+              wdata_s <= x"26";
+
+            when x"01" =>
+              wdata_s <= x"49";
+
+            when x"02" =>
+              wdata_s <= x"49";
+
+            when x"03" =>
+              wdata_s <= x"49";
+
+            when x"04" =>
+              wdata_s <= x"32";
+
+            when others =>
+              wdata_s <= (others => '0');
+
+          end case;
+
+        else
+          start_rw_s <= '0';
+        end if;
+      elsif(fsm_ctrl_s = WAIT_LCD) then
+        start_rw_s <= '0';
       else
 
         init_done_s         <= '0';
@@ -309,7 +352,7 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';  -- Set 'Z' on the bus
+      en_data_io_s    <= '0';           -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
