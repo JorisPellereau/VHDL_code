@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-06-10
--- Last update: 2019-06-10
+-- Last update: 2019-06-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -60,16 +60,33 @@ begin
     -- INIT inputs
     reset_n <= '1';
 
-    wait for 10 us;
+    wait for 1 us;
     reset_n <= '0';
-    wait for 10 us;
+    wait for 1 us;
     reset_n <= '1';
 
 
-    
+
     report "end of simu !!!";
     wait;
   end process p_stimulis;
+
+  p_LCD_resp_simul : process
+    variable v_cnt_data_io : integer range 0 to 10 := 0;  -- Counter
+  begin
+
+    wait until rising_edge(en1_o);
+    if(rw_o = '1') then
+      wait for 90 ns;
+      data_io <= x"ED";
+      wait until falling_edge(en1_o);
+      wait for 10 ns;
+      data_io <= (others => 'Z');
+    else
+      data_io <= (others => 'Z');
+    end if;
+  end process p_LCD_resp_simul;
+
 
   lcd_inst : lcd12232_ctrl
     port map(clock_i   => clock,
