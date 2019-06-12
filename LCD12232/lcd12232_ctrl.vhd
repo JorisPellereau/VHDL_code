@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-07
--- Last update: 2019-06-11
+-- Last update: 2019-06-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,8 +48,12 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal a0_s       : std_logic;        -- A0 signal
 
 
-  signal fsm_rw_s  : t_fsm_rw;          -- FSM states RW
-  signal rw_done_s : std_logic;         -- Transaction done
+  signal fsm_rw_s : t_fsm_rw;           -- FSM states RW
+
+
+  signal rw_done_s    : std_logic;      -- Transaction done
+  signal rw_done_s_s  : std_logic;      -- Latch rw_done_s
+  signal rw_done_re_s : std_logic;      -- RE detection of rw_done_s
 
   signal fsm_ctrl_s : t_fsm_ctrl;       -- FSM of the controller
 
@@ -84,8 +88,9 @@ architecture arch_lcd12232_ctrl of lcd12232_ctrl is
   signal cnt_rst_s      : unsigned(7 downto 0);  -- LCd counter reset
   signal cnt_rst_done_s : std_logic;             -- Max cnt reset reach
 
+  signal init_done_s         : std_logic;  -- Indicates if the LCD init is done
   signal cnt_init_cmd_s      : unsigned(7 downto 0);  -- Counts the INIt cmd to transmit
-  signal cnt_init_cmd_done_s : std_logic;             -- Coutner reach
+  signal cnt_init_cmd_done_s : std_logic;  -- Coutner reach
 
 begin  -- architecture arch_lcd12232_ctrl
 
@@ -110,7 +115,10 @@ begin  -- architecture arch_lcd12232_ctrl
 
         when INIT_LCD =>
           if(cnt_init_cmd_done_s = '1') then
+            fsm_ctrl_s <= WAIT_LCD;
           end if;
+
+        when WAIT_LCD =>
 
         when others => null;
       end case;
@@ -159,12 +167,14 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_i_s     <= '0';
       wdata_s    <= (others => '0');
 
+      init_done_s <= '0';
+
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(fsm_ctrl_s = INIT_LCD) then
 
-        if(rw_done_s = '1') then
 
-          -- Gestion du compteur
+        -- Counter inc on RE of rw done
+        if(rw_done_re_s = '1') then
           if(cnt_init_cmd_s < C_MAX_INIT_CMD - 1) then
             cnt_init_cmd_s      <= cnt_init_cmd_s + 1;  -- Inc CNT
             cnt_init_cmd_done_s <= '0';
@@ -172,6 +182,19 @@ begin  -- architecture arch_lcd12232_ctrl
             cnt_init_cmd_done_s <= '1';
             cnt_init_cmd_s      <= (others => '0');
           end if;
+        end if;
+
+
+        if(rw_done_s = '1' and init_done_s = '0') then
+
+          -- Gestion du compteur
+          -- if(cnt_init_cmd_s < C_MAX_INIT_CMD - 1) then
+          --   cnt_init_cmd_s      <= cnt_init_cmd_s + 1;  -- Inc CNT
+          --   cnt_init_cmd_done_s <= '0';
+          -- else
+          --   cnt_init_cmd_done_s <= '1';
+          --   cnt_init_cmd_s      <= (others => '0');
+          -- end if;
 
           -- Gestion des cmd INIT
           if(cnt_init_cmd_s = x"00") then
@@ -210,16 +233,19 @@ begin  -- architecture arch_lcd12232_ctrl
             wdata_s    <= C_RIGHTWARD;
             start_rw_s <= '1';
           elsif(cnt_init_cmd_s = x"07") then
-            rw_i_s     <= '0';
-            a0_i_s     <= '0';
-            wdata_s    <= C_END;
-            start_rw_s <= '1';
+            rw_i_s      <= '0';
+            a0_i_s      <= '0';
+            wdata_s     <= C_END;
+            start_rw_s  <= '1';
+            init_done_s <= '1';
           end if;
 
         else
           start_rw_s <= '0';
         end if;
       else
+        init_done_s         <= '0';
+        start_rw_s          <= '0';
         cnt_init_cmd_done_s <= '0';
         cnt_init_cmd_s      <= (others => '0');
       end if;
@@ -268,12 +294,14 @@ begin  -- architecture arch_lcd12232_ctrl
       a0_s            <= '0';
       en1_o_s         <= '1';           -- A verifier
       en2_o_s         <= '1';
-      en_data_io_s    <= '0';  -- Set 'Z' on the bus
+      en_data_io_s    <= '0';           -- Set 'Z' on the bus
       data_o_s        <= (others => '0');
       rdata_s         <= (others => '0');
       start_cnt_1us_s <= '0';
       rw_done_s       <= '1';
+      rw_done_s_s     <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      rw_done_s_s <= rw_done_s;         -- Old rw_done_s
       case fsm_rw_s is
 
         when IDLE =>
@@ -282,7 +310,7 @@ begin  -- architecture arch_lcd12232_ctrl
             en1_o_s         <= '0';
             en2_o_s         <= '0';
             start_cnt_1us_s <= '1';
-            rw_done_s       <= '1';
+            rw_done_s       <= '0';
           end if;
 
         when SET_RW_REG =>
@@ -327,13 +355,16 @@ begin  -- architecture arch_lcd12232_ctrl
         when RST_DATA =>
           en_data_io_s <= '0';          -- Set 'Z' on the bus
           data_o_s     <= (others => '0');
-          rw_done_s    <= '0';
+          rw_done_s    <= '1';
           fsm_rw_s     <= IDLE;
 
         when others => null;
       end case;
     end if;
   end process p_fsm_rw_mng;
+
+  rw_done_re_s <= rw_done_s and not rw_done_s_s;
+
 
   -- Output connection
   en1_o     <= en1_o_s;
