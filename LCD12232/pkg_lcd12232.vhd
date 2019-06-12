@@ -57,10 +57,15 @@ package pkg_lcd12232 is
   -- Number of command sor the LCD init
   constant C_MAX_INIT_CMD : unsigned(7 downto 0) := x"08";  -- Number of command for INIT the LCD
 
-  -- TYPES
-  type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for the BUS RW
 
-  type t_fsm_ctrl is (IDLE, RST_LCD, INIT_LCD, WAIT_LCD);  -- FSM states for the LCd controller
+  -- Column positions
+  constant C_MAX_HALF_PANEL : unsigned(7 downto 0) := x"3C";  -- Half panel column number
+  constant C_MAX_PANEL      : unsigned(7 downto 0) := x"79";  -- Max panel column
+
+  -- TYPES
+  type t_fsm_rw is (IDLE, SET_RW_REG, SET_ENi, WR_DATA, RD_DATA, RST_ENi, RST_DATA);  -- FSM states for txhe BUS RW
+
+  type t_fsm_ctrl is (IDLE, RST_LCD, INIT_LCD, READ_STATUS, WAIT_LCD, SET_DISPLAY);  -- FSM states for the LCd controller
 
   -- COMPONENTS
 
