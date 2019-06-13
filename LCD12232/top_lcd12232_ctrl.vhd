@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-12
--- Last update: 2019-06-12
+-- Last update: 2019-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ use ieee.std_logic_1164.all;
 library lib_lcd12232;
 use lib_lcd12232.pkg_lcd12232.all;
 
-entity top_lcd12232 is
+entity top_lcd12232_ctrl is
 
   port (
     clock   : in    std_logic;          -- Sys tem clock 50MHz
@@ -38,9 +38,9 @@ entity top_lcd12232 is
     rst_lcd : out   std_logic;          -- Reset LCD
     data_io : inout std_logic_vector(7 downto 0));  -- Data bus line
 
-end entity top_lcd12232;
+end entity top_lcd12232_ctrl;
 
-architecture arch_top_lcd12232 of top_lcd12232 is
+architecture arch_top_lcd12232_ctrl of top_lcd12232_ctrl is
 
 begin
 
@@ -48,7 +48,7 @@ begin
   inst_lcd12232_ctrl : lcd12232_ctrl
     port map(clock_i   => clock,
              reset_n_i => reset_n,
-             reg_se_o  => A0,
+             reg_sel_o => A0,
              en1_o     => en1,
              en2_o     => en2,
              rw_o      => rw,
@@ -57,4 +57,4 @@ begin
 
 
 
-end architecture arch_top_lcd12232;
+end architecture arch_top_lcd12232_ctrl;
