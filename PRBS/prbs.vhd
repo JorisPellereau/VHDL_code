@@ -20,12 +20,8 @@
 -------------------------------------------------------------------------------
 
 
-
 library ieee;
 use ieee.std_logic_1164.all;
-
-library lib_prbs;
-use lib_prbs.pkg_prbs.all;
 
 entity prbs is
   generic(
@@ -33,12 +29,12 @@ entity prbs is
     );
   port(
     -- == INPUTS ==
-    lfsr_preload : in  std_logic_vector(prbs_cst(prbs_i).lfsr_size - 1 downto 0);  -- Preload of the LFSR
+    lfsr_preload : in  std_logic_vector(prbs_i downto 0);  -- Preload of the LFSR
     clk          : in  std_logic;       -- Clock
     rst_n        : in  std_logic;       -- Asynchron RESET
     start        : in  std_logic;       -- Start the sequence
     -- == OUTPUTS ==
-    lfsr         : out std_logic_vector(prbs_cst(prbs_i).lfsr_size - 1 downto 0);  -- LFSR output
+    lfsr         : out std_logic_vector(prbs_i downto 0);  -- LFSR output
     d_out        : out std_logic        -- Serial output
     );
 end entity;
@@ -50,8 +46,8 @@ architecture behv of prbs is
 
 
   -- Modif
-  signal lfsr_reg : std_logic_vector(prbs_i - 1 downto 0);  -- LFSR register
-  signal lfsr_fbk : std_logic;                              -- LFSR feedback
+  signal lfsr_reg : std_logic_vector(prbs_i downto 0);  -- LFSR register
+  signal lfsr_fbk : std_logic;                          -- LFSR feedback
 
 begin
 
@@ -85,7 +81,7 @@ begin
 
 
   -- purpose: this process manages the prbs 
-  p_prbs_gen : process (clk, rst_n) is
+  p_prbs_gen : process (clk, rst_n)
   begin  -- process p_prbs_gen
     if rst_n = '0' then                 -- asynchronous reset (active low)
       lfsr_reg <= (others => '0');
@@ -93,7 +89,8 @@ begin
       if(start = '0') then
         lfsr_reg <= lfsr_preload;
       else
-        lfsr_reg <= lfsr_fbk & lfsr_reg(prbs_i - 2 downto 0) :
+        lfsr_reg <= lfsr_reg(prbs_i - 1 downto 0) & lfsr_fbk;
+      -- lfsr_reg <= 
       end if;
     end if;
   end process p_prbs_gen;
@@ -116,7 +113,7 @@ begin
 
   -- X^4 + X^3 + 1
   g_prbs_4 : if(prbs_i = 4) generate
-    lfsr_fbk <= lfsr_reg(4) + lfsr_reg(3);
+    lfsr_fbk <= lfsr_reg(4) xor lfsr_reg(3);
   end generate;
 
   -- X^5 + X^3 + 1
