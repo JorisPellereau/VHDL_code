@@ -103,10 +103,30 @@ begin
   lfsr  <= lfsr_reg;
 
   -- With generate
-  g_lfsr_2 : if(prbs_i = 2) generate
+
+  -- X^2 + X + 1
+  g_prbs_2 : if(prbs_i = 2) generate
     lfsr_fbk <= lfsr_reg(2) xor lfsr_reg(1);
   end generate;
 
+  -- X^3 + X + 1
+  g_prbs_3 : if(prbs_i = 3) generate
+    lfsr_fbk <= lfsr_reg(3) xor lfsr_reg(1);
+  end generate;
 
+  -- X^4 + X^3 + 1
+  g_prbs_4 : if(prbs_i = 4) generate
+    lfsr_fbk <= lfsr_reg(4) + lfsr_reg(3);
+  end generate;
+
+  -- X^5 + X^3 + 1
+  g_prbs_5 : if(prbs_i = 5) generate
+    lfsr_fbk <= lfsr_reg(5) xor lfsr_reg(3);
+  end generate;
+
+  -- X^6 + X^5 + 1
+  g_prbs_6 : if(prbs_i = 6) generate
+    lfsr_fbk <= lfsr_reg(6) xor lfsr_reg(5);
+  end generate;
 
 end behv;
