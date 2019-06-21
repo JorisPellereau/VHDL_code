@@ -1,0 +1,5 @@
+Test on the DE0 NANO board
+
+Verified : Signle and continuig conversion on each channel
+
+TO DO : Set the good channel when we change the channel conversion
