@@ -3,7 +3,7 @@
 -- Project    : 
 -------------------------------------------------------------------------------
 -- File       : top_de0_nano.vhd
--- Author     :   <JorisPC@JORISP>
+-- Author     :  jojo de la compta  <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-20
 -- Last update: 2019-06-21
@@ -22,6 +22,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library lib_rs232;
+use lib_rs232.pkg_rs232.all;
 
 entity top_de0_nano is
   port (
@@ -34,11 +36,12 @@ entity top_de0_nano is
     adc_sclk  : out std_logic;          -- ADC Clock
     adc_saddr : out std_logic;          -- ADC addr
 
-    -- DEBUG : connected to the GPIO pins
+    -- ADC DEBUG : connected to the GPIO pins
     adc_sdat_o  : out std_logic;
     adc_cn_n_o  : out std_logic;
     adc_sclk_o  : out std_logic;
     adc_saddr_o : out std_logic;
+
 
 
     -- Leds interface
@@ -66,12 +69,20 @@ architecture arch_top_de0_nano of top_de0_nano is
   component NIOS_II_debug is
     port (
       clk_clk                                              : in  std_logic                     := 'X';  -- clk
-      reset_reset_n                                        : in  std_logic                     := 'X';  -- reset_n
-      po_adc_cmd_external_connection_export                : out std_logic_vector(3 downto 0);  -- export
+      pi_adc_channel_data_valid_external_connection_export : in  std_logic_vector(3 downto 0)  := (others => 'X');  -- export
       pi_adc_data_external_connection_export               : in  std_logic_vector(11 downto 0) := (others => 'X');  -- export
-      pi_adc_channel_data_valid_external_connection_export : in  std_logic_vector(3 downto 0)  := (others => 'X')  -- export
+      po_adc_cmd_external_connection_export                : out std_logic_vector(3 downto 0);  -- export
+      reset_reset_n                                        : in  std_logic                     := 'X';  -- reset_n
+      uart_mng_nios_external_connection_in_port            : in  std_logic_vector(7 downto 0)  := (others => 'X');  -- in_port
+      uart_mng_nios_external_connection_out_port           : out std_logic_vector(7 downto 0);  -- out_port
+      uart_nios_external_connection_rxd                    : in  std_logic                     := 'X';  -- rxd
+      uart_nios_external_connection_txd                    : out std_logic;  -- txd
+      uart_tx_rx_cmd_external_connection_in_port           : in  std_logic_vector(2 downto 0)  := (others => 'X');  -- in_port
+      uart_tx_rx_cmd_external_connection_out_port          : out std_logic_vector(2 downto 0)  -- out_port
       );
   end component NIOS_II_debug;
+
+
 
 
   -- SIGNALS
@@ -91,11 +102,24 @@ architecture arch_top_de0_nano of top_de0_nano is
   signal adc_channel_s : std_logic_vector(2 downto 0);
   signal data_valid_s  : std_logic;
 
+
+  -- TX UART SIGNALS
+  signal tx_uart_s : std_logic;
+  signal tx_data_s : std_logic_vector(7 downto 0);
+  signal tx_done_s : std_logic;
+
+  -- RX UART SIGNALS
+  signal rx_uart_s     : std_logic;
+  signal rx_data_s     : std_logic_vector(7 downto 0);
+  signal rx_done_s     : std_logic;
+  signal parity_rcvd_s : std_logic;
+
   -- LEDS SIGNALS
   signal leds_o : std_logic_vector(7 downto 0);
 
   -- NIOS SIGNALS
-  signal po_adc_cmd_s : std_logic_vector(3 downto 0);
+  signal po_adc_cmd_s                                  : std_logic_vector(3 downto 0);
+  signal uart_tx_rx_cmd_external_connection_out_port_s : std_logic_vector(2 downto 0);
 
 begin
 
@@ -115,7 +139,7 @@ begin
   leds_o <= x"AA";
   leds   <= leds_o;
 
-  -- ADC inst
+  --  ===== ADC inst =====
   adc_ctrl_inst : adc128s022_ctrl
     port map(clock       => clock,
              reset_n     => reset_n_synch_s,
@@ -136,20 +160,69 @@ begin
   adc_cs_n  <= adc_cs_n_s;
   adc_sclk  <= adc_sclk_s;
   adc_saddr <= adc_saddr_s;
+  -- ====================
+
+  -- ===== TX UART inst =====
+  tx_uart_inst : tx_rs232
+    generic map (
+      stop_bit_number => 1,
+      parity          => none,
+      baudrate        => b9600,
+      data_size       => 8,
+      polarity        => '1',
+      first_bit       => lsb_first,
+      clock_frequency => 50000000)
+
+    port map (
+      reset_n  => reset_n_synch_s,
+      clock    => clock,
+      start_tx => '0',
+      tx_data  => tx_data_s,
+      tx       => tx_uart_s,
+      tx_done  => tx_done_s);
+  -- ========================
 
 
-
+  -- ===== RX UART inst =====
+  rx_uart_inst : rx_uart
+    generic map (
+      stop_bit_number => 1,
+      parity          => none,
+      baudrate        => b9600,
+      data_size       => 8,
+      polarity        => '1',
+      first_bit       => lsb_first,
+      clock_frequency => 50000000)
+    port map (
+      reset_n     => reset_n_synch_s,
+      clock       => clock,
+      rx          => rx_uart_s,
+      rx_data     => rx_data_s,
+      rx_done     => rx_done_s,
+      parity_rcvd => parity_rcvd_s);
+  -- ========================
 
   -- NIOS DEBUG
+
 
   u0 : component NIOS_II_debug
     port map (
       clk_clk                                              => clock,
-      reset_reset_n                                        => reset_n_synch_s,
-      po_adc_cmd_external_connection_export                => po_adc_cmd_s,
+      pi_adc_channel_data_valid_external_connection_export => (data_valid_s & adc_channel_s),
       pi_adc_data_external_connection_export               => adc_data_s,
-      pi_adc_channel_data_valid_external_connection_export => (data_valid_s & adc_channel_s)
+      po_adc_cmd_external_connection_export                => po_adc_cmd_s,
+      reset_reset_n                                        => reset_n_synch_s,
+      uart_mng_nios_external_connection_in_port            => rx_data_s,
+      uart_mng_nios_external_connection_out_port           => tx_data_s,
+      uart_nios_external_connection_rxd                    => tx_uart_s,
+      uart_nios_external_connection_txd                    => rx_uart_s,
+      uart_tx_rx_cmd_external_connection_in_port           => (others => '0') & rx_done_s & parity_rcvd_s,
+      uart_tx_rx_cmd_external_connection_out_port          => (others => '0') & tx_done_s
       );
+
+  -- To fix
+  -- (others => '0') & tx_done_s <= uart_tx_rx_cmd_external_connection_out_port_s;
+
 
 
   -- To ADC controller
