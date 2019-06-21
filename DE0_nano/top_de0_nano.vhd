@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-20
--- Last update: 2019-06-20
+-- Last update: 2019-06-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,6 +34,13 @@ entity top_de0_nano is
     adc_sclk  : out std_logic;          -- ADC Clock
     adc_saddr : out std_logic;          -- ADC addr
 
+    -- DEBUG : connected to the GPIO pins
+    adc_sdat_o  : out std_logic;
+    adc_cn_n_o  : out std_logic;
+    adc_sclk_o  : out std_logic;
+    adc_saddr_o : out std_logic;
+
+
     -- Leds interface
     leds : out std_logic_vector(7 downto 0));
 end entity top_de0_nano;
@@ -58,12 +65,11 @@ architecture arch_top_de0_nano of top_de0_nano is
 
   component NIOS_II_debug is
     port (
-      clk_clk                                    : in  std_logic                     := 'X';  -- clk
-      reset_reset_n                              : in  std_logic                     := 'X';  -- reset_n
-      pio_adc_cmd_external_connection_export     : out std_logic_vector(3 downto 0);  -- export
-      pio_uart_data_external_connection_export   : in  std_logic_vector(7 downto 0)  := (others => 'X');  -- export
-      pio_adc_data_external_connection_export    : in  std_logic_vector(11 downto 0) := (others => 'X');  -- export
-      pio_adc_channel_external_connection_export : in  std_logic_vector(2 downto 0)  := (others => 'X')  -- export
+      clk_clk                                              : in  std_logic                     := 'X';  -- clk
+      reset_reset_n                                        : in  std_logic                     := 'X';  -- reset_n
+      po_adc_cmd_external_connection_export                : out std_logic_vector(3 downto 0);  -- export
+      pi_adc_data_external_connection_export               : in  std_logic_vector(11 downto 0) := (others => 'X');  -- export
+      pi_adc_channel_data_valid_external_connection_export : in  std_logic_vector(3 downto 0)  := (others => 'X')  -- export
       );
   end component NIOS_II_debug;
 
@@ -89,7 +95,7 @@ architecture arch_top_de0_nano of top_de0_nano is
   signal leds_o : std_logic_vector(7 downto 0);
 
   -- NIOS SIGNALS
-  signal pio_adc_cmd_external_connection_export_s : std_logic_vector(3 downto 0);
+  signal po_adc_cmd_s : std_logic_vector(3 downto 0);
 
 begin
 
@@ -132,17 +138,29 @@ begin
   adc_saddr <= adc_saddr_s;
 
 
+
+
   -- NIOS DEBUG
+
   u0 : component NIOS_II_debug
     port map (
-      clk_clk                                    => clock,
-      reset_reset_n                              => reset_n_synch_s,
-      pio_adc_cmd_external_connection_export     => pio_adc_cmd_external_connection_export_s,
-      pio_uart_data_external_connection_export   => open,
-      pio_adc_data_external_connection_export    => b"111111111111",
-      pio_adc_channel_external_connection_export => adc_channel_s
+      clk_clk                                              => clock,
+      reset_reset_n                                        => reset_n_synch_s,
+      po_adc_cmd_external_connection_export                => po_adc_cmd_s,
+      pi_adc_data_external_connection_export               => adc_data_s,
+      pi_adc_channel_data_valid_external_connection_export => (data_valid_s & adc_channel_s)
       );
 
-  pio_adc_cmd_external_connection_export_s <= en_s & channel_sel_s;
+
+  -- To ADC controller
+  en_s          <= po_adc_cmd_s(3);
+  channel_sel_s <= po_adc_cmd_s(2 downto 0);
+
+  -- DEBUG
+  adc_sdat_o  <= adc_sdat_s;
+  adc_cn_n_o  <= adc_cs_n_s;
+  adc_sclk_o  <= adc_sclk_s;
+  adc_saddr_o <= adc_saddr_s;
+
 end architecture arch_top_de0_nano;
 
