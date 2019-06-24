@@ -6,7 +6,7 @@
 -- Author     :  jojo de la compta  <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-20
--- Last update: 2019-06-21
+-- Last update: 2019-06-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -42,6 +42,9 @@ entity top_de0_nano is
     adc_sclk_o  : out std_logic;
     adc_saddr_o : out std_logic;
 
+    -- RX - TX UART interface
+    -- rx_uart_i : in  std_logic;
+    tx_uart_o : out std_logic;
 
 
     -- Leds interface
@@ -104,9 +107,10 @@ architecture arch_top_de0_nano of top_de0_nano is
 
 
   -- TX UART SIGNALS
-  signal tx_uart_s : std_logic;
-  signal tx_data_s : std_logic_vector(7 downto 0);
-  signal tx_done_s : std_logic;
+  signal tx_uart_s  : std_logic;
+  signal tx_data_s  : std_logic_vector(7 downto 0);
+  signal tx_done_s  : std_logic;
+  signal start_tx_s : std_logic;
 
   -- RX UART SIGNALS
   signal rx_uart_s     : std_logic;
@@ -135,9 +139,11 @@ begin
     end if;
   end process p_resetn_mng;
 
-
+  -- LEDS interface
   leds_o <= x"AA";
   leds   <= leds_o;
+  --
+
 
   --  ===== ADC inst =====
   adc_ctrl_inst : adc128s022_ctrl
@@ -176,10 +182,13 @@ begin
     port map (
       reset_n  => reset_n_synch_s,
       clock    => clock,
-      start_tx => '0',
+      start_tx => start_tx_s,
       tx_data  => tx_data_s,
       tx       => tx_uart_s,
       tx_done  => tx_done_s);
+
+
+  tx_uart_o <= tx_uart_s;
   -- ========================
 
 
@@ -200,11 +209,10 @@ begin
       rx_data     => rx_data_s,
       rx_done     => rx_done_s,
       parity_rcvd => parity_rcvd_s);
+
   -- ========================
 
   -- NIOS DEBUG
-
-
   u0 : component NIOS_II_debug
     port map (
       clk_clk                                              => clock,
@@ -216,12 +224,13 @@ begin
       uart_mng_nios_external_connection_out_port           => tx_data_s,
       uart_nios_external_connection_rxd                    => tx_uart_s,
       uart_nios_external_connection_txd                    => rx_uart_s,
-      uart_tx_rx_cmd_external_connection_in_port           => (others => '0') & rx_done_s & parity_rcvd_s,
-      uart_tx_rx_cmd_external_connection_out_port          => (others => '0') & tx_done_s
+      uart_tx_rx_cmd_external_connection_in_port           => tx_done_s & rx_done_s & parity_rcvd_s,
+      uart_tx_rx_cmd_external_connection_out_port          => uart_tx_rx_cmd_external_connection_out_port_s
       );
 
-  -- To fix
-  -- (others => '0') & tx_done_s <= uart_tx_rx_cmd_external_connection_out_port_s;
+
+  -- TX UART cmd
+  start_tx_s <= uart_tx_rx_cmd_external_connection_out_port_s(0);
 
 
 
@@ -229,7 +238,7 @@ begin
   en_s          <= po_adc_cmd_s(3);
   channel_sel_s <= po_adc_cmd_s(2 downto 0);
 
-  -- DEBUG
+  -- ADC DEBUG
   adc_sdat_o  <= adc_sdat_s;
   adc_cn_n_o  <= adc_cs_n_s;
   adc_sclk_o  <= adc_sclk_s;
