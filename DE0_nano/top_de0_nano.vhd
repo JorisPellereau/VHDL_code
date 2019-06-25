@@ -6,7 +6,7 @@
 -- Author     :  jojo de la compta  <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-20
--- Last update: 2019-06-24
+-- Last update: 2019-06-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -35,6 +35,11 @@ entity top_de0_nano is
     adc_cs_n  : out std_logic;          -- ADC chip select
     adc_sclk  : out std_logic;          -- ADC Clock
     adc_saddr : out std_logic;          -- ADC addr
+
+    -- EEPROM I2C interface
+    i2c_sclk : inout;
+    i2c_sda  : inout;
+
 
     -- ADC DEBUG : connected to the GPIO pins
     adc_sdat_o  : out std_logic;
