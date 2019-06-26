@@ -53,6 +53,7 @@ architecture arch_i2c_eeprom_ctrl of i2c_eeprom_ctrl is
   constant T_scl               : integer := compute_scl_period(scl_frequency, clock_frequency);  -- SCL period according to the I2C config and the input clock freq.
   constant T_2_scl             : integer := T_scl / 2;  -- Half period of SCL
   constant start_stop_duration : integer := T_2_scl;  -- Duration of the start duration
+  constant C_tick_ack          : integer := T_scl/4;  -- Duration to sample the ACK
 
   -- SIGNALS  
   signal start_i2c_old  : std_logic;         -- Latch start_i2c
@@ -66,8 +67,9 @@ architecture arch_i2c_eeprom_ctrl of i2c_eeprom_ctrl is
   signal nb_data_s   : integer range 1 to max_array;  -- Latch nb_data to R/W
   signal wdata_s     : t_byte_array;                  -- Latch data to transmit
 
-  signal start_i2c_s : std_logic;       -- Start the frame
-  signal sack_ok     : std_logic;       -- '0' : KO '1' : OK
+  signal start_i2c_s  : std_logic;      -- Start the frame
+  signal sack_ok      : std_logic;      -- '0' : KO '1' : OK
+  signal sack_error_s : std_logic;      -- Error on sack
 
   signal cnt_start_stop    : integer range 0 to start_stop_duration;  -- Counter that counts until the start duration
   signal start_stop_done_s : std_logic;  -- Flag that indicates if the start condition is done
@@ -75,6 +77,17 @@ architecture arch_i2c_eeprom_ctrl of i2c_eeprom_ctrl is
   signal en_sclk_s      : std_logic;    -- Start the counter for the SCLK
   signal tick_clock     : std_logic;    -- Tick for sclk
   signal cnt_tick_clock : integer range 0 to T_2_scl;  -- Counter that counts until half SCL period
+
+  signal cnt_8        : integer range 0 to 8;  -- Count the bits of a byte
+  signal cnt_8_done_s : std_logic;             -- Cnt_8 reach
+
+  signal en_scl_fe    : std_logic;      -- Falling edge of en_scl
+  signal en_scl_old_s : std_logic;      -- Old en_scl
+
+  signal tick_ack : std_logic;  -- Tick in order to read the ACK from the slave
+  signal cnt_ack  : integer range 0 to C_tick_ack - 1;  -- Counter or the tick
+
+  signal ack_verif_s : std_logic;       -- Ack verif
 
   -- I2C inout signals
   signal scl_in  : std_logic;           -- Read the SCL
@@ -144,6 +157,22 @@ begin  -- architecture arch_i2c_eeprom_ctrl
           end if;
 
         when WR_CHIP =>
+          if(cnt_8_done_s = '1') then
+            i2c_master_fsm <= SACK_CHIP;
+          end if;
+
+        when SACK_CHIP =>
+          if(ack_verif_s = '1') then
+            if(sack_ok = '1') then
+              if(rw_s = '1') then
+                i2c_master_fsm <= RD_DATA;
+              elsif(rw_s = '0') then
+                i2c_master_fsm <= WR_DATA;
+              end if;
+            else
+              i2c_master_fsm <= IDLE;   -- SACK not received
+            end if;
+          end if;
 
         when others => null;
       end case;
@@ -228,17 +257,34 @@ begin  -- architecture arch_i2c_eeprom_ctrl
   p_sda_gen : process (clock, reset_n)
   begin  -- process p_sda_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      en_sda  <= '0';
-      sda_out <= '0';
-      sack_ok <= '0';
+      en_sda       <= '0';
+      sda_out      <= '0';
+      sack_ok      <= '0';
+      sack_error_s <= '0';
+      ack_verif_s  <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_fsm = IDLE) then
         en_sda  <= '0';
         sda_out <= '0';
+
       elsif(i2c_master_fsm = START_GEN) then
         if(cnt_start_stop = (start_stop_duration - 1) / 2) then
           en_sda  <= '1';
-          sda_out <= '0';                   -- Write '0' on the bus
+          sda_out <= '0';               -- Write '0' on the bus
+        end if;
+
+      elsif(i2c_master_fsm = SACK_CHIP) then
+        en_sda  <= '0';
+        sda_out <= '0';                 -- Release the bus
+        if(tick_ack = '1') then
+          ack_verif_s <= '1';
+          if(sda_in = '0') then
+            sack_ok      <= '1';
+            sack_error_s <= '0';
+          else
+            sack_ok      <= '0';
+            sack_error_s <= '1';
+          end if;
         end if;
 
       elsif(i2c_master_fsm = STOP_GEN) then
@@ -277,6 +323,65 @@ begin  -- architecture arch_i2c_eeprom_ctrl
       end if;
     end if;
   end process p_tick_clock_gen;
+
+
+  -- purpose: This process detect the FE of en_scl
+  p_en_scl_fe_mng : process (clock, reset_n)
+  begin  -- process p_en_scl_fe_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      en_scl_old_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      en_scl_old_s <= en_scl;
+    end if;
+  end process p_en_scl_fe_mng;
+  en_scl_fe <= not en_scl and en_scl_old_s;
+
+  -- purpose: This process counts from 0 to 7 
+  p_cnt_8_mng : process (clock, reset_n)
+  begin  -- process p_cnt_8_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_8        <= 0;
+      cnt_8_done_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(i2c_master_fsm = WR_CHIP) then
+        if(en_scl_fe = '1') then
+          if(cnt_8 < 8) then
+            cnt_8        <= cnt_8 + 1;
+            cnt_8_done_s <= '0';
+          else
+            cnt_8        <= 0;
+            cnt_8_done_s <= '1';
+          end if;
+        end if;
+      else
+        cnt_8        <= 0;
+        cnt_8_done_s <= '0';
+      end if;
+    end if;
+  end process p_cnt_8_mng;
+
+
+  -- purpose: This process manages the ACK sampling 
+  p_tick_ack_mng : process (clock, reset_n)
+  begin  -- process p_tick_ack_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      tick_ack <= '0';
+      cnt_ack  <= 0;
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(i2c_master_fsm = SACK_CHIP) then
+        if(cnt_ack < C_tick_ack - 1) then
+          cnt_ack  <= cnt_ack + 1;
+          tick_ack <= '0';
+        else
+          tick_ack <= '1';
+          cnt_ack  <= 0;
+        end if;
+      else
+        tick_ack <= '0';
+        cnt_ack  <= 0;
+      end if;
+    end if;
+  end process p_tick_ack_mng;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output
