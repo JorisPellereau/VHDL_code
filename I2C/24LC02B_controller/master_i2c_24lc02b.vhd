@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-27
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -611,7 +611,7 @@ begin  -- architecture arch_macter_i2c
         end if;
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop = start_stop_duration) then
-          en_sda  <= '0';               -- Set 'Z' => '1' on the sda line
+          en_sda  <= '0';  -- Set 'Z' => '1' on the sda line
           sda_out <= '0';
         else
           en_sda  <= '1';
