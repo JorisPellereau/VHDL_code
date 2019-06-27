@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-27
--- Last update: 2019-05-27
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,3 +21,9 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+
+library lib_i2c;
+use lib_i2c.pkg_i2c.all;
+
+
+

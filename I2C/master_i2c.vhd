@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-28
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ begin  -- architecture arch_macter_i2c
       tick_clock     <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_fsm = WR_CHIP or i2c_master_fsm = SACK_CHIP or i2c_master_fsm = WR_DATA or i2c_master_fsm = SACK_WR or (i2c_master_fsm = RD_DATA) or i2c_master_fsm = MACK) then
-        if(cnt_tick_clock < T_2_scl) then
+        if(cnt_tick_clock < T_2_scl - 1) then
           cnt_tick_clock <= cnt_tick_clock + 1;
           tick_clock     <= '0';
         else
@@ -429,10 +429,10 @@ begin  -- architecture arch_macter_i2c
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration / 2) then
           scl_out <= '0';
-          en_scl  <= '0';                   -- Set 'Z' on the bus => '1'
+          en_scl  <= '0';  -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';                   -- Write '0' on SCL line
+          en_scl  <= '1';  -- Write '0' on SCL line
         end if;
       end if;
     end if;
@@ -542,7 +542,7 @@ begin  -- architecture arch_macter_i2c
         end if;
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop >= start_stop_duration) then
-          en_sda  <= '0';  -- Set 'Z' => '1' on the sda line
+          en_sda  <= '0';               -- Set 'Z' => '1' on the sda line
           sda_out <= '0';
         else
           en_sda  <= '1';

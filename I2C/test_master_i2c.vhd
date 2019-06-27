@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-02
--- Last update: 2019-05-05
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ begin  -- architecture behv_master_i2c
   begin  -- process p_test
 
 
-    report "Constante : " & integer'image(compute_scl_period(f100k, 20000000));
+    report "Constante : " & integer'image(compute_scl_period(f400k, 50000000));
 
     -- Init signals
     start_i2c <= '0';
