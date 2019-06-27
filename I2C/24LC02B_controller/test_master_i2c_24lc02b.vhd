@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-25
--- Last update: 2019-06-26
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ begin  -- architecture arch_test_master_i2c_24lc02b
     start_i2c <= '0';
     rw        <= '0';
     rd_mode   <= (others => '0');
-    wr_mode   <= '0';
+    wr_mode   <= '1';
     chip_addr <= "1111101";
     nb_data   <= 1;
     wdata     <= (others => (others => '0'));

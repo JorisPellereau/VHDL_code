@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-26
--- Last update: 2019-06-26
+-- Last update: 2019-06-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -54,6 +54,12 @@ architecture arch_i2c_eeprom_ctrl of i2c_eeprom_ctrl is
   constant T_2_scl             : integer := T_scl / 2;  -- Half period of SCL
   constant start_stop_duration : integer := T_2_scl;  -- Duration of the start duration
   constant C_tick_ack          : integer := T_scl/4;  -- Duration to sample the ACK
+  constant C_tick_wdata        : integer := T_scl/4;  -- Duration for tick wdata
+
+  -- TYPES
+  type t_eeprom_mode is (BYTE_WR, PAGE_WR, CURR_ADDR_RD, RDM_RD, SEQ_RD, RW_ERROR);  -- Mode of the controller
+
+  signal eeprom_mode : t_eeprom_mode;   -- Mode to transfert via I2C
 
   -- SIGNALS  
   signal start_i2c_old  : std_logic;         -- Latch start_i2c
@@ -82,7 +88,12 @@ architecture arch_i2c_eeprom_ctrl of i2c_eeprom_ctrl is
   signal cnt_8_done_s : std_logic;             -- Cnt_8 reach
 
   signal en_scl_fe    : std_logic;      -- Falling edge of en_scl
+  signal en_scl_re    : std_logic;      -- Rising Edge of en_scl
   signal en_scl_old_s : std_logic;      -- Old en_scl
+
+  signal tick_wdata        : std_logic;  -- Tick for write data on the bus
+  signal cnt_tick_wdata    : integer range 0 to C_tick_wdata;  -- Counter for generated tick_wdata
+  signal en_cnt_tick_wdata : std_logic;  -- Enable the counter
 
   signal tick_ack : std_logic;  -- Tick in order to read the ACK from the slave
   signal cnt_ack  : integer range 0 to C_tick_ack - 1;  -- Counter or the tick
@@ -133,8 +144,13 @@ begin  -- architecture arch_i2c_eeprom_ctrl
         chip_addr_s <= chip_addr;
         nb_data_s   <= nb_data;
         wdata_s     <= wdata;
-        start_i2c_s <= '1';                 -- Start the frame
+        start_i2c_s <= '1';                 -- Start the frame        
       end if;
+
+      if(sack_error_s = '1') then
+        start_i2c_s <= '0';
+      end if;
+
     end if;
   end process p_latch_inputs;
 
@@ -236,7 +252,6 @@ begin  -- architecture arch_i2c_eeprom_ctrl
           en_scl  <= not en_scl;        -- Invert each tick clock
         end if;
 
-
       elsif(i2c_master_fsm = STOP_GEN) then
         if(cnt_start_stop > (start_stop_duration - 1)/ 2) then
           scl_out <= '0';
@@ -264,13 +279,21 @@ begin  -- architecture arch_i2c_eeprom_ctrl
       ack_verif_s  <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_fsm = IDLE) then
-        en_sda  <= '0';
-        sda_out <= '0';
+        en_sda      <= '0';
+        sda_out     <= '0';
+        ack_verif_s <= '0';
 
       elsif(i2c_master_fsm = START_GEN) then
         if(cnt_start_stop = (start_stop_duration - 1) / 2) then
           en_sda  <= '1';
           sda_out <= '0';               -- Write '0' on the bus
+        end if;
+
+      elsif(i2c_master_fsm = WR_CHIP) then
+        if(tick_wdata = '1') then
+          if(cnt_8 < 8) then
+
+          end if;
         end if;
 
       elsif(i2c_master_fsm = SACK_CHIP) then
@@ -295,6 +318,7 @@ begin  -- architecture arch_i2c_eeprom_ctrl
           en_sda  <= '1';
           sda_out <= '0';               -- Set '0' on the sda line
         end if;
+
       end if;
     end if;
   end process p_sda_gen;
@@ -335,6 +359,7 @@ begin  -- architecture arch_i2c_eeprom_ctrl
     end if;
   end process p_en_scl_fe_mng;
   en_scl_fe <= not en_scl and en_scl_old_s;
+  en_scl_re <= en_scl and not en_scl_old_s;
 
   -- purpose: This process counts from 0 to 7 
   p_cnt_8_mng : process (clock, reset_n)
@@ -382,6 +407,43 @@ begin  -- architecture arch_i2c_eeprom_ctrl
       end if;
     end if;
   end process p_tick_ack_mng;
+
+  -- purpose: This process manages the tick for write data on the SDA line 
+  p_tick_wdata_mng : process (clock, reset_n) is
+  begin  -- process p_tick_wdata_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      tick_wdata        <= '0';
+      cnt_tick_wdata    <= 0;
+      en_cnt_tick_wdata <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(en_scl_re = '1') then
+        en_cnt_tick_wdata <= '1';
+      end if;
+
+      if(en_cnt_tick_wdata = '1') then
+        if(cnt_tick_wdata < C_tick_wdata - 1) then
+          cnt_tick_wdata <= cnt_tick_wdata + 1;
+          tick_wdata     <= '0';
+        else
+          tick_wdata        <= '1';
+          en_cnt_tick_wdata <= '0';
+          cnt_tick_wdata    <= 0;
+        end if;
+      end if;
+
+      if(en_cnt_tick_wdata = '0') then
+        tick_wdata <= '0';
+      end if;
+    end if;
+  end process p_tick_wdata_mng;
+
+
+  eeprom_mode <= BYTE_WR when rw_s = '0' and wr_mode_s = '0' else
+                 PAGE_WR      when rw_s = '0' and wr_mode_s = '1' else
+                 CURR_ADDR_RD when rw_s = '1' and rd_mode_s = "00" else
+                 RDM_RD       when rw_s = '1' and rd_mode_s = "01" else
+                 SEQ_RD       when rw_s = '1' and rd_mode_s = "10" else
+                 RW_ERROR;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output
