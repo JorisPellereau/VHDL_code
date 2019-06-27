@@ -22,7 +22,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity test_fsm is
+entity test3_fsm is
 
   port (
     clock   : in  std_logic;                      -- System clock 50MHz
@@ -31,60 +31,69 @@ entity test_fsm is
     bp2     : in  std_logic;                      -- bp2
     leds    : out std_logic_vector(7 downto 0));  -- leds
 
-end entity test_fsm;
+end entity test3_fsm;
 
-architecture arch1 of test_fsm is
+
+
+
+architecture arch3 of test3_fsm is
 
   type t_states is (C0, C1, C2);        -- States
-  signal state : t_states;              -- States
+  signal state, next_state : t_states;  -- States & next state
+  signal leds_s            : std_logic_vector(7 downto 0);
 
-  signal leds_s : std_logic_vector(7 downto 0);
+begin  -- architecture arch3
 
-begin  -- architecture arch1
-
-  -- purpose: This process manages the states of the FSM
-  p_states_mng : process (clock, reset_n) is
-  begin  -- process p_states_mng
+  p_curr_state_mng : process (clock, reset_n) is
+  begin  -- process p_next_state_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      state  <= C0;
-      leds_s <= x"00";
+      state <= C0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-
-      case state is
-        when C0 =>
-          if(bp1 = '1') then
-            state <= C1;
-          end if;
-          leds_s <= x"00";
-        when C1 =>
-          if(bp2 = '1') then
-            state <= C2;
-          end if;
-          leds_s <= x"BE";
-        when C2 =>
-          if(bp1 = '1' and bp2 = '1') then
-            state <= C0;
-          end if;
-          leds_s <= x"81";
-        when others => null;
-      end case;
+      state <= next_state;
     end if;
-  end process p_states_mng;
+  end process p_curr_state_mng;
+
+  p_next_state_mng : process (state, bp1, bp2) is
+  begin  -- process p_next_state_mng
+
+    case state is
+      when C0 =>
+        if(bp1 = '1') then
+          next_state <= C1;
+        end if;
+
+      when C1 =>
+        if(bp2 = '1') then
+          next_state <= C2;
+        end if;
+
+      when C2 =>
+        if(bp1 = '1' and bp2 = '1') then
+          next_state <= C0;
+        end if;
+      when others => null;
+    end case;
+
+  end process p_next_state_mng;
+
+
+  -- purpose: Outputs management 
+  p_out_mng : process (state) is
+  begin  -- process p_out_mng
+
+    case state is
+      when C0 =>
+        leds_s <= x"00";
+
+      when C1 =>
+        leds_s <= x"BE";
+
+      when C2 =>
+        leds_s <= x"81";
+      when others => null;
+    end case;
+  end process p_out_mng;
 
   leds <= leds_s;
 
-end architecture arch1;
-
-
-architecture arch2 of test_fsm is
-
-  type t_states is (C0, C1, C2);        -- States
-  signal state : t_states;              -- States
-
-  signal leds_s : std_logic_vector(7 downto 0);
-
-begin  -- architecture arch2
-
-
-
-end architecture arch2;
+end architecture arch3;
