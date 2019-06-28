@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-05-28
+-- Last update: 2019-06-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ use ieee.std_logic_1164.all;
 package pkg_i2c is
 
   -- CONSTANTS
-  constant max_array : integer := 5;    -- Number max. of byte in the array
+  constant max_array : integer := 10;   -- Number max. of byte in the array
 
   -- NEW TYPES
   type t_byte_array is array (0 to max_array) of std_logic_vector(7 downto 0);  -- Array of bytes
