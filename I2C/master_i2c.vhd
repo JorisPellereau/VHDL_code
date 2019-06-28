@@ -6,7 +6,7 @@
 -- Author     :  Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-06-27
+-- Last update: 2019-06-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ begin  -- architecture arch_macter_i2c
   begin  -- process p_fsm_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
       i2c_master_fsm <= IDLE;
-      i2c_done_s     <= '0';
+      i2c_done_s     <= '1';
     elsif clock'event and clock = '1' then  -- rising clock edge
       case i2c_master_fsm is
         when IDLE =>
