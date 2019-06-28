@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-02
--- Last update: 2019-06-27
+-- Last update: 2019-06-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -163,6 +163,7 @@ begin  -- architecture behv_master_i2c
     -- Reset system
     reset_n <= '0', '1' after 100 ns;
 
+    wait for 10 us;
     chip_addr <= b"1011011";
     rw        <= '0';                   -- Write or read order
     wdata     <= (0 => x"E9", 1 => x"99", others => x"00");
