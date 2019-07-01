@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-06-28
+-- Last update: 2019-07-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ use lib_i2c.pkg_i2c.all;
 
 entity i2c_master is
   generic (
-    scl_frequency   : t_i2c_frequency := f400k;  -- Frequency of SCL clock
+    scl_frequency   : t_i2c_frequency := f400k;      -- Frequency of SCL clock
     clock_frequency : integer         := 20000000);  -- Input clock frequency
   port (
     reset_n      : in    std_logic;     -- Active Low asynchronous reset
@@ -35,7 +35,7 @@ entity i2c_master is
     start_i2c    : in    std_logic;     -- Start an I2C transaction
     rw           : in    std_logic;     -- Read/Write command
     chip_addr    : in    std_logic_vector(6 downto 0);  -- Chip address [0:127]
-    nb_data      : in    integer range 1 to 10;  -- Number of byte to Read or Write
+    nb_data      : in    integer range 1 to C_MAX_DATA;  -- Number of byte to Read or Write
     wdata        : in    std_logic_vector(7 downto 0);  -- Array of data to transmit
     i2c_done     : out   std_logic;     -- I2C transaction done
     sack_error   : out   std_logic;     -- Sack from slave not received
@@ -95,6 +95,11 @@ architecture arch_i2c_master of i2c_master is
   signal sack_ok      : std_logic;      -- '0' : KO '1' : OK
   signal sack_error_s : std_logic;      -- Error on sack
 
+  signal byte_ctrl_s : std_logic_vector(7 downto 0);  -- Control byte
+
+  signal cnt_data_s      : integer range 0 to C_MAX_DATA;  -- Counts the data to transmit
+  signal cnt_data_done_s : std_logic;   -- Counter reach
+
   -- I2C inout signals
   signal scl_in  : std_logic;           -- Read the SCL
   signal sda_in  : std_logic;           -- Read SDA
@@ -119,6 +124,7 @@ begin
     end if;
   end process p_start_i2c_detect;
   -- start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
+
 
   -- purpose: This process latches the inputs when start_i2c_re = '1'
   p_latch_inputs : process (clock, reset_n)
@@ -175,6 +181,24 @@ begin
       when WR_CHIP =>
         if(cnt_8_done_s = '1') then
           next_state <= SACK_CHIP;
+        end if;
+
+      when WR_DATA =>
+        if(cnt_8_done_s = '1') then
+          next_state <= SACK_WR;
+        end if;
+
+      when SACK_WR =>
+        if(ack_verif_s = '1') then
+          if(sack_ok = '1') then
+            if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then
+              next_state <= STOP_GEN;
+            else
+              next_state <= WR_DATA;    -- cnt_data_s < nb_data_s
+            end if;
+          else
+            next_state <= IDLE;         -- SACK not received
+          end if;
         end if;
 
       when SACK_CHIP =>
@@ -241,14 +265,14 @@ begin
   en_scl_fe <= not en_scl and en_scl_old_s;
   en_scl_re <= en_scl and not en_scl_old_s;
 
-  -- purpose: This process counts from 0 to 7 
+  -- purpose: This process counts from 0 to 8 
   p_cnt_8_mng : process (clock, reset_n)
   begin  -- process p_cnt_8_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
       cnt_8        <= 0;
       cnt_8_done_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_state = WR_CHIP) then
+      if(i2c_master_state = WR_CHIP or i2c_master_state = WR_DATA) then
         if(en_scl_fe = '1') then
           if(cnt_8 < 8) then
             cnt_8        <= cnt_8 + 1;
@@ -265,6 +289,33 @@ begin
     end if;
   end process p_cnt_8_mng;
 
+  -- purpose: This process counts the data to transmit/read 
+  p_cnt_nb_data : process (clock, reset_n) is
+  begin  -- process p_cnt_nb_data
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      cnt_data_s      <= 0;
+      cnt_data_done_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(i2c_master_state = IDLE) then
+        cnt_data_s      <= 0;
+        cnt_data_done_s <= '0';
+      else
+
+        if(sack_ok = '1') then
+          if(cnt_data_s < nb_data_s) then
+            cnt_data_s      <= cnt_data_s + 1;
+            cnt_data_done_s <= '0';
+          else
+            cnt_data_done_s <= '1';
+          end if;
+        end if;
+      end if;
+    -- else
+    --   cnt_data_s <= 0;
+    -- end if;
+    end if;
+  end process p_cnt_nb_data;
+
   -- purpose: This process manages the ACK sampling 
   p_tick_ack_mng : process (clock, reset_n)
   begin  -- process p_tick_ack_mng
@@ -272,7 +323,7 @@ begin
       tick_ack <= '0';
       cnt_ack  <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_state = SACK_CHIP) then
+      if(i2c_master_state = SACK_CHIP or i2c_master_state = SACK_WR) then
         if(cnt_ack < C_tick_ack - 1) then
           cnt_ack  <= cnt_ack + 1;
           tick_ack <= '0';
@@ -315,7 +366,7 @@ begin
           en_scl  <= '0';               -- Set 'Z' on the bus => '1'
         else
           scl_out <= '0';
-          en_scl  <= '1';               -- Write '0' on SCL line
+          en_scl  <= '1';  -- Write '0' on SCL line
         end if;
       else
         en_scl  <= '0';
@@ -323,6 +374,9 @@ begin
       end if;
     end if;
   end process p_scl_gen;
+
+
+  byte_ctrl_s <= chip_addr_s & rw_s;
 
   -- purpose: This process manages the SDA lines
   p_sda_gen : process (clock, reset_n)
@@ -340,19 +394,34 @@ begin
         ack_verif_s <= '0';
 
       elsif(i2c_master_state = START_GEN) then
+        ack_verif_s <= '0';
         if(cnt_start_stop = (start_stop_duration - 1) / 2) then
           en_sda  <= '1';
           sda_out <= '0';               -- Write '0' on the bus
         end if;
 
       elsif(i2c_master_state = WR_CHIP) then
+        en_sda      <= '1';             -- Take the bus
+        ack_verif_s <= '0';
         if(tick_wdata = '1') then
           if(cnt_8 < 8) then
-
+            -- MSB first
+            sda_out <= byte_ctrl_s(7 - cnt_8);
           end if;
         end if;
 
-      elsif(i2c_master_state = SACK_CHIP) then
+      elsif(i2c_master_state = WR_DATA) then
+        sack_ok     <= '0';
+        en_sda      <= '1';
+        ack_verif_s <= '0';
+        if(tick_wdata = '1') then
+          if(cnt_8 < 8) then
+            -- MSB FIRST
+            sda_out <= wdata_s(7 - cnt_8);
+          end if;
+        end if;
+
+      elsif(i2c_master_state = SACK_CHIP or i2c_master_state = SACK_WR) then
         en_sda  <= '0';
         sda_out <= '0';                 -- Release the bus
         if(tick_ack = '1') then
@@ -379,7 +448,7 @@ begin
     end if;
   end process p_sda_gen;
 
--- purpose: This process generates tick in order to generate the SCL clock
+  -- purpose: This process generates tick in order to generate the SCL clock
   p_tick_clock_gen : process (clock, reset_n)
   begin  -- process p_tick_clock_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -404,6 +473,34 @@ begin
     end if;
   end process p_tick_clock_gen;
 
+  -- purpose: This process manages the tick for write data on the SDA line 
+  p_tick_wdata_mng : process (clock, reset_n)
+  begin  -- process p_tick_wdata_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      tick_wdata        <= '0';
+      cnt_tick_wdata    <= 0;
+      en_cnt_tick_wdata <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(en_scl_re = '1') then
+        en_cnt_tick_wdata <= '1';
+      end if;
+
+      if(en_cnt_tick_wdata = '1') then
+        if(cnt_tick_wdata < C_tick_wdata - 1) then
+          cnt_tick_wdata <= cnt_tick_wdata + 1;
+          tick_wdata     <= '0';
+        else
+          tick_wdata        <= '1';
+          en_cnt_tick_wdata <= '0';
+          cnt_tick_wdata    <= 0;
+        end if;
+      end if;
+
+      if(en_cnt_tick_wdata = '0') then
+        tick_wdata <= '0';
+      end if;
+    end if;
+  end process p_tick_wdata_mng;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output
