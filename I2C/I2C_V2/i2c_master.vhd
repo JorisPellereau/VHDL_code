@@ -100,6 +100,8 @@ architecture arch_i2c_master of i2c_master is
   signal cnt_data_s      : integer range 0 to C_MAX_DATA;  -- Counts the data to transmit
   signal cnt_data_done_s : std_logic;   -- Counter reach
 
+  signal en_stop_gen : std_logic;       -- When = 1 => go to stop gen state
+
   -- I2C inout signals
   signal scl_in  : std_logic;           -- Read the SCL
   signal sda_in  : std_logic;           -- Read SDA
@@ -149,6 +151,10 @@ begin
         start_i2c_s <= '0';
       end if;
 
+      if(i2c_master_state = STOP_GEN) then
+        start_i2c_s <= '0';
+      end if;
+
     end if;
   end process p_latch_inputs;
 
@@ -169,6 +175,7 @@ begin
 
     case i2c_master_state is
       when IDLE =>
+        en_stop_gen <= '0';
         if(start_i2c_s = '1') then
           next_state <= START_GEN;
         end if;
@@ -191,15 +198,26 @@ begin
       when SACK_WR =>
         if(ack_verif_s = '1') then
           if(sack_ok = '1') then
-            if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then
-              next_state <= STOP_GEN;
+            if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
+              en_stop_gen <= '1';
+              -- elsif(en_stop_gen = '1' and en_scl_re = '1') then
+              next_state  <= STOP_GEN;
             else
               next_state <= WR_DATA;    -- cnt_data_s < nb_data_s
             end if;
           else
             next_state <= IDLE;         -- SACK not received
           end if;
+
+        -- if(en_stop_gen = '1' and en_scl_re = '1') then
+        --   next_state <= STOP_GEN;
+        -- end if;
         end if;
+
+        -- if(en_stop_gen = '1' and en_scl_re = '1') then
+        --   next_state  <= STOP_GEN;
+        --   en_stop_gen <= '0';
+        -- end if;
 
       when SACK_CHIP =>
         if(ack_verif_s = '1') then
@@ -212,6 +230,11 @@ begin
           else
             next_state <= IDLE;         -- SACK not received
           end if;
+        end if;
+
+      when STOP_GEN =>
+        if(start_stop_done_s = '1') then
+          next_state <= IDLE;
         end if;
 
       when others => null;
@@ -237,7 +260,7 @@ begin
           en_sclk_s         <= '1';
         end if;
 
-      elsif(i2c_master_state = STOP_GEN and start_stop_done_s = '0') then
+      elsif(i2c_master_state = STOP_GEN and start_stop_done_s = '0') then  -- and en_scl_re = '1') then
         en_sclk_s <= '0';
         if(cnt_start_stop < start_stop_duration - 1) then
           cnt_start_stop    <= cnt_start_stop + 1;
@@ -252,6 +275,10 @@ begin
       end if;
     end if;
   end process p_tick_start_stop;
+
+
+  -- en_sclk_s <= '1' when (i2c_master_state = START_GEN and start_stop_done_s = '0' and cnt_start_stop = start_stop_duration - 1) else
+  --              '0' when (i2c_master_state = STOP_GEN and start_stop_done_s = '0' and en_scl_re = '1');
 
   -- purpose: This process detect the FE of en_scl
   p_en_scl_fe_mng : process (clock, reset_n)
@@ -272,7 +299,7 @@ begin
       cnt_8        <= 0;
       cnt_8_done_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_state = WR_CHIP or i2c_master_state = WR_DATA) then
+      if(i2c_master_state = WR_CHIP or i2c_master_state = WR_DATA or i2c_master_state = RD_DATA) then
         if(en_scl_fe = '1') then
           if(cnt_8 < 8) then
             cnt_8        <= cnt_8 + 1;
@@ -301,7 +328,7 @@ begin
         cnt_data_done_s <= '0';
       else
 
-        if(sack_ok = '1') then
+        if(tick_ack = '1') then
           if(cnt_data_s < nb_data_s) then
             cnt_data_s      <= cnt_data_s + 1;
             cnt_data_done_s <= '0';
@@ -310,9 +337,7 @@ begin
           end if;
         end if;
       end if;
-    -- else
-    --   cnt_data_s <= 0;
-    -- end if;
+
     end if;
   end process p_cnt_nb_data;
 
@@ -392,12 +417,13 @@ begin
         en_sda      <= '0';
         sda_out     <= '0';
         ack_verif_s <= '0';
-
+        sack_ok     <= '0';
       elsif(i2c_master_state = START_GEN) then
         ack_verif_s <= '0';
+        sack_ok     <= '0';
         if(cnt_start_stop = (start_stop_duration - 1) / 2) then
           en_sda  <= '1';
-          sda_out <= '0';               -- Write '0' on the bus
+          sda_out <= '0';                   -- Write '0' on the bus
         end if;
 
       elsif(i2c_master_state = WR_CHIP) then
