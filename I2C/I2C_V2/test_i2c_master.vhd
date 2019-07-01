@@ -86,7 +86,7 @@ begin
   p_clock_gen : process
   begin  -- process p_clock_gen
     clock <= not clock;
-    wait for 10 ns;
+    wait for 25 ns;
   end process p_clock_gen;
 
 
@@ -164,7 +164,7 @@ begin
   i2c_master_inst : i2c_master
     generic map (
       scl_frequency   => f400k,
-      clock_frequency => 50000000)
+      clock_frequency => 20000000)
     port map (
       reset_n      => reset_n,
       clock        => clock,
