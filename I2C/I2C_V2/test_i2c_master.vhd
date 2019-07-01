@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-06-28
+-- Last update: 2019-07-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -24,6 +24,9 @@ use ieee.std_logic_1164.all;
 
 library lib_i2c;
 use lib_i2c.pkg_i2c.all;
+
+library modelsim_lib;
+use modelsim_lib.util.all;
 
 entity test_i2c_master is
 
@@ -73,6 +76,9 @@ architecture arch_test_i2c_master of test_i2c_master is
   signal scl          : std_logic;
   signal sda          : std_logic;
 
+  -- SPY signals
+  signal spy_i2c_master_state : t_i2c_master_fsm := IDLE;  -- I2C master state spy
+  signal spy_rw_s             : std_logic;  -- RW signal in the I2C Master module
 
 begin
 
@@ -83,6 +89,24 @@ begin
     wait for 10 ns;
   end process p_clock_gen;
 
+
+  p_init_spy : process
+  begin
+    init_signal_spy("/test_i2c_master/i2c_master_inst/i2c_master_state", "/test_i2c_master/spy_i2c_master_state");
+    init_signal_spy("/test_i2c_master/i2c_master_inst/rw_s", "/test_i2c_master/spy_rw_s");
+    wait;
+  end process p_init_spy;
+
+  p_spy_display : process is
+  begin  -- process p_spy_display
+
+    wait until spy_i2c_master_state'event;
+    if(spy_i2c_master_state = SACK_CHIP) then
+      report "MASTER en SACK CHIP !!!!!!!!";
+    end if;
+
+  end process p_spy_display;
+
   p_stimuli : process
   begin  -- process p_stimuli
 
@@ -90,7 +114,7 @@ begin
     start_i2c <= '0';
     rw        <= '0';
     chip_addr <= "1111101";
-    nb_data   <= 1;
+    nb_data   <= 3;
     wdata     <= (others => '0');
 
     wait for 10 us;
@@ -102,6 +126,7 @@ begin
 
     wait for 10 us;
 
+    wdata     <= x"BE";
     -- Start a transaction
     start_i2c <= '1';
     wait for 10 us;
@@ -111,6 +136,29 @@ begin
     report "end of test !!!";
     wait;
   end process p_stimuli;
+
+
+  -- purpose: This process emulates the i2c slave 
+  -- p_slave_emul : process
+  --   variable v_cnt_8 : integer range 0 to 8 := 0;
+  -- begin  -- process p_slave_emul
+
+  --   -- sda <= 'H';                         -- IDLE => pull up
+  --   wait until rising_edge(scl);
+
+  --   if(v_cnt_8 < 8) then
+  --     v_cnt_8 := v_cnt_8 + 1;
+  --   else
+  --     v_cnt_8 := 0;
+  --     if(rw = '0') then
+  --     -- sda <= '0', 'H' after 1.4 us;
+  --     end if;
+  --   end if;
+
+  --   report integer'image(v_cnt_8);
+  -- end process p_slave_emul;
+
+
 
   -- I2C Master INST
   i2c_master_inst : i2c_master
@@ -134,7 +182,7 @@ begin
       sda          => sda);
 
   scl <= 'H';
-  sda <= 'H';
+  sda <= '0' when ((spy_i2c_master_state = SACK_CHIP or spy_i2c_master_state = SACK_WR) and spy_rw_s = '0') else 'H';
 
 
 
