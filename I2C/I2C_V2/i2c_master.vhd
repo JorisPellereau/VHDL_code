@@ -170,7 +170,8 @@ begin
 
   -- purpose: This process manages the state
   p_state_mng : process (i2c_master_state, start_i2c_s, start_stop_done_s,
-                         cnt_8_done_s, ack_verif_s, sack_ok, rw_s)
+                         cnt_8_done_s, ack_verif_s, sack_ok, rw_s, cnt_data_s,
+                         cnt_data_done_s, en_stop_gen, en_scl_re)
   begin
 
     case i2c_master_state is
@@ -197,27 +198,21 @@ begin
 
       when SACK_WR =>
         if(ack_verif_s = '1') then
+
           if(sack_ok = '1') then
             if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
               en_stop_gen <= '1';
-              -- elsif(en_stop_gen = '1' and en_scl_re = '1') then
-              next_state  <= STOP_GEN;
+              if(en_stop_gen = '1' and en_scl_re = '1') then
+                next_state <= STOP_GEN;
+              end if;
             else
               next_state <= WR_DATA;    -- cnt_data_s < nb_data_s
             end if;
           else
             next_state <= IDLE;         -- SACK not received
           end if;
-
-        -- if(en_stop_gen = '1' and en_scl_re = '1') then
-        --   next_state <= STOP_GEN;
-        -- end if;
         end if;
 
-        -- if(en_stop_gen = '1' and en_scl_re = '1') then
-        --   next_state  <= STOP_GEN;
-        --   en_stop_gen <= '0';
-        -- end if;
 
       when SACK_CHIP =>
         if(ack_verif_s = '1') then
@@ -242,7 +237,7 @@ begin
 
   end process p_state_mng;
 
-  -- purpose : This process counts until the start duration and generates a tick
+-- purpose : This process counts until the start duration and generates a tick
   p_tick_start_stop : process (clock, reset_n)
   begin  -- process p_tick_start_stop
     if (reset_n = '0') then             -- asynchronous reset (active low)
@@ -277,8 +272,8 @@ begin
   end process p_tick_start_stop;
 
 
-  -- en_sclk_s <= '1' when (i2c_master_state = START_GEN and start_stop_done_s = '0' and cnt_start_stop = start_stop_duration - 1) else
-  --              '0' when (i2c_master_state = STOP_GEN and start_stop_done_s = '0' and en_scl_re = '1');
+-- en_sclk_s <= '1' when (i2c_master_state = START_GEN and start_stop_done_s = '0' and cnt_start_stop = start_stop_duration - 1) else
+--              '0' when (i2c_master_state = STOP_GEN and start_stop_done_s = '0' and en_scl_re = '1');
 
   -- purpose: This process detect the FE of en_scl
   p_en_scl_fe_mng : process (clock, reset_n)
@@ -348,7 +343,7 @@ begin
       tick_ack <= '0';
       cnt_ack  <= 0;
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(i2c_master_state = SACK_CHIP or i2c_master_state = SACK_WR) then
+      if(i2c_master_state = SACK_CHIP or i2c_master_state = SACK_WR or i2c_master_state = MACK) then
         if(cnt_ack < C_tick_ack - 1) then
           cnt_ack  <= cnt_ack + 1;
           tick_ack <= '0';
@@ -363,7 +358,7 @@ begin
     end if;
   end process p_tick_ack_mng;
 
-  -- purpose: This process generates the SCL output
+-- purpose: This process generates the SCL output
   p_scl_gen : process (clock, reset_n)
   begin  -- process p_scl_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -386,7 +381,7 @@ begin
         end if;
 
       elsif(i2c_master_state = STOP_GEN) then
-        if(cnt_start_stop > (start_stop_duration - 1)/ 2) then
+        if(cnt_start_stop > (start_stop_duration )/ 2) then
           scl_out <= '0';
           en_scl  <= '0';               -- Set 'Z' on the bus => '1'
         else
@@ -403,7 +398,7 @@ begin
 
   byte_ctrl_s <= chip_addr_s & rw_s;
 
-  -- purpose: This process manages the SDA lines
+-- purpose: This process manages the SDA lines
   p_sda_gen : process (clock, reset_n)
   begin  -- process p_sda_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -474,7 +469,7 @@ begin
     end if;
   end process p_sda_gen;
 
-  -- purpose: This process generates tick in order to generate the SCL clock
+-- purpose: This process generates tick in order to generate the SCL clock
   p_tick_clock_gen : process (clock, reset_n)
   begin  -- process p_tick_clock_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -482,7 +477,7 @@ begin
       tick_clock     <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(en_sclk_s = '1') then
-        if(cnt_tick_clock < T_2_scl) then
+        if(cnt_tick_clock < T_2_scl - 1) then
           cnt_tick_clock <= cnt_tick_clock + 1;
           tick_clock     <= '0';
         else
@@ -499,7 +494,7 @@ begin
     end if;
   end process p_tick_clock_gen;
 
-  -- purpose: This process manages the tick for write data on the SDA line 
+-- purpose: This process manages the tick for write data on the SDA line 
   p_tick_wdata_mng : process (clock, reset_n)
   begin  -- process p_tick_wdata_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
