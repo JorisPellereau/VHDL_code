@@ -127,11 +127,11 @@ begin
   begin
     if reset_n = '0' then               -- asynchronous reset (active low)
       start_i2c_old <= '0';
-    elsif clock'event and clock = '1' then              -- rising clock edge
+    elsif clock'event and clock = '1' then               -- rising clock edge
       -- if(i2c_master_state = IDLE) then
-        start_i2c_old <= start_i2c;
+      start_i2c_old <= start_i2c;
       -- end if;
-      start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
+      start_i2c_re  <= start_i2c and not start_i2c_old;  -- start I2C
     end if;
   end process p_start_i2c_detect;
   -- start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
@@ -268,7 +268,7 @@ begin
 
   end process p_state_mng;
 
--- purpose : This process counts until the start duration and generates a tick
+  -- purpose : This process counts until the start duration and generates a tick
   p_tick_start_stop : process (clock, reset_n)
   begin  -- process p_tick_start_stop
     if (reset_n = '0') then             -- asynchronous reset (active low)
@@ -489,9 +489,8 @@ begin
         sda_out <= '0';
         if(tick_ack = '1') then
           ack_verif_s <= '1';
-        else
-          ack_verif_s <= '0';
         end if;
+
       elsif(i2c_master_state = RD_DATA) then
         en_sda      <= '0';
         sda_out     <= '0';             -- Release the bus
