@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-07-01
+-- Last update: 2019-07-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -28,8 +28,8 @@ use ieee.std_logic_1164.all;
 package pkg_i2c is
 
   -- CONSTANTS
-  constant max_array  : integer := 10;  -- Number max. of byte in the array
-  constant C_MAX_DATA : integer := 10;  -- Max data to write/read
+  constant max_array  : integer := 8;   -- Number max. of byte in the array
+  constant C_MAX_DATA : integer := 9;   -- Max data to write/read
 
   -- NEW TYPES
   type t_byte_array is array (0 to max_array) of std_logic_vector(7 downto 0);  -- Array of bytes
@@ -72,6 +72,27 @@ package pkg_i2c is
       data_from_master_o   : out   std_logic_vector(7 downto 0);  -- Data from master
       scl                  : inout std_logic;  -- I2C Clock
       sda                  : inout std_logic);                  -- I2C SDA
+  end component;
+
+  component i2c_master is
+    generic (
+      scl_frequency   : t_i2c_frequency := f400k;  -- Frequency of SCL clock
+      clock_frequency : integer         := 20000000);  -- Input clock frequency
+    port (
+      reset_n      : in    std_logic;   -- Active Low asynchronous reset
+      clock        : in    std_logic;   -- Input clock
+      start_i2c    : in    std_logic;   -- Start an I2C transaction
+      rw           : in    std_logic;   -- Read/Write command
+      chip_addr    : in    std_logic_vector(6 downto 0);  -- Chip address [0:127]
+      nb_data      : in    integer range 1 to C_MAX_DATA;  -- Number of byte to Read or Write
+      wdata        : in    std_logic_vector(7 downto 0);  -- Array of data to transmit
+      i2c_done     : out   std_logic;   -- I2C transaction done
+      sack_error   : out   std_logic;   -- Sack from slave not received
+      rdata        : out   std_logic_vector(7 downto 0);  -- Output data read from an I2C transaction
+      rdata_valid  : out   std_logic;   -- Rdata valid
+      wdata_change : out   std_logic;   -- Ok for a new data
+      scl          : inout std_logic;   -- I2C clock
+      sda          : inout std_logic);  -- Data line
   end component;
 
   -- FUNCTIONS
