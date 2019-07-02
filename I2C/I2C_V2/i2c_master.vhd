@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-01
+-- Last update: 2019-07-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -381,13 +381,26 @@ begin
         end if;
 
       elsif(i2c_master_state = STOP_GEN) then
-        if(cnt_start_stop > (start_stop_duration )/ 2) then
+
+        if(cnt_start_stop = ((start_stop_duration - 1)/ 2)) then
           scl_out <= '0';
-          en_scl  <= '0';               -- Set 'Z' on the bus => '1'
-        else
-          scl_out <= '0';
-          en_scl  <= '1';  -- Write '0' on SCL line
+          en_scl  <= '0';               -- Release the bus
+          report "Dans le if !!!!!!! ";
         end if;
+
+        -- else
+        --   scl_out <= '0';
+        --   en_scl  <= '0';               -- Set 'Z' on the bus => '1'
+        -- end if;
+
+        -- if(cnt_start_stop > (start_stop_duration -1)/ 2) then
+        --   scl_out <= '0';
+        --   en_scl  <= '0';               -- Set 'Z' on the bus => '1'
+        -- else
+        --   scl_out <= '0';
+        --   en_scl  <= '1';               -- Write '0' on SCL line
+        -- end if;
+
       else
         en_scl  <= '0';
         scl_out <= '0';
