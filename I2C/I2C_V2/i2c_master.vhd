@@ -55,7 +55,7 @@ architecture arch_i2c_master of i2c_master is
   constant start_stop_duration : integer := T_2_scl;  -- Duration of the start duration
   constant C_tick_ack          : integer := T_scl/4;  -- Duration to sample the ACK
   constant C_tick_wdata        : integer := T_scl/4;  -- Duration for tick wdata
-
+  constant C_tick_rdata        : integer := 3*T_scl/4;  -- Duration for tick rdata
 
   -- SIGNALS
   signal i2c_master_state : t_i2c_master_fsm;  -- Current state of the i2c master
@@ -104,9 +104,12 @@ architecture arch_i2c_master of i2c_master is
   signal i2c_done_s     : std_logic;    -- I2c done signal
   signal wdata_change_s : std_logic;  -- Flag that indicates new data can be set on wdata
 
-  signal rdata_s        : std_logic_vector(7 downto 0);  -- Saved data
-  signal tick_rdata     : std_logic;    -- Tick for sample the data on the line
-  signal cnt_tick_rdata : integer range 0;  -- Counter in order to generate the tick
+  signal rdata_s             : std_logic_vector(7 downto 0);     -- Saved data
+  signal tick_rdata          : std_logic;  -- Tick for sample the data on the line
+  signal cnt_tick_rdata      : integer range 0 to C_tick_rdata;  -- Counter in order to generate the tick
+  signal en_cnt_tick_rdata_s : std_logic;  -- Start the counter when = '1'
+
+  signal rdata_valid_s : std_logic;     -- Read data valid
 
   -- I2C inout signals
   signal scl_in  : std_logic;           -- Read the SCL
@@ -471,12 +474,14 @@ begin
 
       elsif(i2c_master_state = RD_DATA) then
         en_sda  <= '0';
-        sda_out <= '0';                    -- Release the bus
+        sda_out <= '0';                 -- Release the bus
         if(tick_rdata = '1') then
-          if(cnt_8 < 8) then
+          -- if(cnt_8 < 8) then
             -- MSB FIRST
-            rdata_s(7 - cnt_8) <= sda_in;  -- Read the bus
-          end if;
+            -- rdata_s(7 - cnt_8) <= sda_in;  -- Read the bus
+            rdata_s(0)          <= sda_in;
+            rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+          -- end if;
         end if;
 
       elsif(i2c_master_state = STOP_GEN) then
@@ -517,7 +522,7 @@ begin
     end if;
   end process p_tick_clock_gen;
 
--- purpose: This process manages the tick for write data on the SDA line 
+  -- purpose: This process manages the tick for write data on the SDA line 
   p_tick_wdata_mng : process (clock, reset_n)
   begin  -- process p_tick_wdata_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -546,6 +551,34 @@ begin
     end if;
   end process p_tick_wdata_mng;
 
+  -- purpose: This process generates tick, in order to read the bus 
+  p_tick_rdata_mng : process (clock, reset_n) is
+  begin  -- process p_tick_rdata_mng
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      tick_rdata          <= '0';
+      cnt_tick_rdata      <= 0;
+      en_cnt_tick_rdata_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      if(en_scl_re = '1' and i2c_master_state = RD_DATA) then
+        en_cnt_tick_rdata_s <= '1';
+      end if;
+
+      if(en_cnt_tick_rdata_s = '1') then
+        if(cnt_tick_rdata < C_tick_rdata - 1) then
+          cnt_tick_rdata <= cnt_tick_rdata + 1;  -- Inc
+          tick_rdata     <= '0';
+        else
+          cnt_tick_rdata      <= 0;
+          tick_rdata          <= '1';
+          en_cnt_tick_rdata_s <= '0';
+        end if;
+      else
+        tick_rdata <= '0';
+      end if;
+
+    end if;
+  end process p_tick_rdata_mng;
+
   i2c_done_s <= '0' when i2c_master_state /= IDLE else '1';
   i2c_done   <= i2c_done_s;
 
@@ -553,6 +586,11 @@ begin
 
   wdata_change_s <= '1' when i2c_master_state = SACK_WR else '0';
   wdata_change   <= wdata_change_s;
+
+  rdata_valid_s <= '1' when i2c_master_state = MACK else '0';
+  rdata_valid   <= rdata_valid_s;
+
+  rdata <= rdata_s;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output
