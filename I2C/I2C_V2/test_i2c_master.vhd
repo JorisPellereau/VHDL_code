@@ -113,9 +113,9 @@ begin
 
     -- INIT
     start_i2c <= '0';
-    rw        <= '1';
+    rw        <= '0';
     chip_addr <= "1111101";
-    nb_data   <= 10;
+    nb_data   <= 1;
     -- wdata     <= (others => '0');
 
     wait for 10 us;
@@ -127,11 +127,26 @@ begin
 
     wait for 10 us;
 
-    -- wdata     <= x"BE";
-    -- Start a transaction
+    -- Start a WRITE transaction
+    nb_data   <= 1;
+    rw        <= '0';
     start_i2c <= '1';
     wait for 10 us;
     start_i2c <= '0';
+
+    wait until rising_edge(i2c_done);
+    report "Write transaction done !!";
+
+
+    -- Start a  Read transaction
+    nb_data   <= 3;
+    rw        <= '1';
+    start_i2c <= '1';
+    wait for 10 us;
+    start_i2c <= '0';
+
+    wait until rising_edge(i2c_done);
+    report "Read transaction done !!";
 
 
     report "end of test !!!";
@@ -161,7 +176,7 @@ begin
 
   -- purpose: This process manages the data to write on the I2C bus 
   p_wdata_mng : process
-    variable v_data : integer range 0 to 255 := 200;  -- DAta
+    variable v_data : integer range 0 to 255 := 100;  -- DAta
   begin
 
     wdata <= std_logic_vector(to_unsigned(v_data, wdata'length));
