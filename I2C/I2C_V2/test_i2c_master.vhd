@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-01
+-- Last update: 2019-07-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_i2c;
 use lib_i2c.pkg_i2c.all;
@@ -112,10 +113,10 @@ begin
 
     -- INIT
     start_i2c <= '0';
-    rw        <= '0';
+    rw        <= '1';
     chip_addr <= "1111101";
-    nb_data   <= 3;
-    wdata     <= (others => '0');
+    nb_data   <= 10;
+    -- wdata     <= (others => '0');
 
     wait for 10 us;
 
@@ -126,7 +127,7 @@ begin
 
     wait for 10 us;
 
-    wdata     <= x"BE";
+    -- wdata     <= x"BE";
     -- Start a transaction
     start_i2c <= '1';
     wait for 10 us;
@@ -158,7 +159,20 @@ begin
   --   report integer'image(v_cnt_8);
   -- end process p_slave_emul;
 
+  -- purpose: This process manages the data to write on the I2C bus 
+  p_wdata_mng : process
+    variable v_data : integer range 0 to 255 := 200;  -- DAta
+  begin
 
+    wdata <= std_logic_vector(to_unsigned(v_data, wdata'length));
+    wait until rising_edge(wdata_change);
+    if(v_data < 255) then
+      v_data := v_data + 1;
+    else
+      v_data := 0;
+    end if;
+
+  end process p_wdata_mng;
 
   -- I2C Master INST
   i2c_master_inst : i2c_master
@@ -182,7 +196,8 @@ begin
       sda          => sda);
 
   scl <= 'H';
-  sda <= '0' when ((spy_i2c_master_state = SACK_CHIP or spy_i2c_master_state = SACK_WR) and spy_rw_s = '0') else 'H';
+  sda <= '0' when ((spy_i2c_master_state = SACK_CHIP or spy_i2c_master_state = SACK_WR) and spy_rw_s = '0') else
+         '0' when (spy_i2c_master_state = SACK_CHIP and spy_rw_s = '1') else 'H';
 
 
 
