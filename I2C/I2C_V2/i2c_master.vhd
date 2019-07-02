@@ -128,9 +128,9 @@ begin
     if reset_n = '0' then               -- asynchronous reset (active low)
       start_i2c_old <= '0';
     elsif clock'event and clock = '1' then              -- rising clock edge
-      if(i2c_master_state = IDLE) then
+      -- if(i2c_master_state = IDLE) then
         start_i2c_old <= start_i2c;
-      end if;
+      -- end if;
       start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
     end if;
   end process p_start_i2c_detect;
@@ -244,6 +244,18 @@ begin
       when RD_DATA =>
         if(cnt_8_done_s = '1') then
           next_state <= MACK;
+        end if;
+
+      when MACK =>
+        if(ack_verif_s = '1') then
+          if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
+            en_stop_gen <= '1';
+            if(en_stop_gen = '1' and en_scl_re = '1') then
+              next_state <= STOP_GEN;
+            end if;
+          else
+            next_state <= RD_DATA;      -- cnt_data_s < nb_data_s
+          end if;
         end if;
 
       when STOP_GEN =>
@@ -472,16 +484,25 @@ begin
           end if;
         end if;
 
-      elsif(i2c_master_state = RD_DATA) then
+      elsif(i2c_master_state = MACK) then
         en_sda  <= '0';
-        sda_out <= '0';                 -- Release the bus
+        sda_out <= '0';
+        if(tick_ack = '1') then
+          ack_verif_s <= '1';
+        else
+          ack_verif_s <= '0';
+        end if;
+      elsif(i2c_master_state = RD_DATA) then
+        en_sda      <= '0';
+        sda_out     <= '0';             -- Release the bus
+        ack_verif_s <= '0';
         if(tick_rdata = '1') then
           -- if(cnt_8 < 8) then
-            -- MSB FIRST
-            -- rdata_s(7 - cnt_8) <= sda_in;  -- Read the bus
-            rdata_s(0)          <= sda_in;
-            rdata_s(7 downto 1) <= rdata_s(6 downto 0);
-          -- end if;
+          -- MSB FIRST
+          -- rdata_s(7 - cnt_8) <= sda_in;  -- Read the bus
+          rdata_s(0)          <= sda_in;
+          rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+        -- end if;
         end if;
 
       elsif(i2c_master_state = STOP_GEN) then
