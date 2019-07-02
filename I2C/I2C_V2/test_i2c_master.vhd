@@ -127,6 +127,20 @@ begin
 
     wait for 10 us;
 
+
+    -- Start a  Read transaction
+    nb_data   <= 1;
+    rw        <= '1';
+    start_i2c <= '1';
+    wait for 10 us;
+    start_i2c <= '0';
+
+    wait until rising_edge(i2c_done);
+    report "Read transaction done !!";
+
+    wait for 50 us;
+
+
     -- Start a WRITE transaction
     nb_data   <= 1;
     rw        <= '0';
@@ -137,6 +151,7 @@ begin
     wait until rising_edge(i2c_done);
     report "Write transaction done !!";
 
+    wait for 50 us;
 
     -- Start a  Read transaction
     nb_data   <= 3;
@@ -154,25 +169,6 @@ begin
   end process p_stimuli;
 
 
-  -- purpose: This process emulates the i2c slave 
-  -- p_slave_emul : process
-  --   variable v_cnt_8 : integer range 0 to 8 := 0;
-  -- begin  -- process p_slave_emul
-
-  --   -- sda <= 'H';                         -- IDLE => pull up
-  --   wait until rising_edge(scl);
-
-  --   if(v_cnt_8 < 8) then
-  --     v_cnt_8 := v_cnt_8 + 1;
-  --   else
-  --     v_cnt_8 := 0;
-  --     if(rw = '0') then
-  --     -- sda <= '0', 'H' after 1.4 us;
-  --     end if;
-  --   end if;
-
-  --   report integer'image(v_cnt_8);
-  -- end process p_slave_emul;
 
   -- purpose: This process manages the data to write on the I2C bus 
   p_wdata_mng : process
