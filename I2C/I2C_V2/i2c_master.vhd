@@ -100,7 +100,13 @@ architecture arch_i2c_master of i2c_master is
   signal cnt_data_s      : integer range 0 to C_MAX_DATA;  -- Counts the data to transmit
   signal cnt_data_done_s : std_logic;   -- Counter reach
 
-  signal en_stop_gen : std_logic;       -- When = 1 => go to stop gen state
+  signal en_stop_gen    : std_logic;    -- When = 1 => go to stop gen state
+  signal i2c_done_s     : std_logic;    -- I2c done signal
+  signal wdata_change_s : std_logic;  -- Flag that indicates new data can be set on wdata
+
+  signal rdata_s        : std_logic_vector(7 downto 0);  -- Saved data
+  signal tick_rdata     : std_logic;    -- Tick for sample the data on the line
+  signal cnt_tick_rdata : integer range 0;  -- Counter in order to generate the tick
 
   -- I2C inout signals
   signal scl_in  : std_logic;           -- Read the SCL
@@ -144,6 +150,11 @@ begin
         nb_data_s   <= nb_data;
         wdata_s     <= wdata;
         start_i2c_s <= '1';                 -- Start the frame        
+      end if;
+
+      -- Update the data to transmit
+      if(wdata_change_s = '1') then
+        wdata_s <= wdata;
       end if;
 
       -- TO modify ?
@@ -227,6 +238,11 @@ begin
           end if;
         end if;
 
+      when RD_DATA =>
+        if(cnt_8_done_s = '1') then
+          next_state <= MACK;
+        end if;
+
       when STOP_GEN =>
         if(start_stop_done_s = '1') then
           next_state <= IDLE;
@@ -271,9 +287,6 @@ begin
     end if;
   end process p_tick_start_stop;
 
-
--- en_sclk_s <= '1' when (i2c_master_state = START_GEN and start_stop_done_s = '0' and cnt_start_stop = start_stop_duration - 1) else
---              '0' when (i2c_master_state = STOP_GEN and start_stop_done_s = '0' and en_scl_re = '1');
 
   -- purpose: This process detect the FE of en_scl
   p_en_scl_fe_mng : process (clock, reset_n)
@@ -358,7 +371,7 @@ begin
     end if;
   end process p_tick_ack_mng;
 
--- purpose: This process generates the SCL output
+  -- purpose: This process generates the SCL output
   p_scl_gen : process (clock, reset_n)
   begin  -- process p_scl_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
@@ -384,22 +397,8 @@ begin
 
         if(cnt_start_stop = ((start_stop_duration - 1)/ 2)) then
           scl_out <= '0';
-          en_scl  <= '0';               -- Release the bus
-          report "Dans le if !!!!!!! ";
+          en_scl  <= '0';               -- Release the bus        
         end if;
-
-        -- else
-        --   scl_out <= '0';
-        --   en_scl  <= '0';               -- Set 'Z' on the bus => '1'
-        -- end if;
-
-        -- if(cnt_start_stop > (start_stop_duration -1)/ 2) then
-        --   scl_out <= '0';
-        --   en_scl  <= '0';               -- Set 'Z' on the bus => '1'
-        -- else
-        --   scl_out <= '0';
-        --   en_scl  <= '1';               -- Write '0' on SCL line
-        -- end if;
 
       else
         en_scl  <= '0';
@@ -420,6 +419,7 @@ begin
       sack_ok      <= '0';
       sack_error_s <= '0';
       ack_verif_s  <= '0';
+      rdata_s      <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_state = IDLE) then
         en_sda      <= '0';
@@ -466,6 +466,16 @@ begin
           else
             sack_ok      <= '0';
             sack_error_s <= '1';
+          end if;
+        end if;
+
+      elsif(i2c_master_state = RD_DATA) then
+        en_sda  <= '0';
+        sda_out <= '0';                    -- Release the bus
+        if(tick_rdata = '1') then
+          if(cnt_8 < 8) then
+            -- MSB FIRST
+            rdata_s(7 - cnt_8) <= sda_in;  -- Read the bus
           end if;
         end if;
 
@@ -535,6 +545,14 @@ begin
       end if;
     end if;
   end process p_tick_wdata_mng;
+
+  i2c_done_s <= '0' when i2c_master_state /= IDLE else '1';
+  i2c_done   <= i2c_done_s;
+
+  sack_error <= sack_error_s;
+
+  wdata_change_s <= '1' when i2c_master_state = SACK_WR else '0';
+  wdata_change   <= wdata_change_s;
 
   scl <= scl_out when en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= sda_out when en_sda = '1' else 'Z';  -- Write on SDA output
