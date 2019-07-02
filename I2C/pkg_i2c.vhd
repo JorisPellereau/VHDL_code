@@ -95,6 +95,27 @@ package pkg_i2c is
       sda          : inout std_logic);  -- Data line
   end component;
 
+  component i2c_24lc02b_controller is
+
+    port (
+      clock      : in    std_logic;     -- System Clock
+      reset_n    : in    std_logic;     -- Asynchronous active low reset
+      en         : in    std_logic;     -- Enable the system
+      start      : in    std_logic;     -- Start a command
+      byte_wr    : in    std_logic;
+      page_wr    : in    std_logic;
+      byte_rd    : in    std_logic;
+      chip_addr  : in    std_logic_vector(6 downto 0);
+      word_addr  : in    std_logic_vector(7 downto 0);
+      wdata      : in    t_byte_array;
+      rdata      : out   t_byte_array;
+      sack_error : out   std_logic;
+      i2c_busy   : out   std_logic;
+      scl        : inout std_logic;     -- Clock line
+      sda        : inout std_logic
+      );
+  end component;
+
   -- FUNCTIONS
   function compute_scl_period (
     constant i2c_frequency   : t_i2c_frequency;
