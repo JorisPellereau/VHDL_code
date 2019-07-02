@@ -88,6 +88,7 @@ begin
   begin  -- process p_clock_gen
     clock <= not clock;
     wait for 25 ns;
+    -- wait for 10 ns;
   end process p_clock_gen;
 
 
