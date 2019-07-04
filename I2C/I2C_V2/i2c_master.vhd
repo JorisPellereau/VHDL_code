@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-02
+-- Last update: 2019-07-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,9 +41,11 @@ entity i2c_master is
     sack_error   : out   std_logic;     -- Sack from slave not received
     rdata        : out   std_logic_vector(7 downto 0);  -- Output data read from an I2C transaction
     rdata_valid  : out   std_logic;     -- Rdata valid
-    wdata_change : out   std_logic;     -- Ok for a new data
+    wdata_change : out   std_logic;     -- Ok for a new data    
     scl          : inout std_logic;     -- I2C clock
-    sda          : inout std_logic);    -- Data line
+    sda          : inout std_logic;     -- Data line
+    scl_o        : out   std_logic;     -- SCL out
+    sda_o        : out   std_logic);    -- SDA out
 end entity i2c_master;
 
 
@@ -617,5 +619,8 @@ begin
 
   scl_in <= scl;
   sda_in <= sda;
+
+  scl_o <= scl_out;
+  sda_o <= sda_out;
 
 end architecture arch_i2c_master;
