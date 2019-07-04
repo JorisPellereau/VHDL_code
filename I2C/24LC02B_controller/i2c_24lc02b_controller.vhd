@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-27
--- Last update: 2019-07-02
+-- Last update: 2019-07-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -74,12 +74,14 @@ begin  -- architecture arch_i2c_24lc02b_controller
   p_en_re_detect : process (clock, reset_n)
   begin  -- process p_en_re_detect
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      start_s <= '0';
+      start_s    <= '0';
+      start_re_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      start_s <= start;
+      start_s    <= start;
+      start_re_s <= start and not start_s;
     end if;
   end process p_en_re_detect;
-  start_re_s <= start and not start_s;
+  --start_re_s <= start and not start_s;
 
   -- purpose: This process manages command send to the I2C Master 
   p_cmd_mng : process (clock, reset_n) is
@@ -113,11 +115,13 @@ begin  -- architecture arch_i2c_24lc02b_controller
     end if;
   end process p_cmd_mng;
 
+
+  
   -- MASTER I2C INST
   master_i2c_inst : i2c_master
     generic map(
       scl_frequency   => f400k,
-      clock_frequency => 50000000)
+      clock_frequency => 20000000)
     port map(
       reset_n      => reset_n,
       clock        => clock,
