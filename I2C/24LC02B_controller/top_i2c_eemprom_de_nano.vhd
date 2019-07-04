@@ -151,12 +151,14 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
       rdata_valid  => rdata_valid_s,
       wdata_change => wdata_change_s,
       scl          => scl,
-      sda          => sda);
+      sda          => sda,
+      scl_o        => scl_debug,
+      sda_o        => sda_debug);
 
 
 
-  scl_debug <= scl;
-  sda_debug <= sda;
+  -- scl_debug <= scl;
+  -- sda_debug <= sda;
 
   u0 : component NIOS_II_eeprom_cmd
     port map (
