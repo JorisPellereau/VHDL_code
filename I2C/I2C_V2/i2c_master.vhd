@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-04
+-- Last update: 2019-07-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -43,9 +43,7 @@ entity i2c_master is
     rdata_valid  : out   std_logic;     -- Rdata valid
     wdata_change : out   std_logic;     -- Ok for a new data    
     scl          : inout std_logic;     -- I2C clock
-    sda          : inout std_logic;     -- Data line
-    scl_o        : out   std_logic;     -- SCL out
-    sda_o        : out   std_logic);    -- SDA out
+    sda          : inout std_logic);    -- SDA out
 end entity i2c_master;
 
 
@@ -129,11 +127,11 @@ begin
   begin
     if reset_n = '0' then               -- asynchronous reset (active low)
       start_i2c_old <= '0';
-    elsif clock'event and clock = '1' then               -- rising clock edge
+    elsif clock'event and clock = '1' then  -- rising clock edge
       -- if(i2c_master_state = IDLE) then
       start_i2c_old <= start_i2c;
       -- end if;
-      start_i2c_re  <= start_i2c and not start_i2c_old;  -- start I2C
+      start_i2c_re  <= start_i2c_old;  -- <= start_i2c and not start_i2c_old;  -- start I2C
     end if;
   end process p_start_i2c_detect;
   -- start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
@@ -149,7 +147,7 @@ begin
       wdata_s     <= (others => '0');
       start_i2c_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(start_i2c_re = '1') then
+      if(start_i2c_re = '1' and i2c_master_state = IDLE) then
         rw_s        <= rw;
         chip_addr_s <= chip_addr;
         nb_data_s   <= nb_data;
@@ -619,8 +617,5 @@ begin
 
   scl_in <= scl;
   sda_in <= sda;
-
-  scl_o <= scl_out;
-  sda_o <= sda_out;
 
 end architecture arch_i2c_master;
