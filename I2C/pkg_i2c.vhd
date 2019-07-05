@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-30
--- Last update: 2019-07-04
+-- Last update: 2019-07-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -92,9 +92,7 @@ package pkg_i2c is
       rdata_valid  : out   std_logic;   -- Rdata valid
       wdata_change : out   std_logic;   -- Ok for a new data    
       scl          : inout std_logic;   -- I2C clock
-      sda          : inout std_logic;   -- Data line
-      scl_o        : out   std_logic;   -- SCL out
-      sda_o        : out   std_logic);  -- SDA out
+      sda          : inout std_logic);  -- SDA out
   end component;
 
   component i2c_24lc02b_controller is
