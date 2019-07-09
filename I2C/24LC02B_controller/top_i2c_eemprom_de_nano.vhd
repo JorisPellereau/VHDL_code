@@ -144,8 +144,8 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
   leds(6) <= '0';
   leds(7) <= i2c_done_s;
 
-  rdata     <= rdata_s;
-  nb_data_s <= 1;
+  rdata <= rdata_s;
+  -- nb_data_s <= 2;
 
 
 
@@ -156,33 +156,37 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
       cnt_500ms <= 0;
       start_s   <= '0';
       rw_s      <= '0';
-
+      nb_data_s <= 1;
     elsif clock_20mhz'event and clock_20mhz = '1' then  -- rising clock edge
 
       if(pll_locked_s = '1') then
-        rw_s <= '0';                    -- Write force
+        -- rw_s      <= '1';               -- Write force
+        -- nb_data_s <= 1;
+        -- if(i2c_done_s = '1') then
+        --   start_s <= '1';
+        -- -- else
+        -- --   start_s <= '0';
+        -- end if;
 
-        if(i2c_done_s = '1') then
-          start_s <= '1';
+        if(cnt_500ms < 25000000 - 1) then
+          cnt_500ms <= cnt_500ms + 1;
+
+        else
+          cnt_500ms <= 0;
+          rw_s      <= not rw_s;
+
+        -- rw_s      <= not rw_s;
+        end if;
+        if(i2c_done_s = '1' and rw_s = '0') then
+          nb_data_s <= 2;
+          start_s   <= '1';
+
+        elsif(i2c_done_s = '1' and rw_s = '1') then
+          nb_data_s <= 1;
+          start_s   <= '1';
         else
           start_s <= '0';
         end if;
-
-        -- if(cnt_500ms < 25000000 - 1) then
-        --   cnt_500ms <= cnt_500ms + 1;
-        --   if(i2c_done_s = '0') then
-        --     start_s <= '0';
-        --   end if;
-        -- else
-        --   cnt_500ms <= 0;
-        --   if(i2c_done_s = '1') then
-        --     start_s <= '1';
-        --   else
-        --     start_s <= '0';
-        --   end if;
-        -- -- rw_s      <= not rw_s;
-        -- end if;
-
 
       end if;
     end if;
