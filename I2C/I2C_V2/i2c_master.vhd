@@ -188,91 +188,97 @@ begin
   end process p_next_state_mng;
 
   -- purpose: This process manages the state
-  p_state_mng : process (i2c_master_state, start_i2c_s, start_stop_done_s,
-                         cnt_8_done_s, ack_verif_s, sack_ok, rw_s, cnt_data_s,
-                         cnt_data_done_s, en_stop_gen, en_scl_re, nb_data_s)
+  -- p_state_mng : process (i2c_master_state, start_i2c_s, start_stop_done_s,
+  --                        cnt_8_done_s, ack_verif_s, sack_ok, rw_s, cnt_data_s,
+  --                        cnt_data_done_s, en_stop_gen, en_scl_re, nb_data_s)
+
+  p_state_mng : process (clock, reset_n)
   begin
+    if(reset_n = '0') then
+      next_state  <= IDLE;
+      en_stop_gen <= '0';
+    elsif(rising_edge(clock)) then
 
-    case i2c_master_state is
-      when IDLE =>
-        -- i2c_done_s  <= '1';
-        en_stop_gen <= '0';
-        if(start_i2c_s = '1') then
-          next_state <= START_GEN;
-        end if;
+      case i2c_master_state is
+        when IDLE =>
+          -- i2c_done_s  <= '1';
+          en_stop_gen <= '0';
+          if(start_i2c_s = '1') then
+            next_state <= START_GEN;
+          end if;
 
-      when START_GEN =>
-        -- i2c_done_s <= '0';
-        if(start_stop_done_s = '1') then
-          next_state <= WR_CHIP;
-        end if;
+        when START_GEN =>
+          -- i2c_done_s <= '0';
+          if(start_stop_done_s = '1') then
+            next_state <= WR_CHIP;
+          end if;
 
-      when WR_CHIP =>
-        if(cnt_8_done_s = '1') then
-          next_state <= SACK_CHIP;
-        end if;
+        when WR_CHIP =>
+          if(cnt_8_done_s = '1') then
+            next_state <= SACK_CHIP;
+          end if;
 
-      when WR_DATA =>
-        if(cnt_8_done_s = '1') then
-          next_state <= SACK_WR;
-        end if;
+        when WR_DATA =>
+          if(cnt_8_done_s = '1') then
+            next_state <= SACK_WR;
+          end if;
 
-      when SACK_WR =>
-        if(ack_verif_s = '1') then
+        when SACK_WR =>
+          if(ack_verif_s = '1') then
 
-          if(sack_ok = '1') then
+            if(sack_ok = '1') then
+              if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
+                en_stop_gen <= '1';
+                if(en_stop_gen = '1' and en_scl_re = '1') then
+                  next_state <= STOP_GEN;
+                end if;
+              else
+                next_state <= WR_DATA;  -- cnt_data_s < nb_data_s
+              end if;
+            else
+              next_state <= IDLE;       -- SACK not received
+            end if;
+          end if;
+
+
+        when SACK_CHIP =>
+          if(ack_verif_s = '1') then
+            if(sack_ok = '1') then
+              if(rw_s = '1') then
+                next_state <= RD_DATA;
+              elsif(rw_s = '0') then
+                next_state <= WR_DATA;
+              end if;
+            else
+              next_state <= IDLE;       -- SACK not received
+            end if;
+          end if;
+
+        when RD_DATA =>
+          if(cnt_8_done_s = '1') then
+            next_state <= MACK;
+          end if;
+
+        when MACK =>
+          if(ack_verif_s = '1') then
             if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
               en_stop_gen <= '1';
               if(en_stop_gen = '1' and en_scl_re = '1') then
                 next_state <= STOP_GEN;
               end if;
             else
-              next_state <= WR_DATA;    -- cnt_data_s < nb_data_s
+              next_state <= RD_DATA;    -- cnt_data_s < nb_data_s
             end if;
-          else
-            next_state <= IDLE;         -- SACK not received
           end if;
-        end if;
 
-
-      when SACK_CHIP =>
-        if(ack_verif_s = '1') then
-          if(sack_ok = '1') then
-            if(rw_s = '1') then
-              next_state <= RD_DATA;
-            elsif(rw_s = '0') then
-              next_state <= WR_DATA;
-            end if;
-          else
-            next_state <= IDLE;         -- SACK not received
+        when STOP_GEN =>
+          if(start_stop_done_s = '1') then
+            next_state <= IDLE;
           end if;
-        end if;
 
-      when RD_DATA =>
-        if(cnt_8_done_s = '1') then
-          next_state <= MACK;
-        end if;
-
-      when MACK =>
-        if(ack_verif_s = '1') then
-          if(cnt_data_s = nb_data_s and cnt_data_done_s = '1') then  -- and en_stop_gen = '0') then
-            en_stop_gen <= '1';
-            if(en_stop_gen = '1' and en_scl_re = '1') then
-              next_state <= STOP_GEN;
-            end if;
-          else
-            next_state <= RD_DATA;      -- cnt_data_s < nb_data_s
-          end if;
-        end if;
-
-      when STOP_GEN =>
-        if(start_stop_done_s = '1') then
-          next_state <= IDLE;
-        end if;
-
-      when others => null;
-    end case;
-
+        when others => null;
+      end case;
+    end if;
   end process p_state_mng;
 
   -- purpose : This process counts until the start duration and generates a tick
