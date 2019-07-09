@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-05
+-- Last update: 2019-07-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -127,11 +127,16 @@ begin
   begin
     if reset_n = '0' then               -- asynchronous reset (active low)
       start_i2c_old <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
+      start_i2c_re  <= '0';
+    elsif clock'event and clock = '1' then               -- rising clock edge
       -- if(i2c_master_state = IDLE) then
       start_i2c_old <= start_i2c;
-      -- end if;
-      start_i2c_re  <= start_i2c_old;  -- <= start_i2c and not start_i2c_old;  -- start I2C
+      start_i2c_re  <= start_i2c and not start_i2c_old;  -- start I2C
+    -- else
+    --   start_i2c_old <= '0';
+    --   start_i2c_re  <= '0';
+    -- end if;
+    -- start_i2c_re <= start_i2c and not start_i2c_old;     -- start I2C
     end if;
   end process p_start_i2c_detect;
   -- start_i2c_re <= start_i2c and not start_i2c_old;  -- start I2C
@@ -185,17 +190,19 @@ begin
   -- purpose: This process manages the state
   p_state_mng : process (i2c_master_state, start_i2c_s, start_stop_done_s,
                          cnt_8_done_s, ack_verif_s, sack_ok, rw_s, cnt_data_s,
-                         cnt_data_done_s, en_stop_gen, en_scl_re)
+                         cnt_data_done_s, en_stop_gen, en_scl_re, nb_data_s)
   begin
 
     case i2c_master_state is
       when IDLE =>
+        -- i2c_done_s  <= '1';
         en_stop_gen <= '0';
         if(start_i2c_s = '1') then
           next_state <= START_GEN;
         end if;
 
       when START_GEN =>
+        -- i2c_done_s <= '0';
         if(start_stop_done_s = '1') then
           next_state <= WR_CHIP;
         end if;
@@ -599,7 +606,7 @@ begin
     end if;
   end process p_tick_rdata_mng;
 
-  i2c_done_s <= '0' when i2c_master_state /= IDLE else '1';
+  i2c_done_s <= '1' when i2c_master_state = IDLE else '0';
   i2c_done   <= i2c_done_s;
 
   sack_error <= sack_error_s;

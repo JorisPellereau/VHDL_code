@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-04
+-- Last update: 2019-07-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,8 +39,10 @@ entity top_i2c_eemprom_de_nano is
     leds : out std_logic_vector(7 downto 0);
 
     -- I2C debug
-    scl_debug : out std_logic;
-    sda_debug : out std_logic
+    scl_debug         : out std_logic;
+    sda_debug         : out std_logic;
+    clock_20mhz_debug : out std_logic;
+    rdata             : out std_logic_vector(7 downto 0)
     );
 
 end entity top_i2c_eemprom_de_nano;
@@ -48,18 +50,8 @@ end entity top_i2c_eemprom_de_nano;
 
 architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
 
-  component NIOS_II_eeprom_cmd is
-    port (
-      clk_clk                                 : in  std_logic                    := 'X';  -- clk
-      reset_reset_n                           : in  std_logic                    := 'X';  -- reset_n
-      po_commands_external_connection_export  : out std_logic_vector(4 downto 0);  -- export
-      po_chip_addr_external_connection_export : out std_logic_vector(6 downto 0);  -- export
-      po_word_addr_external_connection_export : out std_logic_vector(7 downto 0);  -- export
-      pi_infos_external_connection_export     : in  std_logic_vector(1 downto 0) := (others => 'X')  -- export
-      );
-  end component NIOS_II_eeprom_cmd;
 
-  component pll_20Mhz is
+  component pll_20meg is
     port
       (
         areset : in  std_logic := '0';
@@ -68,6 +60,7 @@ architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
         locked : out std_logic
         );
   end component;
+
 
 
   -- EEPROM CTRL SIGNALS
@@ -90,10 +83,20 @@ architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
   signal wdata_change_s : std_logic;
   signal rw_s           : std_logic;
   signal i2c_done_s     : std_logic;
+  signal nb_data_s      : integer range 1 to C_MAX_DATA;
 
-  -- NIOS Signals
-  signal po_commands_external_connection_export_s  : std_logic_vector(4 downto 0);  -- To input of the i2c eep ctrl
-  signal po_chip_addr_external_connection_export_s : std_logic_vector(6 downto 0);  -- Chip addr cmd
+
+  -- Internal counter
+  signal cnt_500ms : integer range 0 to 25000000;
+
+  signal pll_locked_s : std_logic;
+  signal pll_rst_s    : std_logic;
+
+
+  -- Reset mng
+  signal reset_n_s       : std_logic;   -- Latch input reset
+  signal reset_n_synch_s : std_logic;   -- Synch reset
+
 
   signal clock_20mhz : std_logic;       -- Clock 20MHz from PLL
 
@@ -101,36 +104,7 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
 
   wdata_s <= x"BE";
 
-  -- wdata_s <= (0 => x"BE",
-  --             1 => x"CA",
-  --             2 => x"BB",
-  --             3 => x"11",
-  --             4 => x"45",
-  --             5 => x"99",
-  --             6 => x"69",
-  --             7 => x"33",
-  --             8 => x"12"
-  --             );
 
-  -- INST
-  -- ctrl_inst : i2c_24lc02b_controller
-  --   port map(
-  --     clock      => clock_20mhz,
-  --     reset_n    => reset_n,
-  --     en         => en_s,
-  --     start      => start_s,
-  --     byte_wr    => byte_wr_s,
-  --     page_wr    => page_wr_s,
-  --     byte_rd    => byte_rd_s,
-  --     chip_addr  => chip_addr_s,
-  --     word_addr  => word_addr_s,
-  --     wdata      => wdata_s,
-  --     rdata      => rdata_s,
-  --     sack_error => sack_error_s,
-  --     i2c_busy   => i2c_busy_s,
-  --     scl        => scl,
-  --     sda        => sda
-  --     );
 
   -- MASTER I2C INST
   master_i2c_inst : i2c_master
@@ -138,12 +112,12 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
       scl_frequency   => f400k,
       clock_frequency => 20000000)
     port map(
-      reset_n      => reset_n,
+      reset_n      => reset_n_synch_s,
       clock        => clock_20mhz,
       start_i2c    => start_s,
       rw           => rw_s,
       chip_addr    => chip_addr_s,
-      nb_data      => 1,
+      nb_data      => nb_data_s,
       wdata        => wdata_s,
       i2c_done     => i2c_done_s,
       sack_error   => sack_error_s,
@@ -151,44 +125,92 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
       rdata_valid  => rdata_valid_s,
       wdata_change => wdata_change_s,
       scl          => scl,
-      sda          => sda,
-      scl_o        => scl_debug,
-      sda_o        => sda_debug);
+      sda          => sda);
+
+
+  chip_addr_s <= "1010000";
+
+  scl_debug         <= scl;
+  sda_debug         <= sda;
+  clock_20mhz_debug <= clock_20mhz;
+
+
+  leds(0) <= sack_error_s;
+  leds(1) <= pll_locked_s;
+  leds(2) <= rdata_valid_s;
+  leds(3) <= wdata_change_s;
+  leds(4) <= start_s;
+  leds(5) <= '0';
+  leds(6) <= '0';
+  leds(7) <= i2c_done_s;
+
+  rdata     <= rdata_s;
+  nb_data_s <= 1;
 
 
 
-  -- scl_debug <= scl;
-  -- sda_debug <= sda;
 
-  u0 : component NIOS_II_eeprom_cmd
-    port map (
-      clk_clk                                 => clock_20mhz,
-      reset_reset_n                           => reset_n,
-      po_commands_external_connection_export  => po_commands_external_connection_export_s,
-      po_chip_addr_external_connection_export => chip_addr_s,
-      po_word_addr_external_connection_export => word_addr_s,
-      pi_infos_external_connection_export     => sack_error_s & i2c_done_s
-      );
+  p_cnt_500ms : process (clock_20mhz, reset_n_synch_s) is
+  begin  -- process p_cnt_500ms
+    if reset_n_synch_s = '0' then       -- asynchronous reset (active low)
+      cnt_500ms <= 0;
+      start_s   <= '0';
+      rw_s      <= '0';
 
-  leds(0)          <= sack_error_s;
-  leds(7)          <= i2c_done_s;
-  leds(6 downto 1) <= (others => '0');
+    elsif clock_20mhz'event and clock_20mhz = '1' then  -- rising clock edge
 
-  en_s      <= po_commands_external_connection_export_s(0);
-  start_s   <= po_commands_external_connection_export_s(1);
-  rw_s      <= po_commands_external_connection_export_s(2);
-  page_wr_s <= po_commands_external_connection_export_s(3);
-  byte_rd_s <= po_commands_external_connection_export_s(4);
+      if(pll_locked_s = '1') then
+        rw_s <= '0';                    -- Write force
+
+        if(i2c_done_s = '1') then
+          start_s <= '1';
+        else
+          start_s <= '0';
+        end if;
+
+        -- if(cnt_500ms < 25000000 - 1) then
+        --   cnt_500ms <= cnt_500ms + 1;
+        --   if(i2c_done_s = '0') then
+        --     start_s <= '0';
+        --   end if;
+        -- else
+        --   cnt_500ms <= 0;
+        --   if(i2c_done_s = '1') then
+        --     start_s <= '1';
+        --   else
+        --     start_s <= '0';
+        --   end if;
+        -- -- rw_s      <= not rw_s;
+        -- end if;
 
 
-  pll_20mhz_inst : pll_20Mhz
-    port map
-    (
-      areset => reset_n,
-      inclk0 => clock,
-      c0     => clock_20mhz,
-      locked => open
-      );
+      end if;
+    end if;
+  end process p_cnt_500ms;
 
+
+
+
+  pll_rst_s <= not reset_n_synch_s;
+
+
+  pll_20meg_inst : pll_20meg port map (
+    areset => pll_rst_s,
+    inclk0 => clock,
+    c0     => clock_20mhz,
+    locked => pll_locked_s
+    );
+
+
+  p_rst_synch : process (clock, reset_n) is
+  begin  -- process p_rst_synch
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      reset_n_s       <= '0';
+      reset_n_synch_s <= '0';
+    elsif clock'event and clock = '1' then  -- rising clock edge
+      reset_n_s       <= '1';
+      reset_n_synch_s <= reset_n_s;
+    end if;
+  end process p_rst_synch;
 
 end architecture arch_top_i2c_eemprom_de_nano;
