@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-09
+-- Last update: 2019-07-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ architecture arch_i2c_master of i2c_master is
   constant T_scl               : integer := compute_scl_period(scl_frequency, clock_frequency);  -- SCL period according to the I2C config and the input clock freq.
   constant T_2_scl             : integer := T_scl / 2;  -- Half period of SCL
   constant start_stop_duration : integer := T_2_scl;  -- Duration of the start duration
-  constant C_tick_ack          : integer := T_scl/4;  -- Duration to sample the ACK
+  constant C_tick_ack          : integer := T_scl/4 - 1;  -- Duration to sample the ACK
   constant C_tick_wdata        : integer := T_scl/4;  -- Duration for tick wdata
   constant C_tick_rdata        : integer := 3*T_scl/4;  -- Duration for tick rdata
 
@@ -281,7 +281,7 @@ begin
     end if;
   end process p_state_mng;
 
-  -- purpose : This process counts until the start duration and generates a tick
+  -- purpose : This process counts until the start/stop duration and generates a tick
   p_tick_start_stop : process (clock, reset_n)
   begin  -- process p_tick_start_stop
     if (reset_n = '0') then             -- asynchronous reset (active low)
@@ -308,9 +308,12 @@ begin
           cnt_start_stop    <= 0;
           start_stop_done_s <= '1';
         end if;
+      elsif(i2c_master_state = IDLE) then
+        en_sclk_s         <= '0';
       else
         start_stop_done_s <= '0';
         cnt_start_stop    <= 0;
+        -- en_sclk_s         <= '0';
       end if;
     end if;
   end process p_tick_start_stop;
@@ -450,10 +453,11 @@ begin
       rdata_s      <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(i2c_master_state = IDLE) then
-        en_sda      <= '0';
-        sda_out     <= '0';
-        ack_verif_s <= '0';
-        sack_ok     <= '0';
+        en_sda       <= '0';
+        sda_out      <= '0';
+        ack_verif_s  <= '0';
+        sack_ok      <= '0';
+        sack_error_s <= '0';
       elsif(i2c_master_state = START_GEN) then
         ack_verif_s <= '0';
         sack_ok     <= '0';
