@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-09
+-- Last update: 2019-07-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,6 +31,8 @@ entity top_i2c_eemprom_de_nano is
   port (
     clock   : in std_logic;
     reset_n : in std_logic;
+
+    bp1 : in std_logic;
 
     -- I2C interface
     scl : inout std_logic;
@@ -87,11 +89,13 @@ architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
 
 
   -- Internal counter
-  signal cnt_500ms : integer range 0 to 25000000;
+  signal cnt_500ms  : integer range 0 to 25000000;
+  signal cnt_done_s : std_logic;
 
   signal pll_locked_s : std_logic;
   signal pll_rst_s    : std_logic;
 
+  signal sel_rw_s : std_logic;
 
   -- Reset mng
   signal reset_n_s       : std_logic;   -- Latch input reset
@@ -100,7 +104,27 @@ architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
 
   signal clock_20mhz : std_logic;       -- Clock 20MHz from PLL
 
+  signal i2c_done_ss   : std_logic;
+  signal i2c_done_re_s : std_logic;
+
+  signal wdata_change_re_s : std_logic;
+  signal wdata_change_ss   : std_logic;
+
+  signal cnt_255 : integer range 0 to 255;
+
 begin  -- architecture arch_top_i2c_eemprom_de_nano
+
+
+  -- p_wdata_mng : process (clock_20mhz, reset_n_synch_s) is
+  -- begin  -- process p_wdata_mng
+  --   if reset_n_synch_s = '0' then  -- asynchronous reset (active low)
+  --     wdata_s <= x"00";
+  --     cnt_255 <= 0;
+  --   elsif clock_20mhz'event and clock_20mhz = '1' then  -- rising clock edge
+  --     if(
+  --       end if;
+  --       end process p_wdata_mng;
+
 
   wdata_s <= x"BE";
 
@@ -140,7 +164,7 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
   leds(2) <= rdata_valid_s;
   leds(3) <= wdata_change_s;
   leds(4) <= start_s;
-  leds(5) <= '0';
+  leds(5) <= cnt_done_s;
   leds(6) <= '0';
   leds(7) <= i2c_done_s;
 
@@ -148,45 +172,63 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
   -- nb_data_s <= 2;
 
 
+  p_i2c_done_re : process (clock_20mhz, reset_n_synch_s) is
+  begin  -- process p_i2c_done_re
+    if reset_n_synch_s = '0' then       -- asynchronous reset (active low)
+      i2c_done_ss <= '0';
+    elsif clock_20mhz'event and clock_20mhz = '1' then  -- rising clock edge
+      i2c_done_ss <= i2c_done_s;
+    end if;
+  end process p_i2c_done_re;
+  i2c_done_re_s <= i2c_done_s and not i2c_done_ss;
 
 
   p_cnt_500ms : process (clock_20mhz, reset_n_synch_s) is
   begin  -- process p_cnt_500ms
     if reset_n_synch_s = '0' then       -- asynchronous reset (active low)
-      cnt_500ms <= 0;
-      start_s   <= '0';
-      rw_s      <= '0';
-      nb_data_s <= 1;
+      cnt_500ms  <= 0;
+      start_s    <= '0';
+      rw_s       <= '0';
+      nb_data_s  <= 1;
+      cnt_done_s <= '0';
+      sel_rw_s   <= '0';
     elsif clock_20mhz'event and clock_20mhz = '1' then  -- rising clock edge
 
       if(pll_locked_s = '1') then
-        -- rw_s      <= '1';               -- Write force
-        -- nb_data_s <= 1;
-        -- if(i2c_done_s = '1') then
-        --   start_s <= '1';
-        -- -- else
-        -- --   start_s <= '0';
+
+        if(cnt_500ms < 25000000 - 1 and cnt_done_s = '0') then
+          cnt_500ms <= cnt_500ms + 1;
+        else
+          cnt_500ms  <= 0;
+          cnt_done_s <= '1';
+        end if;
+
+        -- if(i2c_done_re_s = '1') then
+        --   rw_s <= not rw_s;
         -- end if;
 
-        if(cnt_500ms < 25000000 - 1) then
-          cnt_500ms <= cnt_500ms + 1;
+        if(cnt_done_s = '1') then
 
-        else
-          cnt_500ms <= 0;
-          rw_s      <= not rw_s;
+          if(i2c_done_s = '1' and sel_rw_s = '0') then
+            rw_s      <= '0';
+            start_s   <= '1';
+            nb_data_s <= 4;
+          --   sel_rw_s  <= '1';
+          -- elsif(i2c_done_s = '1' and sel_rw_s = '1') then
+          --   rw_s      <= '1';
+          --   nb_data_s <= 1;
+          --   start_s   <= '1';
+          --   sel_rw_s  <= '0';               
+          end if;
 
-        -- rw_s      <= not rw_s;
+
         end if;
-        if(i2c_done_s = '1' and rw_s = '0') then
-          nb_data_s <= 2;
-          start_s   <= '1';
 
-        elsif(i2c_done_s = '1' and rw_s = '1') then
-          nb_data_s <= 1;
-          start_s   <= '1';
-        else
-          start_s <= '0';
+        if(i2c_done_re_s = '1') then
+          cnt_done_s <= '0';
+          start_s    <= '0';
         end if;
+
 
       end if;
     end if;
