@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-28
--- Last update: 2019-07-02
+-- Last update: 2019-07-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ begin
     -- INIT
     start_i2c <= '0';
     rw        <= '0';
-    chip_addr <= "1111101";
+    chip_addr <= "1010000";
     nb_data   <= 1;
     -- wdata     <= (others => '0');
 
@@ -129,7 +129,20 @@ begin
     wait for 10 us;
 
 
-    -- Start a  Read transaction
+    -- Start a  write transaction
+    nb_data   <= 4;
+    rw        <= '0';
+    start_i2c <= '1';
+    wait for 10 us;
+    start_i2c <= '0';
+
+    wait until rising_edge(i2c_done);
+    report "Write transaction done !!";
+
+    wait for 50 us;
+
+
+    -- Start a Read transaction
     nb_data   <= 1;
     rw        <= '1';
     start_i2c <= '1';
@@ -138,19 +151,6 @@ begin
 
     wait until rising_edge(i2c_done);
     report "Read transaction done !!";
-
-    wait for 50 us;
-
-
-    -- Start a WRITE transaction
-    nb_data   <= 1;
-    rw        <= '0';
-    start_i2c <= '1';
-    wait for 10 us;
-    start_i2c <= '0';
-
-    wait until rising_edge(i2c_done);
-    report "Write transaction done !!";
 
     wait for 50 us;
 

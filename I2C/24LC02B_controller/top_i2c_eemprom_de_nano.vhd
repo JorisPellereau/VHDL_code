@@ -111,6 +111,7 @@ architecture arch_top_i2c_eemprom_de_nano of top_i2c_eemprom_de_nano is
   signal wdata_change_ss   : std_logic;
 
   signal cnt_255 : integer range 0 to 255;
+  signal dev_id  : std_logic;
 
 begin  -- architecture arch_top_i2c_eemprom_de_nano
 
@@ -126,8 +127,8 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
   --       end process p_wdata_mng;
 
 
-  wdata_s <= x"BE";
-
+--  wdata_s <= x"BE";
+  wdata_s <= x"1E";
 
 
   -- MASTER I2C INST
@@ -152,7 +153,8 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
       sda          => sda);
 
 
-  chip_addr_s <= "1010000";
+  --chip_addr_s <= "1010000"; -- EEP @
+  chip_addr_s <= "0011101";             -- ADXL @
 
   scl_debug         <= scl;
   sda_debug         <= sda;
@@ -165,12 +167,13 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
   leds(3) <= wdata_change_s;
   leds(4) <= start_s;
   leds(5) <= cnt_done_s;
-  leds(6) <= '0';
+  leds(6) <= dev_id;
   leds(7) <= i2c_done_s;
 
   rdata <= rdata_s;
   -- nb_data_s <= 2;
 
+  dev_id <= '1' when rdata_s = x"E5" and rdata_valid_s = '1' else '0';
 
   p_i2c_done_re : process (clock_20mhz, reset_n_synch_s) is
   begin  -- process p_i2c_done_re
@@ -201,6 +204,7 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
         else
           cnt_500ms  <= 0;
           cnt_done_s <= '1';
+          sel_rw_s   <= not sel_rw_s;
         end if;
 
         -- if(i2c_done_re_s = '1') then
@@ -209,11 +213,11 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
 
         if(cnt_done_s = '1') then
 
-          if(i2c_done_s = '1' and bp1 = '1') then
+          if(i2c_done_s = '1' and sel_rw_s = '1') then  -- and bp1 = '1') then
             rw_s      <= '0';
             start_s   <= '1';
             nb_data_s <= 2;
-          elsif(i2c_done_s = '1' and bp1 = '0') then
+          elsif(i2c_done_s = '1' and sel_rw_s = '0') then  -- and bp1 = '0') then
             rw_s      <= '1';
             start_s   <= '1';
             nb_data_s <= 1;
