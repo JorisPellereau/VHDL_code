@@ -209,28 +209,26 @@ begin  -- architecture arch_top_i2c_eemprom_de_nano
 
         if(cnt_done_s = '1') then
 
-          if(i2c_done_s = '1' and sel_rw_s = '0') then
+          if(i2c_done_s = '1' and bp1 = '1') then
             rw_s      <= '0';
             start_s   <= '1';
-            nb_data_s <= 4;
-          --   sel_rw_s  <= '1';
-          -- elsif(i2c_done_s = '1' and sel_rw_s = '1') then
-          --   rw_s      <= '1';
-          --   nb_data_s <= 1;
-          --   start_s   <= '1';
-          --   sel_rw_s  <= '0';               
+            nb_data_s <= 2;
+          elsif(i2c_done_s = '1' and bp1 = '0') then
+            rw_s      <= '1';
+            start_s   <= '1';
+            nb_data_s <= 1;
           end if;
-
 
         end if;
 
-        if(i2c_done_re_s = '1') then
+
+        if(i2c_done_re_s = '1' or sack_error_s = '1') then
           cnt_done_s <= '0';
           start_s    <= '0';
         end if;
 
-
       end if;
+
     end if;
   end process p_cnt_500ms;
 
