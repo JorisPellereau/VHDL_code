@@ -65,8 +65,8 @@ begin  -- architecture arch_test_master_spi
   -- Master SPI INST
   inst_master_spi : master_spi
     generic map (
-      cpol         => '1',
-      cpha         => '1',
+      cpol         => '0',
+      cpha         => '0',
       data_size    => data_size,
       slave_number => 2)
     port map (
