@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-05-03
+-- Last update: 2019-07-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -44,15 +44,16 @@ architecture arch_test_master_spi of test_master_spi is
   signal reset_n : std_logic := '1';    -- Asynchronous reset
 
   -- Master SPI signals
-  signal ssi       : std_logic_vector(max_slave_number - 1 downto 0);  -- Slave select input
-  signal start_spi : std_logic;         -- start SPI
-  signal wdata     : std_logic_vector(data_size - 1 downto 0);  --  data to write on the bus;
-  signal miso      : std_logic;         -- MISO
-  signal mosi      : std_logic;         -- MOSI
-  signal sclk      : std_logic;         -- SCLK
-  signal ssn       : std_logic_vector(max_slave_number - 1 downto 0);  -- Slave select output
-  signal rdata     : std_logic_vector(data_size - 1 downto 0);  -- RDATA
-  
+  signal ssi         : std_logic_vector(max_slave_number - 1 downto 0);  -- Slave select input
+  signal start_spi   : std_logic;       -- start SPI
+  signal wdata       : std_logic_vector(data_size - 1 downto 0);  --  data to write on the bus;
+  signal miso        : std_logic;       -- MISO
+  signal mosi        : std_logic;       -- MOSI
+  signal sclk        : std_logic;       -- SCLK
+  signal ssn         : std_logic_vector(max_slave_number - 1 downto 0);  -- Slave select output
+  signal rdata       : std_logic_vector(data_size - 1 downto 0);  -- RDATA
+  signal rdata_valid : std_logic;       -- Rdata valid
+
 begin  -- architecture arch_test_master_spi
 
   p_clock_gen : process
@@ -65,20 +66,21 @@ begin  -- architecture arch_test_master_spi
   inst_master_spi : master_spi
     generic map (
       cpol         => '1',
-      cpha         => '0',
+      cpha         => '1',
       data_size    => data_size,
       slave_number => 2)
     port map (
-      reset_n   => reset_n,
-      clock     => clock,
-      ssi       => ssi,
-      start_spi => start_spi,
-      wdata     => wdata,
-      miso      => miso,
-      mosi      => mosi,
-      sclk      => sclk,
-      ssn       => ssn,
-      rdata     => rdata);
+      reset_n     => reset_n,
+      clock       => clock,
+      ssi         => ssi,
+      start_spi   => start_spi,
+      wdata       => wdata,
+      miso        => miso,
+      mosi        => mosi,
+      sclk        => sclk,
+      ssn         => ssn,
+      rdata       => rdata,
+      rdata_valid => rdata_valid);
 
 
 -- This process generates stimuli in order to test the master_spi
@@ -99,7 +101,11 @@ begin  -- architecture arch_test_master_spi
 
     wdata     <= x"E9";
     ssi       <= b"01";
+    wait for 0.7 us;
     start_spi <= '1', '0' after 10 us;
+
+
+    wait for 200 ms;
 
     assert false report "end of SPI test !!!" severity failure;
     wait;

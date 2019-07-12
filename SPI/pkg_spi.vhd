@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-05-03
+-- Last update: 2019-07-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -44,6 +44,7 @@ package pkg_spi is
 
   -- COMPONENTS
   component master_spi is
+
     generic (
       cpol         : std_logic                           := '0';  -- Clock Polarity
       cpha         : std_logic                           := '0';  -- Clock phase
@@ -51,15 +52,18 @@ package pkg_spi is
       slave_number : integer range 1 to max_slave_number := max_slave_number);  -- Number of slave
 
     port (
-      reset_n   : in  std_logic;        -- Asynchronous reset
-      clock     : in  std_logic;        -- System clock
-      ssi       : in  std_logic_vector(slave_number - 1 downto 0);  -- Slave Select input
-      start_spi : in  std_logic;        -- Start SPI transaction
-      wdata     : in  std_logic_vector(data_size - 1 downto 0);  -- Data to transmit
-      miso      : in  std_logic;        -- Master In Slave Out
-      mosi      : out std_logic;        -- Master Out Slave In
-      sclk      : out std_logic;        -- Serial Clock
-      ssn       : out std_logic_vector(slave_number - 1 downto 0);  -- Slave Select
-      rdata     : out std_logic_vector(data_size - 1 downto 0));
+      reset_n     : in  std_logic;      -- Asynchronous reset
+      clock       : in  std_logic;      -- System clock
+      ssi         : in  std_logic_vector(slave_number - 1 downto 0);  -- Slave Select input
+      start_spi   : in  std_logic;      -- Start SPI transaction
+      wdata       : in  std_logic_vector(data_size - 1 downto 0);  -- Data to transmit
+      miso        : in  std_logic;      -- Master In Slave Out
+      mosi        : out std_logic;      -- Master Out Slave In
+      sclk        : out std_logic;      -- Serial Clock
+      ssn         : out std_logic_vector(slave_number - 1 downto 0);  -- Slave Select
+      rdata       : out std_logic_vector(data_size - 1 downto 0);  -- Read data
+      rdata_valid : out std_logic
+      );
+
   end component;
 end package pkg_spi;
