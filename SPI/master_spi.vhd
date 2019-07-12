@@ -71,13 +71,19 @@ architecture arch_master_spi of master_spi is
   signal cnt_period_clock_spi : integer range 0 to T_sclk;  -- Counter that counts until t_sclk
 
   -- Input to latch
-  signal ssi_s   : std_logic_vector(slave_number - 1 downto 0);  -- Latch slave select input
-  signal wdata_s : std_logic_vector(data_size - 1 downto 0);     -- Latch wdata
+  signal ssi_s         : std_logic_vector(slave_number - 1 downto 0);  -- Latch slave select input
+  signal wdata_s       : std_logic_vector(data_size - 1 downto 0);  -- Latch wdata
+  signal shift_wdata_s : std_logic_vector(data_size - 1 downto 0);  -- Shift wdata_s
 
-  signal rdata_s        : std_logic_vector(data_size - 1 downto 0);
-  signal rdata_valid_s  : std_logic;
+  signal mosi_s : std_logic;            -- Mosi output
+
+  signal rdata_s       : std_logic_vector(data_size - 1 downto 0);
+  signal rdata_valid_s : std_logic;
+
   -- Controls
   signal en_transaction : std_logic;    -- Start transaction
+
+
 
   signal cnt_data : integer range 0 to data_size;  -- Counter that counts until the number of bit to transmit
 
@@ -102,7 +108,7 @@ begin  -- architecture arch_master_spi
   -- purpose: This process latch the input when a rising edge of start_spi occurs
   p_latch_inputs : process (clock, reset_n) is
   begin  -- process p_latch_inputs
-    if reset_n = '0' then               -- asynchronous reset (active low)
+    if reset_n = '0' then                   -- asynchronous reset (active low)
       ssi_s          <= (others => '0');
       wdata_s        <= (others => '0');
       en_transaction <= '0';
@@ -111,11 +117,13 @@ begin  -- architecture arch_master_spi
         ssi_s          <= ssi;
         wdata_s        <= wdata;
         en_transaction <= '1';
+
       elsif(cnt_data = data_size and (((sclk_fe_s = '1' or sclk_re_s = '1') and cpha = '0') or cpha = '1')) then  -- RAZ en_transaction
         en_transaction <= '0';
         ssi_s          <= (others => '0');
         wdata_s        <= (others => '0');
       end if;
+
     end if;
   end process p_latch_inputs;
 
@@ -224,12 +232,44 @@ begin  -- architecture arch_master_spi
   -- purpose: This process manages the MOSI port 
   p_mosi_mng : process (clock, reset_n) is
   begin  -- process p_mosi_mng
-    if reset_n = '0' then               -- asynchronous reset (active low)
-
+    if reset_n = '0' then                   -- asynchronous reset (active low)
+      mosi_s        <= '1';
+      shift_wdata_s <= (others => '0');
     elsif clock'event and clock = '1' then  -- rising clock edge
 
+      if(start_spi_re = '1') then
+        shift_wdata_s <= wdata;
+      end if;
+
+      if(en_transaction = '1') then
+        if(cpol = '0' and cpha = '0') then
+          if(sclk_fe_s = '1') then
+            shift_wdata_s(6 downto 0) <= shift_wdata_s(7 downto 1);  -- Shift
+            mosi_s                    <= shift_wdata_s(0);
+          end if;
+
+        elsif(cpol = '1' and cpha = '0') then
+          if(sclk_re_s = '1') then
+
+          end if;
+
+        elsif(cpol = '0' and cpha = '1') then
+          if(sclk_re_s = '1') then
+
+          end if;
+
+        elsif(cpol = '1' and cpha = '1') then
+          if(sclk_fe_s = '1') then
+
+          end if;
+
+        end if;
+
+      end if;
     end if;
   end process p_mosi_mng;
+
+  mosi <= mosi_s;
 
   -- purpose: This process counts the data
   p_cnt_data_mng : process (clock, reset_n) is
