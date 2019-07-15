@@ -6,11 +6,11 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-07-12
+-- Last update: 2019-07-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: This file is le master SPI module - 4 Wire mode
+-- Description: This file is le master SPI module - 3 Wire mode
 -------------------------------------------------------------------------------
 -- Copyright (c) 2019 
 -------------------------------------------------------------------------------
@@ -31,6 +31,7 @@ entity master_spi is
     cpol         : std_logic                           := '0';  -- Clock Polarity
     cpha         : std_logic                           := '0';  -- Clock phase
     data_size    : integer                             := 8;  -- Size of the data
+    msb_first    : boolean                             := true;  -- True : MSB 1st - False : LSB 1st
     slave_number : integer range 1 to max_slave_number := max_slave_number);  -- Number of slave
 
   port (
@@ -82,7 +83,7 @@ architecture arch_master_spi of master_spi is
 
   -- Controls
   signal en_transaction : std_logic;    -- Start transaction
-
+  signal en_first_bit_s : std_logic;    -- Set 1st bit on the frame
 
 
   signal cnt_data : integer range 0 to data_size;  -- Counter that counts until the number of bit to transmit
@@ -198,26 +199,26 @@ begin  -- architecture arch_master_spi
 
       if(cpol = '0' and cpha = '0') then
         if(sclk_re_s = '1') then
-          rdata_s(0)          <= miso;
-          rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+          rdata_s(0)                      <= miso;
+          rdata_s(data_size - 1 downto 1) <= rdata_s(data_size - 2 downto 0);
         end if;
 
       elsif(cpol = '1' and cpha = '0') then
         if(sclk_fe_s = '1') then
-          rdata_s(0)          <= miso;
-          rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+          rdata_s(0)                      <= miso;
+          rdata_s(data_size - 1 downto 1) <= rdata_s(data_size - 2 downto 0);
         end if;
 
       elsif(cpol = '0' and cpha = '1') then
         if(sclk_fe_s = '1') then
-          rdata_s(0)          <= miso;
-          rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+          rdata_s(0)                      <= miso;
+          rdata_s(data_size - 1 downto 1) <= rdata_s(data_size - 2 downto 0);
         end if;
 
       elsif(cpol = '1' and cpha = '1') then
         if(sclk_re_s = '1') then
-          rdata_s(0)          <= miso;
-          rdata_s(7 downto 1) <= rdata_s(6 downto 0);
+          rdata_s(0)                      <= miso;
+          rdata_s(data_size - 1 downto 1) <= rdata_s(data_size - 2 downto 0);
         end if;
 
       end if;
@@ -233,8 +234,9 @@ begin  -- architecture arch_master_spi
   p_mosi_mng : process (clock, reset_n) is
   begin  -- process p_mosi_mng
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      mosi_s        <= '1';
-      shift_wdata_s <= (others => '0');
+      mosi_s         <= '1';
+      shift_wdata_s  <= (others => '0');
+      en_first_bit_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
 
       if(start_spi_re = '1') then
@@ -243,28 +245,101 @@ begin  -- architecture arch_master_spi
 
       if(en_transaction = '1') then
         if(cpol = '0' and cpha = '0') then
-          if(sclk_fe_s = '1') then
-            shift_wdata_s(6 downto 0) <= shift_wdata_s(7 downto 1);  -- Shift
-            mosi_s                    <= shift_wdata_s(0);
+          if(sclk_fe_s = '1' and en_first_bit_s = '1') then
+
+            if(msb_first = true) then   -- MSB First
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+            end if;
+
+          elsif(en_first_bit_s = '0') then
+
+            if(msb_first = true) then   -- MSB first
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+            end if;
+            en_first_bit_s <= '1';
+
           end if;
 
         elsif(cpol = '1' and cpha = '0') then
-          if(sclk_re_s = '1') then
+
+          if(sclk_re_s = '1' and en_first_bit_s = '1') then
+            if(msb_first = true) then   -- MSB First
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+            end if;
+
+          elsif(en_first_bit_s = '0') then
+            if(msb_first = true) then   -- MSB first
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+            end if;
+            en_first_bit_s <= '1';
 
           end if;
 
         elsif(cpol = '0' and cpha = '1') then
-          if(sclk_re_s = '1') then
+
+          if(sclk_re_s = '1' and en_first_bit_s = '1') then
+            if(msb_first = true) then   -- MSB First
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+            end if;
+
+          elsif(en_first_bit_s = '0' and sclk_re_s = '1') then
+            if(msb_first = true) then   -- MSB first
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+            end if;
+            en_first_bit_s <= '1';
 
           end if;
 
         elsif(cpol = '1' and cpha = '1') then
-          if(sclk_fe_s = '1') then
+
+          if(sclk_fe_s = '1' and en_first_bit_s = '1') then
+            if(msb_first = true) then   -- MSB First
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+            end if;
+
+          elsif(en_first_bit_s = '0' and sclk_fe_s = '1') then
+            if(msb_first = true) then   -- MSB first
+              shift_wdata_s(data_size - 1 downto 1) <= shift_wdata_s(data_size - 2 downto 0);  -- Shift           
+              mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
+            else                        -- LSB first
+              shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
+              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+            end if;
+            en_first_bit_s <= '1';
 
           end if;
 
         end if;
-
+      else
+        en_first_bit_s <= '0';
       end if;
     end if;
   end process p_mosi_mng;
