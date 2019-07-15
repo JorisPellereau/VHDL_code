@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-07-12
+-- Last update: 2019-07-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ end entity test_master_spi;
 architecture arch_test_master_spi of test_master_spi is
 
   -- CONSTANTS
-  constant data_size     : integer := 8;      -- Data size
+  constant data_size     : integer := 16;     -- Data size
   constant T_input_clock : time    := 20 ns;  -- Clock input : 50MHz 1/50MHz => 20 ns
 
   -- TB signals
@@ -65,9 +65,10 @@ begin  -- architecture arch_test_master_spi
   -- Master SPI INST
   inst_master_spi : master_spi
     generic map (
-      cpol         => '0',
-      cpha         => '0',
+      cpol         => '1',
+      cpha         => '1',
       data_size    => data_size,
+      msb_first    => true,
       slave_number => 2)
     port map (
       reset_n     => reset_n,
@@ -95,17 +96,25 @@ begin  -- architecture arch_test_master_spi
 
     -- Reset system
     wait for 10 us;
-    reset_n <= '0', '1' after 100 us;
+    reset_n <= '0', '1' after 10 us;
 
-    wait for 223 us;
+    wait for 20 us;
 
-    wdata     <= x"E9";
+    wdata <= x"00E9";
+
     ssi       <= b"01";
     wait for 0.7 us;
     start_spi <= '1', '0' after 10 us;
+    wait for 20 us;
 
 
-    wait for 200 ms;
+    wdata <= x"0081";
+
+    ssi       <= b"10";
+    wait for 0.7 us;
+    start_spi <= '1', '0' after 10 us;
+    wait for 20 us;
+
 
     assert false report "end of SPI test !!!" severity failure;
     wait;
