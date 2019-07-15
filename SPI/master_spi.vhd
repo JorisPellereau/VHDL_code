@@ -252,7 +252,7 @@ begin  -- architecture arch_master_spi
               mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
             else                        -- LSB first
               shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
-              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+              mosi_s                                <= shift_wdata_s(0);  -- LSB 1st
             end if;
 
           elsif(en_first_bit_s = '0') then
@@ -262,7 +262,7 @@ begin  -- architecture arch_master_spi
               mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
             else                        -- LSB first
               shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
-              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+              mosi_s                                <= shift_wdata_s(0);  -- LSB 1st              
             end if;
             en_first_bit_s <= '1';
 
@@ -299,7 +299,7 @@ begin  -- architecture arch_master_spi
               mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
             else                        -- LSB first
               shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
-              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+              mosi_s                                <= shift_wdata_s(0);  -- LSB 1st
             end if;
 
           elsif(en_first_bit_s = '0' and sclk_re_s = '1') then
@@ -322,7 +322,7 @@ begin  -- architecture arch_master_spi
               mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
             else                        -- LSB first
               shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
-              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st
+              mosi_s                                <= shift_wdata_s(0);  -- LSB 1st
             end if;
 
           elsif(en_first_bit_s = '0' and sclk_fe_s = '1') then
@@ -331,7 +331,7 @@ begin  -- architecture arch_master_spi
               mosi_s                                <= shift_wdata_s(data_size - 1);  -- MSB 1st
             else                        -- LSB first
               shift_wdata_s(data_size - 2 downto 0) <= shift_wdata_s(data_size - 1 downto 1);  -- Shift           
-              mosi_s                                <= shift_wdata_s(0);  -- MSB 1st              
+              mosi_s                                <= shift_wdata_s(0);  -- LSB 1st              
             end if;
             en_first_bit_s <= '1';
 
