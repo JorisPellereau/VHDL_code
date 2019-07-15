@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-07-12
+-- Last update: 2019-07-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -49,6 +49,7 @@ package pkg_spi is
       cpol         : std_logic                           := '0';  -- Clock Polarity
       cpha         : std_logic                           := '0';  -- Clock phase
       data_size    : integer                             := 8;  -- Size of the data
+      msb_first    : boolean                             := true;  -- True : MSB 1st - False : LSB 1st
       slave_number : integer range 1 to max_slave_number := max_slave_number);  -- Number of slave
 
     port (
