@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-06-27
--- Last update: 2019-06-27
+-- Last update: 2019-07-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -56,6 +56,14 @@ architecture arch of test_test_fsm is
       leds    : out std_logic_vector(7 downto 0));  -- leds
   end component;
 
+  component test4_fsm
+    port (
+      clock   : in  std_logic;                      -- System clock 50MHz
+      reset_n : in  std_logic;                      -- Asynchronous_reset
+      bp1     : in  std_logic;                      -- bp1
+      bp2     : in  std_logic;                      -- bp2
+      leds    : out std_logic_vector(7 downto 0));  -- leds
+  end component;
 
   signal clock   : std_logic := '0';
   signal reset_n : std_logic := '1';
@@ -64,6 +72,7 @@ architecture arch of test_test_fsm is
   signal leds1   : std_logic_vector(7 downto 0);
   signal leds2   : std_logic_vector(7 downto 0);
   signal leds3   : std_logic_vector(7 downto 0);
+  signal leds4   : std_logic_vector(7 downto 0);
 
 begin  -- architecture arch
 
@@ -126,6 +135,15 @@ begin  -- architecture arch
       bp1     => bp1,
       bp2     => bp2,
       leds    => leds3
+      );
+
+  test4_fsm_inst : test4_fsm
+    port map(
+      clock   => clock,
+      reset_n => reset_n,
+      bp1     => bp1,
+      bp2     => bp2,
+      leds    => leds4
       );
 
 end architecture arch;
