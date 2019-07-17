@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-07-15
+-- Last update: 2019-07-17
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -221,6 +221,14 @@ begin  -- architecture arch_master_spi
           rdata_s(data_size - 1 downto 1) <= rdata_s(data_size - 2 downto 0);
         end if;
 
+      end if;
+
+
+      -- rdata_valid_s manage
+      if(en_transaction = '1') then
+        rdata_valid_s <= '0';
+      elsif(cnt_data = data_size and en_transaction = '0') then
+        rdata_valid_s <= '1';
       end if;
 
     end if;
