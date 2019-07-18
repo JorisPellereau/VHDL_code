@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-05-03
--- Last update: 2019-07-17
+-- Last update: 2019-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ begin  -- architecture arch_master_spi
   begin  -- process p_clock_gen
     if reset_n = '0' then               -- asynchronous reset (active low)     
       sclk_s               <= cpol;
-      cnt_period_clock_spi <= 0;
+      -- cnt_period_clock_spi <= 0;
 
     elsif clock'event and clock = '1' then  -- rising clock edge
       if(en_transaction = '1') then
@@ -168,7 +168,7 @@ begin  -- architecture arch_master_spi
         end if;
 
       elsif(en_transaction = '0') then
-        cnt_period_clock_spi <= 0;
+        -- cnt_period_clock_spi <= 0;
         sclk_s               <= cpol;
       end if;
 
