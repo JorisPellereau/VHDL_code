@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-18
--- Last update: 2019-07-18
+-- Last update: 2019-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,9 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+
+library lib_max7219;
+use lib_max7219.pkg_max7219.all;
 
 entity max7219_interface is
 
@@ -40,8 +43,6 @@ end entity max7219_interface;
 
 architecture arch_max7219_interface of max7219_interface is
 
-  -- CONSTANTS
-  constant C_T_2_sclk : integer := 10/2;  -- 
 
   -- INTERNAL SIGNALS
   signal start_frame_i_s      : std_logic;  -- Latch start_frame_i 
@@ -53,7 +54,12 @@ architecture arch_max7219_interface of max7219_interface is
   signal cnt_half_spi_clock : integer range 0 to C_T_2_sclk;  -- Counter that counts until Half Period of SCLK
   signal tick_clock         : std_logic;                      -- Tick clock
 
-  signal clk_o_s : std_logic;           -- SPI CLK
+  signal clk_o_s      : std_logic;      -- SPI CLK
+  signal clk_o_r_edge : std_logic;      -- Rising edge of CLK
+  signal clk_o_f_edge : std_logic;      -- Falling edge of CLK
+  signal clk_o_ss     : std_logic;      -- Latch SPI CLK
+
+  signal cnt_data : integer range 0 to 16;  -- Counts the data to transmit
 
 begin  -- architecture arch_max7219_interface
 
@@ -81,6 +87,7 @@ begin  -- architecture arch_max7219_interface
         wdata_s        <= wdata_i;
         en_transaction <= '1';
 
+      -- To verif
       elsif(cnt_data = data_size and (sclk_fe_s = '1' or sclk_re_s = '1')) then  -- RAZ en_transaction
         en_transaction <= '0';
         wdata_s        <= (others => '0');
@@ -116,12 +123,12 @@ begin  -- architecture arch_max7219_interface
   end process p_tick_clock_gen;
 
   -- purpose: This process generates SCLK 
-  p_clock_gen : process (clock, reset_n) is
+  p_clock_gen : process (clock_i, reset_n_i) is
   begin  -- process p_clock_gen
-    if reset_n = '0' then               -- asynchronous reset (active low)     
+    if reset_n_i = '0' then             -- asynchronous reset (active low)     
       clk_o_s <= '0';
 
-    elsif clock'event and clock = '1' then  -- rising clock edge
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(en_transaction = '1') then
         if(tick_clock = '1') then
           clk_o_s <= not clk_o_s;
@@ -133,4 +140,18 @@ begin  -- architecture arch_max7219_interface
     end if;
   end process p_clock_gen;
 
+
+  -- purpose: This process manages the RE and FE of sclk 
+  p_sclk_re_mng : process (clock_i, reset_n_i) is
+  begin  -- process p_sclk_re_mng
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
+      clk_o_ss <= '0';
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      clk_o_ss <= clk_o_s;
+    end if;
+  end process p_sclk_re_mng;
+  clk_o_r_edge <= sclk_s and not clk_o_ss;
+  clk_o_f_edge <= not sclk_s and clk_o_ss;
+
+  
 end architecture arch_max7219_interface;
