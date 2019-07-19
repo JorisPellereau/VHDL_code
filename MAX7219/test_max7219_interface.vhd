@@ -71,7 +71,15 @@ begin  -- architecture arch_test_max7219_interface
     wdata_i       <= x"EAA2";
     start_frame_i <= '1';
     wait for 1 us;
+    start_frame_i <= '0';
+    wait until rising_edge(frame_done_o) for 10 ms;
 
+    wait for 5 us;
+
+    wdata_i       <= x"FFFE";
+    start_frame_i <= '1';
+    wait for 1 us;
+    start_frame_i <= '0';
     report "end of test !!!";
     wait;
 
