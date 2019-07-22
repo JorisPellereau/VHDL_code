@@ -33,13 +33,14 @@ package pkg_max7219 is
   -- =================================
 
   -- == MAX7219_controller TYPES & CONSTANTS ==
-  constant C_CFG_NB           : integer                      := 3;  -- Number of configuration
-  constant C_DECODE_MODE_ADDR : std_logic_vector(7 downto 0) := x"09";  -- Decode mode address register
-  constant C_INTENSITY_ADDR   : std_logic_vector(7 downto 0) := x"0A";  -- Inensity addr register
-  constant C_SCAN_LIMIT_ADDR  : std_logic_vector(7 downto 0) := x"0B";  -- Scan limit addr register
-  constant C_SHUTDOWN_ADDR    : std_logic_vector(7 downto 0) := x"0C";  -- Shutdown addr register
+  constant C_CFG_NB            : integer                      := 3;  -- Number of configuration
+  constant C_DECODE_MODE_ADDR  : std_logic_vector(7 downto 0) := x"09";  -- Decode mode address register
+  constant C_INTENSITY_ADDR    : std_logic_vector(7 downto 0) := x"0A";  -- Inensity addr register
+  constant C_SCAN_LIMIT_ADDR   : std_logic_vector(7 downto 0) := x"0B";  -- Scan limit addr register
+  constant C_SHUTDOWN_ADDR     : std_logic_vector(7 downto 0) := x"0C";  -- Shutdown addr register
+  constant C_DISPLAY_TEST_ADDR : std_logic_vector(7 downto 0) := x"0F";  -- Display test addr register
 
-  type t_max7219_ctrl_fsm is (IDLE, SET_CFG, DISPLAY_ON);  -- States of the MAX7219 Controller
+  type t_max7219_ctrl_fsm is (IDLE, SET_CFG, DISPLAY_ON, DISPLAY_OFF, TEST_DISPLAY_ON, TEST_DISPLAY_OFF);  -- States of the MAX7219 Controller
   -- ==================================
 
   -- COMPONENTS
@@ -63,15 +64,29 @@ package pkg_max7219 is
       -- From MAX7219 interface
       frame_done_i : in std_logic;  -- Frame done from the MAX7219 interface
 
+      test_display_i : in std_logic;    -- Test the display
+
       -- Config inputs
       start_config_i     : in std_logic;  -- Start the config of the MAX7219
       decode_mode_i      : in std_logic_vector(1 downto 0);  -- Decode mode (0x0 - 0x1 - 0x2 - 0x3)
       intensity_format_i : in std_logic_vector(3 downto 0);  -- Intensity format
       scan_limit_i       : in std_logic_vector(2 downto 0);  -- Scan limit config
 
+      -- Config Digits
+      digit_0_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_1_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_2_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_3_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_4_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_5_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_6_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+      digit_7_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+
+
       -- Flags
-      config_done_o : out std_logic;    -- Config is done
-      display_on_o  : out std_logic;    -- State of the display 1 : on 0 : off
+      config_done_o  : out std_logic;   -- Config is done
+      display_on_o   : out std_logic;   -- State of the display 1 : on 0 : off
+      display_test_o : out std_logic;   -- 1 : Display in test mode
 
       -- To MAX7219 interface
       wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
