@@ -34,15 +34,28 @@ entity max7219_controller is
     -- From MAX7219 interface
     frame_done_i : in std_logic;  -- Frame done from the MAX7219 interface
 
+    test_display_i : in std_logic;      -- Test the display
+
     -- Config inputs
     start_config_i     : in std_logic;  -- Start the config of the MAX7219
     decode_mode_i      : in std_logic_vector(1 downto 0);  -- Decode mode (0x0 - 0x1 - 0x2 - 0x3)
     intensity_format_i : in std_logic_vector(3 downto 0);  -- Intensity format
     scan_limit_i       : in std_logic_vector(2 downto 0);  -- Scan limit config
 
+    -- Config Digits
+    digit_0_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_1_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_2_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_3_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_4_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_5_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_6_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+    digit_7_i : in std_logic_vector(7 downto 0);  -- Digit 0 data
+
     -- Flags 
-    config_done_o : out std_logic;      -- Config is done
-    display_on_o  : out std_logic;      -- State of the display 1 : on 0 : off
+    config_done_o  : out std_logic;     -- Config is done
+    display_on_o   : out std_logic;     -- State of the display 1 : on 0 : off
+    display_test_o : out std_logic;     -- 1 : Display in test mode
 
     -- To MAX7219 interface
     wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
@@ -76,6 +89,7 @@ architecture arch_max7219_controller of max7219_controller is
   signal start_frame_ss : std_logic;    -- Start a frame
   signal config_done_s  : std_logic;    -- Configuration done
   signal display_on_s   : std_logic;    -- Stat of the display
+  signal display_test_s : std_logic;    -- Display in mode test
 
   signal en_start_frame_s : std_logic;  -- Send a frame when = '1'
   signal cnt_config_s     : integer range 0 to 2;  -- Counts the frame to transmit for the config
@@ -147,6 +161,8 @@ begin  -- architecture arch_max7219_controller
         when IDLE =>
           if(config_busy_s = '1') then
             state_max7219_ctrl <= SET_CFG;
+          elsif(test_display_i = '1') then
+            state_max7219_ctrl <= TEST_DISPLAY_ON;
           end if;
 
         when SET_CFG =>
@@ -156,6 +172,16 @@ begin  -- architecture arch_max7219_controller
 
         when DISPLAY_ON =>
           if(display_on_s = '1') then
+            state_max7219_ctrl <= IDLE;
+          end if;
+
+        when TEST_DISPLAY_ON =>
+          if(display_test_s = '1') then
+            state_max7219_ctrl <= TEST_DISPLAY_OFF;
+          end if;
+
+        when TEST_DISPLAY_OFF =>
+          if(display_test_s = '0') then
             state_max7219_ctrl <= IDLE;
           end if;
 
@@ -174,13 +200,14 @@ begin  -- architecture arch_max7219_controller
       config_done_s    <= '0';
       en_start_frame_s <= '0';
       display_on_s     <= '0';
+      display_test_s   <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       case state_max7219_ctrl is
         when IDLE =>
           wdata_s          <= (others => '0');
           start_frame_s    <= '0';
           start_frame_ss   <= '0';
-          -- config_done_s    <= '0';
+          config_done_s    <= '0';
           en_start_frame_s <= '1';
 
         when SET_CFG =>
@@ -240,15 +267,59 @@ begin  -- architecture arch_max7219_controller
             en_start_frame_s <= '0';
           end if;
 
+        when TEST_DISPLAY_ON =>
+
+          if(frame_done_r_edge = '1') then
+            display_test_s   <= '1';
+            en_start_frame_s <= '1';
+          end if;
+
+          if(en_start_frame_s = '1') then
+            wdata_s        <= C_DISPLAY_TEST_ADDR & x"01";  -- Display test mode
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+          else
+            start_frame_s  <= '0';
+            start_frame_ss <= '0';
+          end if;
+
+          if(start_frame_ss = '1') then
+            en_start_frame_s <= '0';
+          end if;
+
+        when TEST_DISPLAY_OFF =>
+          -- Need to wait for the release of the test_display_i input
+          if(test_display_i = '0') then
+
+            if(frame_done_r_edge = '1') then
+              display_test_s <= '0';
+            end if;
+
+            if(en_start_frame_s = '1') then
+              wdata_s        <= C_DISPLAY_TEST_ADDR & x"01";  -- Display test mode
+              start_frame_s  <= '1';
+              start_frame_ss <= start_frame_s;
+            else
+              start_frame_s  <= '0';
+              start_frame_ss <= '0';
+            end if;
+
+            if(start_frame_ss = '1') then
+              en_start_frame_s <= '0';
+            end if;
+
+          end if;
+
         when others => null;
       end case;
     end if;
   end process p_outputs_mng;
 
   -- OUTPUTS affectation
-  wdata_o       <= wdata_s;
-  start_frame_o <= start_frame_ss;
-  config_done_o <= config_done_s;
-  display_on_o  <= display_on_s;
+  wdata_o        <= wdata_s;
+  start_frame_o  <= start_frame_ss;
+  config_done_o  <= config_done_s;
+  display_on_o   <= display_on_s;
+  display_test_o <= display_test_s;
 
 end architecture arch_max7219_controller;
