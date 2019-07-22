@@ -37,8 +37,9 @@ package pkg_max7219 is
   constant C_DECODE_MODE_ADDR : std_logic_vector(7 downto 0) := x"09";  -- Decode mode address register
   constant C_INTENSITY_ADDR   : std_logic_vector(7 downto 0) := x"0A";  -- Inensity addr register
   constant C_SCAN_LIMIT_ADDR  : std_logic_vector(7 downto 0) := x"0B";  -- Scan limit addr register
+  constant C_SHUTDOWN_ADDR    : std_logic_vector(7 downto 0) := x"0C";  -- Shutdown addr register
 
-  type t_max7219_ctrl_fsm is (IDLE, SET_CFG);  -- States of the MAX7219 Controller
+  type t_max7219_ctrl_fsm is (IDLE, SET_CFG, DISPLAY_ON);  -- States of the MAX7219 Controller
   -- ==================================
 
   -- COMPONENTS
@@ -68,8 +69,9 @@ package pkg_max7219 is
       intensity_format_i : in std_logic_vector(3 downto 0);  -- Intensity format
       scan_limit_i       : in std_logic_vector(2 downto 0);  -- Scan limit config
 
-      -- Flag that indicates if the configuration is terminated
+      -- Flags
       config_done_o : out std_logic;    -- Config is done
+      display_on_o  : out std_logic;    -- State of the display 1 : on 0 : off
 
       -- To MAX7219 interface
       wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
