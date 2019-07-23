@@ -62,31 +62,31 @@ architecture arch_pattern_selector of pattern_selector is
 begin  -- architecture arch_pattern_selector
 
   -- This process select the pattern according to the input selector
-  p_pattern_mng : process (clock_i, reset_n_i) is
+  p_pattern_mng : process(sel_i, en_i)  -- (clock_i, reset_n_i) is
   begin  -- process p_pattern_mng
-    if reset_n_i = '0' then             -- asynchronous reset (active low)
+    -- if reset_n_i = '0' then             -- asynchronous reset (active low)
+    --   pattern_available_s <= '0';
+    --   matrix_8x8_s        <= (others => (others => '0'));
+    -- elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+    if(en_i = '1') then
+
+      pattern_available_s <= '1';
+      case sel_i is
+        when x"0000" =>
+          matrix_8x8_s <= C_MATRIX_0;
+
+        when x"0001" =>
+          matrix_8x8_s <= C_MATRIX_1;
+
+        when others =>
+          pattern_available_s <= '0';
+      end case;
+
+    else
       pattern_available_s <= '0';
-      matrix_8x8_s        <= (others => (others => '0'));
-    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-      if(en_i = '1') then
-
-        pattern_available_s <= '1';
-        case sel_i is
-          when x"0000" =>
-            matrix_8x8_s <= C_MATRIX_0;
-
-          when x"0001" =>
-            matrix_8x8_s <= C_MATRIX_1;
-
-          when others =>
-            pattern_available_s <= '0';
-        end case;
-
-      else
-        pattern_available_s <= '0';
-      end if;
-
     end if;
+
+  -- end if;
   end process p_pattern_mng;
 
   digit_0_s <= matrix_8x8_s(0)(7 downto 0);
