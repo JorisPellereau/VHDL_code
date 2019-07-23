@@ -89,6 +89,9 @@ architecture arch_max7219_controller of max7219_controller is
   signal pattern_available_i_s    : std_logic;  -- Old pattern available
   signal pattern_available_r_edge : std_logic;  -- RE of pattern available
 
+  signal update_display_i_s    : std_logic;  -- Old update_display_i
+  signal update_display_r_edge : std_logic;  -- Rising edge of update_display
+
   -- outputs SIGNALS
   signal wdata_s        : std_logic_vector(15 downto 0);  -- Data to write on the bus
   signal start_frame_s  : std_logic;    -- Start a frame
@@ -126,13 +129,17 @@ begin  -- architecture arch_max7219_controller
       frame_done_r_edge        <= '0';
       pattern_available_i_s    <= '0';
       pattern_available_r_edge <= '0';
+      update_display_i_s       <= '0';
+      update_display_r_edge    <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       start_config_i_s         <= start_config_i;
       frame_done_i_s           <= frame_done_i;
       pattern_available_i_s    <= pattern_available_i;
+      update_display_i_s       <= update_display_i;
       start_config_r_edge      <= start_config_i and not start_config_i_s;
       frame_done_r_edge        <= frame_done_i and not frame_done_i_s;
       pattern_available_r_edge <= pattern_available_i and not pattern_available_i_s;
+      update_display_r_edge    <= update_display_i and not update_display_i_s;
     end if;
   end process p_inputs_re_mng;
   -- start_config_r_edge <= start_config_i and not start_config_i_s;
@@ -186,7 +193,7 @@ begin  -- architecture arch_max7219_controller
       digit_6_s <= (others => '0');
       digit_7_s <= (others => '0');
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-      if(pattern_available_r_edge = '1') then
+      if(update_display_r_edge = '1') then
         digit_0_s <= digit_0_i;
         digit_1_s <= digit_1_i;
         digit_2_s <= digit_2_i;
@@ -211,7 +218,7 @@ begin  -- architecture arch_max7219_controller
             state_max7219_ctrl <= SET_CFG;
           elsif(test_display_i = '1') then
             state_max7219_ctrl <= TEST_DISPLAY_ON;
-          elsif(update_display_i = '1' and pattern_available_i = '1' and display_on_s = '1') then
+          elsif(update_display_r_edge = '1' and pattern_available_i = '1' and display_on_s = '1') then
             state_max7219_ctrl <= SET_DISPLAY;
           end if;
 
