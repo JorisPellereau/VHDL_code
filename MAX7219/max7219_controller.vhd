@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-22
+-- Last update: 2019-07-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,7 +34,9 @@ entity max7219_controller is
     -- From MAX7219 interface
     frame_done_i : in std_logic;  -- Frame done from the MAX7219 interface
 
-    test_display_i : in std_logic;      -- Test the display
+    test_display_i      : in std_logic;  -- Test the display
+    update_display_i    : in std_logic;  -- Update the display
+    pattern_available_i : in std_logic;  -- Pattern available
 
     -- Config inputs
     start_config_i     : in std_logic;  -- Start the config of the MAX7219
@@ -56,6 +58,7 @@ entity max7219_controller is
     config_done_o  : out std_logic;     -- Config is done
     display_on_o   : out std_logic;     -- State of the display 1 : on 0 : off
     display_test_o : out std_logic;     -- 1 : Display in test mode
+    update_done_o  : out std_logic;     -- Display Update terminated
 
     -- To MAX7219 interface
     wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
@@ -83,6 +86,9 @@ architecture arch_max7219_controller of max7219_controller is
   signal frame_done_i_s    : std_logic;  -- Old frame_done_i
   signal frame_done_r_edge : std_logic;  -- Rising edge of frame_done_i
 
+  signal pattern_available_i_s    : std_logic;  -- Old pattern available
+  signal pattern_available_r_edge : std_logic;  -- RE of pattern available
+
   -- outputs SIGNALS
   signal wdata_s        : std_logic_vector(15 downto 0);  -- Data to write on the bus
   signal start_frame_s  : std_logic;    -- Start a frame
@@ -92,7 +98,20 @@ architecture arch_max7219_controller of max7219_controller is
   signal display_test_s : std_logic;    -- Display in mode test
 
   signal en_start_frame_s : std_logic;  -- Send a frame when = '1'
-  signal cnt_config_s     : integer range 0 to 2;  -- Counts the frame to transmit for the config
+  signal cnt_config_s     : integer range 0 to C_CFG_NB - 1;  -- Counts the frame to transmit for the config
+
+  -- DIGITS
+  signal digit_0_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_1_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_2_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_3_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_4_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_5_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_6_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+  signal digit_7_s : std_logic_vector(7 downto 0);  -- Digit 0 data
+
+  signal cnt_digit_s   : integer range 0 to C_DIGIT_NB - 1;  -- Counts the digit to passed
+  signal update_done_s : std_logic;     -- Display update terminated
 
 begin  -- architecture arch_max7219_controller
 
@@ -101,15 +120,19 @@ begin  -- architecture arch_max7219_controller
   p_inputs_re_mng : process (clock_i, reset_n_i) is
   begin  -- process p_start_config_mng
     if reset_n_i = '0' then             -- asynchronous reset (active low)
-      start_config_i_s    <= '0';
-      frame_done_i_s      <= '0';
-      start_config_r_edge <= '0';
-      frame_done_r_edge   <= '0';
+      start_config_i_s         <= '0';
+      frame_done_i_s           <= '0';
+      start_config_r_edge      <= '0';
+      frame_done_r_edge        <= '0';
+      pattern_available_i_s    <= '0';
+      pattern_available_r_edge <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-      start_config_i_s    <= start_config_i;
-      frame_done_i_s      <= frame_done_i;
-      start_config_r_edge <= start_config_i and not start_config_i_s;
-      frame_done_r_edge   <= frame_done_i and not frame_done_i_s;
+      start_config_i_s         <= start_config_i;
+      frame_done_i_s           <= frame_done_i;
+      pattern_available_i_s    <= pattern_available_i;
+      start_config_r_edge      <= start_config_i and not start_config_i_s;
+      frame_done_r_edge        <= frame_done_i and not frame_done_i_s;
+      pattern_available_r_edge <= pattern_available_i and not pattern_available_i_s;
     end if;
   end process p_inputs_re_mng;
   -- start_config_r_edge <= start_config_i and not start_config_i_s;
@@ -150,6 +173,31 @@ begin  -- architecture arch_max7219_controller
     end if;
   end process p_config_mng;
 
+  -- This process manages the digits input 
+  p_digit_in_mng : process (clock_i, reset_n_i) is
+  begin  -- process p_digit_in_mng
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
+      digit_0_s <= (others => '0');
+      digit_1_s <= (others => '0');
+      digit_2_s <= (others => '0');
+      digit_3_s <= (others => '0');
+      digit_4_s <= (others => '0');
+      digit_5_s <= (others => '0');
+      digit_6_s <= (others => '0');
+      digit_7_s <= (others => '0');
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      if(pattern_available_r_edge = '1') then
+        digit_0_s <= digit_0_i;
+        digit_1_s <= digit_1_i;
+        digit_2_s <= digit_2_i;
+        digit_3_s <= digit_3_i;
+        digit_4_s <= digit_4_i;
+        digit_5_s <= digit_5_i;
+        digit_6_s <= digit_6_i;
+        digit_7_s <= digit_7_i;
+      end if;
+    end if;
+  end process p_digit_in_mng;
 
   -- purpose: This process manages the state of the controller
   p_state_mng : process (clock_i, reset_n_i) is
@@ -163,6 +211,8 @@ begin  -- architecture arch_max7219_controller
             state_max7219_ctrl <= SET_CFG;
           elsif(test_display_i = '1') then
             state_max7219_ctrl <= TEST_DISPLAY_ON;
+          elsif(update_display_i = '1' and pattern_available_i = '1' and display_on_s = '1') then
+            state_max7219_ctrl <= SET_DISPLAY;
           end if;
 
         when SET_CFG =>
@@ -185,6 +235,11 @@ begin  -- architecture arch_max7219_controller
             state_max7219_ctrl <= IDLE;
           end if;
 
+        when SET_DISPLAY =>
+          if(update_done_s = '1') then
+            state_max7219_ctrl <= IDLE;
+          end if;
+
         when others => null;
       end case;
     end if;
@@ -201,6 +256,7 @@ begin  -- architecture arch_max7219_controller
       en_start_frame_s <= '0';
       display_on_s     <= '0';
       display_test_s   <= '0';
+      update_done_s    <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       case state_max7219_ctrl is
         when IDLE =>
@@ -209,7 +265,7 @@ begin  -- architecture arch_max7219_controller
           start_frame_ss   <= '0';
           config_done_s    <= '0';
           en_start_frame_s <= '1';
-
+          update_done_s    <= '0';
         when SET_CFG =>
 
           -- Counts the frame acconding to frame_done
@@ -310,6 +366,70 @@ begin  -- architecture arch_max7219_controller
 
           end if;
 
+        when SET_DISPLAY =>
+          -- Counts the frame acconding to frame_done
+          if(frame_done_r_edge = '1') then
+            if(cnt_digit_s < C_DIGIT_NB - 1) then
+              cnt_digit_s      <= cnt_digit_s + 1;
+              en_start_frame_s <= '1';
+            else
+              cnt_digit_s      <= 0;
+              update_done_s    <= '1';
+              en_start_frame_s <= '1';  -- ???
+            end if;
+          end if;
+
+          if(cnt_digit_s = 0 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_0_ADDR & digit_0_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 1 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_1_ADDR & digit_1_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 2 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_2_ADDR & digit_2_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 3 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_3_ADDR & digit_3_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 4 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_4_ADDR & digit_4_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 5 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_5_ADDR & digit_5_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 6 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_6_ADDR & digit_6_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          elsif(cnt_digit_s = 7 and en_start_frame_s = '1') then
+            wdata_s        <= C_DIGIT_7_ADDR & digit_7_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+
+          elsif(en_start_frame_s = '0') then
+            start_frame_s  <= '0';
+            start_frame_ss <= '0';
+          end if;
+
+          if(start_frame_ss = '1') then
+            en_start_frame_s <= '0';
+          end if;
+
+
         when others => null;
       end case;
     end if;
@@ -321,5 +441,5 @@ begin  -- architecture arch_max7219_controller
   config_done_o  <= config_done_s;
   display_on_o   <= display_on_s;
   display_test_o <= display_test_s;
-
+  update_done_o  <= update_done_s;
 end architecture arch_max7219_controller;

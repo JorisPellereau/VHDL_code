@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-22
+-- Last update: 2019-07-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -43,8 +43,11 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal frame_done_o  : std_logic;     -- Frame terminated
 
   -- MAX7219_controller signals  
-  signal frame_done_i       : std_logic;  -- Frame done from the MAX7219 interface
-  signal test_display_i     : std_logic;  -- Test the display
+  signal frame_done_i        : std_logic;  -- Frame done from the MAX7219 interface
+  signal test_display_i      : std_logic;  -- Test the display
+  signal update_display_i    : std_logic;  -- Update the display(new pattern)
+  signal pattern_available_i : std_logic;  -- Pattern available
+
   signal start_config_i     : std_logic;  -- Start the config of the MAX7219
   signal decode_mode_i      : std_logic_vector(1 downto 0);  -- Decode mode (0x0 - 0x1 - 0x2 - 0x3)
   signal intensity_format_i : std_logic_vector(3 downto 0);  -- Intensity format
@@ -60,8 +63,23 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal config_done_o      : std_logic;  -- Config is done
   signal display_on_o       : std_logic;  -- State of the display
   signal display_test_o     : std_logic;  -- 1 : Display in test mode
+  signal update_done_o      : std_logic;  -- Display upadte terminated
   signal wdata_o            : std_logic_vector(15 downto 0);  -- Data bus                                        
   signal start_frame_o      : std_logic;  -- Start a frame
+
+
+  -- PATTERN_SELECTOR signals
+  signal en_i                : std_logic;  -- Enable pattern selector
+  signal sel_i               : std_logic_vector(15 downto 0);  -- Selector
+  signal digit_0_o           : std_logic_vector(7 downto 0);  -- Digit 0 pattern
+  signal digit_1_o           : std_logic_vector(7 downto 0);  -- Digit 1 pattern
+  signal digit_2_o           : std_logic_vector(7 downto 0);  -- Digit 2 pattern
+  signal digit_3_o           : std_logic_vector(7 downto 0);  -- Digit 3 pattern
+  signal digit_4_o           : std_logic_vector(7 downto 0);  -- Digit 4 pattern
+  signal digit_5_o           : std_logic_vector(7 downto 0);  -- Digit 5 pattern
+  signal digit_6_o           : std_logic_vector(7 downto 0);  -- Digit 6 pattern
+  signal digit_7_o           : std_logic_vector(7 downto 0);  -- Digit 7 pattern
+  signal pattern_available_o : std_logic;  -- Pattern avaiable
 
 begin  -- architecture arch_test_max7219_controller
 
@@ -77,17 +95,12 @@ begin  -- architecture arch_test_max7219_controller
   p_stimuli_mng : process is
   begin  -- process p_stimuli_mng
 
+    update_display_i   <= '0';
     decode_mode_i      <= (others => '0');
     intensity_format_i <= (others => '0');
     scan_limit_i       <= (others => '0');
-    digit_0_i          <= (others => '0');
-    digit_1_i          <= (others => '0');
-    digit_2_i          <= (others => '0');
-    digit_3_i          <= (others => '0');
-    digit_4_i          <= (others => '0');
-    digit_5_i          <= (others => '0');
-    digit_6_i          <= (others => '0');
-    digit_7_i          <= (others => '0');
+    en_i               <= '0';
+    sel_i              <= (others => '0');
 
     start_config_i <= '0';
     test_display_i <= '0';
@@ -102,6 +115,8 @@ begin  -- architecture arch_test_max7219_controller
     decode_mode_i      <= "11";
     intensity_format_i <= x"E";
     scan_limit_i       <= "010";
+    en_i               <= '1';
+    sel_i              <= x"0001";
 
     wait for 5 us;
 
@@ -115,44 +130,79 @@ begin  -- architecture arch_test_max7219_controller
     test_display_i <= '1';
     wait for 20 us;
 
-    -- if(config_done_o = '1' and display_on_o = '1') then
-    --   test_display_i <= '1';
-    --   wait for 20 us;
-    -- end if;
+    test_display_i <= '0';
+    wait for 10 us;
+
+    report "SET DISPLAY !!!";
+    update_display_i <= '1';
+
+    wait for 10 us;
+    update_display_i <= '0';
 
     report "end of test !!!";
     wait;
 
   end process p_stimuli_mng;
 
+  -- pattern_selector inst
+  pattern_selector_inst : pattern_selector
+    port map (
+      clock_i             => clock_i,
+      reset_n_i           => reset_n_i,
+      en_i                => en_i,
+      sel_i               => sel_i,
+      digit_0_o           => digit_0_o,
+      digit_1_o           => digit_1_o,
+      digit_2_o           => digit_2_o,
+      digit_3_o           => digit_3_o,
+      digit_4_o           => digit_4_o,
+      digit_5_o           => digit_5_o,
+      digit_6_o           => digit_6_o,
+      digit_7_o           => digit_7_o,
+      pattern_available_o => pattern_available_o);
+
+  digit_0_i <= digit_0_o;
+  digit_1_i <= digit_1_o;
+  digit_2_i <= digit_2_o;
+  digit_3_i <= digit_3_o;
+  digit_4_i <= digit_4_o;
+  digit_5_i <= digit_5_o;
+  digit_6_i <= digit_6_o;
+  digit_7_i <= digit_7_o;
+
+
   -- MAX7219_controller inst
   max7219_controller_inst : max7219_controller
     port map (
-      clock_i            => clock_i,
-      reset_n_i          => reset_n_i,
-      frame_done_i       => frame_done_i,
-      test_display_i     => test_display_i,
-      start_config_i     => start_config_i,
-      decode_mode_i      => decode_mode_i,
-      intensity_format_i => intensity_format_i,
-      scan_limit_i       => scan_limit_i,
-      digit_0_i          => digit_0_i,
-      digit_1_i          => digit_1_i,
-      digit_2_i          => digit_2_i,
-      digit_3_i          => digit_3_i,
-      digit_4_i          => digit_4_i,
-      digit_5_i          => digit_5_i,
-      digit_6_i          => digit_6_i,
-      digit_7_i          => digit_7_i,
-      config_done_o      => config_done_o,
-      display_on_o       => display_on_o,
-      display_test_o     => display_test_o,
-      wdata_o            => wdata_o,
-      start_frame_o      => start_frame_o);
+      clock_i             => clock_i,
+      reset_n_i           => reset_n_i,
+      frame_done_i        => frame_done_i,
+      test_display_i      => test_display_i,
+      update_display_i    => update_display_i,
+      pattern_available_i => pattern_available_i,
+      start_config_i      => start_config_i,
+      decode_mode_i       => decode_mode_i,
+      intensity_format_i  => intensity_format_i,
+      scan_limit_i        => scan_limit_i,
+      digit_0_i           => digit_0_i,
+      digit_1_i           => digit_1_i,
+      digit_2_i           => digit_2_i,
+      digit_3_i           => digit_3_i,
+      digit_4_i           => digit_4_i,
+      digit_5_i           => digit_5_i,
+      digit_6_i           => digit_6_i,
+      digit_7_i           => digit_7_i,
+      config_done_o       => config_done_o,
+      display_on_o        => display_on_o,
+      display_test_o      => display_test_o,
+      update_done_o       => update_done_o,
+      wdata_o             => wdata_o,
+      start_frame_o       => start_frame_o);
 
-  wdata_i       <= wdata_o;
-  start_frame_i <= start_frame_o;
-  frame_done_i  <= frame_done_o;
+  wdata_i             <= wdata_o;
+  start_frame_i       <= start_frame_o;
+  frame_done_i        <= frame_done_o;
+  pattern_available_i <= pattern_available_o;
 
   -- max7219_interface inst
   max_7219_interface_inst : max7219_interface
