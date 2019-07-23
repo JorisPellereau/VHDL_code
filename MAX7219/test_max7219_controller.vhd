@@ -139,6 +139,15 @@ begin  -- architecture arch_test_max7219_controller
     wait for 10 us;
     update_display_i <= '0';
 
+    wait until rising_edge(update_done_o) for 10 ms;
+
+
+    sel_i            <= x"0000";
+    wait for 11 us;
+    update_display_i <= '1', '0' after 1 us;
+
+    wait until rising_edge(update_done_o) for 10 ms;
+
     report "end of test !!!";
     wait;
 
