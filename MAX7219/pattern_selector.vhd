@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-23
--- Last update: 2019-07-23
+-- Last update: 2019-07-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -78,6 +78,30 @@ begin  -- architecture arch_pattern_selector
         when x"0001" =>
           matrix_8x8_s <= C_MATRIX_1;
 
+        when x"0002" =>
+          matrix_8x8_s <= C_MATRIX_2;
+
+        when x"0003" =>
+          matrix_8x8_s <= C_MATRIX_3;
+
+        when x"0004" =>
+          matrix_8x8_s <= C_MATRIX_4;
+
+        when x"0005" =>
+          matrix_8x8_s <= C_MATRIX_5;
+
+        when x"0006" =>
+          matrix_8x8_s <= C_MATRIX_6;
+
+        when x"0007" =>
+          matrix_8x8_s <= C_MATRIX_7;
+
+        when x"0008" =>
+          matrix_8x8_s <= C_MATRIX_8;
+
+        when x"0009" =>
+          matrix_8x8_s <= C_MATRIX_9
+;
         when others =>
           pattern_available_s <= '0';
       end case;
