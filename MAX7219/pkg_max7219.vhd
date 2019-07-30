@@ -81,6 +81,7 @@ package pkg_max7219 is
       reset_n_i     : in  std_logic;    -- Asynchronous active low reset
       wdata_i       : in  std_logic_vector(15 downto 0);  -- Data to send te the Max7219
       start_frame_i : in  std_logic;    -- Start the transaction
+      en_load_i     : in  std_logic;    -- Enable the generation of load_o
       load_o        : out std_logic;    -- LOAD command
       data_o        : out std_logic;    -- DATA to send th
       clk_o         : out std_logic;    -- CLK
@@ -124,7 +125,8 @@ package pkg_max7219 is
 
       -- To MAX7219 interface
       wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
-      start_frame_o : out std_logic);   -- Start a frame
+      start_frame_o : out std_logic;    -- Start a frame
+      en_load_o     : out std_logic);   -- Enable the LOAD generation
   end component;
 
   component pattern_selector is

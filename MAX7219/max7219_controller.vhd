@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-23
+-- Last update: 2019-07-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -62,7 +62,8 @@ entity max7219_controller is
 
     -- To MAX7219 interface
     wdata_o       : out std_logic_vector(15 downto 0);  -- Data bus                                        
-    start_frame_o : out std_logic);     -- Start a frame
+    start_frame_o : out std_logic;      -- Start a frame
+    en_load_o     : out std_logic);     -- Enable the LOAD generation
 
 end entity max7219_controller;
 
@@ -99,6 +100,7 @@ architecture arch_max7219_controller of max7219_controller is
   signal config_done_s  : std_logic;    -- Configuration done
   signal display_on_s   : std_logic;    -- Stat of the display
   signal display_test_s : std_logic;    -- Display in mode test
+  signal en_load_s      : std_logic;    -- Enable LOAD output
 
   signal en_start_frame_s : std_logic;  -- Send a frame when = '1'
   signal cnt_config_s     : integer range 0 to C_CFG_NB - 1;  -- Counts the frame to transmit for the config
@@ -264,6 +266,7 @@ begin  -- architecture arch_max7219_controller
       display_on_s     <= '0';
       display_test_s   <= '0';
       update_done_s    <= '0';
+      en_load_s        <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       case state_max7219_ctrl is
         when IDLE =>
@@ -449,4 +452,6 @@ begin  -- architecture arch_max7219_controller
   display_on_o   <= display_on_s;
   display_test_o <= display_test_s;
   update_done_o  <= update_done_s;
+  en_load_o      <= en_load_s;
+
 end architecture arch_max7219_controller;
