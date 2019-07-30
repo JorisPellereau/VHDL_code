@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-23
+-- Last update: 2019-07-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -142,11 +142,38 @@ begin  -- architecture arch_test_max7219_controller
     wait until rising_edge(update_done_o) for 10 ms;
 
 
+    report"Set 0 on the display";
     sel_i            <= x"0000";
     wait for 11 us;
     update_display_i <= '1', '0' after 1 us;
 
     wait until rising_edge(update_done_o) for 10 ms;
+
+
+    report"Set 9 on the display";
+    sel_i            <= x"0009";
+    wait for 11 us;
+    update_display_i <= '1', '0' after 1 us;
+
+    wait until rising_edge(update_done_o) for 10 ms;
+
+
+    decode_mode_i      <= "11";
+    intensity_format_i <= x"E";
+    scan_limit_i       <= "010";
+
+
+    wait for 5 us;
+
+    report "Start the config";
+    start_config_i <= '1';
+    wait for 0.5 us;
+    start_config_i <= '0';
+    wait until falling_edge(config_done_o) for 10 ms;
+
+
+
+
 
     report "end of test !!!";
     wait;

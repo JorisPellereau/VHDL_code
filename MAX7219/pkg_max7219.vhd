@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2019-07-23
+-- Last update: 2019-07-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,6 +36,8 @@ package pkg_max7219 is
   constant C_CFG_NB   : integer := 3;   -- Number of configuration
   constant C_DIGIT_NB : integer := 8;   -- Number of digits
 
+  constant C_NO_OP_ADDR : std_logic_vector(7 downto 0) := x"00";  -- No operation addr register
+
   constant C_DIGIT_0_ADDR : std_logic_vector(7 downto 0) := x"01";  -- Digit 0 addr register
   constant C_DIGIT_1_ADDR : std_logic_vector(7 downto 0) := x"02";  -- Digit 1 addr register
   constant C_DIGIT_2_ADDR : std_logic_vector(7 downto 0) := x"03";  -- Digit 2 addr register
@@ -55,12 +57,21 @@ package pkg_max7219 is
   -- ==================================
 
 
-  -- == PATTERN_SEECTOR TYPES & CONSTANTS ==
+  -- == PATTERN_SELECTOR TYPES & CONSTANTS ==
   type t_matrix_8x8 is array (0 to 7) of std_logic_vector(7 downto 0);  -- Array of bytes for the matrix
 
   constant C_MATRIX_0 : t_matrix_8x8 := (0 => x"00", 1 => x"7E", 2 => x"C3", 3 => x"81", 4 => x"81", 5 => x"81", 6 => x"7E", 7 => x"00");  -- Display 0
   constant C_MATRIX_1 : t_matrix_8x8 := (0 => x"10", 1 => x"20", 2 => x"41", 3 => x"FF", 4 => x"01", 5 => x"01", 6 => x"00", 7 => x"00");  -- Display 1
+  constant C_MATRIX_2 : t_matrix_8x8 := (0 => x"00", 1 => x"61", 2 => x"83", 3 => x"85", 4 => x"89", 5 => x"89", 6 => x"01", 7 => x"00");  -- Display 2
+  constant C_MATRIX_3 : t_matrix_8x8 := (0 => x"00", 1 => x"42", 2 => x"81", 3 => x"81", 4 => x"89", 5 => x"89", 6 => x"6E", 7 => x"00");  -- Display 3
+  constant C_MATRIX_4 : t_matrix_8x8 := (0 => x"00", 1 => x"1C", 2 => x"24", 3 => x"44", 4 => x"8F", 5 => x"8F", 6 => x"00", 7 => x"00");  -- Display 4
+  constant C_MATRIX_5 : t_matrix_8x8 := (0 => x"00", 1 => x"F2", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"9E", 7 => x"00");  -- Display 5
+  constant C_MATRIX_6 : t_matrix_8x8 := (0 => x"00", 1 => x"3E", 2 => x"51", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"0E", 7 => x"00");  -- Display 6
+  constant C_MATRIX_7 : t_matrix_8x8 := (0 => x"00", 1 => x"80", 2 => x"8F", 3 => x"90", 4 => x"90", 5 => x"90", 6 => x"C0", 7 => x"00");  -- Display 7
+  constant C_MATRIX_8 : t_matrix_8x8 := (0 => x"00", 1 => x"6E", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"6E", 7 => x"00");  -- Display 8
+  constant C_MATRIX_9 : t_matrix_8x8 := (0 => x"00", 1 => x"62", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"7E", 7 => x"00");  -- Display 9
   -- =======================================
+
 
 
   -- COMPONENTS
