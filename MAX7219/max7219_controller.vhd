@@ -303,19 +303,19 @@ begin  -- architecture arch_max7219_controller
           update_done_s    <= '0';
         when SET_CFG =>
 
-          if(frame_done_r_edge = '1') then
-            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
-              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
-              cnt_matrix_sel_done_s <= '0';
-            else
-              cnt_matrix_sel_s      <= 0;  -- RAZ 
-              cnt_matrix_sel_done_s <= '1';
-            end if;
-          end if;
+          -- if(frame_done_r_edge = '1') then
+          --   if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
+          --     cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
+          --     cnt_matrix_sel_done_s <= '0';
+          --   else
+          --     cnt_matrix_sel_s      <= 0;  -- RAZ 
+          --     cnt_matrix_sel_done_s <= '1';
+          --   end if;
+          -- end if;
 
           -- Counts the frame acconding to frame_done
 
-          if(cnt_matrix_sel_done_s = '1') then  --frame_done_r_edge = '1') then
+          if(frame_done_r_edge = '1') then
             if(cnt_config_s < C_CFG_NB - 1) then
               cnt_config_s     <= cnt_config_s + 1;
               config_done_s    <= '0';
@@ -328,26 +328,26 @@ begin  -- architecture arch_max7219_controller
           end if;
 
           -- Gestion des trames à envoyer
-          if(cnt_config_s = 0 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
+          if(cnt_config_s = 0 and en_start_frame_s = '1') then -- and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_DECODE_MODE_ADDR & decode_mode_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
 
-          elsif(cnt_config_s = 1 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
+          elsif(cnt_config_s = 1 and en_start_frame_s = '1') then -- and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_INTENSITY_ADDR & intensity_format_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
 
-          elsif(cnt_config_s = 2 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
+          elsif(cnt_config_s = 2 and en_start_frame_s = '1') then -- and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_SCAN_LIMIT_ADDR & scan_limit_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
 
           -- Send no op
-          elsif(en_start_frame_s = '1' and cnt_matrix_sel_s /= 0) then
-            wdata_s        <= C_NO_OP_ADDR & scan_limit_s;
-            start_frame_s  <= '1';
-            start_frame_ss <= start_frame_s;
+          -- elsif(en_start_frame_s = '1' and cnt_matrix_sel_s /= 0) then
+          --   wdata_s        <= C_NO_OP_ADDR & scan_limit_s;
+          --   start_frame_s  <= '1';
+          --   start_frame_ss <= start_frame_s;
           elsif(en_start_frame_s = '0') then
             start_frame_s  <= '0';
             start_frame_ss <= '0';

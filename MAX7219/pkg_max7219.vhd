@@ -57,7 +57,7 @@ package pkg_max7219 is
   constant C_SHUTDOWN_ADDR     : std_logic_vector(7 downto 0) := x"0C";  -- Shutdown addr register
   constant C_DISPLAY_TEST_ADDR : std_logic_vector(7 downto 0) := x"0F";  -- Display test addr register
 
-  type t_max7219_ctrl_fsm is (IDLE, SET_CFG, DISPLAY_ON, DISPLAY_OFF, TEST_DISPLAY_ON, TEST_DISPLAY_OFF, SET_DISPLAY);  -- States of the MAX7219 Controller
+  type t_max7219_ctrl_fsm is (IDLE, SET_CFG, DISPLAY_ON, DISPLAY_OFF, TEST_DISPLAY_ON, TEST_DISPLAY_OFF, SET_DISPLAY, SEND_NOP);  -- States of the MAX7219 Controller
   -- ==================================
 
 
