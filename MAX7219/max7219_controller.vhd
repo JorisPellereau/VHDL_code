@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_max7219;
 use lib_max7219.pkg_max7219.all;
@@ -37,6 +38,10 @@ entity max7219_controller is
     test_display_i      : in std_logic;  -- Test the display
     update_display_i    : in std_logic;  -- Update the display
     pattern_available_i : in std_logic;  -- Pattern available
+
+    -- Matrix selector
+    matrix_sel_i : in std_logic_vector(C_MATRIX_SEL_SIZE - 1 downto 0);
+
 
     -- Config inputs
     start_config_i     : in std_logic;  -- Start the config of the MAX7219
@@ -79,6 +84,11 @@ architecture arch_max7219_controller of max7219_controller is
   signal decode_mode_s      : std_logic_vector(7 downto 0);  -- Data for Decode mode register
   signal intensity_format_s : std_logic_vector(7 downto 0);  -- Data for the intensity register
   signal scan_limit_s       : std_logic_vector(7 downto 0);  -- Data for the scan limit register
+
+  -- atrix sel signal
+  signal matrix_sel_i_s        : std_logic_vector(C_MATRIX_SEL_SIZE - 1 downto 0);
+  signal cnt_matrix_sel_s      : integer range 0 to C_MATRIX_NB - 1;  -- Counts the frame to send to the matrix
+  signal cnt_matrix_sel_done_s : std_logic;  -- Counter reach
 
   signal config_busy_s       : std_logic;  -- Config. ongoing
   signal start_config_i_s    : std_logic;  -- Old start_config_i
@@ -208,6 +218,18 @@ begin  -- architecture arch_max7219_controller
     end if;
   end process p_digit_in_mng;
 
+  -- purpose: This process lach  matrix_sel_i_s 
+  p_matrix_sel_in_mng : process (clock_i, reset_n_i) is
+  begin  -- process p_matrix_sel_in_mng
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
+      matrix_sel_i_s <= (others => '0');
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      if(start_config_r_edge = '1') then
+        matrix_sel_i_s <= matrix_sel_i;
+      end if;
+    end if;
+  end process p_matrix_sel_in_mng;
+
   -- purpose: This process manages the state of the controller
   p_state_mng : process (clock_i, reset_n_i) is
   begin  -- process p_state_mng
@@ -258,15 +280,18 @@ begin  -- architecture arch_max7219_controller
   p_outputs_mng : process (clock_i, reset_n_i) is
   begin  -- process p_outputs_mng
     if reset_n_i = '0' then             -- asynchronous reset (active low)
-      wdata_s          <= (others => '0');
-      start_frame_s    <= '0';
-      start_frame_ss   <= '0';
-      config_done_s    <= '0';
-      en_start_frame_s <= '0';
-      display_on_s     <= '0';
-      display_test_s   <= '0';
-      update_done_s    <= '0';
-      en_load_s        <= '0';
+      wdata_s               <= (others => '0');
+      start_frame_s         <= '0';
+      start_frame_ss        <= '0';
+      cnt_config_s          <= 0;
+      config_done_s         <= '0';
+      en_start_frame_s      <= '0';
+      display_on_s          <= '0';
+      display_test_s        <= '0';
+      update_done_s         <= '0';
+      en_load_s             <= '0';
+      cnt_matrix_sel_s      <= 0;
+      cnt_matrix_sel_done_s <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       case state_max7219_ctrl is
         when IDLE =>
@@ -278,8 +303,19 @@ begin  -- architecture arch_max7219_controller
           update_done_s    <= '0';
         when SET_CFG =>
 
-          -- Counts the frame acconding to frame_done
           if(frame_done_r_edge = '1') then
+            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
+              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
+              cnt_matrix_sel_done_s <= '0';
+            else
+              cnt_matrix_sel_s      <= 0;  -- RAZ 
+              cnt_matrix_sel_done_s <= '1';
+            end if;
+          end if;
+
+          -- Counts the frame acconding to frame_done
+
+          if(cnt_matrix_sel_done_s = '1') then  --frame_done_r_edge = '1') then
             if(cnt_config_s < C_CFG_NB - 1) then
               cnt_config_s     <= cnt_config_s + 1;
               config_done_s    <= '0';
@@ -287,22 +323,29 @@ begin  -- architecture arch_max7219_controller
             else
               config_done_s    <= '1';
               cnt_config_s     <= 0;
-              en_start_frame_s <= '1';  -- ???
+              en_start_frame_s <= '1';          -- ???
             end if;
           end if;
 
-          if(cnt_config_s = 0 and en_start_frame_s = '1') then
+          -- Gestion des trames à envoyer
+          if(cnt_config_s = 0 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_DECODE_MODE_ADDR & decode_mode_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
 
-          elsif(cnt_config_s = 1 and en_start_frame_s = '1') then
+          elsif(cnt_config_s = 1 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_INTENSITY_ADDR & intensity_format_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
 
-          elsif(cnt_config_s = 2 and en_start_frame_s = '1') then
+          elsif(cnt_config_s = 2 and en_start_frame_s = '1' and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_SCAN_LIMIT_ADDR & scan_limit_s;
+            start_frame_s  <= '1';
+            start_frame_ss <= start_frame_s;
+
+          -- Send no op
+          elsif(en_start_frame_s = '1' and cnt_matrix_sel_s /= 0) then
+            wdata_s        <= C_NO_OP_ADDR & scan_limit_s;
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
           elsif(en_start_frame_s = '0') then
@@ -445,7 +488,7 @@ begin  -- architecture arch_max7219_controller
     end if;
   end process p_outputs_mng;
 
-  -- OUTPUTS affectation
+-- OUTPUTS affectation
   wdata_o        <= wdata_s;
   start_frame_o  <= start_frame_ss;
   config_done_o  <= config_done_s;

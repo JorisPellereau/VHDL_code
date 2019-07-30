@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_max7219;
 use lib_max7219.pkg_max7219.all;

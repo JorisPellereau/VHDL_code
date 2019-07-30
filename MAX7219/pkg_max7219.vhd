@@ -21,6 +21,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 package pkg_max7219 is
 
@@ -33,8 +35,10 @@ package pkg_max7219 is
   -- =================================
 
   -- == MAX7219_controller TYPES & CONSTANTS ==
-  constant C_CFG_NB   : integer := 3;   -- Number of configuration
-  constant C_DIGIT_NB : integer := 8;   -- Number of digits
+  constant C_CFG_NB          : integer := 3;  -- Number of configuration
+  constant C_DIGIT_NB        : integer := 8;  -- Number of digits in a matrix
+  constant C_MATRIX_NB       : integer := 8;  -- Number of 8x8 matrix
+  constant C_MATRIX_SEL_SIZE : integer := integer(LOG2(real(C_MATRIX_NB)));  -- Size of the selector
 
   constant C_NO_OP_ADDR : std_logic_vector(7 downto 0) := x"00";  -- No operation addr register
 
@@ -99,6 +103,9 @@ package pkg_max7219 is
       test_display_i      : in std_logic;  -- Test the display
       update_display_i    : in std_logic;  -- Update the display
       pattern_available_i : in std_logic;  -- Pattern available
+
+      -- Matrix selector
+      matrix_sel_i : in std_logic_vector(C_MATRIX_SEL_SIZE - 1 downto 0);
 
       -- Config inputs
       start_config_i     : in std_logic;  -- Start the config of the MAX7219

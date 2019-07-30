@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_max7219;
 use lib_max7219.pkg_max7219.all;
@@ -37,6 +38,7 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   -- MAX7219_interface
   signal wdata_i       : std_logic_vector(15 downto 0);  -- Data to transmit
   signal start_frame_i : std_logic;     -- Start SPI frame
+  signal en_load_i     : std_logic;     -- Enable load_o
   signal load_o        : std_logic;     -- Load output
   signal data_o        : std_logic;     -- data to transmit to the component
   signal clk_o         : std_logic;     -- SPI CLK
@@ -47,6 +49,9 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal test_display_i      : std_logic;  -- Test the display
   signal update_display_i    : std_logic;  -- Update the display(new pattern)
   signal pattern_available_i : std_logic;  -- Pattern available
+
+  -- Matri sel
+  signal matrix_sel_i : std_logic_vector(C_MATRIX_SEL_SIZE - 1 downto 0);
 
   signal start_config_i     : std_logic;  -- Start the config of the MAX7219
   signal decode_mode_i      : std_logic_vector(1 downto 0);  -- Decode mode (0x0 - 0x1 - 0x2 - 0x3)
@@ -66,7 +71,7 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal update_done_o      : std_logic;  -- Display upadte terminated
   signal wdata_o            : std_logic_vector(15 downto 0);  -- Data bus                                        
   signal start_frame_o      : std_logic;  -- Start a frame
-
+  signal en_load_o          : std_logic;  -- Enable the LOAD output
 
   -- PATTERN_SELECTOR signals
   signal en_i                : std_logic;  -- Enable pattern selector
@@ -101,6 +106,8 @@ begin  -- architecture arch_test_max7219_controller
     scan_limit_i       <= (others => '0');
     en_i               <= '0';
     sel_i              <= (others => '0');
+    matrix_sel_i       <= (others => '0');
+
 
     start_config_i <= '0';
     test_display_i <= '0';
@@ -117,7 +124,7 @@ begin  -- architecture arch_test_max7219_controller
     scan_limit_i       <= "010";
     en_i               <= '1';
     sel_i              <= x"0001";
-
+    matrix_sel_i       <= "001";
     wait for 5 us;
 
     report "Start the config";
@@ -169,10 +176,12 @@ begin  -- architecture arch_test_max7219_controller
     start_config_i <= '1';
     wait for 0.5 us;
     start_config_i <= '0';
+
     wait until falling_edge(config_done_o) for 10 ms;
 
 
 
+    report integer'image(C_MATRIX_SEL_SIZE);
 
 
     report "end of test !!!";
@@ -216,6 +225,7 @@ begin  -- architecture arch_test_max7219_controller
       test_display_i      => test_display_i,
       update_display_i    => update_display_i,
       pattern_available_i => pattern_available_i,
+      matrix_sel_i        => matrix_sel_i,
       start_config_i      => start_config_i,
       decode_mode_i       => decode_mode_i,
       intensity_format_i  => intensity_format_i,
@@ -233,12 +243,14 @@ begin  -- architecture arch_test_max7219_controller
       display_test_o      => display_test_o,
       update_done_o       => update_done_o,
       wdata_o             => wdata_o,
-      start_frame_o       => start_frame_o);
+      start_frame_o       => start_frame_o,
+      en_load_o           => en_load_o);
 
   wdata_i             <= wdata_o;
   start_frame_i       <= start_frame_o;
   frame_done_i        <= frame_done_o;
   pattern_available_i <= pattern_available_o;
+  en_load_i           <= en_load_o;
 
   -- max7219_interface inst
   max_7219_interface_inst : max7219_interface
@@ -247,6 +259,7 @@ begin  -- architecture arch_test_max7219_controller
       reset_n_i     => reset_n_i,
       wdata_i       => wdata_i,
       start_frame_i => start_frame_i,
+      en_load_i     => en_load_i,
       load_o        => load_o,
       data_o        => data_o,
       clk_o         => clk_o,
