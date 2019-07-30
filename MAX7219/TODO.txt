@@ -1,0 +1,14 @@
+
+MAX7219_interface :
+  - Controller de façon indépendante la sortie LOAD/CS afin de pouvoir commander les MAX7219 en cascade (utilisation du NOP)
+  
+MAX7219_controller :
+  - Ajouter la commane NOP
+  - Pouvoir envoyer des commandes à des matrices en cascades avec le NOP
+  
+patter_selector :
+  - Ajouter des patterns
+
+matrix_display_controller :
+  - Gerer les motifs/scores/messages à afficher
+  - Ajouter un registre d'état
