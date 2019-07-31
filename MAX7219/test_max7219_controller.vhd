@@ -124,7 +124,7 @@ begin  -- architecture arch_test_max7219_controller
     scan_limit_i       <= "010";
     en_i               <= '1';
     sel_i              <= x"0001";
-    matrix_sel_i       <= "001";
+    matrix_sel_i       <= "111";
     wait for 5 us;
 
     report "Start the config";

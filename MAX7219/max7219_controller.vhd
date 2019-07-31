@@ -319,6 +319,7 @@ begin  -- architecture arch_max7219_controller
           -- en_start_frame_s      <= '1';
           end if;
 
+          -- Select the config
           if(cnt_matrix_sel_done_s = '1') then
             if(cnt_config_s < C_CFG_NB - 1) then
               cnt_config_s <= cnt_config_s +1;
@@ -329,8 +330,10 @@ begin  -- architecture arch_max7219_controller
             en_start_frame_s <= '1';
           end if;
 
+          -- Set the data in order to generates the frame
           if(en_start_frame_s = '1') then
             case cnt_matrix_sel_s is
+              -- Fisrt Cmd for the selected matrix
               when 0 =>
                 if(cnt_config_s = 0 and cnt_matrix_sel_s = 0) then
                   wdata_s <= C_DECODE_MODE_ADDR & decode_mode_s;
@@ -340,7 +343,7 @@ begin  -- architecture arch_max7219_controller
                   wdata_s <= C_SCAN_LIMIT_ADDR & scan_limit_s;
                 end if;
               when others =>
-                wdata_s <= C_NO_OP_ADDR & x"00";
+                wdata_s <= C_NO_OP_ADDR & x"00";  -- Send NOP
 
             end case;
 
@@ -355,6 +358,7 @@ begin  -- architecture arch_max7219_controller
 
           end if;
 
+          -- En LOAD when we reach the matrix to reach
           if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
             en_load_s <= '1';
           else
@@ -363,22 +367,82 @@ begin  -- architecture arch_max7219_controller
 
         when DISPLAY_ON =>
 
+
+          -- Counts the frame to Send
           if(frame_done_r_edge = '1') then
-            display_on_s <= '1';
+            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
+              en_start_frame_s      <= '1';
+              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
+              cnt_matrix_sel_done_s <= '0';
+            else
+              cnt_matrix_sel_s      <= 0;  -- RAZ 
+              cnt_matrix_sel_done_s <= '1';
+            end if;
+          else
+            cnt_matrix_sel_done_s <= '0';
+          -- en_start_frame_s      <= '1';
           end if;
 
+          -- Set the data in order to generates the frame
           if(en_start_frame_s = '1') then
-            wdata_s        <= C_SHUTDOWN_ADDR & x"01";  -- Normal Operation
+            case cnt_matrix_sel_s is
+              -- Fisrt Cmd for the selected matrix
+              when 0 =>
+                if(cnt_matrix_sel_s = 0) then
+                  wdata_s <= C_SHUTDOWN_ADDR & x"01";  -- Normal Operation                  
+                end if;
+              when others =>
+                wdata_s <= C_NO_OP_ADDR & x"00";       -- Send NOP
+
+            end case;
+
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
-          else
-            start_frame_s  <= '0';
-            start_frame_ss <= '0';
+
+            if(start_frame_ss = '1') then
+              start_frame_s    <= '0';
+              start_frame_ss   <= '0';
+              en_start_frame_s <= '0';
+            end if;
+
           end if;
 
-          if(start_frame_ss = '1') then
-            en_start_frame_s <= '0';
+          -- En LOAD when we reach the matrix to reach
+          if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
+            en_load_s <= '1';
+          elsif(en_start_frame_s = '1') then
+            en_load_s <= '0';
           end if;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          -- if(frame_done_r_edge = '1') then
+          --   display_on_s <= '1';
+          -- end if;
+
+          -- if(en_start_frame_s = '1') then
+          --   wdata_s        <= C_SHUTDOWN_ADDR & x"01";  -- Normal Operation
+          --   start_frame_s  <= '1';
+          --   start_frame_ss <= start_frame_s;
+          -- else
+          --   start_frame_s  <= '0';
+          --   start_frame_ss <= '0';
+          -- end if;
+
+          -- if(start_frame_ss = '1') then
+          --   en_start_frame_s <= '0';
+          -- end if;
 
         when TEST_DISPLAY_ON =>
 

@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-18
--- Last update: 2019-07-30
+-- Last update: 2019-07-31
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ begin  -- architecture arch_max7219_interface
   end process p_latch_inputs;
 
   -- Set load_o when en_load_i = '1' => use the NO OP instr
-  load_o       <= load_o_s when en_load_i = '1' else '0';
+  load_o       <= load_o_s;             -- when en_load_i = '1' else '0';
   frame_done_o <= frame_done_o_s;
 
   -- purpose: This process generates tick clock in order to generates the output clock 
