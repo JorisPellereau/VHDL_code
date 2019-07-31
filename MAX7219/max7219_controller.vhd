@@ -361,7 +361,7 @@ begin  -- architecture arch_max7219_controller
           -- En LOAD when we reach the matrix to reach
           if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
             en_load_s <= '1';
-          else
+          elsif(start_frame_ss = '1') then
             en_load_s <= '0';
           end if;
 
@@ -410,39 +410,10 @@ begin  -- architecture arch_max7219_controller
           -- En LOAD when we reach the matrix to reach
           if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
             en_load_s <= '1';
-          elsif(en_start_frame_s = '1') then
+          elsif(start_frame_ss = '1') then
             en_load_s <= '0';
           end if;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-          -- if(frame_done_r_edge = '1') then
-          --   display_on_s <= '1';
-          -- end if;
-
-          -- if(en_start_frame_s = '1') then
-          --   wdata_s        <= C_SHUTDOWN_ADDR & x"01";  -- Normal Operation
-          --   start_frame_s  <= '1';
-          --   start_frame_ss <= start_frame_s;
-          -- else
-          --   start_frame_s  <= '0';
-          --   start_frame_ss <= '0';
-          -- end if;
-
-          -- if(start_frame_ss = '1') then
-          --   en_start_frame_s <= '0';
-          -- end if;
 
         when TEST_DISPLAY_ON =>
 

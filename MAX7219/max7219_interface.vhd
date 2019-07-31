@@ -112,7 +112,7 @@ begin  -- architecture arch_max7219_interface
   end process p_latch_inputs;
 
   -- Set load_o when en_load_i = '1' => use the NO OP instr
-  load_o       <= load_o_s;             -- when en_load_i = '1' else '0';
+  load_o       <= load_o_s when en_load_i = '1' else '0';
   frame_done_o <= frame_done_o_s;
 
   -- purpose: This process generates tick clock in order to generates the output clock 
