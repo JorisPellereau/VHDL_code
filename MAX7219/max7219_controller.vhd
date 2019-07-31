@@ -301,23 +301,7 @@ begin  -- architecture arch_max7219_controller
           config_done_s    <= '0';
           en_start_frame_s <= '1';
           update_done_s    <= '0';
-        when SET_CFG =>
-
-
-          -- Counts the frame to Send
-          if(frame_done_r_edge = '1') then
-            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
-              en_start_frame_s      <= '1';
-              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
-              cnt_matrix_sel_done_s <= '0';
-            else
-              cnt_matrix_sel_s      <= 0;  -- RAZ 
-              cnt_matrix_sel_done_s <= '1';
-            end if;
-          else
-            cnt_matrix_sel_done_s <= '0';
-          -- en_start_frame_s      <= '1';
-          end if;
+        when SET_CFG =>       
 
           -- Select the config
           if(cnt_matrix_sel_done_s = '1') then
@@ -366,22 +350,6 @@ begin  -- architecture arch_max7219_controller
           end if;
 
         when DISPLAY_ON =>
-
-
-          -- Counts the frame to Send
-          if(frame_done_r_edge = '1') then
-            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
-              en_start_frame_s      <= '1';
-              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
-              cnt_matrix_sel_done_s <= '0';
-            else
-              cnt_matrix_sel_s      <= 0;  -- RAZ 
-              cnt_matrix_sel_done_s <= '1';
-            end if;
-          else
-            cnt_matrix_sel_done_s <= '0';
-          -- en_start_frame_s      <= '1';
-          end if;
 
           -- Set the data in order to generates the frame
           if(en_start_frame_s = '1') then
@@ -524,6 +492,24 @@ begin  -- architecture arch_max7219_controller
 
         when others => null;
       end case;
+
+
+      -- Factorisation
+ -- Counts the frame to Send
+          if(frame_done_r_edge = '1') then
+            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
+              en_start_frame_s      <= '1';
+              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
+              cnt_matrix_sel_done_s <= '0';
+            else
+              cnt_matrix_sel_s      <= 0;  -- RAZ 
+              cnt_matrix_sel_done_s <= '1';
+            end if;
+          else
+            cnt_matrix_sel_done_s <= '0';
+          -- en_start_frame_s      <= '1';
+          end if;
+
     end if;
   end process p_outputs_mng;
 
