@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-30
+-- Last update: 2019-07-31
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -134,6 +134,11 @@ begin  -- architecture arch_test_max7219_controller
     -- wait for 20 us;
 
     wait until falling_edge(config_done_o) for 10 ms;
+
+
+    -- Pour test
+    wait;
+
     test_display_i <= '1';
     wait for 20 us;
 
