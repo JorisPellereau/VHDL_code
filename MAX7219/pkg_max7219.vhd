@@ -130,7 +130,7 @@ package pkg_max7219 is
       -- Flags
       config_done_o  : out std_logic;   -- Config is done
       display_on_o   : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display 1 : on 0 : off
-      display_test_o : out std_logic;   -- 1 : Display in test mode
+      display_test_o : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- 1 : Display in test mode
       update_done_o  : out std_logic;   -- Display Update terminated
 
       -- To MAX7219 interface

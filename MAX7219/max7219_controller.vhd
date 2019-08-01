@@ -62,7 +62,7 @@ entity max7219_controller is
     -- Flags 
     config_done_o  : out std_logic;     -- Config is done
     display_on_o   : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display 1 : on 0 : off
-    display_test_o : out std_logic;     -- 1 : Display in test mode
+    display_test_o : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- 1 : Display in test mode
     update_done_o  : out std_logic;     -- Display Update terminated
 
     -- To MAX7219 interface
@@ -109,7 +109,7 @@ architecture arch_max7219_controller of max7219_controller is
   signal start_frame_ss : std_logic;    -- Start a frame
   signal config_done_s  : std_logic;    -- Configuration done
   signal display_on_s   : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- Stat of the display
-  signal display_test_s : std_logic;    -- Display in mode test
+  signal display_test_s : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- Display in mode test
   signal en_load_s      : std_logic;    -- Enable LOAD output
 
   signal en_start_frame_s : std_logic;  -- Send a frame when = '1'
@@ -242,7 +242,7 @@ begin  -- architecture arch_max7219_controller
             state_max7219_ctrl <= SET_CFG;
           elsif(test_display_i = '1') then
             state_max7219_ctrl <= TEST_DISPLAY_ON;
-            
+
           elsif(update_display_r_edge = '1' and pattern_available_i = '1' and display_on_s = x"FF") then
             state_max7219_ctrl <= SET_DISPLAY;
           end if;
@@ -258,12 +258,12 @@ begin  -- architecture arch_max7219_controller
           end if;
 
         when TEST_DISPLAY_ON =>
-          if(display_test_s = '1') then
+          if(display_test_s(to_integer(unsigned(matrix_sel_i_s))) = '1') then
             state_max7219_ctrl <= TEST_DISPLAY_OFF;
           end if;
 
         when TEST_DISPLAY_OFF =>
-          if(display_test_s = '0') then
+          if(display_test_s(to_integer(unsigned(matrix_sel_i_s))) = '0') then
             state_max7219_ctrl <= IDLE;
           end if;
 
@@ -288,7 +288,7 @@ begin  -- architecture arch_max7219_controller
       config_done_s         <= '0';
       en_start_frame_s      <= '0';
       display_on_s          <= (others => '0');
-      display_test_s        <= '0';
+      display_test_s        <= (others => '0');
       update_done_s         <= '0';
       en_load_s             <= '0';
       cnt_matrix_sel_s      <= 0;
@@ -302,6 +302,7 @@ begin  -- architecture arch_max7219_controller
           config_done_s    <= '0';
           en_start_frame_s <= '1';
           update_done_s    <= '0';
+          en_load_s        <= '0';
         when SET_CFG =>
 
           -- Select the config
@@ -388,46 +389,70 @@ begin  -- architecture arch_max7219_controller
 
         when TEST_DISPLAY_ON =>
 
-          if(frame_done_r_edge = '1') then
-            display_test_s   <= '1';
-            en_start_frame_s <= '1';
-          end if;
-
           if(en_start_frame_s = '1') then
-            wdata_s        <= C_DISPLAY_TEST_ADDR & x"01";  -- Display test mode
+            case cnt_matrix_sel_s is
+              when 0 =>
+                wdata_s <= C_DISPLAY_TEST_ADDR & x"01";  -- Display test mode;
+              when others =>
+                wdata_s <= C_NO_OP_ADDR & x"00";         -- Send NOP;
+            end case;
+
             start_frame_s  <= '1';
             start_frame_ss <= start_frame_s;
-          else
-            start_frame_s  <= '0';
-            start_frame_ss <= '0';
+
           end if;
 
           if(start_frame_ss = '1') then
+            start_frame_s    <= '0';
+            start_frame_ss   <= '0';
             en_start_frame_s <= '0';
           end if;
 
+          -- En LOAD when we reach the matrix to reach
+          if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
+            en_load_s                                            <= '1';
+            -- Display test on sel matrix
+            display_test_s(to_integer(unsigned(matrix_sel_i_s))) <= '1';
+            en_start_frame_s                                     <= '1';  -- Re enable for Test_display off
+          elsif(start_frame_ss = '1') then
+            en_load_s <= '0';
+          end if;
+
         when TEST_DISPLAY_OFF =>
+
+
           -- Need to wait for the release of the test_display_i input
           if(test_display_i = '0') then
-
-            if(frame_done_r_edge = '1') then
-              display_test_s <= '0';
-            end if;
-
             if(en_start_frame_s = '1') then
-              wdata_s        <= C_DISPLAY_TEST_ADDR & x"01";  -- Display test mode
+              case cnt_matrix_sel_s is
+                when 0 =>
+                  wdata_s <= C_DISPLAY_TEST_ADDR & x"00";  -- Display test mode;
+                when others =>
+                  wdata_s <= C_NO_OP_ADDR & x"00";         -- Send NOP;
+              end case;
+
               start_frame_s  <= '1';
               start_frame_ss <= start_frame_s;
-            else
-              start_frame_s  <= '0';
-              start_frame_ss <= '0';
+
             end if;
 
             if(start_frame_ss = '1') then
+              start_frame_s    <= '0';
+              start_frame_ss   <= '0';
               en_start_frame_s <= '0';
             end if;
 
+            -- En LOAD when we reach the matrix to reach
+            if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
+              en_load_s                                            <= '1';
+              -- Display test on sel matrix
+              display_test_s(to_integer(unsigned(matrix_sel_i_s))) <= '0';
+            elsif(start_frame_ss = '1') then
+              en_load_s <= '0';
+            end if;
+
           end if;
+
 
         when SET_DISPLAY =>
           -- Counts the frame acconding to frame_done

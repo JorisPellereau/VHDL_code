@@ -67,7 +67,7 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal digit_7_i          : std_logic_vector(7 downto 0);  -- for digit 7
   signal config_done_o      : std_logic;  -- Config is done
   signal display_on_o       : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display
-  signal display_test_o     : std_logic;  -- 1 : Display in test mode
+  signal display_test_o     : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- 1 : Display in test mode
   signal update_done_o      : std_logic;  -- Display upadte terminated
   signal wdata_o            : std_logic_vector(15 downto 0);  -- Data bus                                        
   signal start_frame_o      : std_logic;  -- Start a frame
@@ -138,27 +138,28 @@ begin  -- architecture arch_test_max7219_controller
 
     end loop;
 
+    wait for 50 us;
 
+    for i in 0 to 7 loop
+      matrix_sel_i   <= std_logic_vector(to_unsigned(i, matrix_sel_i'length));
+      wait for 5 us;
+      test_display_i <= '1';
+      wait until (display_test_o(i) = '1') for 10 ms;
+      wait for 10 us;
+      test_display_i <= '0';
+      wait until (display_test_o(i) = '0') for 10 ms;
 
+    end loop;
 
+    wait for 25 us;
 
-
-
-
-
-    -- Pour test
+    -- pour test
     wait;
-
-    test_display_i <= '1';
-    wait for 20 us;
-
-    test_display_i <= '0';
-    wait for 10 us;
 
     report "SET DISPLAY !!!";
     update_display_i <= '1';
 
-    wait for 10 us;
+    wait for 40 us;
     update_display_i <= '0';
 
     wait until rising_edge(update_done_o) for 10 ms;
