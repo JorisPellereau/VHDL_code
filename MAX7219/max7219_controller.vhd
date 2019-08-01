@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-31
+-- Last update: 2019-08-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ entity max7219_controller is
 
     -- Flags 
     config_done_o  : out std_logic;     -- Config is done
-    display_on_o   : out std_logic;     -- State of the display 1 : on 0 : off
+    display_on_o   : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display 1 : on 0 : off
     display_test_o : out std_logic;     -- 1 : Display in test mode
     update_done_o  : out std_logic;     -- Display Update terminated
 
@@ -108,7 +108,7 @@ architecture arch_max7219_controller of max7219_controller is
   signal start_frame_s  : std_logic;    -- Start a frame
   signal start_frame_ss : std_logic;    -- Start a frame
   signal config_done_s  : std_logic;    -- Configuration done
-  signal display_on_s   : std_logic;    -- Stat of the display
+  signal display_on_s   : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- Stat of the display
   signal display_test_s : std_logic;    -- Display in mode test
   signal en_load_s      : std_logic;    -- Enable LOAD output
 
@@ -242,7 +242,8 @@ begin  -- architecture arch_max7219_controller
             state_max7219_ctrl <= SET_CFG;
           elsif(test_display_i = '1') then
             state_max7219_ctrl <= TEST_DISPLAY_ON;
-          elsif(update_display_r_edge = '1' and pattern_available_i = '1' and display_on_s = '1') then
+            
+          elsif(update_display_r_edge = '1' and pattern_available_i = '1' and display_on_s = x"FF") then
             state_max7219_ctrl <= SET_DISPLAY;
           end if;
 
@@ -252,7 +253,7 @@ begin  -- architecture arch_max7219_controller
           end if;
 
         when DISPLAY_ON =>
-          if(display_on_s = '1') then
+          if(display_on_s(to_integer(unsigned(matrix_sel_i_s))) = '1') then
             state_max7219_ctrl <= IDLE;
           end if;
 
@@ -286,7 +287,7 @@ begin  -- architecture arch_max7219_controller
       cnt_config_s          <= 0;
       config_done_s         <= '0';
       en_start_frame_s      <= '0';
-      display_on_s          <= '0';
+      display_on_s          <= (others => '0');
       display_test_s        <= '0';
       update_done_s         <= '0';
       en_load_s             <= '0';
@@ -301,7 +302,7 @@ begin  -- architecture arch_max7219_controller
           config_done_s    <= '0';
           en_start_frame_s <= '1';
           update_done_s    <= '0';
-        when SET_CFG =>       
+        when SET_CFG =>
 
           -- Select the config
           if(cnt_matrix_sel_done_s = '1') then
@@ -377,7 +378,9 @@ begin  -- architecture arch_max7219_controller
 
           -- En LOAD when we reach the matrix to reach
           if(cnt_matrix_sel_s = unsigned(matrix_sel_i_s) and frame_done_r_edge = '1') then
-            en_load_s <= '1';
+            en_load_s                                          <= '1';
+            -- Current sel display on
+            display_on_s(to_integer(unsigned(matrix_sel_i_s))) <= '1';
           elsif(start_frame_ss = '1') then
             en_load_s <= '0';
           end if;
@@ -495,20 +498,20 @@ begin  -- architecture arch_max7219_controller
 
 
       -- Factorisation
- -- Counts the frame to Send
-          if(frame_done_r_edge = '1') then
-            if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
-              en_start_frame_s      <= '1';
-              cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
-              cnt_matrix_sel_done_s <= '0';
-            else
-              cnt_matrix_sel_s      <= 0;  -- RAZ 
-              cnt_matrix_sel_done_s <= '1';
-            end if;
-          else
-            cnt_matrix_sel_done_s <= '0';
-          -- en_start_frame_s      <= '1';
-          end if;
+      -- Counts the frame to Send
+      if(frame_done_r_edge = '1') then
+        if(cnt_matrix_sel_s < unsigned(matrix_sel_i_s)) then
+          en_start_frame_s      <= '1';
+          cnt_matrix_sel_s      <= cnt_matrix_sel_s + 1;
+          cnt_matrix_sel_done_s <= '0';
+        else
+          cnt_matrix_sel_s      <= 0;   -- RAZ 
+          cnt_matrix_sel_done_s <= '1';
+        end if;
+      else
+        cnt_matrix_sel_done_s <= '0';
+      -- en_start_frame_s      <= '1';
+      end if;
 
     end if;
   end process p_outputs_mng;

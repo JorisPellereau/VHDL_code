@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2019-07-30
+-- Last update: 2019-08-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ package pkg_max7219 is
 
       -- Flags
       config_done_o  : out std_logic;   -- Config is done
-      display_on_o   : out std_logic;   -- State of the display 1 : on 0 : off
+      display_on_o   : out std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display 1 : on 0 : off
       display_test_o : out std_logic;   -- 1 : Display in test mode
       update_done_o  : out std_logic;   -- Display Update terminated
 
@@ -151,6 +151,19 @@ package pkg_max7219 is
       digit_6_o           : out std_logic_vector(7 downto 0);  -- Digit 6 pattern
       digit_7_o           : out std_logic_vector(7 downto 0);  -- Digit 7 pattern
       pattern_available_o : out std_logic);  -- Pattern avaiable
+  end component;
+
+  component matrix_display_ctrl is
+    port (
+      clock_i        : in std_logic;    -- System clock
+      reset_n_i      : in std_logic;    -- Active low Asynchronous reset
+      display_test_i : in std_logic;    -- Test the matrix
+      score_i        : in std_logic_vector(31 downto 0);  -- Current score to display
+
+      -- MAX7219 Interface
+      load_o : out std_logic;           -- Load MAX7219
+      data_o : out std_logic;           -- Data MAX7219
+      clk_o  : out std_logic);          -- CLK MAX7219
   end component;
 
 end package pkg_max7219;

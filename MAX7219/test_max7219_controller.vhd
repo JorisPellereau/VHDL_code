@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-31
+-- Last update: 2019-08-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ architecture arch_test_max7219_controller of test_max7219_controller is
   signal digit_6_i          : std_logic_vector(7 downto 0);  -- for digit 6
   signal digit_7_i          : std_logic_vector(7 downto 0);  -- for digit 7
   signal config_done_o      : std_logic;  -- Config is done
-  signal display_on_o       : std_logic;  -- State of the display
+  signal display_on_o       : std_logic_vector(C_MATRIX_NB - 1 downto 0);  -- State of the display
   signal display_test_o     : std_logic;  -- 1 : Display in test mode
   signal update_done_o      : std_logic;  -- Display upadte terminated
   signal wdata_o            : std_logic_vector(15 downto 0);  -- Data bus                                        
@@ -124,16 +124,26 @@ begin  -- architecture arch_test_max7219_controller
     scan_limit_i       <= "010";
     en_i               <= '1';
     sel_i              <= x"0001";
-    matrix_sel_i       <= "111";
-    wait for 5 us;
 
-    report "Start the config";
-    start_config_i <= '1';
-    wait for 0.5 us;
-    start_config_i <= '0';
-    -- wait for 20 us;
 
-    wait until falling_edge(config_done_o) for 10 ms;
+    for i in 0 to 8 loop
+
+      matrix_sel_i   <= std_logic_vector(to_unsigned(i, matrix_sel_i'length));
+      wait for 5 us;
+      report "Start the config ";
+      start_config_i <= '1';
+      wait for 0.5 us;
+      start_config_i <= '0';
+      wait until falling_edge(config_done_o) for 10 ms;
+
+    end loop;
+
+
+
+
+
+
+
 
 
     -- Pour test
