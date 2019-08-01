@@ -76,6 +76,9 @@ package pkg_max7219 is
   constant C_MATRIX_9 : t_matrix_8x8 := (0 => x"00", 1 => x"62", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"7E", 7 => x"00");  -- Display 9
   -- =======================================
 
+  -- == MATRIX_DISPLAY_CTRL TYPES & CONSTANTS ==
+  type matrix_display_ctrl_fsm is (IDLE, CONFIG_DISPLAY, WAIT_CMD, DISPLAY_TEST);  -- States on the Matrix controller
+  -- ===========================================
 
 
   -- COMPONENTS

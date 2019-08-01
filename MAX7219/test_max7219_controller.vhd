@@ -126,7 +126,7 @@ begin  -- architecture arch_test_max7219_controller
     sel_i              <= x"0001";
 
 
-    for i in 0 to 8 loop
+    for i in 0 to 7 loop
 
       matrix_sel_i   <= std_logic_vector(to_unsigned(i, matrix_sel_i'length));
       wait for 5 us;
