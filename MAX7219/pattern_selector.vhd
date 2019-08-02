@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-23
--- Last update: 2019-07-30
+-- Last update: 2019-08-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -64,53 +64,53 @@ begin  -- architecture arch_pattern_selector
   -- This process select the pattern according to the input selector
   p_pattern_mng : process(sel_i, en_i)  -- (clock_i, reset_n_i) is
   begin  -- process p_pattern_mng
-    -- if reset_n_i = '0' then             -- asynchronous reset (active low)
-    --   pattern_available_s <= '0';
-    --   matrix_8x8_s        <= (others => (others => '0'));
-    -- elsif clock_i'event and clock_i = '1' then  -- rising clock edge
-    if(en_i = '1') then
-
-      pattern_available_s <= '1';
-      case sel_i is
-        when x"0000" =>
-          matrix_8x8_s <= C_MATRIX_0;
-
-        when x"0001" =>
-          matrix_8x8_s <= C_MATRIX_1;
-
-        when x"0002" =>
-          matrix_8x8_s <= C_MATRIX_2;
-
-        when x"0003" =>
-          matrix_8x8_s <= C_MATRIX_3;
-
-        when x"0004" =>
-          matrix_8x8_s <= C_MATRIX_4;
-
-        when x"0005" =>
-          matrix_8x8_s <= C_MATRIX_5;
-
-        when x"0006" =>
-          matrix_8x8_s <= C_MATRIX_6;
-
-        when x"0007" =>
-          matrix_8x8_s <= C_MATRIX_7;
-
-        when x"0008" =>
-          matrix_8x8_s <= C_MATRIX_8;
-
-        when x"0009" =>
-          matrix_8x8_s <= C_MATRIX_9
-;
-        when others =>
-          pattern_available_s <= '0';
-      end case;
-
-    else
+    if reset_n_i = '0' then             -- asynchronous reset (active low)
       pattern_available_s <= '0';
-    end if;
+      matrix_8x8_s        <= (others => (others => '0'));
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+      if(en_i = '1') then
 
-  -- end if;
+        pattern_available_s <= '1';
+        case sel_i is
+          when x"0000" =>
+            matrix_8x8_s <= C_MATRIX_0;
+
+          when x"0001" =>
+            matrix_8x8_s <= C_MATRIX_1;
+
+          when x"0002" =>
+            matrix_8x8_s <= C_MATRIX_2;
+
+          when x"0003" =>
+            matrix_8x8_s <= C_MATRIX_3;
+
+          when x"0004" =>
+            matrix_8x8_s <= C_MATRIX_4;
+
+          when x"0005" =>
+            matrix_8x8_s <= C_MATRIX_5;
+
+          when x"0006" =>
+            matrix_8x8_s <= C_MATRIX_6;
+
+          when x"0007" =>
+            matrix_8x8_s <= C_MATRIX_7;
+
+          when x"0008" =>
+            matrix_8x8_s <= C_MATRIX_8;
+
+          when x"0009" =>
+            matrix_8x8_s <= C_MATRIX_9
+;
+          when others =>
+            pattern_available_s <= '0';
+        end case;
+
+      else
+        pattern_available_s <= '0';
+      end if;
+
+    end if;
   end process p_pattern_mng;
 
   digit_0_s <= matrix_8x8_s(0)(7 downto 0);
