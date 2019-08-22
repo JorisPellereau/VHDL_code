@@ -48,7 +48,7 @@ end entity uart_mngt;
 
 architecture arch_uart_mngt of uart_mngt is
 
-  -- CONSTANTS
+  -- CONSTANT
   constant C_MAX_ARRAY   : integer := 3;  -- Size of the buffer
   constant C_MAX_TX_BYTE : integer := 2;  -- Number of byte to transmit
 
@@ -71,10 +71,13 @@ architecture arch_uart_mngt of uart_mngt is
   signal tx_done_i_s      : std_logic;  -- Old tx_done_i
 
   signal uart_cmd_ok_s    : std_logic;  -- Good command received
+  signal uart_cmd_ko_s    : std_logic;  -- Bad command received
   signal uart_resp_done_s : std_logic;  -- Resp Send
 
   signal start_tx_o_s : std_logic;      -- Start tx
   signal tx_data_o_s  : std_logic_vector(data_size - 1 downto 0);  -- Data to transmit
+
+  signal raz_cmd_ok : std_logic;        -- Raz cmd_ok
 
 begin  -- architecture arch_uart_mngt
 
@@ -101,6 +104,8 @@ begin  -- architecture arch_uart_mngt
       cnt_byte_rx   <= 0;
       byte_array    <= (others => (others => '0'));
       uart_cmd_ok_s <= '0';
+      uart_cmd_ko_s <= '0';
+      raz_cmd_ok    <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
 
       -- Store and Inc on RX_done REdge
@@ -113,8 +118,10 @@ begin  -- architecture arch_uart_mngt
 
       if(cnt_byte_rx = C_MAX_ARRAY) then
         if(byte_array = C_cmd_inst) then
-          uart_cmd_ok_s <= '1';
+          uart_cmd_ok_s <= '1';         -- Good command
+          uart_cmd_ko_s <= '0';
         else
+          uart_cmd_ko_s <= '1';         -- Bad command
           -- RAZ buffer
           uart_cmd_ok_s <= '0';
           byte_array    <= (others => (others => '0'));
@@ -126,6 +133,11 @@ begin  -- architecture arch_uart_mngt
         cnt_byte_rx   <= 0;
         byte_array    <= (others => (others => '0'));
         uart_cmd_ok_s <= '0';
+        uart_cmd_ko_s <= '0';
+        raz_cmd_ok    <= '1';
+      else
+        raz_cmd_ok <= '0';
+
       end if;
 
     end if;
@@ -142,7 +154,7 @@ begin  -- architecture arch_uart_mngt
       tx_data_o_s      <= (others => '0');
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
 
-      if(uart_cmd_ok_s = '1') then
+      if(uart_cmd_ok_s = '1' or uart_cmd_ko_s = '1') then  -- Useless ?
 
         if(tx_done_i_r_edge = '1') then
           if(cnt_byte_tx < C_MAX_TX_BYTE - 1) then
@@ -151,9 +163,7 @@ begin  -- architecture arch_uart_mngt
             uart_resp_done_s <= '1';
             cnt_byte_tx      <= 0;      -- RAZ CNT
           end if;
-        -- start_tx_o_s <= '0';          -- Raz Start TX
         end if;
-
 
         if(uart_resp_done_s = '1' or tx_done_i_r_edge = '1') then
           start_tx_o_s <= '0';          -- Raz Start TX
@@ -161,17 +171,30 @@ begin  -- architecture arch_uart_mngt
           start_tx_o_s <= '1';
         end if;
 
-
-        case cnt_byte_tx is
-          when 0 =>
-            tx_data_o_s <= x"AB";
-          when 1 =>
-            tx_data_o_s <= x"CD";
-          when others => null;
-        end case;
+        if(uart_cmd_ok_s = '1') then
+          case cnt_byte_tx is
+            when 0 =>
+              tx_data_o_s <= x"4F";
+            when 1 =>
+              tx_data_o_s <= x"4B";
+            when others => null;
+          end case;
+        elsif(uart_cmd_ko_s = '1') then
+          case cnt_byte_tx is
+            when 0 =>
+              tx_data_o_s <= x"4B";
+            when 1 =>
+              tx_data_o_s <= x"4F";
+            when others => null;
+          end case;
+        end if;
 
       else
-        -- uart_resp_done_s <= '0';
+
+        -- RAZ uart_resp_done_s
+        if(raz_cmd_ok = '1') then
+          uart_resp_done_s <= '0';
+        end if;
         cnt_byte_tx  <= 0;
         start_tx_o_s <= '0';
       end if;

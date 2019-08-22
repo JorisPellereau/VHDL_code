@@ -100,6 +100,56 @@ begin  -- architecture arch_test_uart_ctrl
     wait until rising_edge(tx_done_inj) for 10 ms;
     -- ==============================
 
+    wait for 0.5 ms;
+
+    -- == SEND 3 GOODS BYTES ==
+    -- Send a first byte
+    tx_data_inj  <= x"A0";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+
+    -- Send a 2nd byte
+    tx_data_inj  <= x"BB";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+
+    -- Send a 3rd byte
+    tx_data_inj  <= x"DE";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+    -- ==============================
+
+    wait for 0.5 ms;
+
+    -- == SEND 3 WRONG BYTES ==
+    -- Send a first byte
+    tx_data_inj  <= x"11";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+
+    -- Send a 2nd byte
+    tx_data_inj  <= x"22";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+
+    -- Send a 3rd byte
+    tx_data_inj  <= x"33";
+    wait for 2*C_Clock_period;
+    start_tx_inj <= '1', '0' after 2*C_Clock_period;
+    wait until rising_edge(tx_done_inj) for 10 ms;
+
+
+    
+    
+    -- ==============================
+
+    wait for 0.5 ms;
+
     -- == SEND 3 GOODS BYTES ==
     -- Send a first byte
     tx_data_inj  <= x"A0";
