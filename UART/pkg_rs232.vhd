@@ -6,7 +6,7 @@
 -- Author     :   
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-05-27
+-- Last update: 2019-08-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -108,6 +108,26 @@ package pkg_rs232 is
       parity_rcvd : out std_logic);     -- Parity received
   end component rx_uart;
 
+  component uart_mngt is
+
+    generic(
+      data_size : integer range 5 to 9 := 8);
+
+    port (
+      reset_n : in std_logic;           -- Active low Asynchronous Reset
+      clock_i : in std_logic;           -- System Clock
+
+      -- RX uart interface
+      rx_data_i     : in std_logic_vector(data_size - 1 downto 0);  -- Data from RX uart
+      rx_done_i     : in std_logic;     -- Data received
+      parity_rcvd_i : in std_logic;     -- Parity from the RX uart
+
+      -- TX uart interface
+      tx_done_i  : in  std_logic;       -- Tx uart done
+      start_tx_o : out std_logic;       -- Start a TX uart
+      tx_data_o  : out std_logic_vector(data_size - 1 downto 0));  -- Data to transmit
+  end component uart_mngt;
+
 end package pkg_rs232;
 
 package body pkg_rs232 is
@@ -119,7 +139,7 @@ package body pkg_rs232 is
     return integer is
 
     variable bit_duration : integer := 0;  -- Bit duration
-    
+
   begin  -- function compute_bit_duration
 
     case baudrate is
@@ -168,7 +188,7 @@ package body pkg_rs232 is
     return integer is
 
     variable number_of_bit : integer := 0;  -- Number of bit
-    
+
   begin
 
     number_of_bit := stop_bit_number + data_size;
@@ -195,7 +215,7 @@ package body pkg_rs232 is
 
     variable stdlv_number  : std_logic_vector(8 downto 0) := (others => '0');  -- Number input in stdlv
     variable parity_result : std_logic                    := '0';  -- Parity computation result
-    
+
   begin  -- function parity_computation
 
     stdlv_number  := std_logic_vector(to_unsigned(number, stdlv_number'length));
@@ -213,7 +233,7 @@ package body pkg_rs232 is
     return string is
 
     variable str : string(1 to 3) := "'0'";
-    
+
   begin  -- function stdl_to_string
 
     if(in_stdl = '0') then
@@ -224,5 +244,5 @@ package body pkg_rs232 is
     return str;
   end function stdl_to_string;
 
-  
+
 end package body pkg_rs232;
