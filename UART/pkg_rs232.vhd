@@ -128,6 +128,24 @@ package pkg_rs232 is
       tx_data_o  : out std_logic_vector(data_size - 1 downto 0));  -- Data to transmit
   end component uart_mngt;
 
+
+  component uart_ctrl is
+
+    generic(
+      stop_bit_number : integer range 1 to 2 := 1;  -- Stop bit number
+      parity          : t_parity             := even;  -- Type of the parity
+      baudrate        : t_baudrate           := b9600;      -- Baudrate
+      data_size       : integer range 5 to 9 := 8;  -- Size of the data to received
+      polarity        : std_logic            := '1';  -- Polarity on idle state
+      first_bit       : t_first_bit          := lsb_first;  -- LSB or MSB first
+      clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
+    port (
+      reset_n   : in  std_logic;        -- Active Low Asynchronous Reset
+      clock_i   : in  std_logic;        -- System clock
+      rx_uart_i : in  std_logic;        -- RX UART
+      tx_uart_o : out std_logic);       -- TX UART
+  end component;
+
 end package pkg_rs232;
 
 package body pkg_rs232 is
