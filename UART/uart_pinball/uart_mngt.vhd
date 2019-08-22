@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-08-21
--- Last update: 2019-08-21
+-- Last update: 2019-08-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -105,13 +105,13 @@ begin  -- architecture arch_uart_mngt
 
       -- Store and Inc on RX_done REdge
       if(rx_done_i_r_edge = '1' and uart_cmd_ok_s = '0') then
-        if(cnt_byte_rx < C_MAX_ARRAY - 1) then
+        if(cnt_byte_rx < C_MAX_ARRAY) then
           byte_array(cnt_byte_rx) <= rx_data_i;        -- Store the data
           cnt_byte_rx             <= cnt_byte_rx + 1;  -- Inc cnt      
         end if;
       end if;
 
-      if(cnt_byte_rx = C_MAX_ARRAY - 1) then
+      if(cnt_byte_rx = C_MAX_ARRAY) then
         if(byte_array = C_cmd_inst) then
           uart_cmd_ok_s <= '1';
         else
@@ -139,9 +139,11 @@ begin  -- architecture arch_uart_mngt
       uart_resp_done_s <= '0';
       cnt_byte_tx      <= 0;
       start_tx_o_s     <= '0';
+      tx_data_o_s      <= (others => '0');
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
 
       if(uart_cmd_ok_s = '1') then
+
         if(tx_done_i_r_edge = '1') then
           if(cnt_byte_tx < C_MAX_TX_BYTE - 1) then
             cnt_byte_tx <= cnt_byte_tx + 1;
@@ -149,10 +151,16 @@ begin  -- architecture arch_uart_mngt
             uart_resp_done_s <= '1';
             cnt_byte_tx      <= 0;      -- RAZ CNT
           end if;
+        -- start_tx_o_s <= '0';          -- Raz Start TX
+        end if;
+
+
+        if(uart_resp_done_s = '1' or tx_done_i_r_edge = '1') then
           start_tx_o_s <= '0';          -- Raz Start TX
         else
-          start_tx_o_s <= '1'; -- Start a TX resp
+          start_tx_o_s <= '1';
         end if;
+
 
         case cnt_byte_tx is
           when 0 =>
@@ -163,9 +171,9 @@ begin  -- architecture arch_uart_mngt
         end case;
 
       else
-        uart_resp_done_s <= '0';
-        cnt_byte_tx      <= 0;
-        start_tx_o_s     <= '0';
+        -- uart_resp_done_s <= '0';
+        cnt_byte_tx  <= 0;
+        start_tx_o_s <= '0';
       end if;
 
     end if;

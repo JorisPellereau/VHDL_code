@@ -36,10 +36,10 @@ entity uart_ctrl is
     first_bit       : t_first_bit          := lsb_first;  -- LSB or MSB first
     clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
   port (
-    reset_n : in  std_logic;            -- Active Low Asynchronous Reset
-    clock_i : in  std_logic;            -- System clock
-    rx_uart : in  std_logic;            -- RX UART
-    tx_uart : out std_logic);           -- TX UART
+    reset_n   : in  std_logic;          -- Active Low Asynchronous Reset
+    clock_i   : in  std_logic;          -- System clock
+    rx_uart_i : in  std_logic;          -- RX UART
+    tx_uart_o : out std_logic);         -- TX UART
 
 end entity uart_ctrl;
 
@@ -83,11 +83,10 @@ begin  -- architecture arch_uart_ctrl
       polarity        => polarity,
       first_bit       => first_bit,
       clock_frequency => clock_frequency)
-
     port map(
       reset_n     => reset_n,
       clock       => clock_i,
-      rx          => rx_uart,
+      rx          => rx_uart_i,
       rx_data     => rx_data_s,
       rx_done     => rx_done_s,
       parity_rcvd => parity_rcvd_s);
@@ -107,7 +106,7 @@ begin  -- architecture arch_uart_ctrl
       clock    => clock_i,
       start_tx => start_tx_s,
       tx_data  => tx_data_s,
-      tx       => tx_uart,
+      tx       => tx_uart_o,
       tx_done  => tx_done_s);
 
 end architecture arch_uart_ctrl;
