@@ -67,8 +67,17 @@ architecture arch_reg_ctrl of reg_ctrl is
   signal wdata_reg_i_s     : std_logic_vector(data_size - 1 downto 0);
   signal rw_reg_i_s        : std_logic;
 
-  signal check_on_s : std_logic;        -- Start the check of the reg
-  signal array_reg  : t_array_reg;      -- Array of reg
+  signal check_on_s   : std_logic;      -- Start the check of the reg
+  signal check_done_s : std_logic;      -- Check reg done
+  signal array_reg    : t_array_reg;    -- Array of reg
+
+  signal reg_addr_ok_o_s : std_logic;   -- Reg Addr find ok signal
+  signal rdata_reg_o_s   : std_logic_vector(data_size - 1 downto 0);  -- Rdata
+
+  signal data_valid_o_s  : std_logic;   -- data valid output
+  signal data_valid_o_ss : std_logic;   -- Davalid intermediaire
+
+
 
 begin  -- architecture arch_reg_ctrl
 
@@ -94,10 +103,17 @@ begin  -- architecture arch_reg_ctrl
       check_on_s        <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(start_rw_i_r_edge = '1') then
-        rcvd_addr_reg_s <= rcvd_addr_reg_i;
-        wdata_reg_i_s   <= wdata_reg_i;
-        rw_reg_i_s      <= rw_reg_i;
-        check_on_s      <= '1';
+        rcvd_addr_reg_i_s <= rcvd_addr_reg_i;
+        wdata_reg_i_s     <= wdata_reg_i;
+        rw_reg_i_s        <= rw_reg_i;
+        check_on_s        <= '1';
+
+      -- RAZ check_on_s & signals
+      elsif(data_valid_o_s = '1') then
+        rcvd_addr_reg_i_s <= (others => '0');
+        wdata_reg_i_s     <= (others => '0');
+        rw_reg_i_s        <= (others => '0');
+        check_on_s        <= '0';
       end if;
     end if;
   end process p_latch_inputs;
@@ -107,15 +123,58 @@ begin  -- architecture arch_reg_ctrl
   p_check_reg : process (clock_i, reset_n) is
   begin  -- process p_check_reg
     if reset_n = '0' then               -- asynchronous reset (active low)
-
+      reg_addr_ok_o_s <= '0';
+      check_done_s    <= '0';
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
       if(check_on_s = '0') then
-        
+        reg_addr_ok_o_s <= '0';
+        check_done_s    <= '0';
       else
-        
+
+        for i in 0 to C_MAX_REG - 1 loop
+          if(rcvd_addr_reg_i_s = std_logic_vector(to_unsigned(i, rcvd_addr_reg_i_s'length))) then
+            reg_addr_ok_o_s <= '1';
+          else
+            reg_addr_ok_o_s <= '0';
+          end if;
+        end loop;  -- i
+        check_done_s <= '1';
+
       end if;
     end if;
   end process p_check_reg;
+  reg_addr_ok_o <= reg_addr_ok_o_s;
 
+
+  -- purpose: This process manages the RW in the reg if needed and data_valid
+  p_rw_reg_mng : process (clock_i, reset_n) is
+  begin  -- process p_rw_reg_mng
+    if reset_n = '0' then               -- asynchronous reset (active low)
+      rdata_reg_o_s   <= (others => '0');
+      data_valid_o_s  <= '0';
+      data_valid_o_ss <= '0';
+    elsif clock_i'event and clock_i = '1' then  -- rising clock edge
+
+      if(check_done_s = '1') then
+        if(reg_addr_ok_o_s = '1') then  -- Rcvd addr in the list
+          if(rw_reg_i_s = '1') then     -- Read case
+            rdata_reg_o_s <= array_reg(to_integer(unsigned(rcvd_addr_reg_i_s)));
+          else                          -- Write case
+            array_reg(to_integer(unsigned(rcvd_addr_reg_i_s))) <= wdata_reg_i_s;
+          end if;
+          data_valid_o_ss <= '1';
+          data_valid_o_s  <= data_valid_o_ss;
+        end if;
+      else
+        rdata_reg_o_s   <= (others => '0');
+        data_valid_o_s  <= '0';
+        data_valid_o_ss <= '0';
+      end if;
+
+    end if;
+
+  end process p_rw_reg_mng;
+  rdata_reg_o  <= rdata_reg_o_s;
+  data_valid_o <= data_valid_o_s;
 
 end architecture arch_reg_ctrl;
