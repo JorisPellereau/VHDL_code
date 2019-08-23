@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-08-22
--- Last update: 2019-08-22
+-- Last update: 2019-08-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,8 +36,18 @@ entity uart_ctrl is
     first_bit       : t_first_bit          := lsb_first;  -- LSB or MSB first
     clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
   port (
-    reset_n   : in  std_logic;          -- Active Low Asynchronous Reset
-    clock_i   : in  std_logic;          -- System clock
+    reset_n : in std_logic;             -- Active Low Asynchronous Reset
+    clock_i : in std_logic;             -- System clock
+
+    -- Reg. Bank Controller Interface
+    addr_reg_ok_i   : in  std_logic;    -- Reg in the list
+    rdara_reg_i     : in  std_logic_vector(data_size - 1 downto 0);  -- Data to read
+    rcvd_addr_reg_o : out std_logic_vector(data_size - 1 downto 0);
+    wdata_reg_o     : out std_logic_vector(data_size - 1 downto 0);
+    rw_reg_o        : out std_logic;    -- RW Order
+    start_rw_reg_o  : out std_logic;    -- Start RW operation
+
+    -- UART PHYSICAL INTERFACE
     rx_uart_i : in  std_logic;          -- RX UART
     tx_uart_o : out std_logic);         -- TX UART
 
