@@ -162,9 +162,9 @@ begin  -- architecture arch_reg_ctrl
           else                          -- Write case
             array_reg(to_integer(unsigned(rcvd_addr_reg_i_s))) <= wdata_reg_i_s;
           end if;
-          data_valid_o_ss <= '1';
-          data_valid_o_s  <= data_valid_o_ss;
         end if;
+        data_valid_o_ss <= '1';
+        data_valid_o_s  <= data_valid_o_ss;
       else
         rdata_reg_o_s   <= (others => '0');
         data_valid_o_s  <= '0';
