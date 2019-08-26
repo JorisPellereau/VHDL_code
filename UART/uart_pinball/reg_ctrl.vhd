@@ -113,6 +113,7 @@ begin  -- architecture arch_reg_ctrl
       elsif(data_valid_o_s = '1') then
         rcvd_addr_reg_i_s <= (others => '0');
         wdata_reg_i_s     <= (others => '0');
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         rw_reg_i_s        <= (others => '0');
 =======
@@ -122,6 +123,9 @@ begin  -- architecture arch_reg_ctrl
         rw_reg_i_s        <= (others => '0');
 >>>>>>> UART_pinbal_V1
 >>>>>>> Stashed changes
+=======
+        rw_reg_i_s        <= (others => '0');
+>>>>>>> UART_pinbal_V1
         check_on_s        <= '0';
       end if;
     end if;

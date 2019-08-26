@@ -6,6 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-08-23
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 -- Last update: 2019-08-23
 =======
@@ -15,6 +16,9 @@
 -- Last update: 2019-08-23
 >>>>>>> UART_pinbal_V1
 >>>>>>> Stashed changes
+=======
+-- Last update: 2019-08-23
+>>>>>>> UART_pinbal_V1
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,6 +84,7 @@ architecture arch_test_reg_ctrl of test_reg_ctrl is
   signal start_rw_i      : std_logic;
   signal data_valid_o    : std_logic;
   signal reg_addr_ok_o   : std_logic;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   signal rdata_reg_o     : std_logic_vector(data_size - 1 downto 0));
 =======
@@ -89,6 +94,9 @@ architecture arch_test_reg_ctrl of test_reg_ctrl is
   signal rdata_reg_o     : std_logic_vector(data_size - 1 downto 0));
 >>>>>>> UART_pinbal_V1
 >>>>>>> Stashed changes
+=======
+  signal rdata_reg_o     : std_logic_vector(data_size - 1 downto 0));
+>>>>>>> UART_pinbal_V1
 
 begin  -- architecture arch_test_reg_ctrl
 
@@ -144,6 +152,7 @@ begin  -- architecture arch_test_reg_ctrl
       data_size => C_data_size)
     port map (
       reset_n         => reset_n,
+<<<<<<< HEAD
 <<<<<<< Updated upstream
       clock_i         => clock_i,
 =======
@@ -153,6 +162,9 @@ begin  -- architecture arch_test_reg_ctrl
       clock_i         => clock_i,
 >>>>>>> UART_pinbal_V1
 >>>>>>> Stashed changes
+=======
+      clock_i         => clock_i,
+>>>>>>> UART_pinbal_V1
       rcvd_addr_reg_i => rcvd_addr_reg_i,
       wdata_reg_i     => wdata_reg_i,
       rw_reg_i        => rw_reg_i,
