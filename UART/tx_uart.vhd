@@ -55,8 +55,9 @@ architecture arch of tx_uart is
   signal tx_fsm       : t_rs232_tx_fsm;  -- Signal for TX FSM
   signal latch_done_s : std_logic;       -- Flag for a latch terminated
 
-  signal start_tx_s : std_logic;        -- Latch start_tx
-  signal tx_data_s  : std_logic_vector(data_size - 1 downto 0);  -- Latch input data
+  signal start_tx_s      : std_logic;   -- Latch start_tx
+  signal start_tx_r_edge : std_logic;   -- R edge Of start tx
+  signal tx_data_s       : std_logic_vector(data_size - 1 downto 0);  -- Latch input data
 
   signal tx_s             : std_logic;  -- To TX output
   signal cnt_bit_duration : integer range 0 to bit_duration - 1;  -- Bit duration counter
@@ -82,7 +83,7 @@ begin  -- architecture arch
     elsif clock'event and clock = '1' then  -- rising clock edge
       case tx_fsm is
         when IDLE =>
-          if(start_tx_s = '1') then
+          if(start_tx_r_edge = '1') then    --start_tx_s = '1') then
             tx_fsm <= LATCH_INPUTS;
           end if;
         when LATCH_INPUTS =>
@@ -124,16 +125,18 @@ begin  -- architecture arch
   p_start_tx_re_gen : process (clock, reset_n) is
   begin  -- process p_start_tx_re_gen
     if reset_n = '0' then                   -- asynchronous reset (active low)
-      start_tx_s <= '0';                    -- INIT to '0'
+      start_tx_s      <= '0';               -- INIT to '0'
+      start_tx_r_edge <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
 
-      if(start_tx = '1' and tx_fsm = IDLE) then
-        start_tx_s <= '1';
-      else
-        start_tx_s <= '0';
-      end if;
+      -- if(start_tx = '1' and tx_fsm = IDLE) then
+      --   start_tx_s <= '1';
+      -- else
+      --   start_tx_s <= '0';
+      -- end if;
 
-
+      start_tx_s      <= start_tx;
+      start_tx_r_edge <= start_tx and not start_tx_s;
     end if;
   end process p_start_tx_re_gen;
 
