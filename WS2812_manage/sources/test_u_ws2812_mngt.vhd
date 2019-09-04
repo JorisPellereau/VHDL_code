@@ -47,6 +47,7 @@ architecture arch_test_u_ws2812_mngt of test_u_ws2812_mngt is
   signal start_ws2812_s      : std_logic;
   signal led_config_array_s  : t_led_config_array := (others => (others => '0'));
   signal led_config_s        : std_logic_vector(23 downto 0);
+  signal config_done_s       : std_logic;
 
 begin  -- arch_test_u_ws2812_mngt
 
@@ -110,6 +111,8 @@ begin  -- arch_test_u_ws2812_mngt
       frame_ws2812_done_i => frame_ws2812_done_s,
       led_config_array_i  => led_config_array_s,
       start_ws2812_o      => start_ws2812_s,
-      led_config_o        => led_config_s);
+      led_config_o        => led_config_s,
+      config_done_o       => config_done_s
+      );
 
 end arch_test_u_ws2812_mngt;

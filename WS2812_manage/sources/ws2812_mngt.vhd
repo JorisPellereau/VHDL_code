@@ -33,7 +33,9 @@ entity ws2812_mngt is
     frame_ws2812_done_i : in  std_logic;  -- Frame from WS2812 done
     led_config_array_i  : in  t_led_config_array;  -- Config of the leds
     start_ws2812_o      : out std_logic;  -- Start the frame
-    led_config_o        : out std_logic_vector(23 downto 0));  -- Led conf
+    led_config_o        : out std_logic_vector(23 downto 0);  -- Led config
+    config_done_o       : out std_logic  -- Config terminated
+    );
 
 end ws2812_mngt;
 
@@ -150,5 +152,5 @@ begin  -- arch_ws2812_mngt
 
   start_ws2812_o <= start_ws2812_o_s;
   led_config_o   <= led_config_o_s;
-
+  config_done_o  <= config_done_s;
 end arch_ws2812_mngt;

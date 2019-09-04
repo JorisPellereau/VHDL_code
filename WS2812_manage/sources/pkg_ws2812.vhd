@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019/09/03
+-- Last update: 2019/09/04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -72,6 +72,14 @@ package pkg_ws2812 is
   -- TYPES
   type t_led_config_array is array (0 to C_LED_NB - 1) of std_logic_vector(23 downto 0);  -- Array for the led configration
 
+
+  -- Config LEDS CONSTANTS
+
+  constant C_DEFAULT_LEDS   : t_led_config_array := (others => x"111111");
+  constant C_ALL_GREEN_LEDS : t_led_config_array := (others => x"FF0000");
+  constant C_ALL_RED_LEDS   : t_led_config_array := (others => x"00FF00");
+  constant C_ALL_BLUE_LEDS  : t_led_config_array := (others => x"0000FF");
+
   -- COMPONENTS
   component ws2812 is
                      generic(T0H     :     integer := T0H;
@@ -103,9 +111,41 @@ package pkg_ws2812 is
                           frame_ws2812_done_i : in  std_logic;  -- Frame from WS2812 done
                           led_config_array_i  : in  t_led_config_array;  -- Config of the leds
                           start_ws2812_o      : out std_logic;  -- Start the frame
-                          led_config_o        : out std_logic_vector(23 downto 0));  -- Led conf
+                          led_config_o        : out std_logic_vector(23 downto 0);
+                          config_done_o       : out std_logic);  -- config terminated
 
   end component;
+
+
+
+  component ws2812_rst_mng is
+
+                             port (
+                               clock_i       : in  std_logic;  -- System clock
+                               reset_n       : in  std_logic;  -- Asychronous active low reset
+                               en_start_i    : in  std_logic;  -- Enable the frame generation
+                               reset_gen_i   : in  std_logic;  -- Command for the reset genration
+                               config_done_i : in  std_logic;  -- Config done from the WS2812_mngt
+                               start_leds_o  : out std_logic);  -- Start config, to the WS2812 MNGT
+  end component;
+
+
+  component config_leds is
+
+                          generic (
+                            G_LED_NUMBER : integer range 1 to C_MAX_LEDS := C_LED_NB);  -- Numer of leds
+
+                        port (
+                          clock_i        : in  std_logic;  -- System Clock
+                          reset_n        : in  std_logic;  -- Active low asynchronous reset
+                          sel_config_i   : in  std_logic_vector(7 downto 0);  -- Config led selection
+                          config_led_o   : out t_led_config_array;  -- Current leds config
+                          config_valid_o : out std_logic);  -- Current conf. Valid
+
+  end component;
+
+
+
 
   component ws2812_controller is
                                 port (
@@ -123,7 +163,7 @@ package pkg_ws2812 is
 
 
   component top_led_cmd is
-                          port(clock   : in  std_logic;
+                          port(clock : in std_logic;
                                reset_n : in  std_logic;
                                d_out   : out std_logic);
   end component;
