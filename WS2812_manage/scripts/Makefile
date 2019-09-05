@@ -52,6 +52,9 @@ all:
 	@echo "Run VHD simulations :"
 	@echo "make run_test_u_ws2812"
 	@echo "make run_test_u_ws2812_mngt"
+	@echo "make run_test_u_ws2812_rst_mnt"
+	@echo "make run_test_u_config_leds"
+	@echo "make run_test_u_ws2812_ctrl"
 
 
 
@@ -88,7 +91,13 @@ src_vhd=	$(SRC_DIR)/pkg_ws2812.vhd \
 		$(SRC_DIR)/ws2812.vhd \
 		$(SRC_DIR)/test_unitaire_ws2812.vhd \
 		$(SRC_DIR)/ws2812_mngt.vhd \
-		$(SRC_DIR)/test_u_ws2812_mngt.vhd
+		$(SRC_DIR)/test_u_ws2812_mngt.vhd \
+		$(SRC_DIR)/ws2812_rst_mng.vhd \
+		$(SRC_DIR)/test_u_ws2812_rst_mng.vhd \
+		$(SRC_DIR)/config_leds.vhd \
+		$(SRC_DIR)/test_u_config_leds.vhd \
+		$(SRC_DIR)/ws2812_ctrl.vhd \
+		$(SRC_DIR)/test_u_ws2812_ctrl.vhd
 
 
 
@@ -124,6 +133,20 @@ run_test_u_ws2812_mngt:	compile_vhd_src
 			cd $(WORK_DIR); \
 			$(VSIM1) $(LIB_1).test_u_ws2812_mngt -l transcript.txt -do $(SCRIPTS_DIR)/run_test_u_ws2812_mngt.do;
 			
+
+run_test_u_ws2812_rst_mnt:	compile_vhd_src
+				cd $(WORK_DIR); \
+				$(VSIM1) $(LIB_1).test_u_ws2812_rst_mng -l transcript.txt -do $(SCRIPTS_DIR)/run_test_u_ws2812_rst_mnt.do;
+
+run_test_u_config_leds :	compile_vhd_src
+				cd $(WORK_DIR); \
+				$(VSIM1) $(LIB_1).test_u_config_leds -l transcript.txt -do $(SCRIPTS_DIR)/run_test_u_config_leds.do;
+
+run_test_u_ws2812_ctrl : 	compile_vhd_src
+				cd $(WORK_DIR); \
+				$(VSIM1) $(LIB_1).test_u_ws2812_ctrl -l transcript.txt -do $(SCRIPTS_DIR)/run_test_u_ws2812_ctrl.do;
+
+
 
 # Launch modelsim Simulation in console
 run_csl_1 : 	compile_vhd_src

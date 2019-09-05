@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019/09/04
+-- Last update: 2019/09/05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -145,6 +145,19 @@ package pkg_ws2812 is
   end component;
 
 
+  component ws2812_ctrl is
+
+                          generic (
+                            G_LED_NUMBER : integer range 1 to C_MAX_LEDS := C_LED_NB);
+
+                        port (
+                          clock_i           : in  std_logic;  -- System Clock
+                          reset_n           : in  std_logic;  -- Active Low asynchronous reset
+                          sel_config_i      : in  std_logic_vector(7 downto 0);  -- Sel config leds
+                          ws2812_leds_cmd_i : in  std_logic_vector(7 downto 0);  -- reg command
+                          ws2812_data_o     : out std_logic);  -- PWM data to the WS2812 component
+
+  end component;
 
 
   component ws2812_controller is

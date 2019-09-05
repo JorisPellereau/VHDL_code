@@ -5,7 +5,7 @@
 -- File       : ws2812_rst_mng.vhd
 -- Author     : root  <pellerj@localhost.localdomain>
 -- Company    : 
--- Last update: 2019/09/04
+-- Last update: 2019/09/05
 -- Platform   : 
 -------------------------------------------------------------------------------
 -- Description: This module manages the reset generation of the WS2812 module
@@ -39,8 +39,9 @@ architecture arch_ws2812_rst_mng of ws2812_rst_mng is
 
   -- CONSTANTS
 
-  -- RESET deration
-  constant C_MAX_RESET : std_logic_vector(15 downto 0) := x"000F";
+  -- RESET deration : >= 50us, set to 100 us 0x1388 = 5000
+  -- 5000*(1/50MHz) = 100 us
+  constant C_MAX_RESET : std_logic_vector(15 downto 0) := x"1388";
 
 
   -- INTERNAL SIGNALS
