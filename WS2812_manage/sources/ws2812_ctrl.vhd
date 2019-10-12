@@ -5,7 +5,7 @@
 -- File       : ws2812_ctrl.vhd
 -- Author     : root  <pellerj@localhost.localdomain>
 -- Company    : 
--- Last update: 2019/09/04
+-- Last update: 2019-10-12
 -- Platform   : 
 -------------------------------------------------------------------------------
 -- Description: WS2812 controller
@@ -63,7 +63,7 @@ begin  -- arch_ws2812_ctrl
   -- CONFIG_LEDS inst
   config_leds_inst : config_leds
     generic map (
-      G_LED_NUMBER   => C_LED_NB)
+      G_LED_NUMBER => G_LED_NUMBER)
     port map (
       clock_i        => clock_i,
       reset_n        => reset_n,
@@ -72,23 +72,24 @@ begin  -- arch_ws2812_ctrl
       config_valid_o => config_valid_s);
 
   -- WS2812_rst_mng_inst
-  ws2812_rst_mng_inst : ws2812_rst_mng
-    port map (
-      clock_i       => clock_i,
-      reset_n       => reset_n,
-      en_start_i    => en_start_s,
-      reset_gen_i   => reset_gen_s,
-      config_done_i => config_done_s,
-      start_leds_o  => start_leds_s);   -- To ws2812_mng
+  -- USELESS
+  -- ws2812_rst_mng_inst : ws2812_rst_mng
+  --   port map (
+  --     clock_i       => clock_i,
+  --     reset_n       => reset_n,
+  --     en_start_i    => en_start_s,
+  --     reset_gen_i   => reset_gen_s,
+  --     config_done_i => config_done_s,
+  --     start_leds_o  => start_leds_s);   -- To ws2812_mng
 
   -- WS2812_mngt inst
   ws2812_mngt_inst : ws2812_mngt
     generic map (
-      G_LEd_NUMBER        => C_LED_NB)
+      G_LED_NUMBER => G_LED_NUMBER)
     port map (
       clock_i             => clock_i,
       reset_n             => reset_n,
-      start_leds_i        => start_leds_s,         -- From Reset_mng
+      start_leds_i        => en_start_s,  --start_leds_s,         -- From Reset_mng
       frame_ws2812_done_i => frame_ws2812_done_s,  -- From WS2812
       led_config_array_i  => config_led_s,         -- From config_leds
       start_ws2812_o      => start_ws2812_s,       -- To WS2812
@@ -99,10 +100,10 @@ begin  -- arch_ws2812_ctrl
   -- WS2812 inst
   ws2812_inst : ws2812
     generic map (
-      T0H          => T0H,
-      T0L          => T0L,
-      T1H          => T1H,
-      T1L          => T1L)
+      T0H => T0H,
+      T0L => T0L,
+      T1H => T1H,
+      T1L => T1L)
     port map (
       clock_i      => clock_i,
       reset_n      => reset_n,

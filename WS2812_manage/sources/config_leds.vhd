@@ -5,7 +5,7 @@
 -- File       : config_leds.vhd
 -- Author     : root  <pellerj@localhost.localdomain>
 -- Company    : 
--- Last update: 2019/09/04
+-- Last update: 2019-10-12
 -- Platform   : 
 -------------------------------------------------------------------------------
 -- Description: This file contains the led configuration
@@ -31,7 +31,7 @@ entity config_leds is
     clock_i        : in  std_logic;     -- System Clock
     reset_n        : in  std_logic;     -- Active low asynchronous reset
     sel_config_i   : in  std_logic_vector(7 downto 0);  -- Config led selection
-    config_led_o   : out t_led_config_array;  -- Current leds config
+    config_led_o   : out t_led_config_array;            -- Current leds config
     config_valid_o : out std_logic);    -- Current conf. Valid
 
 end config_leds;
@@ -73,14 +73,26 @@ begin  -- arch_config_leds
     elsif clock_i'event and clock_i = '1' then  -- rising clock edge
 
       case sel_config_i_ss is
-        when x"00"  =>
+        when x"00" =>
           config_led_o_s   <= C_ALL_GREEN_LEDS;
           config_valid_o_s <= '1';
-        when x"01"  =>
+        when x"01" =>
           config_led_o_s   <= C_ALL_RED_LEDS;
           config_valid_o_s <= '1';
-        when x"02"  =>
+        when x"02" =>
           config_led_o_s   <= C_ALL_BLUE_LEDS;
+          config_valid_o_s <= '1';
+        when x"03" =>
+          config_led_o_s   <= C_TEST_LEDS_1;
+          config_valid_o_s <= '1';
+        when x"04" =>
+          config_led_o_s   <= C_TEST_LEDS_2;
+          config_valid_o_s <= '1';
+        when x"05" =>
+          config_led_o_s   <= C_TEST_LEDS_3;
+          config_valid_o_s <= '1';
+        when x"06" =>
+          config_led_o_s   <= C_TEST_LEDS_4;
           config_valid_o_s <= '1';
         when others =>
           config_led_o_s   <= C_DEFAULT_LEDS;
