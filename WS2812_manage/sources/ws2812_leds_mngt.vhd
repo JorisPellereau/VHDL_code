@@ -162,6 +162,18 @@ begin  -- architecture arch_ws2812_leds_mngt
           end if;
 
         end if;
+      -- i_en = '0'
+      else
+        s_end_static       <= '1';      -- End config terminated
+        s_cnt_nb_leds      <= 0;
+        s_leds_config_stat <= (others => (others => '0'));
+        s_leds_config_dyn  <= (others => (others => '0'));
+        o_led_config       <= (others => '0');
+        o_start_frame      <= '0';
+        s_rfrsh_cnt        <= 0;        -- RAZ cnt
+        s_max_cnt          <= (others => '0');
+        s_rfrsh_cnt_done   <= '1';
+        s_dyn_ongoing      <= '0';
       end if;
 
 

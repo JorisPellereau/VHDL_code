@@ -240,4 +240,19 @@ package pkg_ws2812 is
       o_start_frame      : out std_logic);  -- Start a WS2812 frame
   end component;
 
+  component ws2812_leds_ctrl is
+
+    generic (
+      G_LEDS_NB          : integer := 8;    -- Leds numbers
+      G_REFRESH_CNT_SIZE : integer := 16);  -- REFRESH CNT Size
+
+    port (
+      clock              : in  std_logic;   -- Clock
+      rst_n              : in  std_logic;   -- Active low asynchronous reset
+      i_en               : in  std_logic;   -- Block enable
+      i_stat_dyn         : in  std_logic;   -- Static/Dyn. config
+      i_leds_conf_update : in  std_logic;   -- Start/update the conf
+      o_d_out            : out std_logic);  -- WS2812 Output
+  end component;
+
 end package pkg_ws2812;
