@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-10-12
+-- Last update: 2019-10-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -216,6 +216,27 @@ package pkg_ws2812 is
     port(clock   : in  std_logic;
          reset_n : in  std_logic;
          d_out   : out std_logic);
+  end component;
+
+
+  component ws2812_leds_mngt is
+
+    generic (
+      G_LEDS_NB  : integer := 8;        -- Leds number;
+      G_CNT_SIZE : integer := 16);      -- Refresh cnt size
+    port (
+      clock              : in  std_logic;   -- Clock
+      rst_n              : in  std_logic;   -- Active low asynchronous reset
+      i_stat_dyn         : in  std_logic;   -- Static or dynamique config
+      i_leds_conf_update : in  std_logic;   -- Update the leds configuration
+      i_leds_config      : in  t_led_config_array;             -- Leds Colors
+      i_en               : in  std_logic;   -- Block enable
+      i_frame_done       : in  std_logic;   -- Frame done from WS2812 block
+      i_max_cnt          : in  std_logic_vector(G_CNT_SIZE - 1 downto 0);  -- Max cnt for the refresh
+      o_led_config       : out std_logic_vector(23 downto 0);  -- Current leds config
+      o_stat_conf_done   : out std_logic;   -- Static conf. done
+      o_dyn_ongoing      : out std_logic;   -- Dyn config ongoing
+      o_start_frame      : out std_logic);  -- Start a WS2812 frame
   end component;
 
 end package pkg_ws2812;
