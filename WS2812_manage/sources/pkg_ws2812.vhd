@@ -236,6 +236,7 @@ package pkg_ws2812 is
       o_led_config       : out std_logic_vector(23 downto 0);  -- Current leds config
       o_stat_conf_done   : out std_logic;   -- Static conf. done
       o_dyn_ongoing      : out std_logic;   -- Dyn config ongoing
+      o_rfrsh_dyn_done   : out std_logic;   -- Refresh Dyn done
       o_start_frame      : out std_logic);  -- Start a WS2812 frame
   end component;
 

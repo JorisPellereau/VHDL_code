@@ -53,6 +53,7 @@ architecture arch_tu_ws2812_leds_mngt of tu_ws2812_leds_mngt is
   signal s_max_cnt          : std_logic_vector(C_CNT_SIZE - 1 downto 0);
   signal s_stat_conf_done   : std_logic;
   signal s_dyn_ongoing      : std_logic;
+  signal s_rfrsh_dyn_done   : std_logic;
 
 begin  -- architecture arch_tu_ws2812_leds_mngt
 
@@ -107,7 +108,14 @@ begin  -- architecture arch_tu_ws2812_leds_mngt
     wait for 10*C_HALF_CLK;
     s_leds_conf_update <= '0';
 
-    wait for 200 ms;
+    wait for 500 us;
+
+    wait until falling_edge(s_rfrsh_dyn_done);
+    wait until falling_edge(clock);
+    s_leds_config      <= C_TEST_LEDS_2;
+    s_leds_conf_update <= '1';
+    wait for 10*C_HALF_CLK;
+    s_leds_conf_update <= '0';
 
     report "end of Simu. !!";
     wait;
@@ -149,6 +157,7 @@ begin  -- architecture arch_tu_ws2812_leds_mngt
       o_led_config       => s_led_config,
       o_stat_conf_done   => s_stat_conf_done,
       o_dyn_ongoing      => s_dyn_ongoing,
+      o_rfrsh_dyn_done   => s_rfrsh_dyn_done,
       o_start_frame      => s_start_frame);
 
 

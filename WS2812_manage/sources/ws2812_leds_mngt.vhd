@@ -44,6 +44,7 @@ entity ws2812_leds_mngt is
     o_led_config       : out std_logic_vector(23 downto 0);  -- Current leds config
     o_stat_conf_done   : out std_logic;   -- Static conf. done
     o_dyn_ongoing      : out std_logic;   -- Dyn config ongoing
+    o_rfrsh_dyn_done   : out std_logic;   -- Refresh Dyn done
     o_start_frame      : out std_logic);  -- Start a WS2812 frame
 
 end entity ws2812_leds_mngt;
@@ -148,10 +149,16 @@ begin  -- architecture arch_ws2812_leds_mngt
           end if;
 
 
-          if(s_leds_conf_update_r_edge = '1') then
+          -- Start the Dyn conf for the 1st time
+          if(s_leds_conf_update_r_edge = '1' and s_dyn_ongoing = '0') then
             s_leds_config_dyn <= i_leds_config;  -- Latch the config dyna.
             s_max_cnt         <= i_max_cnt;      -- Refresh MAX CNT
             o_start_frame     <= '1';
+
+          -- Update the leds conf and the refreshment during ongoing conf.
+          elsif(s_leds_conf_update_r_edge = '1' and s_dyn_ongoing = '1') then
+            s_leds_config_dyn <= i_leds_config;  -- Latch the config dyna.
+            s_max_cnt         <= i_max_cnt;      -- Refresh MAX CNT
           end if;
 
         end if;
@@ -181,4 +188,5 @@ begin  -- architecture arch_ws2812_leds_mngt
   -- Output affectation
   o_stat_conf_done <= s_end_static;
   o_dyn_ongoing    <= s_dyn_ongoing;
+  o_rfrsh_dyn_done <= s_rfrsh_cnt_done;
 end architecture arch_ws2812_leds_mngt;
