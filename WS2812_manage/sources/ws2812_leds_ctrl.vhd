@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2019-10-26
--- Last update: 2019-10-26
+-- Last update: 2019-10-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -74,8 +74,8 @@ begin  -- architecture arch_ws2812_leds_ctrl
   end process p_latch_in_mngt;
 
 
-  s_leds_config <= C_TEST_LEDS_3;
-  s_max_cnt     <= (others => '1');
+  s_leds_config <= C_TEST_LEDS_DYN_2;   -- C_TEST_LEDS_DYN;
+  s_max_cnt     <= x"00500000";--x"004C4B40";         --x"02FAF080";
 
   -- WS2812 INST
   ws2812_inst : ws2812

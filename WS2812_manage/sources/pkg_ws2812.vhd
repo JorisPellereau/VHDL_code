@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-10-26
+-- Last update: 2019-10-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -114,6 +114,24 @@ package pkg_ws2812 is
                                                   5 => x"9954C7",
                                                   6 => x"B37FD5",
                                                   7 => x"CCA9E3");
+
+  constant C_TEST_LEDS_DYN : t_led_config_array := (0 => x"FF0000",
+                                                    1 => x"00FF00",
+                                                    2 => x"0000FF",
+                                                    3 => x"d4ff00",
+                                                    4 => x"ff00e4",
+                                                    5 => x"ff8b00",
+                                                    6 => x"00ffe8",
+                                                    7 => x"6b00a4");
+
+  constant C_TEST_LEDS_DYN_2 : t_led_config_array := (0 => x"FFFF00",
+                                                      1 => x"FFFF00",
+                                                      2 => x"FFFF00",
+                                                      3 => x"FFFF00",
+                                                      4 => x"FFFF00",
+                                                      5 => x"FFFF00",
+                                                      6 => x"FFFF00",
+                                                      7 => x"64E6A7");
 
 
 

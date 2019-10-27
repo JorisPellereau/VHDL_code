@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2019-10-26
--- Last update: 2019-10-26
+-- Last update: 2019-10-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -65,9 +65,12 @@ architecture arch_ws2812_leds_mngt of ws2812_leds_mngt is
   signal s_leds_config_stat : t_led_config_array;  -- Latch leds_config
   signal s_leds_config_dyn  : t_led_config_array;  -- Leds config in dynamic mode
 
-  signal s_rfrsh_cnt      : integer range 0 to 2**G_CNT_SIZE - 1;  --2**32 - 1;  -- Resfresh counter
+  signal s_rfrsh_cnt      : unsigned(G_CNT_SIZE - 1 downto 0);  --integer range 0 to integer'high -1;  --(2**G_CNT_SIZE - 1);  --2**32 - 1;  -- Resfresh counter
   signal s_rfrsh_cnt_done : std_logic;  -- Rresfresh done  
   signal s_max_cnt        : std_logic_vector(G_CNT_SIZE - 1 downto 0);  -- Latch MAX CNT refresh
+
+  signal s_start_frame : std_logic;                      -- Start frame
+  signal s_led_config  : std_logic_vector(23 downto 0);  -- Led config
 
 
 
@@ -76,18 +79,18 @@ begin  -- architecture arch_ws2812_leds_mngt
   -- purpose: This process manages the static or dyn. mode 
   p_stat_dyn_mngt : process (clock, rst_n) is
   begin  -- process p_stat_dyn_mngt
-    if rst_n = '0' then                     -- asynchronous reset (active low)
-      s_end_static       <= '1';            -- End config terminated
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_end_static       <= '1';        -- End config terminated
       s_cnt_nb_leds      <= 0;
       s_leds_config_stat <= (others => (others => '0'));
       s_leds_config_dyn  <= (others => (others => '0'));
-      o_led_config       <= (others => '0');
-      o_start_frame      <= '0';
-      s_rfrsh_cnt        <= 0;              -- RAZ cnt
+      s_led_config       <= (others => '0');
+      s_start_frame      <= '0';
+      s_rfrsh_cnt        <= (others => '0');  -- RAZ cnt
       s_max_cnt          <= (others => '0');
       s_rfrsh_cnt_done   <= '1';
       s_dyn_ongoing      <= '0';
-    elsif clock'event and clock = '1' then  -- rising clock edge
+    elsif clock'event and clock = '1' then    -- rising clock edge
 
       if(i_en = '1') then
 
@@ -99,34 +102,34 @@ begin  -- architecture arch_ws2812_leds_mngt
           if(s_leds_conf_update_r_edge = '1' and s_end_static = '1') then
             s_end_static       <= '0';
             s_leds_config_stat <= i_leds_config;  -- Latch the config static
-            o_start_frame      <= '1';
+            s_start_frame      <= '1';
           end if;
 
           if(s_end_static = '0') then
             if(s_frame_done_r_edge = '1') then
               if(s_cnt_nb_leds < G_LEDS_NB - 1) then
                 s_cnt_nb_leds <= s_cnt_nb_leds + 1;
-                o_start_frame <= '1';
-                o_led_config  <= s_leds_config_stat(s_cnt_nb_leds);
+                s_start_frame <= '1';
+                s_led_config  <= s_leds_config_stat(s_cnt_nb_leds);
               else
                 s_cnt_nb_leds <= 0;     -- RAZ cnt
                 s_end_static  <= '1';   -- CNT done
-                o_led_config  <= (others => '0');
+                s_led_config  <= (others => '0');
               end if;
             else
-              o_start_frame <= '0';
+              s_start_frame <= '0';
             end if;
           end if;
 
         -- Dynamic mode
         elsif(s_end_static = '1' and i_stat_dyn = '1') then
-          s_dyn_ongoing <= '1';
+          --s_dyn_ongoing <= '1';
           if(s_rfrsh_cnt_done = '1') then
             if(s_frame_done_r_edge = '1') then
               if(s_cnt_nb_leds < G_LEDS_NB - 1) then
                 s_cnt_nb_leds <= s_cnt_nb_leds + 1;
-                o_start_frame <= '1';
-                o_led_config  <= s_leds_config_dyn(s_cnt_nb_leds);
+                s_start_frame <= '1';
+                s_led_config  <= s_leds_config_dyn(s_cnt_nb_leds);
               else
                 s_cnt_nb_leds                         <= 0;    -- RAZ cnt
                 s_leds_config_dyn(1 to G_LEDS_NB - 1) <= s_leds_config_dyn(0 to G_LEDS_NB - 2);
@@ -134,17 +137,17 @@ begin  -- architecture arch_ws2812_leds_mngt
                 s_rfrsh_cnt_done                      <= '0';  -- Start the refreshment
               end if;
             else
-              o_start_frame <= '0';
+              s_start_frame <= '0';
             end if;
 
           -- Start the refreshment
           else
-            if(s_rfrsh_cnt < conv_integer(unsigned(s_max_cnt)) - 1) then
+            if(s_rfrsh_cnt < unsigned(s_max_cnt)) then
               s_rfrsh_cnt <= s_rfrsh_cnt + 1;
             else
-              s_rfrsh_cnt      <= 0;
+              s_rfrsh_cnt      <= (others => '0');
               s_rfrsh_cnt_done <= '1';
-              o_start_frame    <= '1';  -- Restart a frame
+              s_start_frame    <= '1';  -- Restart a frame
             end if;
           end if;
 
@@ -153,7 +156,8 @@ begin  -- architecture arch_ws2812_leds_mngt
           if(s_leds_conf_update_r_edge = '1' and s_dyn_ongoing = '0') then
             s_leds_config_dyn <= i_leds_config;  -- Latch the config dyna.
             s_max_cnt         <= i_max_cnt;      -- Refresh MAX CNT
-            o_start_frame     <= '1';
+            s_start_frame     <= '1';
+            s_dyn_ongoing     <= '1';
 
           -- Update the leds conf and the refreshment during ongoing conf.
           elsif(s_leds_conf_update_r_edge = '1' and s_dyn_ongoing = '1') then
@@ -164,13 +168,13 @@ begin  -- architecture arch_ws2812_leds_mngt
         end if;
       -- i_en = '0'
       else
-        s_end_static       <= '1';      -- End config terminated
+        s_end_static       <= '1';              -- End config terminated
         s_cnt_nb_leds      <= 0;
         s_leds_config_stat <= (others => (others => '0'));
         s_leds_config_dyn  <= (others => (others => '0'));
-        o_led_config       <= (others => '0');
-        o_start_frame      <= '0';
-        s_rfrsh_cnt        <= 0;        -- RAZ cnt
+        s_led_config       <= (others => '0');
+        s_start_frame      <= '0';
+        s_rfrsh_cnt        <= (others => '0');  -- RAZ cnt
         s_max_cnt          <= (others => '0');
         s_rfrsh_cnt_done   <= '1';
         s_dyn_ongoing      <= '0';
@@ -201,4 +205,7 @@ begin  -- architecture arch_ws2812_leds_mngt
   o_stat_conf_done <= s_end_static;
   o_dyn_ongoing    <= s_dyn_ongoing;
   o_rfrsh_dyn_done <= s_rfrsh_cnt_done;
+  o_start_frame    <= s_start_frame;
+  o_led_config     <= s_led_config;
+
 end architecture arch_ws2812_leds_mngt;

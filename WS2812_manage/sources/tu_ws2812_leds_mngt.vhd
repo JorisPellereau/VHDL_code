@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2019-10-26
--- Last update: 2019-10-26
+-- Last update: 2019-10-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ architecture arch_tu_ws2812_leds_mngt of tu_ws2812_leds_mngt is
   -- CONSTANTS
   constant C_HALF_CLK : time    := 10 ns;  -- 50 MHz clock
   constant C_LEDS_NB  : integer := 8;      -- Leds numbers
-  constant C_CNT_SIZE : integer := 16;
+  constant C_CNT_SIZE : integer := 10;
 
   -- TB SIGNALS
   signal clock   : std_logic := '0';
@@ -104,7 +104,7 @@ begin  -- architecture arch_tu_ws2812_leds_mngt
     s_stat_dyn         <= '1';
     s_en               <= '1';
     s_leds_conf_update <= '1';
-    s_max_cnt          <= x"0FFF";      --(others => '1');  --  refresh
+    s_max_cnt          <= (others => '1');  -- x"FFFFFFFF";      --(others => '1');  --  refresh
     wait for 10*C_HALF_CLK;
     s_leds_conf_update <= '0';
 
