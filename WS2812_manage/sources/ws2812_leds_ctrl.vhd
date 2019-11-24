@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2019-10-26
--- Last update: 2019-10-27
+-- Last update: 2019-11-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,16 +29,17 @@ use lib_ws2812.pkg_ws2812.all;
 entity ws2812_leds_ctrl is
 
   generic (
-    G_LEDS_NB          : integer := 8;    -- Leds numbers
-    G_REFRESH_CNT_SIZE : integer := 16);  -- REFRESH CNT Size
-
+    G_LEDS_NB          : integer := 8;     -- Leds numbers
+    G_REFRESH_CNT_SIZE : integer := 16);   -- REFRESH CNT Size
   port (
-    clock              : in  std_logic;   -- Clock
-    rst_n              : in  std_logic;   -- Active low asynchronous reset
-    i_en               : in  std_logic;   -- Block enable
-    i_stat_dyn         : in  std_logic;   -- Static/Dyn. config
-    i_leds_conf_update : in  std_logic;   -- Start/update the conf    
-    o_d_out            : out std_logic);  -- WS2812 Output
+    clock               : in  std_logic;   -- Clock
+    rst_n               : in  std_logic;   -- Active low asynchronous reset
+    i_en                : in  std_logic;   -- Block enable
+    i_stat_dyn          : in  std_logic;   -- Static/Dyn. config
+    i_leds_conf_update  : in  std_logic;   -- Start/update the conf
+    i_rfrsf_value_valid : in  std_logic;   -- Refresh value valid
+    i_rfrsf_value       : in  std_logic_vector(G_REFRESH_CNT_SIZE - 1 downto 0);
+    o_d_out             : out std_logic);  -- WS2812 Output
 
 end entity ws2812_leds_ctrl;
 
@@ -56,7 +57,12 @@ architecture arch_ws2812_leds_ctrl of ws2812_leds_ctrl is
   signal s_max_cnt          : std_logic_vector(G_REFRESH_CNT_SIZE - 1 downto 0);
   signal s_stat_conf_done   : std_logic;
   signal s_dyn_ongoing      : std_logic;
+  signal s_cfg_dyn_done     : std_logic;
   signal s_rfrsh_dyn_done   : std_logic;
+
+  signal s_rfrsh_value : std_logic_vector(G_REFRESH_CNT_SIZE - 1 downto 0);
+
+  signal s_status : std_logic_vector(7 downto 0);  -- Status registers
 
 begin  -- architecture arch_ws2812_leds_ctrl
 
@@ -75,7 +81,7 @@ begin  -- architecture arch_ws2812_leds_ctrl
 
 
   s_leds_config <= C_TEST_LEDS_DYN_2;   -- C_TEST_LEDS_DYN;
-  s_max_cnt     <= x"00500000";--x"004C4B40";         --x"02FAF080";
+  s_max_cnt     <= x"00500000";         --x"004C4B40";         --x"02FAF080";
 
   -- WS2812 INST
   ws2812_inst : ws2812
@@ -106,12 +112,31 @@ begin  -- architecture arch_ws2812_leds_ctrl
       i_leds_config      => s_leds_config,
       i_en               => s_en,
       i_frame_done       => s_frame_done,
-      i_max_cnt          => s_max_cnt,
+      i_max_cnt          => s_rfrsh_value,
       o_led_config       => s_led_config,
       o_stat_conf_done   => s_stat_conf_done,
       o_dyn_ongoing      => s_dyn_ongoing,
+      o_cfg_dyn_done     => s_cfg_dyn_done,
       o_rfrsh_dyn_done   => s_rfrsh_dyn_done,
       o_start_frame      => s_start_frame);
+
+
+  -- WS2812 REGISTERS MANAGEMENT INST
+  ws2812_registers_mngt_inst : ws2812_registers_mngt
+    generic map(
+      G_REG_SIZE => 8,
+      G_CNT_SIZE => G_REFRESH_CNT_SIZE)
+    port map(
+      clock               => clock,
+      rst_n               => rst_n,
+      i_stat_dyn          => s_stat_dyn,
+      i_leds_conf_update  => s_leds_conf_update,
+      i_dyn_ongoing       => s_dyn_ongoing,
+      i_rfrsh_dyn_done    => s_rfrsh_dyn_done,
+      i_rfrsh_value_valid => i_rfrsf_value_valid,
+      i_rfrsh_value       => i_rfrsf_value,
+      o_rfrsh_value       => s_rfrsh_value,
+      o_status            => s_status);
 
 
 

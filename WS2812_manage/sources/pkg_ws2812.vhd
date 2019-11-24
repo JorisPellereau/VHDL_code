@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-05-15
--- Last update: 2019-10-27
+-- Last update: 2019-11-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -254,6 +254,7 @@ package pkg_ws2812 is
       o_led_config       : out std_logic_vector(23 downto 0);  -- Current leds config
       o_stat_conf_done   : out std_logic;   -- Static conf. done
       o_dyn_ongoing      : out std_logic;   -- Dyn config ongoing
+      o_cfg_dyn_done     : out std_logic;   -- Config. Dyn done
       o_rfrsh_dyn_done   : out std_logic;   -- Refresh Dyn done
       o_start_frame      : out std_logic);  -- Start a WS2812 frame
   end component;
@@ -261,16 +262,36 @@ package pkg_ws2812 is
   component ws2812_leds_ctrl is
 
     generic (
-      G_LEDS_NB          : integer := 8;    -- Leds numbers
-      G_REFRESH_CNT_SIZE : integer := 16);  -- REFRESH CNT Size
-
+      G_LEDS_NB          : integer := 8;     -- Leds numbers
+      G_REFRESH_CNT_SIZE : integer := 16);   -- REFRESH CNT Size
     port (
-      clock              : in  std_logic;   -- Clock
-      rst_n              : in  std_logic;   -- Active low asynchronous reset
-      i_en               : in  std_logic;   -- Block enable
-      i_stat_dyn         : in  std_logic;   -- Static/Dyn. config
-      i_leds_conf_update : in  std_logic;   -- Start/update the conf
-      o_d_out            : out std_logic);  -- WS2812 Output
+      clock               : in  std_logic;   -- Clock
+      rst_n               : in  std_logic;   -- Active low asynchronous reset
+      i_en                : in  std_logic;   -- Block enable
+      i_stat_dyn          : in  std_logic;   -- Static/Dyn. config
+      i_leds_conf_update  : in  std_logic;   -- Start/update the conf
+      i_rfrsf_value_valid : in  std_logic;   -- Refresh value valid
+      i_rfrsf_value       : in  std_logic_vector(G_REFRESH_CNT_SIZE - 1 downto 0);
+      o_d_out             : out std_logic);  -- WS2812 Output
+  end component;
+
+  component ws2812_registers_mngt is
+
+    generic (
+      G_REG_SIZE : integer := 8;        -- Registers Size
+      G_CNT_SIZE : integer := 16);      -- Counter size 
+    port (
+      clock               : in  std_logic;  -- Clock
+      rst_n               : in  std_logic;  -- Asynchronous reset
+      i_stat_dyn          : in  std_logic;  -- Static-Dyn. command
+      i_leds_conf_update  : in  std_logic;  -- Upadate config. Leds
+      i_dyn_ongoing       : in  std_logic;  -- Dynamic mode ongoing
+      i_rfrsh_dyn_done    : in  std_logic;  -- Dyn. Refresh done
+      i_rfrsh_value_valid : in  std_logic;  -- Rfresh value valid
+      i_rfrsh_value       : in  std_logic_vector(G_CNT_SIZE - 1 downto 0);  -- Refresh in
+      o_rfrsh_value       : out std_logic_vector(G_CNT_SIZE - 1 downto 0);  -- Refresh out
+      o_status            : out std_logic_vector(G_REG_SIZE - 1 downto 0)  -- Status reg
+      );
   end component;
 
 end package pkg_ws2812;
