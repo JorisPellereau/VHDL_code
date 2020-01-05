@@ -50,6 +50,9 @@ architecture behv of max7219_cmd_if is
   signal s_ws7219_reg_addr : std_logic_vector(7 downto 0);  -- Latch reg addr
   signal s_ws7219_wdata    : std_logic_vector(7 downto 0);  -- Latch WDATA
 
+  signal s_cur_reg_addr : std_logic_vector(7 downto 0);  -- Latch reg addr
+  signal s_cur_wdata    : std_logic_vector(7 downto 0);  -- Latch WDATA
+
   signal s_start_cmd : std_logic;       -- Start sending command
 
   signal s_cnt_matrix : unsigned(3 downto 0);  -- Counter for the number of matrix
@@ -82,7 +85,9 @@ begin  -- architecture behv
   p_cmd_mngt : process (clk, rst_n) is
   begin  -- process p_cmd_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-
+      s_cur_reg_addr <= (others => '0');
+      s_cur_wdata    <= (others => '0');
+      o_en_load      <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_start_cmd = '1' or i_max7219_done = '1') then
@@ -91,18 +96,25 @@ begin  -- architecture behv
         if(s_matrix_sel < conv_unsigned(G_MATRIX_NB, s_matrix_sel'length)) then
 
           if(s_cnt_matrix < unsigned(s_matrix_sel)) then
-
+            s_cnt_matrix <= s_cnt_matrix + 1;
           else
 
           end if;
 
         -- Case All Matrix are selected
         else
-          
+          o_en_load <= '1';
+          if(s_cnt_matrix < unsigned(s_matrix_sel)) then
+
+          else
+
+          end if;
         end if;
 
       end if;
     end if;
   end process p_cmd_mngt;
+
+  o_max7219_data <= s_cur_reg_addr & s_cur_wdata;
 
 end architecture behv;
