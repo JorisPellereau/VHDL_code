@@ -1,6 +1,6 @@
 
 MAX7219_interface :
-  - Controller de façon indépendante la sortie LOAD/CS afin de pouvoir commander les MAX7219 en cascade (utilisation du NOP)
+  - Controller de façon indépendante la sortie LOAD/CS afin de pouvoir commander les MAX7219 en cascade (utilisation du NOP) : done 05/01/2020
   
 MAX7219_controller :
   - Ajouter la commane NOP
