@@ -45,20 +45,33 @@ end entity max7219_interface;
 architecture arch_max7219_interface of max7219_interface is
 
   -- Internal Constants
-  constant C_MAX_CLK : integer := 5;    -- Max CLK number
+  constant C_MAX_CLK     : integer := 4;  -- Max CLK number, 5 => 5 MHz
+  constant C_LOAD_LENGTH : integer := 3;  -- CLK length for LOAD Pulse
 
   -- Internal signals
   signal s_max7219_data       : std_logic_vector(15 downto 0);  -- Latch MAX7219 data
+  signal s_clk_max7219        : std_logic;
+  signal s_clk_max7219_d      : std_logic;
   signal s_clk_max7219_r_edge : std_logic;  -- R Edge of clk_max77219
   signal s_clk_max7219_f_edge : std_logic;  -- R Edge of clk_max7219
   signal s_cnt_clk            : integer range 0 to C_MAX_CLK;  -- Counter on clk
 
-  signal s_cnt_clk_max7219      : integer := range 0 to 15;  -- Clock MAX7219 cnt
-  signal s_cnt_clk_max7219_done : std_logic;                 -- Count done
+  signal s_en_load              : std_logic;
+  signal s_cnt_clk_max7219      : integer range 0 to 15;  -- Clock MAX7219 cnt
+  signal s_cnt_clk_max7219_done : std_logic;              -- Count done
 
   signal s_start        : std_logic;    -- Latch i_start
   signal s_start_r_edge : std_logic;    -- R Edge of i_start
 
+  signal s_start_frame        : std_logic;
+  signal s_start_frame_d      : std_logic;
+  signal s_start_frame_r_edge : std_logic;
+
+  signal s_load_max7219 : std_logic;
+  signal s_gen_load     : std_logic;    -- Generate the load
+  signal s_max7219_done : std_logic;    -- Frame done
+
+  signal s_cnt_pulse_load : integer range 0 to C_LOAD_LENGTH;  -- LOAD Pulse cnt
 begin  -- architecture arch_max7219_interface
 
   -- purpose: This process latch inputs in order to detects their R/F Edge 
@@ -87,11 +100,20 @@ begin  -- architecture arch_max7219_interface
       s_max7219_data <= (others => '0');
       s_en_load      <= '0';
       s_start_frame  <= '0';
+      s_gen_load     <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      if(s_start_r_edge = '1') then
+      if(s_start_r_edge = '1' and s_max7219_done = '0') then
         s_max7219_data <= i_max7219_data;
         s_en_load      <= i_en_load;
         s_start_frame  <= '1';          -- We can send the frame now
+      elsif(s_cnt_clk_max7219_done = '1' and s_clk_max7219_f_edge = '1') then
+        s_start_frame <= '0';           -- Stop CLK_MAX7219 and data generation
+        s_gen_load    <= '1';           -- Generated the load
+      elsif(s_max7219_done = '1') then
+        s_max7219_data <= (others => '0');
+        s_en_load      <= '0';
+        s_start_frame  <= '0';
+        s_gen_load     <= '0';
       end if;
     end if;
   end process p_latch_inputs;
@@ -120,24 +142,27 @@ begin  -- architecture arch_max7219_interface
   end process p_clk_max7219_mngt;
 
   -- purpose: This process counts the number of CLK_max7219 clock
-
   p_clk_max7219_cnt : process (clk, rst_n) is
   begin  -- process p_clk_max7219_cnt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_cnt_clk_max7219      <= 0;
       s_cnt_clk_max7219_done <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      if(s_start_frame_r_edge = '1') then
+
+      if(s_clk_max7219_r_edge = '1') then
         if(s_cnt_clk_max7219 < 15) then
           s_cnt_clk_max7219      <= s_cnt_clk_max7219 + 1;
           s_cnt_clk_max7219_done <= '0';
         else
-          s_cnt_clk_max7219      <= '0';
+          s_cnt_clk_max7219      <= 0;
           s_cnt_clk_max7219_done <= '1';
         end if;
       end if;
     end if;
   end process p_clk_max7219_cnt;
+
+  -- Outputs affectation
+  o_clk_max7219 <= s_clk_max7219;
 
   -- purpose: This process manages the MAX729 data output 
   p_max7219_data_mngt : process (clk, rst_n) is
@@ -149,10 +174,45 @@ begin  -- architecture arch_max7219_interface
         o_data_max7219 <= s_max7219_data(15);  -- Load 1st data
 
       elsif(s_clk_max7219_f_edge = '1') then
-        o_data_max7219 <= s_max7219_data(s_cnt_clk_max7219);
-
+        if(s_cnt_clk_max7219_done = '0') then
+          o_data_max7219 <= s_max7219_data(15 - s_cnt_clk_max7219);
+        else
+          o_data_max7219 <= '0';
+        end if;
       end if;
     end if;
   end process p_max7219_data_mngt;
 
+  -- purpose: This process manages the Load output: 
+  p_max7219_load_mngt : process (clk, rst_n) is
+  begin  -- process p_max7219_load_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_load_max7219 <= '0';
+      s_max7219_done <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_max7219_done <= '0';
+      s_load_max7219 <= '0';
+      if(s_gen_load = '1' and s_max7219_done = '0') then
+        if(s_en_load = '1') then
+          if(s_cnt_pulse_load < C_LOAD_LENGTH) then
+            s_cnt_pulse_load <= s_cnt_pulse_load + 1;
+            s_load_max7219   <= '1';
+          else
+            s_load_max7219   <= '0';
+            s_cnt_pulse_load <= 0;
+            s_max7219_done   <= '1';
+          end if;
+        else
+          s_load_max7219 <= '0';
+          s_max7219_done <= '1';
+        end if;
+      elsif(s_max7219_done = '1') then
+        s_load_max7219 <= '0';
+        s_max7219_done <= '0';
+      end if;
+    end if;
+  end process p_max7219_load_mngt;
+
+  o_max7219_done <= s_max7219_done;
+  o_load_max7219 <= s_load_max7219;
 end architecture arch_max7219_interface;
