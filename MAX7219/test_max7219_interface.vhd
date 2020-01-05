@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-01-04
+-- Last update: 2020-01-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -84,6 +84,62 @@ begin  -- architecture arch_test_max7219_interface
     start_frame_i <= '1';
     wait for 1 us;
     start_frame_i <= '0';
+
+    wait until rising_edge(frame_done_o) for 10 ms;
+
+    wait for 5 us;
+
+
+    wdata_i       <= x"5555";
+    wait until falling_edge(clock_i);
+    s_en_load     <= '1', '0' after 10 us;
+    start_frame_i <= '1', '0' after 10 us;
+    wait for 1 us;
+    start_frame_i <= '0';
+
+
+    wait until rising_edge(frame_done_o) for 10 ms;
+
+    wait for 5 us;
+
+    wdata_i       <= x"AAAA";
+    wait until falling_edge(clock_i);
+    s_en_load     <= '0', '0' after 10 us;
+    start_frame_i <= '1', '0' after 10 us;
+    wait for 1 us;
+    start_frame_i <= '0';
+
+
+    wait until rising_edge(frame_done_o) for 10 ms;
+
+    wait for 5 us;
+
+
+    wdata_i       <= x"BDEF";
+    wait until falling_edge(clock_i);
+    s_en_load     <= '1', '0' after 1 us;
+    start_frame_i <= '1', '0' after 1 us;
+    wait for 1 us;
+    start_frame_i <= '0';
+
+
+    wait until rising_edge(frame_done_o) for 10 ms;
+
+    wait for 5 us;
+
+    wdata_i       <= x"5698";
+    wait until falling_edge(clock_i);
+    s_en_load     <= '1', '0' after 1 us;
+    start_frame_i <= '1', '0' after 1 us;
+    wait for 1 us;
+    start_frame_i <= '0';
+
+
+    wait until rising_edge(frame_done_o) for 10 ms;
+
+    wait for 5 us;
+
+
     report "end of test !!!";
     wait;
 
@@ -93,15 +149,15 @@ begin  -- architecture arch_test_max7219_interface
   -- max7219_interface inst
   max_7219_interface_inst : max7219_interface
     port map(
-      clk           => clock_i,
-      rst_n         => reset_n_i,
-      i_wdata       => wdata_i,
-      i_start_frame => start_frame_i,
-      i_en_load     => s_en_load,
-      o_load        => load_o,
-      o_data        => data_o,
-      o_clk         => clk_o,
-      o_frame_done  => frame_done_o);
+      clk            => clock_i,
+      rst_n          => reset_n_i,
+      i_max7219_data => wdata_i,
+      i_start        => start_frame_i,
+      i_en_load      => s_en_load,
+      o_load_max7219 => load_o,
+      o_data_max7219 => data_o,
+      o_clk_max7219  => clk_o,
+      o_max7219_done => frame_done_o);
 
 
 
