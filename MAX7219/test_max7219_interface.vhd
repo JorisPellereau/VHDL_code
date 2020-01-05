@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2019-07-19
+-- Last update: 2020-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ architecture arch_test_max7219_interface of test_max7219_interface is
   signal data_o        : std_logic;     -- data to transmit to the component
   signal clk_o         : std_logic;     -- SPI CLK
   signal frame_done_o  : std_logic;     -- Frame terminated
-
+  signal s_en_load     : std_logic;     -- Enable load
 begin  -- architecture arch_test_max7219_interface
 
   -- purpose: this process generate the input clock
@@ -59,6 +59,7 @@ begin  -- architecture arch_test_max7219_interface
   begin  -- process p_stimuli_mng
     wdata_i       <= (others => '0');
     start_frame_i <= '0';
+    s_en_load     <= '0';
 
     wait for 5 us;
     reset_n_i <= '0';
@@ -69,6 +70,7 @@ begin  -- architecture arch_test_max7219_interface
 
 
     wdata_i       <= x"EAA2";
+    wait until falling_edge(clock_i);
     start_frame_i <= '1';
     wait for 1 us;
     start_frame_i <= '0';
@@ -77,6 +79,8 @@ begin  -- architecture arch_test_max7219_interface
     wait for 5 us;
 
     wdata_i       <= x"FFFE";
+    wait until falling_edge(clock_i);
+    s_en_load     <= '1';
     start_frame_i <= '1';
     wait for 1 us;
     start_frame_i <= '0';
@@ -89,14 +93,15 @@ begin  -- architecture arch_test_max7219_interface
   -- max7219_interface inst
   max_7219_interface_inst : max7219_interface
     port map(
-      clock_i       => clock_i,
-      reset_n_i     => reset_n_i,
-      wdata_i       => wdata_i,
-      start_frame_i => start_frame_i,
-      load_o        => load_o,
-      data_o        => data_o,
-      clk_o         => clk_o,
-      frame_done_o  => frame_done_o);
+      clk           => clock_i,
+      rst_n         => reset_n_i,
+      i_wdata       => wdata_i,
+      i_start_frame => start_frame_i,
+      i_en_load     => s_en_load,
+      o_load        => load_o,
+      o_data        => data_o,
+      o_clk         => clk_o,
+      o_frame_done  => frame_done_o);
 
 
 

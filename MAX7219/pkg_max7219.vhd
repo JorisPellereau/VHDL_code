@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2019-07-30
+-- Last update: 2020-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -81,15 +81,15 @@ package pkg_max7219 is
   -- COMPONENTS
   component max7219_interface
     port (
-      clock_i       : in  std_logic;    -- System clock
-      reset_n_i     : in  std_logic;    -- Asynchronous active low reset
-      wdata_i       : in  std_logic_vector(15 downto 0);  -- Data to send te the Max7219
-      start_frame_i : in  std_logic;    -- Start the transaction
-      en_load_i     : in  std_logic;    -- Enable the generation of load_o
-      load_o        : out std_logic;    -- LOAD command
-      data_o        : out std_logic;    -- DATA to send th
-      clk_o         : out std_logic;    -- CLK
-      frame_done_o  : out std_logic);   -- Frame done
+      clk           : in  std_logic;    -- System clock
+      rst_n         : in  std_logic;    -- Asynchronous active low reset
+      i_wdata       : in  std_logic_vector(15 downto 0);  -- Data to send te the Max7219
+      i_start_frame : in  std_logic;    -- Start the transaction
+      i_en_load     : in  std_logic;    -- Enable the generation of o_load
+      o_load        : out std_logic;    -- LOAD command
+      o_data        : out std_logic;    -- DATA to send th
+      o_clk         : out std_logic;    -- CLK
+      o_frame_done  : out std_logic);   -- Frame done
   end component;
 
   component max7219_controller is
