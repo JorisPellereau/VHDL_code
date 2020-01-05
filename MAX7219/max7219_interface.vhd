@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-18
--- Last update: 2020-01-04
+-- Last update: 2020-01-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -264,5 +264,10 @@ begin  -- architecture arch_max7219_interface
   end process p_o_dataut_mng;
 
   o_data <= o_data_s;
+
+
+
+
+  --
 
 end architecture arch_max7219_interface;
