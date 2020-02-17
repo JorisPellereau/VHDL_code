@@ -27,7 +27,7 @@ entity pattern_detector is
 
   generic (
     G_DATA_WIDTH   : integer              := 8;  -- INPUT DATA WIDTH
-    G_PATTERN_SIZE : integer range 2 to 3 := 3)  -- Number of Symbol in the pattern    
+    G_PATTERN_SIZE : integer range 2 to 3 := 3);  -- Number of Symbol in the pattern    
     port (
       clk                : in  std_logic;        -- Clock
       rst_n              : in  std_logic;        -- Asynchronous Reset
@@ -44,7 +44,7 @@ architecture behv of pattern_detector is
   type t_pattern is array (0 to G_PATTERN_SIZE - 1) of std_logic_vector(G_DATA_WIDTH - 1 downto 0);
 
   -- CONSTANTS  
-  constant C_PATTERN : t_pattern := (0 => x"45", 1 => x"4E", => x"44");  -- Pattern
+  constant C_PATTERN : t_pattern := (2 => x"45", 1 => x"4E", 0 => x"44");  -- Pattern
 
   -- INTERNAL SIGNALS
   signal s_pattern : t_pattern;
@@ -74,7 +74,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
       if(s_data_valid_r_edge = '1') then
         s_pattern(0)                       <= i_data;
-        s_pattern(G_PATTERN_SIZE - 1 to 1) <= s_pattern(G_PATTERN_SIZE - 2 downto 0);
+        s_pattern(1 to G_PATTERN_SIZE -1) <= s_pattern(0 to G_PATTERN_SIZE - 2);
       end if;
     end if;
   end process p_data_latch;
