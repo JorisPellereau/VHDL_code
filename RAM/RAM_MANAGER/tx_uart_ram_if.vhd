@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-02-21
--- Last update: 2020-02-21
+-- Last update: 2020-02-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,7 +41,8 @@ entity tx_uart_ram_if is
     i_en_transfert : in  std_logic;     -- Enable the transfert
     o_start_tx     : out std_logic;     -- Start TX transaction
     o_tx_data      : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- TX DATA to send
-    i_tx_done      : in  std_logic);    -- TX Transfert Done
+    i_tx_done      : in  std_logic;     -- TX Transfert Done
+    o_busy         : out std_logic);    -- Block busy
 
 end entity tx_uart_ram_if;
 
@@ -68,6 +69,9 @@ architecture behv of tx_uart_ram_if is
   signal s_addr : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Memory ADDR
 
   signal s_start_tx : std_logic;        -- Start TX
+  signal s_tx_data  : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- TX DATA to send;
+
+  signal s_busy : std_logic;            -- Busy
 
 begin  -- architecture behv
 
@@ -86,7 +90,7 @@ begin  -- architecture behv
 
   -- R EDGE detection
   s_en_transfert_r_edge <= i_en_transfert and not s_en_transfert;
-  s_tx_done             <= i_tx_done and not s_tx_done;
+  s_tx_done_r_edge      <= i_tx_done and not s_tx_done;
 
   -- purpose: Latch inputs on R EDGE of Enable
   p_latch_ptr : process (clk, rst_n) is
@@ -113,7 +117,7 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process (s_current_state, s_en_transfert_r_edge) is
+  p_next_state_mngt : process (s_current_state, s_en_transfert_r_edge, i_tx_done, s_tx_done_r_edge, s_addr) is
   begin  -- process p_next_state_mngt
     case s_current_state is
       when IDLE =>
@@ -141,11 +145,15 @@ begin  -- architecture behv
         end if;
 
       when CHECK_ADDR =>
-        if(s_addr < s_stop_ptr) then
+        if(s_addr <= s_stop_ptr) then
           s_next_state <= RD_RAM;
         else
           s_next_state <= TX_DONE;
         end if;
+
+      when TX_DONE =>
+        s_next_state <= IDLE;
+
       when others => null;
     end case;
   end process p_next_state_mngt;
@@ -159,15 +167,26 @@ begin  -- architecture behv
       s_me       <= '0';
       s_we       <= '0';
       s_start_tx <= '0';
+      s_tx_data  <= (others => '0');
+      s_busy     <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
       case s_current_state is
         when IDLE =>
-          s_me <= '0';
-          s_we <= '0';
+          s_me       <= '0';
+          s_we       <= '0';
+          s_start_tx <= '0';
+          s_tx_data  <= (others => '0');
+          s_busy     <= '0';
+
+        when SET_ADDR =>
+          s_busy <= '1';
 
         when RD_RAM =>
           s_me <= '1';
           s_we <= '0';
+
+        when SAVE_RDATA =>
+          s_tx_data <= i_rdata;
 
         when WAIT1 =>
           s_me <= '0';
@@ -175,6 +194,9 @@ begin  -- architecture behv
 
         when START_TX =>
           s_start_tx <= '1';
+
+        when CHECK_ADDR =>
+          s_start_tx <= '0';
 
         when others => null;
       end case;
@@ -185,14 +207,17 @@ begin  -- architecture behv
   -- purpose: Addr mngt
   p_addr_mngt : process (clk, rst_n) is
   begin  -- process p_addr_mngt
-    if rst_n = '0' then                  -- asynchronous reset (active low)
+    if rst_n = '0' then                 -- asynchronous reset (active low)
       s_addr <= (others => '0');
-    elsif clk'event and clk = '1' then   -- rising clock edge
+    elsif clk'event and clk = '1' then  -- rising clock edge
       if(s_current_state = SET_ADDR) then
         s_addr <= s_start_ptr;
-      end if;
-      if(s_tx_done_r_edge = '1') then
-        s_addr <= unsigned(s_addr) + 1;  -- INC
+
+      elsif(s_current_state = START_TX) then
+        if(s_tx_done_r_edge = '1') then
+          s_addr <= unsigned(s_addr) + 1;  -- INC
+        end if;
+
       end if;
     end if;
   end process p_addr_mngt;
@@ -204,5 +229,7 @@ begin  -- architecture behv
   o_we       <= s_we;
   o_addr     <= s_addr;
   o_start_tx <= s_start_tx;
-
+  o_tx_data  <= s_tx_data;
+  o_busy     <= s_busy;
+  
 end architecture behv;
