@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-01-05
+-- Last update: 2020-04-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,16 +80,16 @@ package pkg_max7219 is
 
   -- COMPONENTS
   component max7219_interface
-   port (
-    clk            : in  std_logic;     -- System clock
-    rst_n          : in  std_logic;     -- Asynchronous active low reset
-    i_max7219_data : in  std_logic_vector(15 downto 0);  -- Data to send te the Max7219
-    i_start        : in  std_logic;     -- Start the transaction
-    i_en_load      : in  std_logic;     -- Enable the generation of o_load
-    o_load_max7219 : out std_logic;     -- LOAD command
-    o_data_max7219 : out std_logic;     -- DATA to send th
-    o_clk_max7219  : out std_logic;     -- CLK
-    o_max7219_done : out std_logic);    -- Frame done
+    port (
+      clk            : in  std_logic;   -- System clock
+      rst_n          : in  std_logic;   -- Asynchronous active low reset
+      i_max7219_data : in  std_logic_vector(15 downto 0);  -- Data to send te the Max7219
+      i_start        : in  std_logic;   -- Start the transaction
+      i_en_load      : in  std_logic;   -- Enable the generation of o_load
+      o_load_max7219 : out std_logic;   -- LOAD command
+      o_data_max7219 : out std_logic;   -- DATA to send th
+      o_clk_max7219  : out std_logic;   -- CLK
+      o_max7219_done : out std_logic);  -- Frame done
   end component;
 
   component max7219_controller is
@@ -151,6 +151,29 @@ package pkg_max7219 is
       digit_6_o           : out std_logic_vector(7 downto 0);  -- Digit 6 pattern
       digit_7_o           : out std_logic_vector(7 downto 0);  -- Digit 7 pattern
       pattern_available_o : out std_logic);  -- Pattern avaiable
+  end component;
+
+  component max7219_if is
+    generic (
+      G_MAX_HALF_PERIOD : integer := 4;  -- 4 => 6.25MHz with 50MHz input
+      G_LOAD_DURATION   : integer := 4   -- LOAD DURATION in clk_in period
+      );
+    port (
+      clk   : in std_logic;              -- System clock
+      rst_n : in std_logic;              -- Asynchronous active low reset
+
+      -- Input commands
+      i_start   : in std_logic;         -- Start the transaction
+      i_en_load : in std_logic;         -- Enable the generation of o_load
+      i_data    : in std_logic_vector(15 downto 0);  -- Data to send te the Max7219
+
+      -- MAX7219 I/F
+      o_max7219_load : out std_logic;   -- LOAD command
+      o_max7219_data : out std_logic;   -- DATA to send
+      o_max7219_clk  : out std_logic;   -- CLK
+
+      -- Transaction Done
+      o_done : out std_logic);          -- Frame done
   end component;
 
 end package pkg_max7219;
