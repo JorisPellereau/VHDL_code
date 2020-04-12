@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-04-05
+-- Last update: 2020-04-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -184,11 +184,11 @@ begin  -- architecture arch_test_max7219_interface
     s_i_en_load <= '1', '0' after 1 us;
     s_i_start   <= '1', '0' after 1 us;
     wait until falling_edge(clock_i);
-   
+
 
     wait until rising_edge(s_o_done);
 
-    wait for 10 us;
+    wait for 1 us;
 
     s_i_data    <= x"0123";
     wait until falling_edge(clock_i);
@@ -198,6 +198,44 @@ begin  -- architecture arch_test_max7219_interface
     s_i_start   <= '0';
 
     wait until rising_edge(s_o_done);
+    wait for 1 us;
+    s_i_data    <= x"0000";
+    wait until falling_edge(clock_i);
+    s_i_en_load <= '0';
+    s_i_start   <= '1', '0' after 1 us;
+    wait until falling_edge(clock_i);
+    s_i_start   <= '0';
+
+    wait until rising_edge(s_o_done);
+    wait for 1 us;
+    s_i_data    <= x"0000";
+    wait until falling_edge(clock_i);
+    s_i_en_load <= '0';
+    s_i_start   <= '1', '0' after 1 us;
+    wait until falling_edge(clock_i);
+    s_i_start   <= '0';
+
+    wait until rising_edge(s_o_done);
+    wait for 1 us;
+    s_i_data    <= x"0000";
+    wait until falling_edge(clock_i);
+    s_i_en_load <= '0';
+    s_i_start   <= '1', '0' after 1 us;
+    wait until falling_edge(clock_i);
+    s_i_start   <= '0';
+
+    wait until rising_edge(s_o_done);
+    wait for 1 us;
+
+    s_i_data    <= x"5555";
+    wait until falling_edge(clock_i);
+    s_i_en_load <= '1';
+    s_i_start   <= '1', '0' after 1 us;
+    wait until falling_edge(clock_i);
+    s_i_start   <= '0';
+
+    wait until rising_edge(s_o_done);
+    wait for 1 us;
 
     wait;
   end process p_stimulis_max7219_if;
