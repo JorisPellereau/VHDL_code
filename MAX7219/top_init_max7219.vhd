@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-12
--- Last update: 2020-04-12
+-- Last update: 2020-04-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -30,11 +30,14 @@ entity top_init_max7219 is
 
   generic(
     G_MAX_CNT         : std_logic_vector(31 downto 0) := x"02FAF080";
-    G_MAX_HALF_PERIOD : integer                       := 25;
+    G_MAX_HALF_PERIOD : integer                       := 125;
     G_LOAD_DURATION   : integer                       := 4);
   port (
-    clk            : in  std_logic;
-    rst_n          : in  std_logic;
+    clk   : in std_logic;
+    rst_n : in std_logic;
+
+    o_cnt : out std_logic;
+
     o_max7219_load : out std_logic;
     o_max7219_clk  : out std_logic;
     o_max7219_data : out std_logic);
@@ -54,6 +57,7 @@ architecture behv of top_init_max7219 is
       clk       : in  std_logic;        -- Clock
       rst_n     : in  std_logic;        -- Asynch. reset
       i_done    : in  std_logic;        -- MAX7219 I/F done
+      o_cnt     : out std_logic;
       o_start   : out std_logic;        -- Start the MAX7219 Frame
       o_en_load : out std_logic;        -- Load
       o_data    : out std_logic_vector(15 downto 0));  -- Data
@@ -87,7 +91,7 @@ begin  -- architecture behv
       rst_n => rst_n,
 
       -- Input commands
-      i_start   => s_start,
+      i_start   => s_start_p,
       i_en_load => s_en_load,
       i_data    => s_data,
 
@@ -108,6 +112,7 @@ begin  -- architecture behv
       clk       => clk,
       rst_n     => rst_n,
       i_done    => s_done,
+      o_cnt     => o_cnt,
       o_start   => s_start,
       o_en_load => s_en_load,
       o_data    => s_data
@@ -119,11 +124,12 @@ begin  -- architecture behv
       s_max7219_data_p <= '0';
       s_max7219_clk_p  <= '0';
       s_max7219_load_p <= '0';
-
+      s_start_p        <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
       s_max7219_data_p <= s_max7219_data;
       s_max7219_clk_p  <= s_max7219_clk;
       s_max7219_load_p <= s_max7219_load;
+      s_start_p        <= s_start;
     end if;
   end process p_pipe_outputs;
 

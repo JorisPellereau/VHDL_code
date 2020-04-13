@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-12
--- Last update: 2020-04-12
+-- Last update: 2020-04-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -40,6 +40,7 @@ architecture behv of test_top_max7219 is
     port (
       clk            : in  std_logic;
       rst_n          : in  std_logic;
+      o_cnt          : out std_logic;
       o_max7219_load : out std_logic;
       o_max7219_clk  : out std_logic;
       o_max7219_data : out std_logic);
@@ -71,13 +72,13 @@ begin  -- architecture behv
   begin  -- process p_stimuli
     s_start <= '0';
     wait for 1 us;
-    rst_n <= '0';
+    rst_n   <= '0';
     wait for 1 us;
-    rst_n <= '1';
+    rst_n   <= '1';
 
     wait for 20 us;
     s_start <= '1', '0' after 1 us;
-    
+
     wait;
 
   end process p_stimuli;
@@ -86,12 +87,13 @@ begin  -- architecture behv
   top_init_max7219_inst : top_init_max7219
     generic map (
       G_MAX_CNT         => x"000009C4",
-      G_MAX_HALF_PERIOD => 25,
+      G_MAX_HALF_PERIOD => 50,
       G_LOAD_DURATION   => 4
       )
     port map(
       clk            => clk,
       rst_n          => rst_n,
+      o_cnt          => open,
       o_max7219_load => s_max7219_load,
       o_max7219_clk  => s_max7219_clk,
       o_max7219_data => s_max7219_data);

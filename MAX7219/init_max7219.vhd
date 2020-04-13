@@ -44,7 +44,9 @@ end entity init_max7219;
 architecture behv of init_max7219 is
 
   -- TYPES
-  type t_fsm_state is (IDLE, SET_INT, RAZ_1, SET_SCAN, RAZ_2, SET_DECOD, RAZ_3, SET_OP, RAZ_4, SET_DIG0, RAZ_5);  -- FSM STATE
+  type t_fsm_state is (IDLE, SET_INT, RAZ_1, SET_SCAN, RAZ_2, SET_DECOD, RAZ_3, SET_OP, RAZ_4, SET_DIG0, RAZ_5,
+                       SET_DIG1, RAZ_6, SET_DIG2, RAZ_7, SET_DIG3, RAZ_8, SET_DIG4, RAZ_9, SET_DIG5, RAZ_10,
+                       SET_DIG6, RAZ_11, SET_DIG7, RAZ_12);  -- FSM STATE
 
   -- INTERNAL SIGNALS
   signal s_current_state : t_fsm_state;
@@ -142,6 +144,64 @@ begin  -- architecture behv
 
         when RAZ_5 =>
           if(s_done_p = '1') then
+            s_next_state <= SET_DIG1;
+          end if;
+
+        when SET_DIG1 =>
+          s_next_state <= RAZ_6;
+
+        when RAZ_6 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG2;
+          end if;
+
+        when SET_DIG2 =>
+          s_next_state <= RAZ_7;
+
+        when RAZ_7 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG3;
+          end if;
+
+        when SET_DIG3 =>
+          s_next_state <= RAZ_8;
+
+        when RAZ_8 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG4;
+          end if;
+
+        when SET_DIG4 =>
+          s_next_state <= RAZ_9;
+
+        when RAZ_9 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG5;
+          end if;
+
+
+        when SET_DIG5 =>
+          s_next_state <= RAZ_10;
+
+        when RAZ_10 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG6;
+          end if;
+
+
+        when SET_DIG6 =>
+          s_next_state <= RAZ_11;
+
+        when RAZ_11 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG7;
+          end if;
+
+        when SET_DIG7 =>
+          s_next_state <= RAZ_12;
+
+        when RAZ_12 =>
+          if(s_done_p = '1') then
             s_next_state <= IDLE;
           end if;
 
@@ -178,7 +238,7 @@ begin  -- architecture behv
 
         when RAZ_1 =>
           o_start <= '0';
-          
+
         when SET_SCAN =>
           s_start_cnt <= '0';
           o_data      <= x"0B07";
@@ -208,12 +268,75 @@ begin  -- architecture behv
 
         when SET_DIG0 =>
           s_start_cnt <= '0';
-          o_data      <= x"010F";
+          o_data      <= x"013c";
           o_en_load   <= '1';
           o_start     <= '1';
 
-
         when RAZ_5 =>
+          o_start <= '0';
+
+        when SET_DIG1 =>
+          s_start_cnt <= '0';
+          o_data      <= x"0242";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_6 =>
+          o_start <= '0';
+
+        when SET_DIG2 =>
+          s_start_cnt <= '0';
+          o_data      <= x"03a9";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_7 =>
+          o_start <= '0';
+
+        when SET_DIG3 =>
+          s_start_cnt <= '0';
+          o_data      <= x"0485";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_8 =>
+          o_start <= '0';
+
+
+        when SET_DIG4 =>
+          s_start_cnt <= '0';
+          o_data      <= x"0585";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_9 =>
+          o_start <= '0';
+
+        when SET_DIG5 =>
+          s_start_cnt <= '0';
+          o_data      <= x"06A9";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_10 =>
+          o_start <= '0';
+
+        when SET_DIG6 =>
+          s_start_cnt <= '0';
+          o_data      <= x"0742";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_11 =>
+          o_start <= '0';
+
+        when SET_DIG7 =>
+          s_start_cnt <= '0';
+          o_data      <= x"083C";
+          o_en_load   <= '1';
+          o_start     <= '1';
+
+        when RAZ_12 =>
           o_start <= '0';
 
         when others => null;
