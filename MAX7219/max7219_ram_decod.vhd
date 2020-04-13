@@ -68,11 +68,15 @@ architecture behv of max7219_ram_decod is
   signal s_decod_done       : std_logic;  -- DECODE terminated
   signal s_start            : std_logic;  -- START MAX7219 I/F
   signal s_inc_done         : std_logic;  -- INC done
+  signal s_max_cnt_valid    : std_logic;  -- MAX CNT valid
+  signal s_start_cnt        : std_logic;  -- Start the counter 32b
+  signal s_cnt_done         : std_logic;  -- Cnt reach
 
-  signal s_data  : std_logic_vector(15 downto 0);  -- DATA to MAX7219
-  signal s_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
-  signal s_rdata : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RDATA
-
+  signal s_data        : std_logic_vector(15 downto 0);  -- DATA to MAX7219
+  signal s_addr        : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+  signal s_rdata       : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RDATA
+  signal s_cnt_32b     : std_logic_vector(31 downto 0);  -- Counter for wait between 2 commands
+  signal s_max_cnt_32b : std_logic_vector(31 downto 0);  -- MAXIMUM for counter 32b
 
 begin  -- architecture behv
 
@@ -146,15 +150,28 @@ begin  -- architecture behv
   p_decod_rdata : process (clk, rst_n) is
   begin  -- process p_decod_rdata
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_en_load    <= '0';
-      s_data       <= (others => '0');
-      s_decod_done <= '0';
+      s_en_load       <= '0';
+      s_data          <= (others => '0');
+      s_decod_done    <= '0';
+      s_max_cnt_32b   <= (others => '0');
+      s_max_cnt_valid <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_decod_done <= '0';              -- PULSE
+      s_decod_done    <= '0';           -- PULSE
+      s_max_cnt_valid <= '0';           -- PULSE
       if(s_rdata_valid = '1') then
-        s_en_load    <= s_rdata(12);
-        s_data       <= x"0" & s_rdata(11 downto 0);
-        s_decod_done <= '1';
+
+        -- "000" : Process command normaly
+        if(s_rdata(15 downto 13) = "000") then
+          s_en_load    <= s_rdata(12);
+          s_data       <= x"0" & s_rdata(11 downto 0);
+          s_decod_done <= '1';
+
+        -- "001" : WAIT command
+        elsif(s_rdata(15 downto 13) = "001") then
+          s_max_cnt_32b(12 downto 0) <= s_rdata(12 downto 0);
+          s_max_cnt_valid            <= '1';
+
+        end if;
       end if;
     end if;
   end process p_decod_rdata;
@@ -184,9 +201,38 @@ begin  -- architecture behv
       if(i_done = '1') then
         s_addr     <= unsigned(s_addr) + 1;  -- INC
         s_inc_done <= '1';
+      elsif(s_cnt_done = '1') then
+        s_addr     <= unsigned(s_addr) + 1;  -- INC
+        s_inc_done <= '1';
       end if;
     end if;
   end process p_addr_inc;
+
+  -- purpose: Manage the counter 32b for generate a wait
+  p_cnt_mngt : process (clk, rst_n) is
+  begin  -- process p_cnt_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_cnt_32b   <= (others => '0');
+      s_start_cnt <= '0';
+      s_cnt_done  <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      s_cnt_done <= '0';
+      if(s_max_cnt_valid = '1')then
+        s_start_cnt <= '1';
+      end if;
+
+      if(s_start_cnt = '1') then
+        if(s_cnt_32b < s_max_cnt_32b) then
+          s_cnt_32b <= unsigned(s_cnt_32b) + 1;  -- INC cnt
+        else
+          s_cnt_done  <= '1';
+          s_start_cnt <= '0';
+          s_cnt_32b   <= (others => '0');
+        end if;
+      end if;
+    end if;
+  end process p_cnt_mngt;
 
   -- OUTPUTS affectations
 

@@ -125,7 +125,21 @@ begin  -- architecture behv
 
     s_last_ptr <= x"05";
 
-    wait for 10 us;
+    wait for 400 us;
+
+    s_addr      <= x"06";    --std_logic_vector(to_unsigned(i, s_addr'length));
+    s_wdata     <= x"3FFF";  --std_logic_vector(to_unsigned(i, s_wdata'length));
+    s_wdata(12) <= '1';
+    wait until falling_edge(clk);
+    s_me        <= '1';
+    s_we        <= '1';
+    wait until falling_edge(clk);
+    s_me        <= '0';
+    s_we        <= '0';
+
+    s_last_ptr <= x"0A";
+
+    wait for 500 us;
 
     report "end of simu !!";
     wait;
