@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-04-05
+-- Last update: 2020-04-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -153,6 +153,10 @@ package pkg_max7219 is
       pattern_available_o : out std_logic);  -- Pattern avaiable
   end component;
 
+
+
+  -- == MAX7219 CMD DECODER COMPONENT ==
+
   component max7219_if is
     generic (
       G_MAX_HALF_PERIOD : integer := 4;  -- 4 => 6.25MHz with 50MHz input
@@ -175,5 +179,59 @@ package pkg_max7219 is
       -- Transaction Done
       o_done : out std_logic);          -- Frame done
   end component;
+
+
+  component max7219_ram_decod is
+    generic (
+      G_RAM_ADDR_WIDTH : integer := 8;    -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer := 16);  -- RAM DATA WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous reset
+
+      -- RAM I/F
+      o_me    : out std_logic;          -- MEMORY ENABLE
+      o_we    : out std_logic;          -- W/R COMMAND
+      o_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+
+      -- RAM INFO.
+      i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+
+      -- MAX7219 I/F
+      o_start   : out std_logic;                      -- MAX7219 START
+      o_en_load : out std_logic;                      -- MAX7219 EN LOAD
+      o_data    : out std_logic_vector(15 downto 0);  -- MAX7219 DATA
+      i_done    : in  std_logic);                     -- MAX7219 DONE
+  end component max7219_ram_decod;
+
+
+  component max7219_cmd_decod is
+    generic (
+      G_RAM_ADDR_WIDTH             : integer := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH             : integer := 16;  -- RAM DATA WIDTH
+      G_MAX7219_IF_MAX_HALF_PERIOD : integer := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
+      G_MAX7219_LOAD_DUR           : integer := 4);  -- MAX7219 LOAD duration in period of clk
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous reset
+
+      -- RAM I/F
+      i_me    : in  std_logic;          -- Memory Enable
+      i_we    : in  std_logic;          -- W/R command
+      i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+      o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+
+      -- RAM INFO.
+      i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+
+      -- MAX7219 I/F
+      o_max7219_load : out std_logic;   -- MAX7219 LOAD
+      o_max7219_data : out std_logic;   -- MAX7219 DATA
+      o_max7219_clk  : out std_logic);  -- MAX7219 CLK
+  end component max7219_cmd_decod;
 
 end package pkg_max7219;
