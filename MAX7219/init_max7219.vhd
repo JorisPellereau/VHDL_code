@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-12
--- Last update: 2020-04-12
+-- Last update: 2020-04-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -33,7 +33,8 @@ entity init_max7219 is
   port (
     clk       : in  std_logic;                       -- Clock
     rst_n     : in  std_logic;                       -- Asynch. reset
-    i_done    : in  std_logic;                       -- MAX7219 I/F done 
+    i_done    : in  std_logic;                       -- MAX7219 I/F done
+    o_cnt     : out std_logic;
     o_start   : out std_logic;                       -- Start the MAX7219 Frame
     o_en_load : out std_logic;                       -- Load
     o_data    : out std_logic_vector(15 downto 0));  -- Data
@@ -56,6 +57,7 @@ architecture behv of init_max7219 is
 
   signal s_done   : std_logic;
   signal s_done_p : std_logic;
+  signal s_cnt_o  : std_logic;
 
 begin  -- architecture behv
 
@@ -88,57 +90,65 @@ begin  -- architecture behv
   end process p_curr_state_mngt;
 
   -- purpose: Management of the next state
-  p_next_state_mngt : process (s_current_state, s_done_p, s_cnt_done_p) is
+  p_next_state_mngt : process (clk, rst_n)  --process (s_current_state, s_done_p, s_cnt_done_p) is
+
   begin  -- process p_next_state_mngt
-    case s_current_state is
-      when IDLE =>
-        if(s_cnt_done_p = '1') then
-          s_next_state <= SET_INT;
-        end if;
-
-      when SET_INT =>
-        s_next_state <= RAZ_1;
-
-      when RAZ_1 =>
-        if(s_done_p = '1') then
-          s_next_state <= SET_SCAN;
-        end if;
-
-      when SET_SCAN =>
-        s_next_state <= RAZ_2;
-
-      when RAZ_2 =>
-        if(s_done_p = '1') then
-          s_next_state <= SET_DECOD;
-        end if;
-
-      when SET_DECOD =>
-        s_next_state <= RAZ_3;
-
-      when RAZ_3 =>
-        if(s_done_p = '1') then
-          s_next_state <= SET_OP;
-        end if;
-
-      when SET_OP =>
-        s_next_state <= RAZ_4;
-
-      when RAZ_4 =>
-        if(s_done_p = '1') then
-          s_next_state <= SET_DIG0;
-        end if;
+    if(rst_n = '0') then
+      s_next_state <= IDLE;
+    elsif(rising_edge(clk)) then
 
 
-      when SET_DIG0 =>
-        s_next_state <= RAZ_5;
+      case s_current_state is
+        when IDLE =>
+          if(s_cnt_done_p = '1') then
+            s_next_state <= SET_INT;
+          end if;
 
-      when RAZ_5 =>
-        if(s_done_p = '1') then
-          s_next_state <= IDLE;
-        end if;
+        when SET_INT =>
+          s_next_state <= RAZ_1;
 
-      when others => null;
-    end case;
+        when RAZ_1 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_SCAN;
+          end if;
+
+        when SET_SCAN =>
+          s_next_state <= RAZ_2;
+
+        when RAZ_2 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DECOD;
+          end if;
+
+        when SET_DECOD =>
+          s_next_state <= RAZ_3;
+
+        when RAZ_3 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_OP;
+          end if;
+
+        when SET_OP =>
+          s_next_state <= RAZ_4;
+
+        when RAZ_4 =>
+          if(s_done_p = '1') then
+            s_next_state <= SET_DIG0;
+          end if;
+
+
+        when SET_DIG0 =>
+          s_next_state <= RAZ_5;
+
+        when RAZ_5 =>
+          if(s_done_p = '1') then
+            s_next_state <= IDLE;
+          end if;
+
+        when others => null;
+      end case;
+
+    end if;
   end process p_next_state_mngt;
 
 
@@ -158,6 +168,7 @@ begin  -- architecture behv
           o_en_load   <= '0';
           o_data      <= (others => '0');
           s_start_cnt <= '1';
+          o_start     <= '0';
 
         when SET_INT =>
           s_start_cnt <= '0';
@@ -167,7 +178,7 @@ begin  -- architecture behv
 
         when RAZ_1 =>
           o_start <= '0';
-
+          
         when SET_SCAN =>
           s_start_cnt <= '0';
           o_data      <= x"0B07";
@@ -204,6 +215,7 @@ begin  -- architecture behv
 
         when RAZ_5 =>
           o_start <= '0';
+
         when others => null;
       end case;
 
@@ -218,15 +230,17 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_cnt_32b  <= (others => '0');
       s_cnt_done <= '0';
+      s_cnt_o    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_start_cnt = '1') then
-        
+
         if(s_cnt_32b < G_MAX_CNT) then
           s_cnt_32b <= unsigned(s_cnt_32b) + 1;  -- INC +1          
         else
           s_cnt_32b  <= (others => '0');
           s_cnt_done <= '1';
+          s_cnt_o    <= not s_cnt_o;
         end if;
       else
         s_cnt_32b  <= (others => '0');
@@ -235,4 +249,6 @@ begin  -- architecture behv
     end if;
   end process p_cnt_mngt;
 
+
+  o_cnt <= s_cnt_o;
 end architecture behv;
