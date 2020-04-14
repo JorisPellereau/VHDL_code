@@ -33,6 +33,7 @@ add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/G_RAM_DATA_WIDTH
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/clk
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/rst_n
+add wave -noupdate -group {RAM DECOD} /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/i_en
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/o_me
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/o_we
 add wave -noupdate -group {RAM DECOD} -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/max7219_ram_decod_inst_0/o_addr
@@ -76,7 +77,7 @@ add wave -noupdate -group RAM -radix hexadecimal /test_max7219_cmd_decod/max7219
 add wave -noupdate -group RAM -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/tdpram_inst_0/o_rdata_b
 add wave -noupdate -group RAM -radix hexadecimal /test_max7219_cmd_decod/max7219_cmd_decod_inst/tdpram_inst_0/v_ram
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {155385906 ps} 0}
+WaveRestoreCursors {{Cursor 1} {86442953 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -92,4 +93,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {315 us}
+WaveRestoreZoom {0 ps} {420 us}

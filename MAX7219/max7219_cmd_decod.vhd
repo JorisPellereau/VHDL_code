@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-13
+-- Last update: 2020-04-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,14 +29,16 @@ use lib_max7219.pkg_max7219.all;
 entity max7219_cmd_decod is
 
   generic (
-    G_RAM_ADDR_WIDTH             : integer := 8;   -- RAM ADDR WIDTH
-    G_RAM_DATA_WIDTH             : integer := 16;  -- RAM DATA WIDTH
-    G_MAX7219_IF_MAX_HALF_PERIOD : integer := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
-    G_MAX7219_LOAD_DUR           : integer := 4);  -- MAX7219 LOAD duration in period of clk
+    G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
+    G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
+    G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
+    G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
+    G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
 
   port (
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous reset
+    i_en  : in std_logic;               -- Enable the Function
 
     -- RAM I/F
     i_me    : in  std_logic;            -- Memory Enable
@@ -126,12 +128,13 @@ begin  -- architecture behv
   max7219_ram_decod_inst_0 : max7219_ram_decod
     generic map (
       G_RAM_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
-      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH
+      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH,
+      G_MAX_CNT_32B    => G_DECOD_MAX_CNT_32B
       )
     port map (
-      clk   => clk,
-      rst_n => rst_n,
-
+      clk     => clk,
+      rst_n   => rst_n,
+      i_en    => i_en,
       o_me    => s_me_decod,
       o_we    => s_we_decod,
       o_addr  => s_addr_decod,

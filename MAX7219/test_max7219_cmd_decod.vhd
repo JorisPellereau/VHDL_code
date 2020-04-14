@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-13
+-- Last update: 2020-04-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -33,37 +33,6 @@ end entity test_max7219_cmd_decod;
 
 architecture behv of test_max7219_cmd_decod is
 
-  -- COMPONENT
-  component max7219_cmd_decod is
-
-    generic (
-      G_RAM_ADDR_WIDTH             : integer := 8;   -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH             : integer := 16;  -- RAM DATA WIDTH
-      G_MAX7219_IF_MAX_HALF_PERIOD : integer := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
-      G_MAX7219_LOAD_DUR           : integer := 4);  -- MAX7219 LOAD duration in period of clk
-
-    port (
-      clk   : in std_logic;             -- Clock
-      rst_n : in std_logic;             -- Asynchronous reset
-
-      -- RAM I/F
-      i_me    : in  std_logic;          -- Memory Enable
-      i_we    : in  std_logic;          -- W/R command
-      i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
-      i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
-      o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
-
-      -- RAM INFO.
-      i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
-
-      -- MAX7219 I/F
-      o_max7219_load : out std_logic;   -- MAX7219 LOAD
-      o_max7219_data : out std_logic;   -- MAX7219 DATA
-      o_max7219_clk  : out std_logic);  -- MAX7219 CLK
-
-  end component max7219_cmd_decod;
-
-
   -- INTERNAL SIGNALS
   signal clk   : std_logic := '0';
   signal rst_n : std_logic := '1';
@@ -77,6 +46,7 @@ architecture behv of test_max7219_cmd_decod is
   signal s_addr     : std_logic_vector(7 downto 0);
   signal s_wdata    : std_logic_vector(15 downto 0);
   signal s_rdata    : std_logic_vector(15 downto 0);
+  signal s_en       : std_logic;
   signal s_last_ptr : std_logic_vector(7 downto 0);
 
 begin  -- architecture behv
@@ -92,6 +62,7 @@ begin  -- architecture behv
 
   p_stimulis : process is
   begin  -- process p_stimulis
+    s_en       <= '0';
     s_me       <= '0';
     s_we       <= '0';
     s_addr     <= (others => '0');
@@ -104,7 +75,7 @@ begin  -- architecture behv
     rst_n <= '1';
 
     wait for 10 us;
-
+    s_en       <= '1';
     s_last_ptr <= x"00";
     -- INIT RAM
 
@@ -157,6 +128,7 @@ begin  -- architecture behv
     port map (
       clk   => clk,
       rst_n => rst_n,
+      i_en  => s_en,
 
       -- RAM I/F
       i_me    => s_me,

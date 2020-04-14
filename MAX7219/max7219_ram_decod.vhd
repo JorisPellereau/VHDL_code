@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-13
+-- Last update: 2020-04-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -30,12 +30,14 @@ use lib_max7219.pkg_max7219.all;
 entity max7219_ram_decod is
 
   generic (
-    G_RAM_ADDR_WIDTH : integer := 8;    -- RAM ADDR WIDTH
-    G_RAM_DATA_WIDTH : integer := 16);  -- RAM DATA WIDTH
+    G_RAM_ADDR_WIDTH : integer                       := 8;   -- RAM ADDR WIDTH
+    G_RAM_DATA_WIDTH : integer                       := 16;  -- RAM DATA WIDTH
+    G_MAX_CNT_32B    : std_logic_vector(31 downto 0) := x"02FAF080");  -- MAX CNT
 
   port (
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous reset
+    i_en  : in std_logic;               -- Enable the function
 
     -- RAM I/F
     o_me    : out std_logic;            -- MEMORY ENABLE
@@ -87,19 +89,22 @@ begin  -- architecture behv
       s_decod_busy       <= '0';
       s_start_ram_access <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-
-      -- RAZ DECOD BUSY
-      if(s_inc_done = '1') then
-        s_decod_busy <= '0';
-      end if;
-      s_start_ram_access <= '0';        -- PULSE
-      if(s_decod_busy = '0') then
-        if(s_addr /= i_last_ptr) then
-          s_start_ram_access <= '1';
-          s_decod_busy       <= '1';
+      if(i_en = '1') then
+        -- RAZ DECOD BUSY
+        if(s_inc_done = '1') then
+          s_decod_busy <= '0';
         end if;
+        s_start_ram_access <= '0';      -- PULSE
+        if(s_decod_busy = '0') then
+          if(s_addr /= i_last_ptr) then
+            s_start_ram_access <= '1';
+            s_decod_busy       <= '1';
+          end if;
+        end if;
+      else
+        s_decod_busy       <= '0';
+        s_start_ram_access <= '0';
       end if;
-
     end if;
   end process p_last_ptr_comp;
 
@@ -168,9 +173,14 @@ begin  -- architecture behv
 
         -- "001" : WAIT command
         elsif(s_rdata(15 downto 13) = "001") then
-          s_max_cnt_32b(12 downto 0) <= s_rdata(12 downto 0);
-          s_max_cnt_valid            <= '1';
+          s_max_cnt_32b(31 downto 13) <= x"0000" & "000";
+          s_max_cnt_32b(12 downto 0)  <= s_rdata(12 downto 0);
+          s_max_cnt_valid             <= '1';
 
+        -- "010" : WAIT G_MAX_CNT_32B
+        elsif(s_rdata(15 downto 13) = "010") then
+          s_max_cnt_32b   <= G_MAX_CNT_32B;
+          s_max_cnt_valid <= '1';
         end if;
       end if;
     end if;

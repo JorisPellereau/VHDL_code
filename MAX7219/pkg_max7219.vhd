@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-04-13
+-- Last update: 2020-04-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -183,12 +183,14 @@ package pkg_max7219 is
 
   component max7219_ram_decod is
     generic (
-      G_RAM_ADDR_WIDTH : integer := 8;    -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH : integer := 16);  -- RAM DATA WIDTH
+      G_RAM_ADDR_WIDTH : integer                       := 8;  -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer                       := 16;  -- RAM DATA WIDTH
+      G_MAX_CNT_32B    : std_logic_vector(31 downto 0) := x"02FAF080");  -- MAX CNT
 
     port (
       clk   : in std_logic;             -- Clock
       rst_n : in std_logic;             -- Asynchronous reset
+      i_en  : in std_logic;             -- Enable the Function
 
       -- RAM I/F
       o_me    : out std_logic;          -- MEMORY ENABLE
@@ -209,15 +211,16 @@ package pkg_max7219 is
 
   component max7219_cmd_decod is
     generic (
-      G_RAM_ADDR_WIDTH             : integer := 8;   -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH             : integer := 16;  -- RAM DATA WIDTH
-      G_MAX7219_IF_MAX_HALF_PERIOD : integer := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
-      G_MAX7219_LOAD_DUR           : integer := 4);  -- MAX7219 LOAD duration in period of clk
+      G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
+      G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
+      G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
+      G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
 
     port (
-      clk   : in std_logic;             -- Clock
-      rst_n : in std_logic;             -- Asynchronous reset
-
+      clk     : in  std_logic;          -- Clock
+      rst_n   : in  std_logic;          -- Asynchronous reset
+      i_en    : in  std_logic;          -- Enable the Function
       -- RAM I/F
       i_me    : in  std_logic;          -- Memory Enable
       i_we    : in  std_logic;          -- W/R command
@@ -234,4 +237,130 @@ package pkg_max7219 is
       o_max7219_clk  : out std_logic);  -- MAX7219 CLK
   end component max7219_cmd_decod;
 
+  component max7219_init_ram is
+    generic (
+      G_ADDR_WIDTH : integer                       := 8;   -- RAM ADDR WIDTH
+      G_DATA_WIDTH : integer                       := 16;  -- RAM DATA WIDTH
+      G_LAST_PTR   : std_logic_vector(31 downto 0) := x"0000000A");
+
+    port (
+      clk        : in  std_logic;       -- Clock
+      rst_n      : in  std_logic;       -- Asynchronous reset
+      o_me       : out std_logic;       -- Memory Enable
+      o_we       : out std_logic;       -- Memory Command
+      o_addr     : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      o_wdata    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+      o_en       : out std_logic;       -- Enable the MAX7219 CMD DECOD
+      o_last_ptr : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0));  -- LAST ADDR PTR
+  end component max7219_init_ram;
+
+  -- TOP_MAX7219 CONSTANTS
+
+  type t_ram_array is array (0 to 2**8 - 1) of std_logic_vector(15 downto 0);
+  constant C_RAM_INIT_0 : t_ram_array := (
+    0  => x"1A00",                      -- SET INT
+    1  => x"1B07",                      -- SET SCNA
+    2  => x"1900",                      -- SET DECOD
+    3  => x"1C01",                      -- SET OP
+
+    -- DISPLAY S
+    4  => x"1146",                      -- SET DIG0
+    5  => x"12C9",                      -- SET DIG1
+    6  => x"1389",                      -- SET DIG2
+    7  => x"1489",                      -- SET DIG3
+    8  => x"1589",                      -- SET DIG4
+    9  => x"1689",                      -- SET DIG5
+    10 => x"1793",                      -- SET DIG6
+    11 => x"1866",                      -- SET DIG7
+    12 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY T
+    13 => x"11C0",                      -- SET DIG0
+    14 => x"12C0",                      -- SET DIG1
+    15 => x"13C0",                      -- SET DIG2
+    16 => x"14FF",                      -- SET DIG3
+    17 => x"15FF",                      -- SET DIG4
+    18 => x"16C0",                      -- SET DIG5
+    19 => x"17C0",                      -- SET DIG6
+    20 => x"18C0",                      -- SET DIG7
+    21 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY A
+    22 => x"113F",                      -- SET DIG0
+    23 => x"127F",                      -- SET DIG1
+    24 => x"13C8",                      -- SET DIG2
+    25 => x"14C8",                      -- SET DIG3
+    26 => x"15C8",                      -- SET DIG4
+    27 => x"16C8",                      -- SET DIG5
+    28 => x"177F",                      -- SET DIG6
+    29 => x"183F",                      -- SET DIG7
+    30 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY Y
+    31 => x"11C0",                      -- SET DIG0
+    32 => x"12E0",                      -- SET DIG1
+    33 => x"1330",                      -- SET DIG2
+    34 => x"141F",                      -- SET DIG3
+    35 => x"151F",                      -- SET DIG4
+    36 => x"1630",                      -- SET DIG5
+    37 => x"17E0",                      -- SET DIG6
+    38 => x"18C0",                      -- SET DIG7
+    39 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY H
+    40 => x"11FF",                      -- SET DIG0
+    41 => x"12FF",                      -- SET DIG1
+    42 => x"1318",                      -- SET DIG2
+    43 => x"1418",                      -- SET DIG3
+    44 => x"1518",                      -- SET DIG4
+    45 => x"1618",                      -- SET DIG5
+    46 => x"17FF",                      -- SET DIG6
+    47 => x"18FF",                      -- SET DIG7    
+    48 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY O
+    49 => x"113C",                      -- SET DIG0
+    50 => x"127E",                      -- SET DIG1
+    51 => x"13C3",                      -- SET DIG2
+    52 => x"14C3",                      -- SET DIG3
+    53 => x"15C3",                      -- SET DIG4
+    54 => x"16C3",                      -- SET DIG5
+    55 => x"177E",                      -- SET DIG6
+    56 => x"183C",                      -- SET DIG7    
+    57 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY M
+    58 => x"11FF",                      -- SET DIG0
+    59 => x"127F",                      -- SET DIG1
+    60 => x"1330",                      -- SET DIG2
+    61 => x"1418",                      -- SET DIG3
+    62 => x"1518",                      -- SET DIG4
+    63 => x"1630",                      -- SET DIG5
+    64 => x"177F",                      -- SET DIG6
+    65 => x"18FF",                      -- SET DIG7    
+    66 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY E
+    67 => x"11C3",                      -- SET DIG0
+    68 => x"12C3",                      -- SET DIG1
+    69 => x"13DB",                      -- SET DIG2
+    70 => x"14DB",                      -- SET DIG3
+    71 => x"15DB",                      -- SET DIG4
+    72 => x"16FF",                      -- SET DIG5
+    73 => x"17FF",                      -- SET DIG6
+    74 => x"18FF",                      -- SET DIG7    
+    75 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY :)
+    76 => x"11C4",                      -- SET DIG0
+    77 => x"12A6",                      -- SET DIG1
+    78 => x"1365",                      -- SET DIG2
+    79 => x"1405",                      -- SET DIG3
+    80 => x"1515",                      -- SET DIG4
+    81 => x"16C5",                      -- SET DIG5
+    82 => x"17A6",                      -- SET DIG6
+    83 => x"1864",                      -- SET DIG7    
+    84 => x"4000",                      -- WAIT G_MAX_CNT_32B
+    
+    others => (others => '0'));
 end package pkg_max7219;
