@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-14
+-- Last update: 2020-04-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ begin  -- architecture behv
     generic map (
       G_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
       G_DATA_WIDTH => G_RAM_DATA_WIDTH,
-      G_LAST_PTR   => x"00000056")
+      G_LAST_PTR   => x"0000004A")
     port map(
       clk        => clk,
       rst_n      => rst_n,

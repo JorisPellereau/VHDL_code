@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-04-14
+-- Last update: 2020-04-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -258,10 +258,10 @@ package pkg_max7219 is
 
   type t_ram_array is array (0 to 2**8 - 1) of std_logic_vector(15 downto 0);
   constant C_RAM_INIT_0 : t_ram_array := (
-    0  => x"1A00",                      -- SET INT
-    1  => x"1B07",                      -- SET SCNA
-    2  => x"1900",                      -- SET DECOD
-    3  => x"1C01",                      -- SET OP
+    0 => x"1A00",                       -- SET INT
+    1 => x"1B07",                       -- SET SCNA
+    2 => x"1900",                       -- SET DECOD
+    3 => x"1C01",                       -- SET OP
 
     -- DISPLAY S
     4  => x"1146",                      -- SET DIG0
@@ -361,6 +361,108 @@ package pkg_max7219 is
     82 => x"17A6",                      -- SET DIG6
     83 => x"1864",                      -- SET DIG7    
     84 => x"4000",                      -- WAIT G_MAX_CNT_32B
-    
+
     others => (others => '0'));
+
+
+  -- TEST with 2 MATRIX in DAISY chain
+  constant C_RAM_INIT_1 : t_ram_array := (
+    0 => x"0A00",                       -- SET INT - NO LOAD
+    1 => x"1A00",                       -- SET INT - LOAD
+    2 => x"0B07",                       -- SET SCAN - NO LOAD
+    3 => x"1B07",                       -- SET SCAN - LOAD
+    4 => x"0900",                       -- SET DECOD - NO LOAD
+    5 => x"1900",                       -- SET DECOD - LOAD
+    6 => x"0C01",                       -- SET OP - NO LOAD
+    7 => x"1C01",                       -- SET OP - LOAD
+    8 => x"0000",                       -- NOP - NO LOAD
+    9 => x"1000",                       -- NOP - LOAD
+
+    -- RAZ MATRIX
+
+    10 => x"0100",                      -- SET DIG0
+    11 => x"1100",                      -- SET DIG0    
+    12 => x"0200",                      -- SET DIG1
+    13 => x"1200",                      -- SET DIG1    
+    14 => x"0300",                      -- SET DIG2
+    15 => x"1300",                      -- SET DIG2
+    16 => x"0400",                      -- SET DIG3
+    17 => x"1400",                      -- SET DIG3
+    18 => x"0500",                      -- SET DIG4
+    19 => x"1500",                      -- SET DIG4
+    20 => x"0600",                      -- SET DIG5
+    21 => x"1600",                      -- SET DIG5
+    22 => x"0700",                      -- SET DIG6
+    23 => x"1700",                      -- SET DIG6
+    24 => x"0800",                      -- SET DIG7
+    25 => x"1800",                      -- SET DIG7
+    26 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+
+    -- :) on matrix 0 only
+    -- 
+    27 => x"0000",                      -- NOP - NO LOAD
+    28 => x"11C4",                      -- SET DIG0 - LOAD
+    29 => x"0000",                      -- NOP - NO LOAD
+    30 => x"12A6",                      -- SET DIG1 - LOAD
+    31 => x"0000",                      -- NOP - NO LOAD
+    32 => x"1365",                      -- SET DIG2 - LOAD
+    33 => x"0000",                      -- NOP - NO LOAD
+    34 => x"1405",                      -- SET DIG3 - LOAD
+    35 => x"0000",                      -- NOP - NO LOAD 
+    36 => x"1515",                      -- SET DIG4 - LOAD
+    37 => x"0000",                      -- NOP - NO LOAD
+    38 => x"16C5",                      -- SET DIG5 - LOAD
+    39 => x"0000",                      -- NOP - NO LOAD
+    40 => x"17A6",                      -- SET DIG6 - LOAD
+    41 => x"0000",                      -- NOP - NO LOAD
+    42 => x"1864",                      -- SET DIG7 - LOAD
+    43 => x"0000",                      -- NOP - NO LOAD
+    44 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- SET Y on matrix 1 and keep MTRIX 0 as previously :)
+
+    45 => x"01C0",                      -- SET DIG0 - NO LOAD
+    46 => x"1000",                      -- NOP - LOAD
+    47 => x"02E0",                      -- SET DIG1 - NO LOAD
+    48 => x"1000",                      -- NOP - LOAD
+    49 => x"0330",                      -- SET DIG2 - NO LOAD
+    50 => x"1000",                      -- NOP - LOAD
+    51 => x"041F",                      -- SET DIG3 - NO LOAD
+    52 => x"1000",                      -- NOP - LOAD
+    53 => x"051F",                      -- SET DIG4 - NO LOAD
+    54 => x"1000",                      -- NOP - LOAD
+    55 => x"0630",                      -- SET DIG5 - NO LOAD
+    56 => x"1000",                      -- NOP - LOAD
+    57 => x"07E0",                      -- SET DIG6 - NO LOAD
+    58 => x"1000",                      -- NOP - LOAD
+    59 => x"08C0",                      -- SET DIG7 - NO LOAD
+    60 => x"1000",                      -- NOP - LOAD    
+    61 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    --  SHUTDOWN DISPLAY
+    62 => x"0C00",                      -- SET OP - NO LOAD
+    63 => x"1C00",                      -- SET OP - LOAD
+    64 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- ON DISPLAY
+    65 => x"0C01",                      -- SET OP - NO LOAD
+    66 => x"1C01",                      -- SET OP - LOAD
+    67 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY TEST on
+    68 => x"0F01",                      -- SET OP - NO LOAD
+    69 => x"1F01",                      -- SET OP - LOAD
+    70 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+    -- DISPLAY TEST off
+    71 => x"0F00",                      -- SET OP - NO LOAD
+    72 => x"1F00",                      -- SET OP - LOAD
+    73 => x"4000",                      -- WAIT G_MAX_CNT_32B
+
+
+    others => (others => '0')
+    );
+
+
 end package pkg_max7219;
