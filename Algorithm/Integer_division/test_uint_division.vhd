@@ -95,7 +95,7 @@ begin  -- architecture behv
     -- 11/2
     s_i_q   <= x"0B";
     s_i_m   <= x"02";
-    s_i_n   <= x"08";
+    s_i_n   <= x"04";
     wait until falling_edge(clk);
     s_start <= '1';
     wait until falling_edge(clk);
@@ -110,7 +110,7 @@ begin  -- architecture behv
     -- 255/6
     s_i_q   <= x"FF";
     s_i_m   <= x"06";
-    s_i_n   <= x"08";
+    s_i_n   <= x"04";
     wait until falling_edge(clk);
     s_start <= '1';
     wait until falling_edge(clk);
