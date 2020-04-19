@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-18
+-- Last update: 2020-04-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ architecture behv of test_digits_decod is
   -- INTERNAL SIGNALS
   signal s_data2decod : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
   signal s_val        : std_logic;
-  signal s_decod      : std_logic_vector(C_DIGITS_NB*C_DATA_WIDTH - 1 downto 0);
+  signal s_decod      : std_logic_vector(C_DIGITS_NB*4 - 1 downto 0);
   signal s_done       : std_logic;
 
 
@@ -86,8 +86,21 @@ begin  -- architecture behv
     s_val        <= '0';
 
     wait for C_WAIT_TIME;
+    rst_n <= '0';
+    wait for C_WAIT_TIME;
+    rst_n <= '1';
+    wait for C_WAIT_TIME;
 
     s_data2decod <= x"05F5E100";        -- Set at 100.000.000
+    wait until falling_edge(clk);
+    s_val        <= '1';
+    wait until falling_edge(clk);
+    s_val        <= '0';
+
+    wait until rising_edge(s_done) for C_TIMEOUT;
+
+
+    s_data2decod <= x"00BC614E";        -- Set at 12.345.678
     wait until falling_edge(clk);
     s_val        <= '1';
     wait until falling_edge(clk);

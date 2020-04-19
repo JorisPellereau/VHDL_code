@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-18
+-- Last update: 2020-04-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ entity digits_decod is
     rst_n        : in  std_logic;       -- Asynchronous Reset
     i_data2decod : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data to decod
     i_val        : in  std_logic;       -- Input valid
-    o_decod      : out std_logic_vector(G_DIGITS_NB*G_DATA_WIDTH - 1 downto 0);  -- Decod output
+    o_decod      : out std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Decod output
     o_done       : out std_logic);      -- Decod Done
 
 end entity digits_decod;
@@ -69,14 +69,12 @@ architecture behv of digits_decod is
   constant C_DIVISOR_100      : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := x"00000064";
   constant C_DIVISOR_10       : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := x"0000000A";
 
---  constant C_N : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := conv_std_logic_vector(G_DATA_WIDTH, C_N'length);
-
   -- INTERNAL SIGNALS
   signal s_n    : std_logic_vector(G_DATA_WIDTH - 1 downto 0);
-  signal s_done : std_logic_vector(G_DIGITS_NB - 1 downto 0);  -- DONE
-  signal s_q    : std_logic_vector(G_DIGITS_NB*G_DATA_WIDTH - 1 downto 0);
-  signal s_r    : std_logic_vector(G_DIGITS_NB*G_DATA_WIDTH - 1 downto 0);
-  signal s_m    : std_logic_vector(G_DIGITS_NB*G_DATA_WIDTH - 1 downto 0);
+  signal s_done : std_logic_vector(G_DIGITS_NB - 2 downto 0);  -- DONE
+  signal s_q    : std_logic_vector((G_DIGITS_NB - 1)*G_DATA_WIDTH - 1 downto 0);
+  signal s_r    : std_logic_vector((G_DIGITS_NB - 1)*G_DATA_WIDTH - 1 downto 0);
+  signal s_m    : std_logic_vector((G_DIGITS_NB - 1)*G_DATA_WIDTH - 1 downto 0);
 
   signal s_data2decod_sat : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data to Decod Saturate
   signal s_val            : std_logic;  -- S val
@@ -96,16 +94,21 @@ begin  -- architecture behv
         s_val <= '1';
         case G_DIGITS_NB is
           when 8 =>
+            -- SATURATION INPUT
             if(i_data2decod > x"05F5E0FF") then
-              s_data2decod_sat                                             <= x"05F5E0FF";
-              s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_10000000;
-              s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_1000000;
-              s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_100000;
-              s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_10000;
-              s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_1000;
-              s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_100;
-              s_m(6*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 6*G_DATA_WIDTH) <= C_DIVISOR_10;
+              s_data2decod_sat <= x"05F5E0FF";
+            else
+              s_data2decod_sat <= i_data2decod;
             end if;
+
+            -- DIVISIOR SET
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_10000000;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_1000000;
+            s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_100000;
+            s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_10000;
+            s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_1000;
+            s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_100;
+            s_m(6*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 6*G_DATA_WIDTH) <= C_DIVISOR_10;
 
           when others => null;
         end case;
@@ -150,12 +153,12 @@ begin  -- architecture behv
         port map(
           clk     => clk,
           rst_n   => rst_n,
-          i_start => s_done(i),
-          i_q     => s_s(i*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto i*G_DATA_WIDTH),
+          i_start => s_done(i-1),
+          i_q     => s_r((i-1)*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto (i-1)*G_DATA_WIDTH),
           i_m     => s_m(i*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto i*G_DATA_WIDTH),
           i_n     => s_n,
-          o_q     => o_q(G_DATA_WIDTH - 1 downto 0),
-          o_r     => s_r(G_DATA_WIDTH - 1 downto 0),
+          o_q     => s_q(i*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto i*G_DATA_WIDTH),
+          o_r     => s_r(i*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto i*G_DATA_WIDTH),
           o_done  => s_done(i)
           );
 
@@ -163,6 +166,33 @@ begin  -- architecture behv
 
 
   end generate g_uint_division_0;
+
+  p_output_gen : process (clk, rst_n) is
+  begin  -- process p_output_gen
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      o_done  <= '0';
+      o_decod <= (others => '0');
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      if(s_done(G_DIGITS_NB - 2) = '1') then
+
+        o_done <= '1';
+        for j in 0 to G_DIGITS_NB - 1 loop
+
+          if(j < G_DIGITS_NB - 1) then
+            o_decod(j*4 + 3 downto j*4) <= s_q(j*G_DATA_WIDTH + 3 downto j*G_DATA_WIDTH);
+          else
+            o_decod(j*4 + 3 downto j*4) <= s_r((G_DIGITS_NB - 2)*G_DATA_WIDTH + G_DATA_WIDTH - (G_DATA_WIDTH - 4) - 1 downto (G_DIGITS_NB - 2)*G_DATA_WIDTH);
+          end if;
+
+        end loop;  -- j
+      else
+        o_done <= '0';
+
+      end if;
+
+    end if;
+  end process p_output_gen;
 
 
 end architecture behv;
