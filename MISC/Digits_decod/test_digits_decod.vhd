@@ -63,9 +63,14 @@ architecture behv of test_digits_decod is
   -- INTERNAL SIGNALS
   signal s_data2decod : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
   signal s_val        : std_logic;
-  signal s_decod      : std_logic_vector(C_DIGITS_NB*4 - 1 downto 0);
-  signal s_done       : std_logic;
 
+  -- INST_0
+  signal s_decod : std_logic_vector(C_DIGITS_NB*4 - 1 downto 0);
+  signal s_done  : std_logic;
+
+  -- INST_1
+  signal s_decod_1 : std_logic_vector(2*4 - 1 downto 0);
+  signal s_done_1  : std_logic;
 
 begin  -- architecture behv
 
@@ -128,6 +133,20 @@ begin  -- architecture behv
       o_decod      => s_decod,
       o_done       => s_done);
 
+
+  -- DIGITS DECOD INST
+  digits_decod_inst_1 : digits_decod
+    generic map (
+      G_DIGITS_NB  => 2,
+      G_DATA_WIDTH => C_DATA_WIDTH)
+
+    port map (
+      clk          => clk,
+      rst_n        => rst_n,
+      i_data2decod => s_data2decod,
+      i_val        => s_val,
+      o_decod      => s_decod_1,
+      o_done       => s_done_1);
 
 
 

@@ -94,7 +94,7 @@ begin  -- architecture behv
         s_val <= '1';
         case G_DIGITS_NB is
           when 8 =>
-            -- SATURATION INPUT
+            -- SATURATION INPUT at 99 999 999
             if(i_data2decod > x"05F5E0FF") then
               s_data2decod_sat <= x"05F5E0FF";
             else
@@ -109,6 +109,75 @@ begin  -- architecture behv
             s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_1000;
             s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_100;
             s_m(6*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 6*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 7 =>
+            -- SATURATION at 9 999 999
+            if(i_data2decod > x"0098967F") then
+              s_data2decod_sat <= x"0098967F";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_1000000;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_100000;
+            s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_10000;
+            s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_1000;
+            s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_100;
+            s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 6 =>
+            -- SATURATION at 999 999
+            if(i_data2decod > x"000F423F") then
+              s_data2decod_sat <= x"000F423F";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_100000;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_10000;
+            s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_1000;
+            s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_100;
+            s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 5 =>
+            -- SATURATION at 99 999
+            if(i_data2decod > x"0001869F") then
+              s_data2decod_sat <= x"0001869F";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_10000;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_1000;
+            s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_100;
+            s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 4 =>
+            -- SATURATION at 9 999
+            if(i_data2decod > x"0000270F") then
+              s_data2decod_sat <= x"0000270F";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_1000;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_100;
+            s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 3 =>
+            -- SATURATION at 999
+            if(i_data2decod > x"000003E7") then
+              s_data2decod_sat <= x"000003E7";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_100;
+            s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_10;
+
+          when 2 =>
+            SATURATION at 99
+            if(i_data2decod > x"00000063") then
+              s_data2decod_sat <= x"00000063";
+            else
+              s_data2decod_sat <= i_data2decod;
+            end if;
+            s_m(G_DATA_WIDTH - 1 downto 0) <= C_DIVISOR_10;
 
           when others => null;
         end case;
