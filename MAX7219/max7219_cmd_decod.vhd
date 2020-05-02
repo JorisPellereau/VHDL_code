@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-14
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,7 +48,11 @@ entity max7219_cmd_decod is
     o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
 
     -- RAM INFO.
-    i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST PTR
+    i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    i_ptr_val      : in  std_logic;     -- PTRS VALIDS
+    i_loop         : in  std_logic;     -- LOOP CONFIG.
+    o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
 
     -- MAX7219 I/F
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
@@ -140,11 +144,17 @@ begin  -- architecture behv
       o_addr  => s_addr_decod,
       i_rdata => s_rdata_decod,
 
-      i_last_ptr => i_last_ptr,
-      o_start    => s_start,
-      o_en_load  => s_en_load,
-      o_data     => s_data,
-      i_done     => s_done);
+
+      i_start_ptr    => i_start_ptr,
+      i_last_ptr     => i_last_ptr,
+      i_ptr_val      => i_ptr_val,
+      i_loop         => i_loop,
+      o_ptr_equality => o_ptr_equality,
+
+      o_start   => s_start,
+      o_en_load => s_en_load,
+      o_data    => s_data,
+      i_done    => s_done);
 
   -- MAX7219 I/F
   max7219_if_inst_0 : max7219_if

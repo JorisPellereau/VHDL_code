@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-04-15
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -199,7 +199,11 @@ package pkg_max7219 is
       i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
 
       -- RAM INFO.
-      i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+      i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST ADDR
+      i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+      i_ptr_val      : in  std_logic;   -- PTRS VALIDS
+      i_loop         : in  std_logic;   -- LOOP CONFIG.
+      o_ptr_equality : out std_logic;   -- ADDR = LAST PTR    
 
       -- MAX7219 I/F
       o_start   : out std_logic;                      -- MAX7219 START
@@ -229,7 +233,11 @@ package pkg_max7219 is
       o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
 
       -- RAM INFO.
-      i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+      i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST PTR
+      i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+      i_ptr_val      : in  std_logic;   -- PTRS VALIDS
+      i_loop         : in  std_logic;   -- LOOP CONFIG.
+      o_ptr_equality : out std_logic;   -- ADDR = LAST PTR
 
       -- MAX7219 I/F
       o_max7219_load : out std_logic;   -- MAX7219 LOAD

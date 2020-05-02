@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-14
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,7 +46,11 @@ entity max7219_ram_decod is
     i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
 
     -- RAM INFO.
-    i_last_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST ADDR
+    i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    i_ptr_val      : in  std_logic;     -- PTRS VALIDS
+    i_loop         : in  std_logic;     -- LOOP CONFIG.
+    o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
 
     -- MAX7219 I/F
     o_start   : out std_logic;                      -- MAX7219 START
@@ -73,6 +77,8 @@ architecture behv of max7219_ram_decod is
   signal s_max_cnt_valid    : std_logic;  -- MAX CNT valid
   signal s_start_cnt        : std_logic;  -- Start the counter 32b
   signal s_cnt_done         : std_logic;  -- Cnt reach
+  signal s_ptr_equality     : std_logic;  -- ADDR = LAST_PTR
+  signal s_update_ptr       : std_logic;  -- UPDATE PTR
 
   signal s_data        : std_logic_vector(15 downto 0);  -- DATA to MAX7219
   signal s_addr        : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
@@ -80,7 +86,28 @@ architecture behv of max7219_ram_decod is
   signal s_cnt_32b     : std_logic_vector(31 downto 0);  -- Counter for wait between 2 commands
   signal s_max_cnt_32b : std_logic_vector(31 downto 0);  -- MAXIMUM for counter 32b
 
+  signal s_start_ptr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- START PTR
+  signal s_last_ptr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST PTR
+
 begin  -- architecture behv
+
+  -- purpose: Last PTR Update
+  p_last_ptr_update : process (clk, rst_n) is
+  begin  -- process p_last_ptr_update
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_start_ptr  <= (others => '0');
+      s_last_ptr   <= (others => '0');
+      s_update_ptr <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      if(i_ptr_val = '1' and s_ptr_equality = '1') then
+        s_last_ptr   <= i_last_ptr;
+        s_start_ptr  <= i_start_ptr;
+        s_update_ptr <= '1';
+      else
+        s_update_ptr <= '0';
+      end if;
+    end if;
+  end process p_last_ptr_update;
 
 
   p_last_ptr_comp : process (clk, rst_n) is
@@ -88,7 +115,9 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_decod_busy       <= '0';
       s_start_ram_access <= '0';
+      s_ptr_equality     <= '1';
     elsif clk'event and clk = '1' then  -- rising clock edge
+
       if(i_en = '1') then
         -- RAZ DECOD BUSY
         if(s_inc_done = '1') then
@@ -96,9 +125,12 @@ begin  -- architecture behv
         end if;
         s_start_ram_access <= '0';      -- PULSE
         if(s_decod_busy = '0') then
-          if(s_addr /= i_last_ptr) then
+          if(s_addr /= s_last_ptr) then
             s_start_ram_access <= '1';
             s_decod_busy       <= '1';
+            s_ptr_equality     <= '0';
+          else
+            s_ptr_equality <= '1';
           end if;
         end if;
       else
@@ -203,10 +235,19 @@ begin  -- architecture behv
   -- purpose: ADDR inc
   p_addr_inc : process (clk, rst_n) is
   begin  -- process p_addr_inc
-    if rst_n = '0' then                      -- asynchronous reset (active low)
+    if rst_n = '0' then                 -- asynchronous reset (active low)
       s_addr     <= (others => '0');
       s_inc_done <= '0';
-    elsif clk'event and clk = '1' then       -- rising clock edge
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- UPDATE START PTR when ENABLE disable
+      if(s_update_ptr = '1') then
+        s_addr <= s_start_ptr;
+      -- UPDATE START PTR at then end of the CONFIG. done
+      elsif(s_ptr_equality = '1' and i_loop = '1') then
+        s_addr <= s_start_ptr;
+      end if;
+
       s_inc_done <= '0';
       if(i_done = '1') then
         s_addr     <= unsigned(s_addr) + 1;  -- INC
@@ -255,5 +296,7 @@ begin  -- architecture behv
   o_start   <= s_start;
   o_data    <= s_data;
   o_en_load <= s_en_load;
+
+  o_ptr_equality <= s_ptr_equality;
 
 end architecture behv;

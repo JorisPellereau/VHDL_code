@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-14
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,13 +41,18 @@ architecture behv of test_max7219_cmd_decod is
   signal s_max7219_clk  : std_logic;
   signal s_max7219_data : std_logic;
 
-  signal s_me       : std_logic;
-  signal s_we       : std_logic;
-  signal s_addr     : std_logic_vector(7 downto 0);
-  signal s_wdata    : std_logic_vector(15 downto 0);
-  signal s_rdata    : std_logic_vector(15 downto 0);
-  signal s_en       : std_logic;
-  signal s_last_ptr : std_logic_vector(7 downto 0);
+  signal s_me    : std_logic;
+  signal s_we    : std_logic;
+  signal s_addr  : std_logic_vector(7 downto 0);
+  signal s_wdata : std_logic_vector(15 downto 0);
+  signal s_rdata : std_logic_vector(15 downto 0);
+  signal s_en    : std_logic;
+
+  signal s_start_ptr    : std_logic_vector(7 downto 0);
+  signal s_last_ptr     : std_logic_vector(7 downto 0);
+  signal s_ptr_val      : std_logic;
+  signal s_loop         : std_logic;
+  signal s_ptr_equality : std_logic;
 
 begin  -- architecture behv
 
@@ -62,12 +67,15 @@ begin  -- architecture behv
 
   p_stimulis : process is
   begin  -- process p_stimulis
-    s_en       <= '0';
-    s_me       <= '0';
-    s_we       <= '0';
-    s_addr     <= (others => '0');
-    s_wdata    <= (others => '0');
-    s_last_ptr <= (others => '0');
+    s_en        <= '0';
+    s_me        <= '0';
+    s_we        <= '0';
+    s_addr      <= (others => '0');
+    s_wdata     <= (others => '0');
+    s_start_ptr <= (others => '0');
+    s_last_ptr  <= (others => '0');
+    s_ptr_val   <= '0';
+    s_loop      <= '0';
 
     wait for 1 us;
     rst_n <= '0';
@@ -75,10 +83,7 @@ begin  -- architecture behv
     rst_n <= '1';
 
     wait for 10 us;
-    s_en       <= '1';
-    s_last_ptr <= x"00";
     -- INIT RAM
-
     for i in 0 to 255 loop
 
       s_addr      <= std_logic_vector(to_unsigned(i, s_addr'length));
@@ -94,24 +99,69 @@ begin  -- architecture behv
 
     wait for 10 us;
 
-    s_last_ptr <= x"05";
+    s_start_ptr <= x"00";
+    s_last_ptr  <= x"05";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '1';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
+
+    wait until s_ptr_equality = '1';
+    wait for 100 us;
+
+    s_start_ptr <= x"0A";
+    s_last_ptr  <= x"0F";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '1';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
+    wait until s_ptr_equality = '1';
+    wait for 100 us;
+
+    s_start_ptr <= x"F0";
+    s_last_ptr  <= x"02";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '1';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
+
+    wait until s_ptr_equality = '1';
+    wait for 100 us;
+
+    s_start_ptr <= x"03";
+    s_last_ptr  <= x"06";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '0';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
+    wait for 200 us;
+    s_en <= '1';
+
+    wait until s_ptr_equality = '1';
+    wait for 100 us;
+
+    s_start_ptr <= x"20";
+    s_last_ptr  <= x"25";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '1';
+    s_loop      <= '1';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
 
     wait for 400 us;
+    s_loop <= '0';
 
-    s_addr      <= x"06";    --std_logic_vector(to_unsigned(i, s_addr'length));
-    s_wdata     <= x"3FFF";  --std_logic_vector(to_unsigned(i, s_wdata'length));
-    s_wdata(12) <= '1';
-    wait until falling_edge(clk);
-    s_me        <= '1';
-    s_we        <= '1';
-    wait until falling_edge(clk);
-    s_me        <= '0';
-    s_we        <= '0';
-
-    s_last_ptr <= x"0A";
-
-    wait for 500 us;
-
+    wait for 200 us;
     report "end of simu !!";
     wait;
   end process p_stimulis;
@@ -138,7 +188,11 @@ begin  -- architecture behv
       o_rdata => s_rdata,
 
       -- RAM INFO.
-      i_last_ptr => s_last_ptr,
+      i_start_ptr    => s_start_ptr,
+      i_last_ptr     => s_last_ptr,
+      i_ptr_val      => s_ptr_val,
+      i_loop         => s_loop,
+      o_ptr_equality => s_ptr_equality,
 
       -- MAX7219 I/F
       o_max7219_load => s_max7219_load,
