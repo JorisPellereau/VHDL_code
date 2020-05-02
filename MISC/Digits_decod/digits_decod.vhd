@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-19
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ begin  -- architecture behv
             s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_10;
 
           when 2 =>
-            SATURATION at 99
+            --SATURATION at 99
             if(i_data2decod > x"00000063") then
               s_data2decod_sat <= x"00000063";
             else

@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-04-15
+-- Last update: 2020-05-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,13 +46,17 @@ end entity top_max7219_cmd_decod;
 architecture behv of top_max7219_cmd_decod is
 
   -- INERNAL SIGNALS
-  signal s_me       : std_logic;
-  signal s_we       : std_logic;
-  signal s_en       : std_logic;
-  signal s_addr     : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-  signal s_wdata    : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_rdata    : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_last_ptr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_me          : std_logic;
+  signal s_we          : std_logic;
+  signal s_en          : std_logic;
+  signal s_ptr_val     : std_logic;
+  signal s_loop        : std_logic;
+  signal s_ptr_equaliy : std_logic;
+  signal s_addr        : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_wdata       : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_rdata       : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_start_ptr   : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_last_ptr    : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
 begin  -- architecture behv
 
@@ -95,7 +99,11 @@ begin  -- architecture behv
       o_rdata => s_rdata,
 
       -- RAM INFO.
-      i_last_ptr => s_last_ptr,
+      i_start_ptr    => s_start_ptr,
+      i_last_ptr     => s_last_ptr,
+      i_ptr_val      => s_ptr_val,
+      i_loop         => s_loop,
+      o_ptr_equality => s_ptr_equaliy,
 
       -- MAX7219 I/F
       o_max7219_load => o_max7219_load,

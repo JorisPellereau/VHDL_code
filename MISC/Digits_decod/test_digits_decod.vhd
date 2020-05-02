@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-19
+-- Last update: 2020-05-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,13 +46,27 @@ architecture behv of test_digits_decod is
 
   end component digits_decod;
 
+  component digits_decod_shift is
+    generic (
+      G_DIGITS_NB  : integer range 2 to 8 := 8;    -- DIGITS Number to decod
+      G_DATA_WIDTH : integer              := 32);  -- DATA WIDTH
+
+    port (
+      clk          : in  std_logic;     -- Clock
+      rst_n        : in  std_logic;     -- Asynchronous Reset
+      i_data2decod : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data to decod
+      i_val        : in  std_logic;     -- Input valid
+      o_decod      : out std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Decod output
+      o_done       : out std_logic);    -- Decod Done
+  end component digits_decod_shift;
+
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;   -- HALF PERIOD of clk
   constant C_WAIT_TIME       : time := 100 ns;  -- WAIT TIME
   constant C_TIMEOUT         : time := 1 ms;    -- TIMEOUT
 
   -- INST CONSTANTS
-  constant C_DIGITS_NB  : integer range 2 to 8 := 8;
+  constant C_DIGITS_NB  : integer range 2 to 8 := 2;
   constant C_DATA_WIDTH : integer              := 32;
 
 
@@ -61,8 +75,10 @@ architecture behv of test_digits_decod is
   signal rst_n : std_logic := '1';      -- Asynchronous reset
 
   -- INTERNAL SIGNALS
-  signal s_data2decod : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
-  signal s_val        : std_logic;
+  signal s_data2decod       : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
+  signal s_val              : std_logic;
+  signal s_data2decod_shift : std_logic_vector(C_DATA_WIDTH - 1 downto 0);
+  signal s_val_shift        : std_logic;
 
   -- INST_0
   signal s_decod : std_logic_vector(C_DIGITS_NB*4 - 1 downto 0);
@@ -71,6 +87,10 @@ architecture behv of test_digits_decod is
   -- INST_1
   signal s_decod_1 : std_logic_vector(2*4 - 1 downto 0);
   signal s_done_1  : std_logic;
+
+  -- INST_SHIFT
+  signal s_decod_shift : std_logic_vector(C_DIGITS_NB*4 - 1 downto 0);
+  signal s_done_shift  : std_logic;
 
 begin  -- architecture behv
 
@@ -83,12 +103,50 @@ begin  -- architecture behv
   end process p_clk_gen;
 
   -- STIMULIS
+  -- p_stimulis : process is
+  -- begin  -- process p_stimuli
+
+  --   -- SIGNALS INIT
+  --   s_data2decod <= (others => '0');
+  --   s_val        <= '0';
+
+  --   wait for C_WAIT_TIME;
+  --   rst_n <= '0';
+  --   wait for C_WAIT_TIME;
+  --   rst_n <= '1';
+  --   wait for C_WAIT_TIME;
+
+  --   s_data2decod <= x"05F5E100";        -- Set at 100.000.000
+  --   wait until falling_edge(clk);
+  --   s_val        <= '1';
+  --   wait until falling_edge(clk);
+  --   s_val        <= '0';
+
+  --   wait until rising_edge(s_done) for C_TIMEOUT;
+
+
+  --   s_data2decod <= x"00BC614E";        -- Set at 12.345.678
+  --   wait until falling_edge(clk);
+  --   s_val        <= '1';
+  --   wait until falling_edge(clk);
+  --   s_val        <= '0';
+
+  --   wait until rising_edge(s_done) for C_TIMEOUT;
+
+
+  --   report "end of Simulation !!!";
+  --   wait;
+  -- end process p_stimulis;
+
+
+
+  -- STIMULIS
   p_stimulis : process is
   begin  -- process p_stimuli
 
     -- SIGNALS INIT
-    s_data2decod <= (others => '0');
-    s_val        <= '0';
+    s_data2decod_shift <= (others => '0');
+    s_val_shift        <= '0';
 
     wait for C_WAIT_TIME;
     rst_n <= '0';
@@ -96,22 +154,32 @@ begin  -- architecture behv
     rst_n <= '1';
     wait for C_WAIT_TIME;
 
-    s_data2decod <= x"05F5E100";        -- Set at 100.000.000
+    s_data2decod_shift <= x"05F5E100";  -- Set at 100.000.000
     wait until falling_edge(clk);
-    s_val        <= '1';
+    s_val_shift        <= '1';
     wait until falling_edge(clk);
-    s_val        <= '0';
+    s_val_shift        <= '0';
 
-    wait until rising_edge(s_done) for C_TIMEOUT;
+    wait until rising_edge(s_done_shift) for C_TIMEOUT;
 
 
-    s_data2decod <= x"00BC614E";        -- Set at 12.345.678
+
+
+    s_data2decod_shift <= x"00BC614E";  -- Set at 12.345.678
     wait until falling_edge(clk);
-    s_val        <= '1';
+    s_val_shift        <= '1';
     wait until falling_edge(clk);
-    s_val        <= '0';
+    s_val_shift        <= '0';
 
-    wait until rising_edge(s_done) for C_TIMEOUT;
+    wait until rising_edge(s_done_shift) for C_TIMEOUT;
+
+    s_data2decod_shift <= x"0363D7A0";  -- Set at 56.874.912
+    wait until falling_edge(clk);
+    s_val_shift        <= '1';
+    wait until falling_edge(clk);
+    s_val_shift        <= '0';
+
+    wait until rising_edge(s_done_shift) for C_TIMEOUT;
 
 
     report "end of Simulation !!!";
@@ -120,7 +188,37 @@ begin  -- architecture behv
 
 
   -- DIGITS DECOD INST
-  digits_decod_inst_0 : digits_decod
+  -- digits_decod_inst_0 : digits_decod
+  --   generic map (
+  --     G_DIGITS_NB  => C_DIGITS_NB,
+  --     G_DATA_WIDTH => C_DATA_WIDTH)
+
+  --   port map (
+  --     clk          => clk,
+  --     rst_n        => rst_n,
+  --     i_data2decod => s_data2decod,
+  --     i_val        => s_val,
+  --     o_decod      => s_decod,
+  --     o_done       => s_done);
+
+
+  -- DIGITS DECOD INST
+  -- digits_decod_inst_1 : digits_decod
+  --   generic map (
+  --     G_DIGITS_NB  => 2,
+  --     G_DATA_WIDTH => C_DATA_WIDTH)
+
+  --   port map (
+  --     clk          => clk,
+  --     rst_n        => rst_n,
+  --     i_data2decod => s_data2decod,
+  --     i_val        => s_val,
+  --     o_decod      => s_decod_1,
+  --     o_done       => s_done_1);
+
+
+  -- DIGITS DECOD INST
+  digits_decod_shift_inst_0 : digits_decod_shift
     generic map (
       G_DIGITS_NB  => C_DIGITS_NB,
       G_DATA_WIDTH => C_DATA_WIDTH)
@@ -128,25 +226,10 @@ begin  -- architecture behv
     port map (
       clk          => clk,
       rst_n        => rst_n,
-      i_data2decod => s_data2decod,
-      i_val        => s_val,
-      o_decod      => s_decod,
-      o_done       => s_done);
-
-
-  -- DIGITS DECOD INST
-  digits_decod_inst_1 : digits_decod
-    generic map (
-      G_DIGITS_NB  => 2,
-      G_DATA_WIDTH => C_DATA_WIDTH)
-
-    port map (
-      clk          => clk,
-      rst_n        => rst_n,
-      i_data2decod => s_data2decod,
-      i_val        => s_val,
-      o_decod      => s_decod_1,
-      o_done       => s_done_1);
+      i_data2decod => s_data2decod_shift,
+      i_val        => s_val_shift,
+      o_decod      => s_decod_shift,
+      o_done       => s_done_shift);
 
 
 
