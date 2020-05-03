@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-05-02
+-- Last update: 2020-05-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ package pkg_max7219 is
   constant C_MATRIX_9 : t_matrix_8x8 := (0 => x"00", 1 => x"62", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"7E", 7 => x"00");  -- Display 9
   -- =======================================
 
-
+  type t_score_array is array (0 to 63) of std_logic_vector(15 downto 0);
 
   -- COMPONENTS
   component max7219_interface
@@ -245,6 +245,30 @@ package pkg_max7219 is
       o_max7219_clk  : out std_logic);  -- MAX7219 CLK
   end component max7219_cmd_decod;
 
+  -- ===============
+
+
+  component max7219_digit2conf is
+
+    port (
+      clk     : in  std_logic;                      -- Clock
+      rst_n   : in  std_logic;                      -- Asynchronous reset
+      i_digit : in  std_logic_vector(3 downto 0);   -- DIGIT to DECOD
+      i_val   : in  std_logic;
+      o_seg_7 : out std_logic_vector(11 downto 0);  -- Config. Seg N7
+      o_seg_6 : out std_logic_vector(11 downto 0);  -- Config. Seg N6
+      o_seg_5 : out std_logic_vector(11 downto 0);  -- Config. Seg N5
+      o_seg_4 : out std_logic_vector(11 downto 0);  -- Config. Seg N4
+      o_seg_3 : out std_logic_vector(11 downto 0);  -- Config. Seg N3
+      o_seg_2 : out std_logic_vector(11 downto 0);  -- Config. Seg N2
+      o_seg_1 : out std_logic_vector(11 downto 0);  -- Config. Seg N1
+      o_seg_0 : out std_logic_vector(11 downto 0);  -- Config. Seg N0
+      o_done  : out std_logic                       -- Conf Available
+      );
+  end component max7219_digit2conf;
+
+
+
   component max7219_init_ram is
     generic (
       G_ADDR_WIDTH : integer                       := 8;   -- RAM ADDR WIDTH
@@ -261,6 +285,17 @@ package pkg_max7219 is
       o_en       : out std_logic;       -- Enable the MAX7219 CMD DECOD
       o_last_ptr : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0));  -- LAST ADDR PTR
   end component max7219_init_ram;
+
+
+
+
+
+
+
+
+
+
+
 
   -- TOP_MAX7219 CONSTANTS
 

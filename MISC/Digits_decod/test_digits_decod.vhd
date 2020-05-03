@@ -181,6 +181,14 @@ begin  -- architecture behv
 
     wait until rising_edge(s_done_shift) for C_TIMEOUT;
 
+    s_data2decod_shift <= x"000000EB";  -- Set at 00.000.235
+    wait until falling_edge(clk);
+    s_val_shift        <= '1';
+    wait until falling_edge(clk);
+    s_val_shift        <= '0';
+
+    wait until rising_edge(s_done_shift) for C_TIMEOUT;
+
 
     report "end of Simulation !!!";
     wait;

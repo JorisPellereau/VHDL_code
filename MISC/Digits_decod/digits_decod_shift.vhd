@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-05-02
+-- Last update: 2020-05-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -160,13 +160,13 @@ begin  -- architecture behv
         end case;
 
         -- DIVISIOR SET
-        s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_10000000;
-        s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_1000000;
-        s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_100000;
+        s_m(G_DATA_WIDTH - 1 downto 0)                               <= C_DIVISOR_10;
+        s_m(1*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 1*G_DATA_WIDTH) <= C_DIVISOR_100;
+        s_m(2*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 2*G_DATA_WIDTH) <= C_DIVISOR_1000;
         s_m(3*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 3*G_DATA_WIDTH) <= C_DIVISOR_10000;
-        s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_1000;
-        s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_100;
-        s_m(6*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 6*G_DATA_WIDTH) <= C_DIVISOR_10;
+        s_m(4*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 4*G_DATA_WIDTH) <= C_DIVISOR_100000;
+        s_m(5*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 5*G_DATA_WIDTH) <= C_DIVISOR_1000000;
+        s_m(6*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto 6*G_DATA_WIDTH) <= C_DIVISOR_10000000;
 
       else
         s_val <= '0';
@@ -184,7 +184,7 @@ begin  -- architecture behv
       s_decod_done_p <= '0';
       s_m_shift      <= (others => '0');
       s_i_q_shift    <= (others => '0');
-      s_cnt          <= 0;
+      s_cnt          <= G_DIGITS_NB - 2;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_start      <= '0';
@@ -192,11 +192,12 @@ begin  -- architecture behv
       if(s_done = '1') then
         s_i_q_shift <= s_r;
 
-        if(s_cnt < G_DIGITS_NB - 2) then
-          s_cnt <= s_cnt + 1;
+        if(s_cnt > 0) then              --G_DIGITS_NB - 2) then
+          s_cnt <= s_cnt - 1;
         else
           s_decod_done <= '1';
-          s_cnt        <= 0;
+          --s_cnt        <= 0;
+          s_cnt        <= G_DIGITS_NB - 2;
         end if;
         s_done_p <= '1';
       else
@@ -214,7 +215,7 @@ begin  -- architecture behv
 
       -- 1st start from OUSTIDE
       if(s_val = '1')then
-        s_m_shift   <= s_m(G_DATA_WIDTH - 1 downto 0);
+        s_m_shift   <= s_m(s_cnt*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto s_cnt*G_DATA_WIDTH);
         s_i_q_shift <= s_data2decod_sat;
         s_start     <= '1';
       end if;
@@ -239,6 +240,10 @@ begin  -- architecture behv
         end if;
 
         s_decod(G_DIGITS_NB*4 - 1 downto 4) <= s_decod((G_DIGITS_NB-1)*4 - 1 downto 0);
+      end if;
+
+      if(s_decod_done_p = '1') then
+        s_decod <= (others => '0');
       end if;
     end if;
   end process p_out_mngt;
