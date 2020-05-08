@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-05-08
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -126,8 +126,8 @@ begin  -- architecture behv
         for k in 0 to 7 loop
           -- Set Load
           o_score_cmd(G_DIGITS_NB*(k + 1) - 1)(12) <= '1';
-          o_score_val                              <= '1';
         end loop;
+        o_score_val <= '1';
       else
         o_score_val <= '0';
       end if;

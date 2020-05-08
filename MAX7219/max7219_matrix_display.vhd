@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-05-08
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ architecture behv of max7219_matrix_display is
 
   signal s_score_cmd : t_score_array;
   signal s_score_val : std_logic;
-  
+
 begin  -- architecture behv
 
   -- DIGITS DECOD SHIFT
@@ -118,6 +118,24 @@ begin  -- architecture behv
       o_score_cmd       => s_score_cmd,
       o_score_val       => s_score_val
       );
+
+  -- RAM SEQUENCER INST
+  max7219_ram_sequencer_inst_0 : max7219_ram_sequencer
+    generic map(
+      G_RAM_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
+      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH,
+      G_DIGITS_NB      => G_DIGITS_NB
+      )
+    port map(
+      clk         => clk,
+      rst_n       => rst_n,
+      i_score_cmd => s_score_cmd,
+      i_score_val => s_score_val,
+      o_me        => s_me,
+      o_we        => s_we,
+      o_addr      => s_addr,
+      o_wdata     => s_wdata,
+      i_rdata     => s_rdata);
 
 
   -- MAX7219 CMD DECOD INST

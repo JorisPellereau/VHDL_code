@@ -110,7 +110,7 @@ add wave -noupdate -group DIGIT2CONF_1 -radix hexadecimal /test_max7219_matrix_d
 add wave -noupdate -group DIGIT2CONF_1 -radix hexadecimal /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_cmd_organizer_inst_0/g_digits2conf_inst_0(1)/i_digits2conf_inst/o_seg_0
 add wave -noupdate -group DIGIT2CONF_1 -radix hexadecimal /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_cmd_organizer_inst_0/g_digits2conf_inst_0(1)/i_digits2conf_inst/o_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3057018 ps} 0}
+WaveRestoreCursors {{Cursor 1} {3060709 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 283
 configure wave -valuecolwidth 100
@@ -126,4 +126,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {2718994 ps} {3355486 ps}
+WaveRestoreZoom {2860159 ps} {3299302 ps}

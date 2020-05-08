@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-05-08
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -286,6 +286,26 @@ package pkg_max7219 is
       );
 
   end component max7219_cmd_organizer;
+
+  component max7219_ram_sequencer is
+
+    generic (
+      G_RAM_ADDR_WIDTH : integer              := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer              := 16;  -- RAM DATA WIDTH
+      G_DIGITS_NB      : integer range 2 to 8 := 2  --DIGIR NB on THE MATRIX DISPLAY
+      );
+    port (
+      clk         : in  std_logic;      -- Clock
+      rst_n       : in  std_logic;      -- Asynchronous Reset
+      i_score_cmd : in  t_score_array;  -- Score Command
+      i_score_val : in  std_logic;      -- Score Command Valid
+      o_me        : out std_logic;      -- Memory Enable
+      o_we        : out std_logic;      -- W/R Memory Command
+      o_addr      : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      o_wdata     : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+      i_rdata     : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0));  -- RAM RDATA
+
+  end component max7219_ram_sequencer;
 
 
   component max7219_matrix_display is
