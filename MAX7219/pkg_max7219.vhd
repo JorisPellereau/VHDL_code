@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-05-03
+-- Last update: 2020-05-08
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -268,6 +268,46 @@ package pkg_max7219 is
   end component max7219_digit2conf;
 
 
+
+
+  component max7219_cmd_organizer is
+
+    generic (
+      G_RAM_DATA_WIDTH : integer              := 16;  -- RAM DATA SIZE
+      G_DIGITS_NB      : integer range 2 to 8 := 8);  -- DIGITS Number on the DISPLAY
+
+    port (
+      clk               : in  std_logic;      -- Clock
+      rst_n             : in  std_logic;      -- Asynchronous reset
+      i_score_decod     : in  std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- SCORE DECODED
+      i_score_decod_val : in  std_logic;      -- SCORE DECOD valid
+      o_score_cmd       : out t_score_array;  -- ARRAY of SCORE
+      o_score_val       : out std_logic
+      );
+
+  end component max7219_cmd_organizer;
+
+
+  component max7219_matrix_display is
+    generic (
+      G_DIGITS_NB                  : integer range 2 to 8;  -- DIGIT NB on THE MATRIX DISPLAY
+      G_DATA_WIDTH                 : integer                       := 32;  -- INPUTS SCORE WIDTH
+      G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
+      G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
+      G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
+      G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
+    port (
+      clk            : in  std_logic;   -- Clock
+      rst_n          : in  std_logic;   -- Asynchronous Reset
+      i_score        : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
+      i_score_val    : in  std_logic;   -- Scare Valid
+      o_max7219_load : out std_logic;   -- MAX7219 LOAD
+      o_max7219_data : out std_logic;   -- MAX7219 DATA
+      o_max7219_clk  : out std_logic    -- MAX729 CLK
+      );
+
+  end component max7219_matrix_display;
 
   component max7219_init_ram is
     generic (
