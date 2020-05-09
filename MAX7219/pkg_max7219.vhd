@@ -76,7 +76,8 @@ package pkg_max7219 is
   constant C_MATRIX_9 : t_matrix_8x8 := (0 => x"00", 1 => x"62", 2 => x"91", 3 => x"91", 4 => x"91", 5 => x"91", 6 => x"7E", 7 => x"00");  -- Display 9
   -- =======================================
 
-  type t_score_array is array (0 to 63) of std_logic_vector(15 downto 0);
+  type t_score_array is array (0 to 63) of std_logic_vector(15 downto 0);   --
+  type t_config_array is array (0 to 31) of std_logic_vector(15 downto 0);  -- Config ARRAY
 
   -- COMPONENTS
   component max7219_interface
@@ -288,23 +289,33 @@ package pkg_max7219 is
   end component max7219_cmd_organizer;
 
   component max7219_ram_sequencer is
-
     generic (
       G_RAM_ADDR_WIDTH : integer              := 8;   -- RAM ADDR WIDTH
       G_RAM_DATA_WIDTH : integer              := 16;  -- RAM DATA WIDTH
       G_DIGITS_NB      : integer range 2 to 8 := 2  --DIGIR NB on THE MATRIX DISPLAY
       );
     port (
-      clk         : in  std_logic;      -- Clock
-      rst_n       : in  std_logic;      -- Asynchronous Reset
-      i_score_cmd : in  t_score_array;  -- Score Command
-      i_score_val : in  std_logic;      -- Score Command Valid
-      o_me        : out std_logic;      -- Memory Enable
-      o_we        : out std_logic;      -- W/R Memory Command
-      o_addr      : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
-      o_wdata     : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
-      i_rdata     : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0));  -- RAM RDATA
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
 
+      -- CONFIG. MATRIX I/F
+      i_config_array      : in t_config_array;  -- CONFIG. Matrix
+      i_config_val        : in std_logic;       -- CONFIG. Matrix valid
+      i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+      -- SCORE I/F
+      i_score_cmd        : in t_score_array;  -- Score Command
+      i_score_val        : in std_logic;      -- Score Command Valid
+      i_score_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+
+      -- RAM I/F
+      o_me    : out std_logic;          -- Memory Enable
+      o_we    : out std_logic;          -- W/R Memory Command
+      o_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      o_wdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+      i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0)  -- RAM RDATA
+      );
   end component max7219_ram_sequencer;
 
 

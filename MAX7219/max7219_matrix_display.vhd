@@ -85,8 +85,13 @@ architecture behv of max7219_matrix_display is
   signal s_score_decod     : std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);
   signal s_score_decod_val : std_logic;
 
-  signal s_score_cmd : t_score_array;
-  signal s_score_val : std_logic;
+  signal s_config_array      : t_config_array;
+  signal s_config_val        : std_logic;
+  signal s_config_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+  signal s_score_cmd        : t_score_array;
+  signal s_score_val        : std_logic;
+  signal s_score_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
 begin  -- architecture behv
 
@@ -119,6 +124,12 @@ begin  -- architecture behv
       o_score_val       => s_score_val
       );
 
+
+  -- SET START @
+  s_config_start_addr <= (others => '0');
+  s_score_start_addr  <= x"50";
+  s_config_val        <= '0';
+
   -- RAM SEQUENCER INST
   max7219_ram_sequencer_inst_0 : max7219_ram_sequencer
     generic map(
@@ -127,15 +138,19 @@ begin  -- architecture behv
       G_DIGITS_NB      => G_DIGITS_NB
       )
     port map(
-      clk         => clk,
-      rst_n       => rst_n,
-      i_score_cmd => s_score_cmd,
-      i_score_val => s_score_val,
-      o_me        => s_me,
-      o_we        => s_we,
-      o_addr      => s_addr,
-      o_wdata     => s_wdata,
-      i_rdata     => s_rdata);
+      clk                 => clk,
+      rst_n               => rst_n,
+      i_config_array      => s_config_array,
+      i_config_val        => s_config_val,
+      i_config_start_addr => s_config_start_addr,
+      i_score_cmd         => s_score_cmd,
+      i_score_val         => s_score_val,
+      i_score_start_addr  => s_score_start_addr,
+      o_me                => s_me,
+      o_we                => s_we,
+      o_addr              => s_addr,
+      o_wdata             => s_wdata,
+      i_rdata             => s_rdata);
 
 
   -- MAX7219 CMD DECOD INST

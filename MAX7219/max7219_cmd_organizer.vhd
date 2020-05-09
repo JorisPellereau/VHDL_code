@@ -82,18 +82,7 @@ begin  -- architecture behv
   end generate g_digits2conf_inst_0;
 
   --s_seg MATRIX0 on MSB
-
-  -- o_seg_7 => s_segs_7(i*12 + 11 downto i*12),
-  -- o_seg_6 => s_segs_6(i*12 + 11 downto i*12),
-  -- o_seg_5 => s_segs_5(i*12 + 11 downto i*12),
-  -- o_seg_4 => s_segs_4(i*12 + 11 downto i*12),
-  -- o_seg_3 => s_segs_3(i*12 + 11 downto i*12),
-  -- o_seg_2 => s_segs_2(i*12 + 11 downto i*12),
-  -- o_seg_1 => s_segs_1(i*12 + 11 downto i*12),
-  -- o_seg_0 => s_segs_0(i*12 + 11 downto i*12),
-
   s_conf_done <= s_digits2conf_done(0);
-
 
   -- SCORE_CMD MNGT
   p_score_cmd_mngt : process (clk, rst_n) is
