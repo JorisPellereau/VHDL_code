@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-05-03
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ begin  -- architecture behv
   p_shift_mngt : process (clk, rst_n) is
   begin  -- process p_shift_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)     
-      s_n            <= conv_std_logic_vector(G_DATA_WIDTH, s_n'length);
+      s_n            <= (others => '0');
       s_start        <= '0';
       s_decod_done   <= '0';
       s_decod_done_p <= '0';
@@ -186,7 +186,7 @@ begin  -- architecture behv
       s_i_q_shift    <= (others => '0');
       s_cnt          <= G_DIGITS_NB - 2;
     elsif clk'event and clk = '1' then  -- rising clock edge
-
+      s_n          <= conv_std_logic_vector(G_DATA_WIDTH, s_n'length);
       s_start      <= '0';
       s_decod_done <= '0';
       if(s_done = '1') then

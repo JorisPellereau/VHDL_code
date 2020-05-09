@@ -370,7 +370,7 @@ package pkg_max7219 is
 
   component max7219_matrix_display is
     generic (
-      G_DIGITS_NB                  : integer range 2 to 8;  -- DIGIT NB on THE MATRIX DISPLAY
+      G_DIGITS_NB                  : integer range 2 to 8          := 8;  -- DIGIT NB on THE MATRIX DISPLAY
       G_DATA_WIDTH                 : integer                       := 32;  -- INPUTS SCORE WIDTH
       G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
       G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH

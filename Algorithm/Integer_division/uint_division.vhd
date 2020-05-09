@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-17
--- Last update: 2020-04-17
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,44 +63,73 @@ begin  -- architecture behv
   begin  -- process p_current_state_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_current_state <= IDLE;
+      s_next_state    <= IDLE;
     elsif clk'event and clk = '1' then  -- rising clock edge
       s_current_state <= s_next_state;
+      case s_current_state is
+        when IDLE =>
+          if(i_start = '1') then
+            s_next_state <= SHIFT_REG;
+          end if;
+
+        when SHIFT_REG =>
+          s_next_state <= SUB;
+
+        when SUB =>
+          s_next_state <= CHECK_MSB;
+
+        when CHECK_MSB =>
+          s_next_state <= CHECK_CNT;
+
+        when CHECK_CNT =>
+          if(conv_integer(unsigned(s_cnt)) > 0) then
+            s_next_state <= SHIFT_REG;
+          else
+            s_next_state <= DIV_DONE;
+          end if;
+
+        when DIV_DONE =>
+          s_next_state <= IDLE;
+
+        when others => null;
+      end case;
+
     end if;
   end process p_current_state_mngt;
 
 
-  p_next_state_computation : process (s_current_state, i_start, s_cnt) is
-  begin  -- process p_next_state_computation
+  -- p_next_state_computation : process (s_current_state, i_start, s_cnt) is
+  -- begin  -- process p_next_state_computation
 
-    case s_current_state is
-      when IDLE =>
-        if(i_start = '1') then
-          s_next_state <= SHIFT_REG;
-        end if;
+  --   case s_current_state is
+  --     when IDLE =>
+  --       if(i_start = '1') then
+  --         s_next_state <= SHIFT_REG;
+  --       end if;
 
-      when SHIFT_REG =>
-        s_next_state <= SUB;
+  --     when SHIFT_REG =>
+  --       s_next_state <= SUB;
 
-      when SUB =>
-        s_next_state <= CHECK_MSB;
+  --     when SUB =>
+  --       s_next_state <= CHECK_MSB;
 
-      when CHECK_MSB =>
-        s_next_state <= CHECK_CNT;
+  --     when CHECK_MSB =>
+  --       s_next_state <= CHECK_CNT;
 
-      when CHECK_CNT =>
-        if(conv_integer(unsigned(s_cnt)) > 0) then
-          s_next_state <= SHIFT_REG;
-        else
-          s_next_state <= DIV_DONE;
-        end if;
+  --     when CHECK_CNT =>
+  --       if(conv_integer(unsigned(s_cnt)) > 0) then
+  --         s_next_state <= SHIFT_REG;
+  --       else
+  --         s_next_state <= DIV_DONE;
+  --       end if;
 
-      when DIV_DONE =>
-        s_next_state <= IDLE;
+  --     when DIV_DONE =>
+  --       s_next_state <= IDLE;
 
-      when others => null;
-    end case;
+  --     when others => null;
+  --   end case;
 
-  end process p_next_state_computation;
+  -- end process p_next_state_computation;
 
   p_action_mngt : process (clk, rst_n) is
   begin  -- process p_action_mngt
