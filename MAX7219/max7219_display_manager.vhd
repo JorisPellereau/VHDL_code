@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-05-09
+-- Last update: 2020-05-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -112,8 +112,10 @@ begin  -- architecture behv
   p_command_mngt : process (clk, rst_n) is
   begin  -- process p_command_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_en      <= '0';
-      s_ptr_val <= '0';
+      s_en        <= '0';
+      s_ptr_val   <= '0';
+      s_start_ptr <= (others => '0');
+      s_last_ptr  <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_ptr_val <= '0';                 -- PULSE

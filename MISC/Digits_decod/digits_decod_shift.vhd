@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-05-09
+-- Last update: 2020-05-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -265,7 +265,7 @@ begin  -- architecture behv
       );
 
   -- OUTPUTS AFFECTATION
-  o_done  <= s_decod_done_p;
+  o_done  <= s_decod_done_p and s_decod_done;
   o_decod <= s_decod;
 
 end architecture behv;
