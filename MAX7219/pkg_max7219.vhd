@@ -299,15 +299,18 @@ package pkg_max7219 is
       rst_n : in std_logic;             -- Asynchronous Reset
 
       -- CONFIG. MATRIX I/F
-      i_config_array      : in t_config_array;  -- CONFIG. Matrix
-      i_config_val        : in std_logic;       -- CONFIG. Matrix valid
-      i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_config_array      : in  t_config_array;  -- CONFIG. Matrix
+      i_config_val        : in  std_logic;       -- CONFIG. Matrix valid
+      i_config_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_config_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_config_done       : out std_logic;       -- CONFIG. IN RAM DONE
 
       -- SCORE I/F
-      i_score_cmd        : in t_score_array;  -- Score Command
-      i_score_val        : in std_logic;      -- Score Command Valid
-      i_score_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-
+      i_score_cmd        : in  t_score_array;  -- Score Command
+      i_score_val        : in  std_logic;      -- Score Command Valid
+      i_score_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_score_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_score_done       : out std_logic;      -- SCORE IN RAM DONE
 
       -- RAM I/F
       o_me    : out std_logic;          -- Memory Enable
@@ -319,6 +322,52 @@ package pkg_max7219 is
   end component max7219_ram_sequencer;
 
 
+  component max7219_config_matrix is
+
+    generic (
+      G_DIGITS_NB      : integer range 2 to 8 := 8;  -- DIGIT NB on THE MATRIX DISPLAY
+      G_RAM_DATA_WIDTH : integer              := 16);         -- RAM DATA WIDTH
+    port (
+      clk                : in  std_logic;            -- Clock
+      rst_n              : in  std_logic;            -- Asynchronous Reset
+      i_decod_mode       : in  std_logic_vector(7 downto 0);  -- DECOD MODE
+      i_intensity        : in  std_logic_vector(7 downto 0);  -- INTENSITY
+      i_scan_limit       : in  std_logic_vector(7 downto 0);  -- SCAN LIMIT
+      i_shutdown         : in  std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
+      i_config_val       : in  std_logic;            -- Config. Valid
+      o_config_array     : out t_config_array;       -- CONFIG. ARRAY CMD
+      o_config_array_val : out std_logic);           -- CONFIG ARRAY VAL
+
+  end component max7219_config_matrix;
+
+  component max7219_display_manager is
+    generic (
+      G_DIGITS_NB      : integer range 2 to 8 := 8;  -- DIGIT NB on the MATRIX DISPLAY
+      G_RAM_ADDR_WIDTH : integer              := 8);  -- RAM ADDR WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- NEW CONFIG.
+      i_config_val        : in std_logic;  -- New Config Available
+      i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_config_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_score_val         : in std_logic;  -- New SCORE available
+      i_score_start_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_score_last_addr   : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+      -- MAX7219 RAM DECOD I/F
+      i_ptr_equality : in  std_logic;   -- PTR EQUALITY
+      o_start_ptr    : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- START PTR
+      o_last_ptr     : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST PTR
+      o_ptr_val      : out std_logic;   -- PTR VALID
+      o_loop         : out std_logic;   -- LOOP MODE
+      o_en           : out std_logic    -- ENABLE CMD DECOD BLOCK
+      );
+
+  end component max7219_display_manager;
+
   component max7219_matrix_display is
     generic (
       G_DIGITS_NB                  : integer range 2 to 8;  -- DIGIT NB on THE MATRIX DISPLAY
@@ -329,15 +378,25 @@ package pkg_max7219 is
       G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
       G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
     port (
-      clk            : in  std_logic;   -- Clock
-      rst_n          : in  std_logic;   -- Asynchronous Reset
-      i_score        : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
-      i_score_val    : in  std_logic;   -- Scare Valid
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- MATRIX CONFIG.
+      i_decod_mode     : in std_logic_vector(7 downto 0);  -- DECOD MODE
+      i_intensity      : in std_logic_vector(7 downto 0);  -- INTENSITY
+      i_scan_limit     : in std_logic_vector(7 downto 0);  -- SCAN LIMIT
+      i_shutdown       : in std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
+      i_new_config_val : in std_logic;                     -- CONFIG. VALID
+
+      -- SCORE to DISPLAY
+      i_score     : in std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
+      i_score_val : in std_logic;       -- Scare Valid
+
+      -- MAX7219 I/F
       o_max7219_load : out std_logic;   -- MAX7219 LOAD
       o_max7219_data : out std_logic;   -- MAX7219 DATA
       o_max7219_clk  : out std_logic    -- MAX729 CLK
       );
-
   end component max7219_matrix_display;
 
   component max7219_init_ram is

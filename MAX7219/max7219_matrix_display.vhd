@@ -36,15 +36,25 @@ entity max7219_matrix_display is
     G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
     G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
   port (
-    clk            : in  std_logic;     -- Clock
-    rst_n          : in  std_logic;     -- Asynchronous Reset
-    i_score        : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
-    i_score_val    : in  std_logic;     -- Scare Valid
+    clk   : in std_logic;               -- Clock
+    rst_n : in std_logic;               -- Asynchronous Reset
+
+    -- MATRIX CONFIG.
+    i_decod_mode     : in std_logic_vector(7 downto 0);  -- DECOD MODE
+    i_intensity      : in std_logic_vector(7 downto 0);  -- INTENSITY
+    i_scan_limit     : in std_logic_vector(7 downto 0);  -- SCAN LIMIT
+    i_shutdown       : in std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
+    i_new_config_val : in std_logic;                     -- CONFIG. VALID
+
+    -- SCORE to DISPLAY
+    i_score     : in std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
+    i_score_val : in std_logic;         -- Scare Valid
+
+    -- MAX7219 I/F
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
     o_max7219_data : out std_logic;     -- MAX7219 DATA
     o_max7219_clk  : out std_logic      -- MAX729 CLK
     );
-
 end entity max7219_matrix_display;
 
 architecture behv of max7219_matrix_display is
@@ -88,10 +98,21 @@ architecture behv of max7219_matrix_display is
   signal s_config_array      : t_config_array;
   signal s_config_val        : std_logic;
   signal s_config_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_config_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+  signal s_config_new_val : std_logic;
+  signal s_decod_mode     : std_logic_vector(7 downto 0);
+  signal s_intensity      : std_logic_vector(7 downto 0);
+  signal s_scan_limit     : std_logic_vector(7 downto 0);
+  signal s_shutdown       : std_logic_vector(7 downto 0);
 
   signal s_score_cmd        : t_score_array;
   signal s_score_val        : std_logic;
   signal s_score_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_score_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+  signal s_config_done : std_logic;
+  signal s_score_done  : std_logic;
 
 begin  -- architecture behv
 
@@ -124,11 +145,32 @@ begin  -- architecture behv
       o_score_val       => s_score_val
       );
 
+  -- s_decod_mode     <= x"00";
+  -- s_intensity      <= x"07";
+  -- s_scan_limit     <= x"07";
+  -- s_shutdown       <= x"01";
+  -- s_config_new_val <= '0';
+
+  -- CONFIG MATRIX INST
+  max7219_config_matrix_inst_0 : max7219_config_matrix
+    generic map(
+      G_DIGITS_NB      => G_DIGITS_NB,
+      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH)
+    port map (
+      clk                => clk,
+      rst_n              => rst_n,
+      i_decod_mode       => i_decod_mode,
+      i_intensity        => i_intensity,
+      i_scan_limit       => i_scan_limit,
+      i_shutdown         => i_shutdown,
+      i_config_val       => i_new_config_val,
+      o_config_array     => s_config_array,
+      o_config_array_val => s_config_val);
+
 
   -- SET START @
   s_config_start_addr <= (others => '0');
   s_score_start_addr  <= x"50";
-  s_config_val        <= '0';
 
   -- RAM SEQUENCER INST
   max7219_ram_sequencer_inst_0 : max7219_ram_sequencer
@@ -143,14 +185,44 @@ begin  -- architecture behv
       i_config_array      => s_config_array,
       i_config_val        => s_config_val,
       i_config_start_addr => s_config_start_addr,
+      o_config_last_addr  => s_config_last_addr,
+      o_config_done       => s_config_done,
       i_score_cmd         => s_score_cmd,
       i_score_val         => s_score_val,
       i_score_start_addr  => s_score_start_addr,
+      o_score_last_addr   => s_score_last_addr,
+      o_score_done        => s_score_done,
       o_me                => s_me,
       o_we                => s_we,
       o_addr              => s_addr,
       o_wdata             => s_wdata,
       i_rdata             => s_rdata);
+
+  -- DISPLAY MANAGER
+  max7219_display_manager_inst_0 : max7219_display_manager
+    generic map(
+      G_DIGITS_NB      => G_DIGITS_NB,
+      G_RAM_ADDR_WIDTH => G_RAM_ADDR_WIDTH)
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- NEW CONFIG.
+      i_config_val        => s_config_done,
+      i_config_start_addr => s_config_start_addr,
+      i_config_last_addr  => s_config_last_addr,
+      i_score_val         => s_score_done,
+      i_score_start_addr  => s_score_start_addr,
+      i_score_last_addr   => s_score_last_addr,
+
+      -- MAX7219 RAM DECOD I/F
+      i_ptr_equality => s_ptr_equality,
+      o_start_ptr    => s_start_ptr,
+      o_last_ptr     => s_last_ptr,
+      o_ptr_val      => s_ptr_val,
+      o_loop         => s_loop,
+      o_en           => s_en
+      );
 
 
   -- MAX7219 CMD DECOD INST

@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-05-08
+-- Last update: 2020-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -40,11 +40,16 @@ architecture behv of test_max7219_matrix_display is
   signal rst_n : std_logic := '1';      -- Asynchronous reset
 
   -- INTERNAL SIGNALS
-  signal s_score        : std_logic_vector(31 downto 0);
-  signal s_score_val    : std_logic;
-  signal s_max7219_load : std_logic;
-  signal s_max7219_data : std_logic;
-  signal s_max7219_clk  : std_logic;
+  signal s_decod_mode     : std_logic_vector(7 downto 0);
+  signal s_intensity      : std_logic_vector(7 downto 0);
+  signal s_scan_limit     : std_logic_vector(7 downto 0);
+  signal s_shutdown       : std_logic_vector(7 downto 0);
+  signal s_new_config_val : std_logic;
+  signal s_score          : std_logic_vector(31 downto 0);
+  signal s_score_val      : std_logic;
+  signal s_max7219_load   : std_logic;
+  signal s_max7219_data   : std_logic;
+  signal s_max7219_clk    : std_logic;
 
 begin  -- architecture behv
 
@@ -62,8 +67,13 @@ begin  -- architecture behv
     wait for 10*C_CLK_HALF_PERIOD;
 
     -- SIGNALS INIT
-    s_score     <= (others => '0');
-    s_score_val <= '0';
+    s_decod_mode     <= (others => '0');
+    s_intensity      <= (others => '0');
+    s_scan_limit     <= (others => '0');
+    s_shutdown       <= (others => '0');
+    s_new_config_val <= '0';
+    s_score          <= (others => '0');
+    s_score_val      <= '0';
 
     rst_n <= '0';
     wait for 10*C_CLK_HALF_PERIOD;
@@ -71,14 +81,35 @@ begin  -- architecture behv
 
     wait for 10*C_CLK_HALF_PERIOD;
 
+
+    -- SET CONFIG
+    s_decod_mode <= x"00";
+    s_intensity  <= x"07";
+    s_scan_limit <= x"07";
+    s_shutdown   <= x"01";
+
+    wait until falling_edge(clk);
+    s_new_config_val <= '1';
+    wait until falling_edge(clk);
+    s_new_config_val <= '0';
+
+    wait for 300 us;
+
     s_score     <= x"00000051";
     wait until falling_edge(clk);
     s_score_val <= '1';
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 1 ms;
+    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
+    s_score     <= x"00000099";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 1 ms;
     report "end of Simulation !!!";
     wait;
   end process p_stimulis;
@@ -94,12 +125,17 @@ begin  -- architecture behv
       G_MAX7219_IF_MAX_HALF_PERIOD => 50,
       G_MAX7219_LOAD_DUR           => 4)
     port map(
-      clk            => clk,
-      rst_n          => rst_n,
-      i_score        => s_score,
-      i_score_val    => s_score_val,
-      o_max7219_load => s_max7219_load,
-      o_max7219_data => s_max7219_data,
-      o_max7219_clk  => s_max7219_clk
+      clk              => clk,
+      rst_n            => rst_n,
+      i_decod_mode     => s_decod_mode,
+      i_intensity      => s_intensity,
+      i_scan_limit     => s_scan_limit,
+      i_shutdown       => s_shutdown,
+      i_new_config_val => s_new_config_val,
+      i_score          => s_score,
+      i_score_val      => s_score_val,
+      o_max7219_load   => s_max7219_load,
+      o_max7219_data   => s_max7219_data,
+      o_max7219_clk    => s_max7219_clk
       );
 end architecture behv;

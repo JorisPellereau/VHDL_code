@@ -38,15 +38,18 @@ entity max7219_ram_sequencer is
     rst_n : in std_logic;               -- Asynchronous Reset
 
     -- CONFIG. MATRIX I/F
-    i_config_array      : in t_config_array;  -- CONFIG. Matrix
-    i_config_val        : in std_logic;       -- CONFIG. Matrix valid
-    i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    i_config_array      : in  t_config_array;  -- CONFIG. Matrix
+    i_config_val        : in  std_logic;       -- CONFIG. Matrix valid
+    i_config_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_config_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_config_done       : out std_logic;       -- CONFIG. IN RAM DONE
 
     -- SCORE I/F
-    i_score_cmd        : in t_score_array;  -- Score Command
-    i_score_val        : in std_logic;      -- Score Command Valid
-    i_score_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-
+    i_score_cmd        : in  t_score_array;  -- Score Command
+    i_score_val        : in  std_logic;      -- Score Command Valid
+    i_score_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_score_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_score_done       : out std_logic;      -- SCORE IN RAM DONE
 
     -- RAM I/F
     o_me    : out std_logic;            -- Memory Enable
@@ -196,11 +199,25 @@ begin  -- architecture behv
     end if;
   end process p_wr_ram_mngt;
 
+  p_last_addr_mngt : process (clk, rst_n) is
+  begin  -- process p_last_addr_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      o_config_last_addr <= (others => '0');
+      o_score_last_addr  <= (others => '0');
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      o_config_last_addr <= unsigned(i_config_start_addr) + unsigned(conv_std_logic_vector(C_MAX_CONFIG_CNT, o_config_last_addr'length));
+      o_score_last_addr  <= unsigned(i_score_start_addr) + unsigned(conv_std_logic_vector(C_MAX_SCORE_CNT, o_score_last_addr'length));
+
+    end if;
+  end process p_last_addr_mngt;
+
 
   -- OUTPUTS AFFECTATIONS
-  o_me    <= s_me;
-  o_we    <= s_we;
-  o_addr  <= s_addr;
-  o_wdata <= s_wdata;
-
+  o_me          <= s_me;
+  o_we          <= s_we;
+  o_addr        <= s_addr;
+  o_wdata       <= s_wdata;
+  o_config_done <= s_config_done;
+  o_score_done  <= s_score_done;
+  
 end architecture behv;
