@@ -71,7 +71,7 @@ begin  -- architecture behv
 
   -- SET CONFIG
   s_decod_mode <= x"00";
-  s_intensity  <= x"03";
+  s_intensity  <= x"00";
   s_scan_limit <= x"07";
   s_shutdown   <= x"01";
 
@@ -107,7 +107,7 @@ begin  -- architecture behv
             s_score_val   <= '1';
           else
             s_cnt_2digits <= 0;
-
+            s_score       <= (others => '0');
           end if;
         end if;
 
