@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-18
+-- Last update: 2020-05-31
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,6 +48,19 @@ architecture behv of test_top_max7219_matrix_display is
       o_max7219_clk  : out std_logic);  -- CLK
 
   end component top_max7219_matrix_display;
+
+  component max7219_checker is
+
+    generic (
+      G_DIGITS_NB : integer range 2 to 8 := 2);
+    port (
+      clk            : in std_logic;    -- Clock
+      rst_n          : in std_logic;    -- Reset
+      i_max7219_clk  : in std_logic;    -- MAX7219 CLK
+      i_max7219_data : in std_logic;    -- MAX7219 DATA
+      i_max7219_load : in std_logic);   -- MAX7219 LOAd
+
+  end component max7219_checker;
 
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
@@ -102,4 +115,21 @@ begin  -- architecture behv
       o_max7219_load => s_max7219_load,
       o_max7219_data => s_max7219_data,
       o_max7219_clk  => s_max7219_clk);
+
+
+  -- MAX7219 CHECKER
+
+  max7219_checker_0 : max7219_checker
+    generic map (
+      G_DIGITS_NB => 2)
+    port map(
+      clk            => clk,
+      rst_n          => rst_n,
+      i_max7219_clk  => s_max7219_clk,
+      i_max7219_data => s_max7219_data,
+      i_max7219_load => s_max7219_load);
+
+
+
+
 end architecture behv;
