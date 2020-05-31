@@ -29,9 +29,9 @@ add wave -noupdate -expand -group MAX7219_Checker -radix hexadecimal /test_top_m
 add wave -noupdate -expand -group MAX7219_Checker -radix hexadecimal /test_top_max7219_matrix_display/max7219_checker_0/s_max7219_clk
 add wave -noupdate -expand -group MAX7219_Checker -radix hexadecimal /test_top_max7219_matrix_display/max7219_checker_0/s_max7219_clk_r_edge
 add wave -noupdate -expand -group MAX7219_Checker -radix hexadecimal /test_top_max7219_matrix_display/max7219_checker_0/s_cnt_15_done
-add wave -noupdate -expand -group MAX7219_Checker /test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load
+add wave -noupdate -expand -group MAX7219_Checker -childformat {{{/test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load[1]} -radix hexadecimal} {{/test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load[0]} -radix hexadecimal}} -expand -subitemconfig {{/test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load[1]} {-radix hexadecimal} {/test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load[0]} {-radix hexadecimal}} /test_top_max7219_matrix_display/max7219_checker_0/s_config_after_load
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {501887394 ps} 0}
+WaveRestoreCursors {{Cursor 1} {556064410 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 225
 configure wave -valuecolwidth 100
@@ -47,4 +47,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {555217596 ps} {599368583 ps}
+WaveRestoreZoom {0 ps} {735 us}
