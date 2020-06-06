@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-05-31
+-- Last update: 2020-06-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -62,6 +62,18 @@ architecture behv of test_top_max7219_matrix_display is
 
   end component max7219_checker;
 
+  component max7219_emul is
+
+    port (
+      clk             : in  std_logic;  -- Clock
+      rst_n           : in  std_logic;  -- Reset
+      i_max7219_clk   : in  std_logic;  -- MAX7219 CLK
+      i_max7219_din   : in  std_logic;  -- MAX7219 DATA
+      i_max7219_load  : in  std_logic;  -- MAX7219 LOAd
+      o_max7219_dout : out std_logic);
+
+  end component max7219_emul;
+
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
 
@@ -73,6 +85,8 @@ architecture behv of test_top_max7219_matrix_display is
   signal s_max7219_load : std_logic;
   signal s_max7219_data : std_logic;
   signal s_max7219_clk  : std_logic;
+
+  signal s_max7219_dout : std_logic;
 
 begin  -- architecture behv
 
@@ -119,15 +133,24 @@ begin  -- architecture behv
 
   -- MAX7219 CHECKER
 
-  max7219_checker_0 : max7219_checker
-    generic map (
-      G_DIGITS_NB => 2)
-    port map(
+  -- max7219_checker_0 : max7219_checker
+  --   generic map (
+  --     G_DIGITS_NB => 2)
+  --   port map(
+  --     clk            => clk,
+  --     rst_n          => rst_n,
+  --     i_max7219_clk  => s_max7219_clk,
+  --     i_max7219_data => s_max7219_data,
+  --     i_max7219_load => s_max7219_load);
+
+  max7219_emul_0 : max7219_emul
+    port map (
       clk            => clk,
       rst_n          => rst_n,
       i_max7219_clk  => s_max7219_clk,
-      i_max7219_data => s_max7219_data,
-      i_max7219_load => s_max7219_load);
+      i_max7219_din  => s_max7219_data,
+      i_max7219_load => s_max7219_load,
+      o_max7219_dout => s_max7219_dout);
 
 
 
