@@ -18,10 +18,14 @@ WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 SRC_DIR=$(ROOT)/sources
 SCRIPTS_DIR=$(ROOT)/scripts
 
+# MODELSIM ALIAS
+vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
+vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
+vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
 
 # Library List
-LIB_MAX7219=lib_max7219
-LIB_2=lib_2
+LIB_1=lib_max7219
+#LIB_2=lib_2
 LIB_TB_TOP=lib_tb_top
 
 
@@ -42,7 +46,6 @@ all:
 	@echo "MAX7219 Tests & Simulation"
 	@echo ""
 	@echo ""
-
 	@echo "- Create Work Directory : "
 	@echo "make create_dir"
 	@echo ""
@@ -65,7 +68,7 @@ all:
 # create work dir
 create_dir:
 	cd $(ROOT); \
-	mkdir work;
+	mkdir $(WORK_DIR_NAME);
 
 # Delete files inside work dir.
 clean:
@@ -76,14 +79,12 @@ clean:
 # prepare Modelsim Library
 prepare_libs:
 	cd $(WORK_DIR); \
-	vlib ./${LIB_1}; \
-	vlib ./${LIB_2}; \
-	vlib ./$(LIB_TB_TOP);
+	$(vlib) ./${LIB_1}; \
+	$(vlib) ./$(LIB_TB_TOP);
 
 create_libs:
 	cd $(WORK_DIR); \
-	vmap $(LIB_TB_TOP) ./$(LIB_1);	
-	vmap $(LIB_TB_TOP) ./$(LIB_2);	
+	$(vmap) $(LIB_TB_TOP) ./$(LIB_1);		
 
 
 # prepare and create_dir
