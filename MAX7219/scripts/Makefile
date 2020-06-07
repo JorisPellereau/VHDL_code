@@ -4,21 +4,23 @@
 
 # Repository Organization
 # /(ROOT)
-# 	|__ /scripts => Makefile
-#	|__ /sources => VHD - V files
-#	|__ /work    => Modelsim Libs
+# 	|__ /scripts    => Scripts - Makefile
+#	|__ /sources    => Design VHD - V files
+#	|__ /tb_sources => TestBench  files
+#	|__ /do_files   => Do Files
 
-
+# MAKEFILE for MAX7219 Tests
 
 # 
 ROOT=$(PWD)/..
-WORK_DIR=$(ROOT)/work
+WORK_DIR_NAME=MAX7219_WORK
+WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 SRC_DIR=$(ROOT)/sources
 SCRIPTS_DIR=$(ROOT)/scripts
 
 
 # Library List
-LIB_1=lib_1
+LIB_MAX7219=lib_max7219
 LIB_2=lib_2
 LIB_TB_TOP=lib_tb_top
 
@@ -37,16 +39,23 @@ VLOG1=vlog -nologo -work
 all: 
 	@echo "Makefile for compilation & Simulation with Modelsim"
 	@echo ""
-	@echo "Clean work reposotory : "
+	@echo "MAX7219 Tests & Simulation"
+	@echo ""
+	@echo ""
+
+	@echo "- Create Work Directory : "
+	@echo "make create_dir"
+	@echo ""
+	@echo "- Clean work repository : "
 	@echo "make clean"
 	@echo ""
-	@echo "Prepare Modelsim Library :"
+	@echo "- Prepare Modelsim Library :"
 	@echo "make libs"
 	@echo ""
-	@echo "Compile VHD files :"
+	@echo "- Compile VHD files :"
 	@echo "make compile_vhd_src"
 	@echo ""
-	@echo "Compile V files :"
+	@echo "- Compile V files :"
 	@echo "make compile_v_src"
 	@echo ""
 	@echo "Run VHD simulation :"
