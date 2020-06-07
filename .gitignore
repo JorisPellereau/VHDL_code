@@ -59,3 +59,17 @@ I2C/24LC02B_controller/#master_i2c_24lc02b\.vhd#
 UART/uart_pinball/#test_reg_ctrl.vhd#
 
 WS2812_manage/sources/#pkg_ws2812.vhd#
+
+MAX7219/MAX7219_WORK/lib_max7219/_info
+
+*.qdb
+
+MAX7219/MAX7219_WORK/lib_max7219/_vmake
+
+*.qpg
+
+*.qtl
+
+MAX7219/MAX7219_WORK/lib_tb_top/_info
+
+*.ini

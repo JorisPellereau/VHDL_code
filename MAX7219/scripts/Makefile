@@ -16,12 +16,15 @@ ROOT=$(PWD)/..
 WORK_DIR_NAME=MAX7219_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 SRC_DIR=$(ROOT)/sources
+SRC_RAM_VHD=$(ROOT)/../RAM/TDPRAM
 SCRIPTS_DIR=$(ROOT)/scripts
 
 # MODELSIM ALIAS
 vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
 vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
 vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
+vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
+vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 
 # Library List
 LIB_1=lib_max7219
@@ -31,12 +34,12 @@ LIB_TB_TOP=lib_tb_top
 
 
 # .vhd file compilation
-VCOM1=vcom -nologo -work
+#VCOM1=$(vcom) -nologo -work
 
 
 
 # .v file compilation
-VLOG1=vlog -nologo -work
+#VLOG1=$(vlog) -nologo -work
 
 
 
@@ -55,7 +58,7 @@ all:
 	@echo "- Prepare Modelsim Library :"
 	@echo "make libs"
 	@echo ""
-	@echo "- Compile VHD files :"
+	@echo "- Compile Design - VHD files :"
 	@echo "make compile_vhd_src"
 	@echo ""
 	@echo "- Compile V files :"
@@ -92,10 +95,11 @@ libs:  prepare_libs create_libs
 
 
 # List of vhd file
-src_vhd=	$(SRC_DIR)/file_1.vhd \
-		$(SRC_DIR)/file_2.vhd \
-		$(SRC_DIR)/file_3.vhd \
-		$(SRC_DIR)/file_4.vhd
+src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
+		$(SRC_DIR)/max7219_if.vhd \
+		$(SRC_DIR)/max7219_ram_decod.vhd \
+		$(SRC_RAM_VHD)/tdpram_sclk.vhd \
+		$(SRC_DIR)/max7219_cmd_decod.vhd
 
 
 # List of v file
@@ -108,9 +112,9 @@ src_v=		$(SRC_DIR)/file_1.v \
 
 
 # Compile vhd files in LIB_TB_TOP
-compile_vhd_src : clean libs
+compile_vhd_src :
 	cd $(WORK_DIR); \
-	$(VCOM1) $(LIB_TB_TOP) $(src_vhd);
+	$(vcom) -work  ${LIB_1} $(src_vhd);
 
 
 # Compile v files in LIB_TB_TOP
