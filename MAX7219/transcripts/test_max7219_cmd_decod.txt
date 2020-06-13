@@ -1,0 +1,18 @@
+# vsim -novopt -t ps lib_tb_top.test_max7219_cmd_decod -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/test_max7219_cmd_decod.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_max7219_cmd_decod.do" 
+# Start time: 14:42:13 on Jun 13,2020
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.math_real(body)
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_cmd_decod(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# do /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_max7219_cmd_decod.do
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+run
+run

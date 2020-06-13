@@ -4,10 +4,12 @@
 
 # Repository Organization
 # /(ROOT)
-# 	|__ /scripts    => Scripts - Makefile
-#	|__ /sources    => Design VHD - V files
-#	|__ /tb_sources => TestBench  files
-#	|__ /do_files   => Do Files
+# 	|__ /scripts        => Scripts - Makefile
+#	|__ /sources        => Design VHD - V files
+#	|__ /tb_sources     => TestBench  files
+#	|__ /do_files       => Do Files
+#	     |__ /run_files => Run .do
+#	     |__ /waves     => Waves .do
 
 # MAKEFILE for MAX7219 Tests
 
@@ -17,7 +19,10 @@ WORK_DIR_NAME=MAX7219_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 SRC_DIR=$(ROOT)/sources
 SRC_RAM_VHD=$(ROOT)/../RAM/TDPRAM
+TB_SRC_DIR=$(ROOT)/tb_sources
 SCRIPTS_DIR=$(ROOT)/scripts
+RUN_DO_DIR=$(ROOT)/do_files/run_files
+TRANSCRIPTS_DIR=$(ROOT)/transcripts
 
 # MODELSIM ALIAS
 vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
@@ -44,11 +49,12 @@ LIB_TB_TOP=lib_tb_top
 
 
 all: 
+	@echo ""
 	@echo "Makefile for compilation & Simulation with Modelsim"
 	@echo ""
 	@echo "MAX7219 Tests & Simulation"
 	@echo ""
-	@echo ""
+	@echo "======     PROJECT CONFIGURATION      ======"
 	@echo "- Create Work Directory : "
 	@echo "make create_dir"
 	@echo ""
@@ -58,28 +64,52 @@ all:
 	@echo "- Prepare Modelsim Library :"
 	@echo "make libs"
 	@echo ""
+	@echo "============================================"
+	@echo ""
+	@echo ""
+	@echo "====== SOURCES COMPILATIONS           ======"
 	@echo "- Compile Design - VHD files :"
 	@echo "make compile_vhd_src"
 	@echo ""
-	@echo "- Compile V files :"
+	@echo "- Compile Design - V files :"
 	@echo "make compile_v_src"
 	@echo ""
-	@echo "Run VHD simulation :"
-	@echo "make run_vhd_1"
+	@echo ""
+	@echo ""
+	@echo "============================================"
+	@echo ""
+	@echo ""
+	@echo "====== TestBench SOURCES COMPILATIONS ======"
+	@echo "- Compile TestBench sources - VHD files :"
+	@echo "make compile_tb_vhd_src"
+	@echo ""
+	@echo "============================================"
+	@echo ""
+	@echo ""
+	@echo "====== RUN TESTS MAX7219 ======"
+	@echo "- Run test : MAX7219_CMD_DECOD :"
+	@echo "make run_test_max7219_cmd_decod"
+	@echo ""
+	@echo ""
+	@echo "============================================"
 
 
-# create work dir
+
+# == PREPARE PROJECT ==
 create_dir:
 	cd $(ROOT); \
 	mkdir $(WORK_DIR_NAME);
+# ======================
 
-# Delete files inside work dir.
+
+# == CLEAN PROJECT ==
 clean:
 	cd $(WORK_DIR); \
 	rm -rRf *;
+# ====================
 
 
-# prepare Modelsim Library
+# == PREPARE MODELSIM LIBRARY ==
 prepare_libs:
 	cd $(WORK_DIR); \
 	$(vlib) ./${LIB_1}; \
@@ -89,39 +119,54 @@ create_libs:
 	cd $(WORK_DIR); \
 	$(vmap) $(LIB_TB_TOP) ./$(LIB_1);		
 
-
-# prepare and create_dir
 libs:  prepare_libs create_libs
+# =============================
 
 
-# List of vhd file
+# == VHD FILES LIST ==
 src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_if.vhd \
 		$(SRC_DIR)/max7219_ram_decod.vhd \
 		$(SRC_RAM_VHD)/tdpram_sclk.vhd \
 		$(SRC_DIR)/max7219_cmd_decod.vhd
 
+src_tb_vhd=	$(TB_SRC_DIR)/test_max7219_cmd_decod.vhd \
+# =====================
 
-# List of v file
+
+# == V FILES LIST ==
 src_v=		$(SRC_DIR)/file_1.v \
 		$(SRC_DIR)/file_2.v \
 		$(SRC_DIR)/file_3.v \
 		$(SRC_DIR)/file_4.v
+# ==================
 
 
-
-
-# Compile vhd files in LIB_TB_TOP
+# == COMPIlES VHD SOURCES FILES ==
 compile_vhd_src :
 	cd $(WORK_DIR); \
 	$(vcom) -work  ${LIB_1} $(src_vhd);
 
 
-# Compile v files in LIB_TB_TOP
-compile_v_src : clean libs
+compile_tb_vhd_src :
 	cd $(WORK_DIR); \
-	$(VLOG1) $(LIB_TB_TOP) $(src_v);
+	$(vcom) -work $(LIB_TB_TOP) $(src_tb_vhd);
+# ================================
 
+
+# == TEST1 ==
+entity_test1=test_max7219_cmd_decod
+run_test1=run_max7219_cmd_decod.do
+trans_test1=test_max7219_cmd_decod.txt
+run_test_max7219_cmd_decod : clean libs compile_vhd_src compile_tb_vhd_src
+	cd $(WORK_DIR); \
+	$(vsim)  -novopt -t ps $(LIB_TB_TOP).$(entity_test1) -l $(TRANSCRIPTS_DIR)/$(trans_test1) -do $(RUN_DO_DIR)/$(run_test1);
+
+# Compile v files in LIB_TB_TOP
+#compile_v_src : clean libs compile_vhd_src compile_tb_vhd_src
+#	cd $(WORK_DIR); \
+#	$(VLOG1) $(LIB_TB_TOP) $(src_v);
+	
 
 # Launch VHD simulation in GUI
 run_vhd_1 :	compile_vhd_src
