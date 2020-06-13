@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-05-02
+-- Last update: 2020-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -33,6 +33,22 @@ end entity test_max7219_cmd_decod;
 
 architecture behv of test_max7219_cmd_decod is
 
+  -- COMPONENTS
+  component max7219_emul is
+    generic(
+          G_MATRIX_I : integer := 0);
+    port (
+      clk            : in  std_logic;
+      rst_n          : in  std_logic;
+      i_max7219_clk  : in  std_logic;
+      i_max7219_din  : in  std_logic;
+      i_max7219_load : in  std_logic;
+      o_max7219_dout : out std_logic);
+
+  end component max7219_emul;
+
+
+
   -- INTERNAL SIGNALS
   signal clk   : std_logic := '0';
   signal rst_n : std_logic := '1';
@@ -53,6 +69,8 @@ architecture behv of test_max7219_cmd_decod is
   signal s_ptr_val      : std_logic;
   signal s_loop         : std_logic;
   signal s_ptr_equality : std_logic;
+
+  signal s_max7219_dout : std_logic;
 
 begin  -- architecture behv
 
@@ -84,6 +102,147 @@ begin  -- architecture behv
 
     wait for 10 us;
     -- INIT RAM
+    -- SET DECODE MODE to 0x00
+    s_addr  <= x"00";
+    s_wdata <= x"1900";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET INTENSITY to 0x00
+    s_addr  <= x"01";
+    s_wdata <= x"1A00";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET SCAN LIMIT to 0x07 : display all digits
+    s_addr  <= x"02";
+    s_wdata <= x"1B07";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET SHUTDOWN to 0x01 : Normal Mode
+    s_addr  <= x"03";
+    s_wdata <= x"1C01";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+
+    -- == DISPLAY 1 symbol ==
+    -- SET DIGIT_0 to 0x00
+    s_addr  <= x"04";
+    s_wdata <= x"1100";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_1 to 0x01
+    s_addr  <= x"05";
+    s_wdata <= x"1201";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_2 to 0x7F
+    s_addr  <= x"06";
+    s_wdata <= x"137F";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_3 to 0x21
+    s_addr  <= x"07";
+    s_wdata <= x"1421";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_4 to 0x00
+    s_addr  <= x"08";
+    s_wdata <= x"1500";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_5 to 0x00
+    s_addr  <= x"09";
+    s_wdata <= x"1600";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_6 to 0x00
+    s_addr  <= x"0A";
+    s_wdata <= x"1700";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+
+    -- SET DIGIT_7 to 0x00
+    s_addr  <= x"0B";
+    s_wdata <= x"1800";
+    wait until falling_edge(clk);
+    s_me    <= '1';
+    s_we    <= '1';
+    wait until falling_edge(clk);
+    s_me    <= '0';
+    s_we    <= '0';
+    
+    
+    s_start_ptr <= x"00";
+    s_last_ptr  <= x"0C";
+    wait until falling_edge(clk);
+    s_ptr_val   <= '1';
+    s_en        <= '1';
+    wait until falling_edge(clk);
+    s_ptr_val   <= '0';
+
+
+    wait for 100 us;
+
+
+
+
+
+    wait;
+
+    -- Old test
     for i in 0 to 255 loop
 
       s_addr      <= std_logic_vector(to_unsigned(i, s_addr'length));
@@ -198,5 +357,21 @@ begin  -- architecture behv
       o_max7219_load => s_max7219_load,
       o_max7219_data => s_max7219_data,
       o_max7219_clk  => s_max7219_clk);  -- MAX7219 CLK
+
+
+
+  -- MAX7219 MODULE EMUL - Checker
+  max7219_emul_inst : max7219_emul
+    generic map(
+      G_MATRIX_I => 0
+    )
+    port map (
+      clk            => clk,
+      rst_n          => rst_n,
+      i_max7219_clk  => s_max7219_clk,
+      i_max7219_din  => s_max7219_data,
+      i_max7219_load => s_max7219_load,
+      o_max7219_dout => s_max7219_dout
+      );
 
 end architecture behv;

@@ -23,6 +23,8 @@ TB_SRC_DIR=$(ROOT)/tb_sources
 SCRIPTS_DIR=$(ROOT)/scripts
 RUN_DO_DIR=$(ROOT)/do_files/run_files
 TRANSCRIPTS_DIR=$(ROOT)/transcripts
+TB_V_SRC_DIR=$(ROOT)/../../Verilog/TB_modules
+WLF_DIR=$(ROOT)/WLF
 
 # MODELSIM ALIAS
 vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
@@ -74,19 +76,16 @@ all:
 	@echo "- Compile Design - V files :"
 	@echo "make compile_v_src"
 	@echo ""
-	@echo ""
-	@echo ""
-	@echo "============================================"
-	@echo ""
-	@echo ""
-	@echo "====== TestBench SOURCES COMPILATIONS ======"
 	@echo "- Compile TestBench sources - VHD files :"
 	@echo "make compile_tb_vhd_src"
 	@echo ""
+	@echo "- Compile all :"
+	@echo "make compile_all"
+	@echo ""
 	@echo "============================================"
 	@echo ""
 	@echo ""
-	@echo "====== RUN TESTS MAX7219 ======"
+	@echo "======     RUN TESTS MAX7219          ======"
 	@echo "- Run test : MAX7219_CMD_DECOD :"
 	@echo "make run_test_max7219_cmd_decod"
 	@echo ""
@@ -139,6 +138,8 @@ src_v=		$(SRC_DIR)/file_1.v \
 		$(SRC_DIR)/file_2.v \
 		$(SRC_DIR)/file_3.v \
 		$(SRC_DIR)/file_4.v
+
+src_tb_v=	$(TB_V_SRC_DIR)/max7219_emul.sv	
 # ==================
 
 
@@ -153,25 +154,24 @@ compile_tb_vhd_src :
 	$(vcom) -work $(LIB_TB_TOP) $(src_tb_vhd);
 # ================================
 
+# == COMPILES V FILES ==
+compile_tb_v_files :
+	cd $(WORK_DIR); \
+	$(vlog) -work $(LIB_TB_TOP) $(src_tb_v)
+# ======================
+
+compile_all: clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 
 # == TEST1 ==
 entity_test1=test_max7219_cmd_decod
 run_test1=run_max7219_cmd_decod.do
 trans_test1=test_max7219_cmd_decod.txt
-run_test_max7219_cmd_decod : clean libs compile_vhd_src compile_tb_vhd_src
+wave_test1=wave_test_max7219_cmd_decod
+run_test_max7219_cmd_decod : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps $(LIB_TB_TOP).$(entity_test1) -l $(TRANSCRIPTS_DIR)/$(trans_test1) -do $(RUN_DO_DIR)/$(run_test1);
-
-# Compile v files in LIB_TB_TOP
-#compile_v_src : clean libs compile_vhd_src compile_tb_vhd_src
-#	cd $(WORK_DIR); \
-#	$(VLOG1) $(LIB_TB_TOP) $(src_v);
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test1).wlf $(LIB_TB_TOP).$(entity_test1) -l $(TRANSCRIPTS_DIR)/$(trans_test1) -do $(RUN_DO_DIR)/$(run_test1);
 	
-
-# Launch VHD simulation in GUI
-run_vhd_1 :	compile_vhd_src
-		cd $(WORK_DIR); \
-		vsim  -novopt -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
+# ===========
 
 # Launch modelsim Simulation in console
 run_csl_1 : 	compile_vhd_src

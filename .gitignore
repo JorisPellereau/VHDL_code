@@ -73,3 +73,5 @@ MAX7219/MAX7219_WORK/lib_max7219/_vmake
 MAX7219/MAX7219_WORK/lib_tb_top/_info
 
 *.ini
+
+*.wlf
