@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-05-09
+-- Last update: 2020-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,7 +31,20 @@ entity test_max7219_matrix_display is
 end entity test_max7219_matrix_display;
 
 architecture behv of test_max7219_matrix_display is
+  -- COMPONENTS
+  component max7219_emul is
+    generic(
+          G_MATRIX_I : integer := 0);
+    port (
+      clk            : in  std_logic;
+      rst_n          : in  std_logic;
+      i_max7219_clk  : in  std_logic;
+      i_max7219_din  : in  std_logic;
+      i_max7219_load : in  std_logic;
+      o_max7219_dout : out std_logic);
 
+  end component max7219_emul;
+  
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
 
@@ -51,6 +64,9 @@ architecture behv of test_max7219_matrix_display is
   signal s_max7219_data   : std_logic;
   signal s_max7219_clk    : std_logic;
 
+  signal s_max7219_dout_m0 : std_logic;
+  signal s_max7219_dout_m1 : std_logic;
+  
 begin  -- architecture behv
 
   -- purpose: this process generate the input clock
@@ -103,6 +119,9 @@ begin  -- architecture behv
 
     wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
+    wait;
+
+    -- OLD TEST
     s_score     <= x"00000099";
     wait until falling_edge(clk);
     s_score_val <= '1';
@@ -138,4 +157,34 @@ begin  -- architecture behv
       o_max7219_data   => s_max7219_data,
       o_max7219_clk    => s_max7219_clk
       );
+
+
+  -- MAX7219 MODULE EMUL - Checker
+  max7219_emul_inst_m0 : max7219_emul
+    generic map(
+      G_MATRIX_I => 0
+    )
+    port map (
+      clk            => clk,
+      rst_n          => rst_n,
+      i_max7219_clk  => s_max7219_clk,
+      i_max7219_din  => s_max7219_data,
+      i_max7219_load => s_max7219_load,
+      o_max7219_dout => s_max7219_dout_m0
+      );
+
+  -- MAX7219 MODULE EMUL - Checker
+  max7219_emul_inst_m1 : max7219_emul
+    generic map(
+      G_MATRIX_I => 1
+    )
+    port map (
+      clk            => clk,
+      rst_n          => rst_n,
+      i_max7219_clk  => s_max7219_clk,
+      i_max7219_din  => s_max7219_dout_m0,
+      i_max7219_load => s_max7219_load,
+      o_max7219_dout => s_max7219_dout_m1
+      );
+  
 end architecture behv;

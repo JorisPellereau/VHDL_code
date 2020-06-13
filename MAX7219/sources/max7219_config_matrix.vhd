@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-05-09
+-- Last update: 2020-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -64,8 +64,8 @@ begin  -- architecture behv
         for i in 0 to G_DIGITS_NB - 1 loop
           o_config_array(i)                 <= x"09" & i_decod_mode;
           o_config_array(i + 1*G_DIGITS_NB) <= x"0A" & i_intensity;
-          o_config_array(1 + 2*G_DIGITS_NB) <= x"0B" & i_scan_limit;
-          o_config_array(1 + 3*G_DIGITS_NB) <= x"0C" & i_shutdown;
+          o_config_array(i + 2*G_DIGITS_NB) <= x"0B" & i_scan_limit;
+          o_config_array(i + 3*G_DIGITS_NB) <= x"0C" & i_shutdown;
         end loop;
         s_set_done <= '1';
       else

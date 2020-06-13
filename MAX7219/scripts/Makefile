@@ -17,13 +17,17 @@
 ROOT=$(PWD)/..
 WORK_DIR_NAME=MAX7219_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
+
+# == SOURCES DIRECTORY ==
 SRC_DIR=$(ROOT)/sources
 SRC_RAM_VHD=$(ROOT)/../RAM/TDPRAM
 TB_SRC_DIR=$(ROOT)/tb_sources
+TB_V_SRC_DIR=$(ROOT)/../../Verilog/TB_modules
+SRC_MISC_VHD=$(ROOT)/../MISC/Digits_decod
+
 SCRIPTS_DIR=$(ROOT)/scripts
 RUN_DO_DIR=$(ROOT)/do_files/run_files
 TRANSCRIPTS_DIR=$(ROOT)/transcripts
-TB_V_SRC_DIR=$(ROOT)/../../Verilog/TB_modules
 WLF_DIR=$(ROOT)/WLF
 
 # MODELSIM ALIAS
@@ -89,7 +93,8 @@ all:
 	@echo "- Run test : MAX7219_CMD_DECOD :"
 	@echo "make run_test_max7219_cmd_decod"
 	@echo ""
-	@echo ""
+	@echo "- Run test : MAX7219_MATRIX_DISPLAY"
+	@echo "make run_test_max7219_matrix_display"
 	@echo "============================================"
 
 
@@ -127,9 +132,17 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_if.vhd \
 		$(SRC_DIR)/max7219_ram_decod.vhd \
 		$(SRC_RAM_VHD)/tdpram_sclk.vhd \
-		$(SRC_DIR)/max7219_cmd_decod.vhd
+		$(SRC_DIR)/max7219_cmd_decod.vhd \
+		$(SRC_DIR)/max7219_ram_sequencer.vhd\
+		$(SRC_DIR)/max7219_display_manager.vhd \
+		$(SRC_DIR)/max7219_config_matrix.vhd \
+		$(SRC_DIR)/max7219_cmd_organizer.vhd \
+		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
+		$(SRC_DIR)/max7219_matrix_display.vhd \
+
 
 src_tb_vhd=	$(TB_SRC_DIR)/test_max7219_cmd_decod.vhd \
+		$(TB_SRC_DIR)/test_max7219_matrix_display.vhd
 # =====================
 
 
@@ -170,8 +183,21 @@ wave_test1=wave_test_max7219_cmd_decod
 run_test_max7219_cmd_decod : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 	cd $(WORK_DIR); \
 	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test1).wlf $(LIB_TB_TOP).$(entity_test1) -l $(TRANSCRIPTS_DIR)/$(trans_test1) -do $(RUN_DO_DIR)/$(run_test1);
-	
 # ===========
+
+
+# TEST 2
+# == TEST MATRIX DISPLAY ==
+entity_test2=test_max7219_matrix_display
+run_test2=run_max7219_matrix_display.do
+trans_test2=test_max7219_matrix_display.txt
+wave_test2=wave_test_max7219_matrix_display
+run_test_max7219_matrix_display : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+	cd $(WORK_DIR); \
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test2).wlf $(LIB_TB_TOP).$(entity_test2) -l $(TRANSCRIPTS_DIR)/$(trans_test2) -do $(RUN_DO_DIR)/$(run_test2);
+
+# =========================
+
 
 # Launch modelsim Simulation in console
 run_csl_1 : 	compile_vhd_src
