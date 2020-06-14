@@ -160,7 +160,8 @@ src_v=		$(SRC_DIR)/file_1.v \
 		$(SRC_DIR)/file_3.v \
 		$(SRC_DIR)/file_4.v
 
-src_tb_v=	$(TB_V_SRC_DIR)/max7219_emul.sv	
+src_tb_v=	$(TB_V_SRC_DIR)/max7219_emul.sv \
+		$(TB_V_SRC_DIR)/max7219_display_n_matrix.sv
 # ==================
 
 

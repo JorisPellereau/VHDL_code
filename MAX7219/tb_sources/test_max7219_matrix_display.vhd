@@ -31,20 +31,36 @@ entity test_max7219_matrix_display is
 end entity test_max7219_matrix_display;
 
 architecture behv of test_max7219_matrix_display is
+
+  -- TYPE
+  type t_matrix_line_array is array (0 to 7) of std_logic_vector(8*8 - 1 downto 0);
   -- COMPONENTS
   component max7219_emul is
     generic(
-          G_MATRIX_I : integer := 0);
+      G_MATRIX_I : integer := 0);
     port (
-      clk            : in  std_logic;
-      rst_n          : in  std_logic;
-      i_max7219_clk  : in  std_logic;
-      i_max7219_din  : in  std_logic;
-      i_max7219_load : in  std_logic;
-      o_max7219_dout : out std_logic);
+      clk             : in  std_logic;
+      rst_n           : in  std_logic;
+      i_max7219_clk   : in  std_logic;
+      i_max7219_din   : in  std_logic;
+      i_max7219_load  : in  std_logic;
+      o_max7219_dout  : out std_logic;
+      o_line_char     : out std_logic_vector(8*8 - 1 downto 0);
+      o_line_char_val : out std_logic);
 
   end component max7219_emul;
-  
+
+  component max7219_display_n_matrix is
+    generic(
+      G_NB_MATRIX : integer := 2);
+    port (
+      clk              : in std_logic;
+      rst_n            : in std_logic;
+      line_val         : in std_logic;
+      line_char_matrix : in t_matrix_line_array);
+  end component max7219_display_n_matrix;
+
+
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
 
@@ -64,9 +80,15 @@ architecture behv of test_max7219_matrix_display is
   signal s_max7219_data   : std_logic;
   signal s_max7219_clk    : std_logic;
 
-  signal s_max7219_dout_m0 : std_logic;
-  signal s_max7219_dout_m1 : std_logic;
-  
+  signal s_max7219_dout_m0  : std_logic;
+  signal s_line_char_m0     : std_logic_vector(8*8 - 1 downto 0);
+  signal s_max7219_dout_m1  : std_logic;
+  signal s_line_char_m1     : std_logic_vector(8*8 - 1 downto 0);
+  signal s_line_val         : std_logic;
+  signal s_line_matrix      : t_matrix_line_array;
+  signal s_line_char_val_m0 : std_logic;
+  signal s_line_char_val_m1 : std_logic;
+
 begin  -- architecture behv
 
   -- purpose: this process generate the input clock
@@ -118,7 +140,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us;                    --1000*C_CLK_HALF_PERIOD;
 
     -- DISPLAY 99 on Matrix
     s_score     <= x"00000063";
@@ -127,7 +149,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us;                    --1000*C_CLK_HALF_PERIOD;
 
     -- DISPLAY 50 on Matrix
     s_score     <= x"00000032";
@@ -136,7 +158,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us;                    --1000*C_CLK_HALF_PERIOD;
 
     -- DISPLAY 01 on Matrix
     s_score     <= x"00000001";
@@ -145,7 +167,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us;                    --1000*C_CLK_HALF_PERIOD;
 
 
     -- DISPLAY 98 on Matrix
@@ -155,8 +177,8 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_score_val <= '0';
 
-    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
-    
+    wait for 600 us;                    --1000*C_CLK_HALF_PERIOD;
+
     wait;
 
     -- OLD TEST
@@ -201,28 +223,52 @@ begin  -- architecture behv
   max7219_emul_inst_m0 : max7219_emul
     generic map(
       G_MATRIX_I => 0
-    )
+      )
     port map (
-      clk            => clk,
-      rst_n          => rst_n,
-      i_max7219_clk  => s_max7219_clk,
-      i_max7219_din  => s_max7219_data,
-      i_max7219_load => s_max7219_load,
-      o_max7219_dout => s_max7219_dout_m0
+      clk             => clk,
+      rst_n           => rst_n,
+      i_max7219_clk   => s_max7219_clk,
+      i_max7219_din   => s_max7219_data,
+      i_max7219_load  => s_max7219_load,
+      o_max7219_dout  => s_max7219_dout_m0,
+      o_line_char     => s_line_char_m0,
+      o_line_char_val => s_line_char_val_m0
       );
 
   -- MAX7219 MODULE EMUL - Checker
   max7219_emul_inst_m1 : max7219_emul
     generic map(
       G_MATRIX_I => 1
-    )
+      )
     port map (
-      clk            => clk,
-      rst_n          => rst_n,
-      i_max7219_clk  => s_max7219_clk,
-      i_max7219_din  => s_max7219_dout_m0,
-      i_max7219_load => s_max7219_load,
-      o_max7219_dout => s_max7219_dout_m1
+      clk             => clk,
+      rst_n           => rst_n,
+      i_max7219_clk   => s_max7219_clk,
+      i_max7219_din   => s_max7219_dout_m0,
+      i_max7219_load  => s_max7219_load,
+      o_max7219_dout  => s_max7219_dout_m1,
+      o_line_char     => s_line_char_m1,
+      o_line_char_val => s_line_char_val_m1
       );
-  
+
+
+  s_line_val       <= s_line_char_val_m0 or s_line_char_val_m1;
+  s_line_matrix(0) <= s_line_char_m0;
+  s_line_matrix(1) <= s_line_char_m1;
+  s_line_matrix(2) <= (others => '0');
+  s_line_matrix(3) <= (others => '0');
+  s_line_matrix(4) <= (others => '0');
+  s_line_matrix(5) <= (others => '0');
+  s_line_matrix(6) <= (others => '0');
+  s_line_matrix(7) <= (others => '0');
+  -- MAX7219 DISPLAY N MATRIX INST
+  max7219_display_n_matrix_0 : max7219_display_n_matrix
+    generic map (
+      G_NB_MATRIX => 2)
+    port map(
+      clk              => clk,
+      rst_n            => rst_n,
+      line_val         => s_line_val,
+      line_char_matrix => s_line_matrix);
+
 end architecture behv;
