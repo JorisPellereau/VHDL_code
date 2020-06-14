@@ -1,5 +1,5 @@
 # vsim -novopt -t ps -wlf /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../WLF/wave_test_max7219_matrix_display.wlf lib_tb_top.test_max7219_matrix_display -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/test_max7219_matrix_display.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_max7219_matrix_display.do" 
-# Start time: 11:26:43 on Jun 14,2020
+# Start time: 11:45:04 on Jun 14,2020
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -587,121 +587,720 @@ run
 #      *  
 #      *  
 #      *  
-# REGISTER UPDATE - Matrix           1
-#            755.74 us
-# 
-# Register @0: No-Op        : 00
-# Register @1: Digit_0      : 3e
-# Register @2: Digit_1      : 49
-# Register @3: Digit_2      : 49
-# Register @4: Digit_3      : 49
-# Register @5: Digit_4      : 32
-# Register @6: Digit_5      : 00
-# Register @7: Digit_6      : 00
-# Register @8: Digit_7      : 00
-# Register @9: Decode_Mode  : 00
-# Register @A: Intensity    : 07
-# Register @B: Scan_Limit   : 07
-# Register @C: Shutdown     : 01
-# Register @F: Display_Test : 00
-# 
-# 
-# Matrix           1
-#         
-#     *** 
-#    *   *
-#    *   *
-#     ****
-#        *
-#    *   *
-#     *** 
-# REGISTER UPDATE - Matrix           0
-#            755.74 us
-# 
-# Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 40
-# Register @6: Digit_5      : 00
-# Register @7: Digit_6      : 00
-# Register @8: Digit_7      : 00
-# Register @9: Decode_Mode  : 00
-# Register @A: Intensity    : 07
-# Register @B: Scan_Limit   : 07
-# Register @C: Shutdown     : 01
-# Register @F: Display_Test : 00
-# 
-# 
-# Matrix           0
-#         
-#    *****
-#        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
-# REGISTER UPDATE - Matrix           1
-#            820.34 us
-# 
-# Register @0: No-Op        : 00
-# Register @1: Digit_0      : 3e
-# Register @2: Digit_1      : 49
-# Register @3: Digit_2      : 49
-# Register @4: Digit_3      : 49
-# Register @5: Digit_4      : 32
-# Register @6: Digit_5      : 00
-# Register @7: Digit_6      : 00
-# Register @8: Digit_7      : 00
-# Register @9: Decode_Mode  : 00
-# Register @A: Intensity    : 07
-# Register @B: Scan_Limit   : 07
-# Register @C: Shutdown     : 01
-# Register @F: Display_Test : 00
-# 
-# 
-# Matrix           1
-#         
-#     *** 
-#    *   *
-#    *   *
-#     ****
-#        *
-#    *   *
-#     *** 
-# REGISTER UPDATE - Matrix           0
-#            820.34 us
-# 
-# Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 40
-# Register @6: Digit_5      : 00
-# Register @7: Digit_6      : 00
-# Register @8: Digit_7      : 00
-# Register @9: Decode_Mode  : 00
-# Register @A: Intensity    : 07
-# Register @B: Scan_Limit   : 07
-# Register @C: Shutdown     : 01
-# Register @F: Display_Test : 00
-# 
-# 
-# Matrix           0
-#         
-#    *****
-#        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
-add wave -position insertpoint sim:/test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/*
-write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/jorisp/GitHub/VHDL_code/MAX7219/do_files/waves/wave_test_max7219_matrix_display.do
 restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
+# ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
+# This port will contribute value (U) to the signal network.
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# REGISTER UPDATE - Matrix           1
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# ** Warning: CONV_INTEGER(UNSIGNED) input array has 32 bits and MSB is not zero.
+#    Time: 303100 ns  Iteration: 1  Instance: /test_max7219_matrix_display/max7219_matrix_display_inst_0/digits_decod_shift_inst_0/uint_division_inst_0
+# ** Warning: CONV_INTEGER(UNSIGNED) input array has 32 bits and MSB is not zero.
+#    Time: 303120 ns  Iteration: 1  Instance: /test_max7219_matrix_display/max7219_matrix_display_inst_0/digits_decod_shift_inst_0/uint_division_inst_0
+# REGISTER UPDATE - Matrix           1
+#            368.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#        *
+#        *
+#         
+#         
+#         
+#        *
+# REGISTER UPDATE - Matrix           0
+#            368.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#        *
+#         
+#        *
+#         
+#        *
+#         
+#        *
+#         
+# REGISTER UPDATE - Matrix           1
+#            432.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#       * 
+#        *
+#        *
+#       * 
+#         
+#         
+#       **
+# REGISTER UPDATE - Matrix           0
+#            432.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            497.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      ** 
+#        *
+#        *
+#       * 
+#      *  
+#         
+#      ***
+# REGISTER UPDATE - Matrix           0
+#            497.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            562.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 43
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#        *
+#        *
+#       * 
+#      *  
+#     *   
+#     ****
+# REGISTER UPDATE - Matrix           0
+#            562.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+run
+# REGISTER UPDATE - Matrix           1
+#            626.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 43
+# Register @5: Digit_4      : 21
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#        *
+#       * 
+#      *  
+#     *   
+#    *****
+# REGISTER UPDATE - Matrix           0
+#            626.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+# REGISTER UPDATE - Matrix           1
+#            691.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 43
+# Register @5: Digit_4      : 21
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#        *
+#       * 
+#      *  
+#     *   
+#    *****
+# REGISTER UPDATE - Matrix           0
+#            691.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           1
+#            755.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 43
+# Register @5: Digit_4      : 21
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#        *
+#       * 
+#      *  
+#     *   
+#    *****
+# REGISTER UPDATE - Matrix           0
+#            755.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           1
+#            820.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 31
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 45
+# Register @4: Digit_3      : 43
+# Register @5: Digit_4      : 21
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#        *
+#       * 
+#      *  
+#     *   
+#    *****
+# REGISTER UPDATE - Matrix           0
+#            820.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 55
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+run
+restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
 # ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
 # This port will contribute value (U) to the signal network.
 run
@@ -1154,6 +1753,7 @@ run
 #      *  
 #      *  
 #      *  
+run
 # REGISTER UPDATE - Matrix           1
 #            626.54 us
 # 
@@ -1322,8 +1922,1451 @@ run
 #      *  
 #      *  
 #      *  
+# REGISTER UPDATE - Matrix           1
+#            820.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            820.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 40
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
+# ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
+# This port will contribute value (U) to the signal network.
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# REGISTER UPDATE - Matrix           1
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            368.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#        *
+#        *
+#        *
+#        *
+#        *
+#         
+# REGISTER UPDATE - Matrix           0
+#            368.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#        *
+#        *
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            432.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#       * 
+#        *
+#        *
+#       **
+#        *
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           0
+#            432.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#       **
+#        *
+#       * 
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            497.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      ** 
+#        *
+#        *
+#      ***
+#        *
+#        *
+#      ** 
+# REGISTER UPDATE - Matrix           0
+#            497.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#      ***
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+# REGISTER UPDATE - Matrix           1
+#            561.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#        *
+#        *
+#     ****
+#        *
+#        *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            561.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     ****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+run
+# REGISTER UPDATE - Matrix           1
+#            626.54 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            626.54 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 40
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+# REGISTER UPDATE - Matrix           1
+#            691.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            691.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 40
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+# REGISTER UPDATE - Matrix           1
+#            755.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            755.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 40
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+# REGISTER UPDATE - Matrix           1
+#            820.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            820.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 60
+# Register @2: Digit_1      : 50
+# Register @3: Digit_2      : 4f
+# Register @4: Digit_3      : 40
+# Register @5: Digit_4      : 40
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#        *
+#       * 
+#      *  
+#      *  
+#      *  
+#      *  
+restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
+# ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
+# This port will contribute value (U) to the signal network.
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# REGISTER UPDATE - Matrix           1
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#        *
+#         
+#        *
+#         
+#        *
+#         
+#        *
+#         
+# REGISTER UPDATE - Matrix           0
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#        *
+#        *
+#        *
+#        *
+#        *
+#         
+# REGISTER UPDATE - Matrix           1
+#            435.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           0
+#            435.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#       * 
+#        *
+#        *
+#       **
+#        *
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+# REGISTER UPDATE - Matrix           0
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#      ** 
+#        *
+#        *
+#      ***
+#        *
+#        *
+#      ** 
+# REGISTER UPDATE - Matrix           1
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+# REGISTER UPDATE - Matrix           0
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#        *
+#        *
+#     ****
+#        *
+#        *
+#     *** 
+run
+# REGISTER UPDATE - Matrix           1
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+# REGISTER UPDATE - Matrix           0
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           0
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           0
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 55
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+# REGISTER UPDATE - Matrix           0
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+run
 add wave -position insertpoint  \
-sim:/test_max7219_matrix_display/max7219_matrix_display_inst_0/digits_decod_shift_inst_0/uint_division_inst_0/G_WIDTH
+sim:/test_max7219_matrix_display/max7219_matrix_display_inst_0/digits_decod_shift_inst_0/uint_division_inst_0/s_cnt_done
 restart
 # ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
 # This port will contribute value (U) to the signal network.
@@ -1554,7 +3597,700 @@ run
 #         
 #         
 # REGISTER UPDATE - Matrix           1
-#            368.14 us
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#        *
+#         
+#        *
+#         
+#        *
+#         
+#        *
+#         
+# REGISTER UPDATE - Matrix           0
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#        *
+#        *
+#        *
+#        *
+#        *
+#         
+# REGISTER UPDATE - Matrix           1
+#            435.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           0
+#            435.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#       * 
+#        *
+#        *
+#       **
+#        *
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+#      * *
+#       * 
+# REGISTER UPDATE - Matrix           0
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#      ** 
+#        *
+#        *
+#      ***
+#        *
+#        *
+#      ** 
+# REGISTER UPDATE - Matrix           1
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+#      * *
+#     * * 
+# REGISTER UPDATE - Matrix           0
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#        *
+#        *
+#     ****
+#        *
+#        *
+#     *** 
+run
+# REGISTER UPDATE - Matrix           1
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+#    * * *
+#     * * 
+# REGISTER UPDATE - Matrix           0
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+#    * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           0
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+#  * * * *
+#   * * * 
+# REGISTER UPDATE - Matrix           0
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : aa
+# Register @2: Digit_1      : 55
+# Register @3: Digit_2      : aa
+# Register @4: Digit_3      : 55
+# Register @5: Digit_4      : aa
+# Register @6: Digit_5      : 55
+# Register @7: Digit_6      : aa
+# Register @8: Digit_7      : 55
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+#  * * * *
+# * * * * 
+# REGISTER UPDATE - Matrix           0
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
+# ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
+# This port will contribute value (U) to the signal network.
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# REGISTER UPDATE - Matrix           1
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            370.70 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
@@ -1582,10 +4318,10 @@ run
 #        *
 #         
 # REGISTER UPDATE - Matrix           0
-#            368.14 us
+#            370.70 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
+# Register @1: Digit_0      : 3e
 # Register @2: Digit_1      : 00
 # Register @3: Digit_2      : 00
 # Register @4: Digit_3      : 00
@@ -1602,15 +4338,15 @@ run
 # 
 # Matrix           0
 #         
+#         
 #        *
 #        *
-#         
-#         
-#         
-#         
+#        *
+#        *
+#        *
 #         
 # REGISTER UPDATE - Matrix           1
-#            432.74 us
+#            435.30 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
@@ -1638,11 +4374,11 @@ run
 #        *
 #       * 
 # REGISTER UPDATE - Matrix           0
-#            432.74 us
+#            435.30 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
 # Register @3: Digit_2      : 00
 # Register @4: Digit_3      : 00
 # Register @5: Digit_4      : 00
@@ -1658,19 +4394,713 @@ run
 # 
 # Matrix           0
 #         
+#       * 
+#        *
+#        *
+#       **
+#        *
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      ** 
+#        *
+#        *
+#      ***
+#        *
+#        *
+#      ** 
+# REGISTER UPDATE - Matrix           0
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#      ** 
+#        *
+#        *
+#      ***
+#        *
+#        *
+#      ** 
+# REGISTER UPDATE - Matrix           1
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#        *
+#        *
+#     ****
+#        *
+#        *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#        *
+#        *
+#     ****
+#        *
+#        *
+#     *** 
+run
+# REGISTER UPDATE - Matrix           1
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+run
+restart
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.test_max7219_matrix_display(behv)
+# Loading lib_tb_top.max7219_matrix_display(behv)
+# Loading lib_tb_top.digits_decod_shift(behv)
+# Loading lib_tb_top.uint_division(behv)
+# Loading lib_tb_top.max7219_cmd_organizer(behv)
+# Loading lib_tb_top.max7219_digit2conf(behv)
+# Loading lib_tb_top.max7219_config_matrix(behv)
+# Loading lib_tb_top.max7219_ram_sequencer(behv)
+# Loading lib_tb_top.max7219_display_manager(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_emul
+# ** Warning: (vsim-8683) Uninitialized out port /test_max7219_matrix_display/max7219_matrix_display_inst_0/max7219_display_manager_inst_0/o_loop has no driver.
+# This port will contribute value (U) to the signal network.
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# REGISTER UPDATE - Matrix           1
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#             65.24 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 00
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            129.84 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 00
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            194.44 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 00
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           0
+#            259.04 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+#         
+# REGISTER UPDATE - Matrix           1
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#         
+#        *
+#        *
+#        *
+#        *
+#        *
+#         
+# REGISTER UPDATE - Matrix           0
+#            370.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 00
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#         
+#        *
+#        *
+#        *
+#        *
+#        *
+#         
+# REGISTER UPDATE - Matrix           1
+#            435.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#       * 
+#        *
+#        *
+#        *
 #       **
 #        *
 #       * 
-#         
-#         
-#         
-#         
-# REGISTER UPDATE - Matrix           1
-#            497.34 us
+# REGISTER UPDATE - Matrix           0
+#            435.30 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
-# Register @2: Digit_1      : 49
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 00
+# Register @4: Digit_3      : 00
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#       * 
+#        *
+#        *
+#        *
+#       **
+#        *
+#       * 
+# REGISTER UPDATE - Matrix           1
+#            499.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
 # Register @3: Digit_2      : 49
 # Register @4: Digit_3      : 00
 # Register @5: Digit_4      : 00
@@ -1689,17 +5119,17 @@ run
 #      ** 
 #        *
 #        *
-#      ***
-#        *
+#      * *
+#       **
 #        *
 #      ** 
 # REGISTER UPDATE - Matrix           0
-#            497.34 us
+#            499.90 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
 # Register @4: Digit_3      : 00
 # Register @5: Digit_4      : 00
 # Register @6: Digit_5      : 00
@@ -1714,18 +5144,1811 @@ run
 # 
 # Matrix           0
 #         
-#      ***
+#      ** 
 #        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
+#        *
+#      * *
+#       **
+#        *
+#      ** 
 # REGISTER UPDATE - Matrix           1
-#            561.94 us
+#            564.50 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#        *
+#     *  *
+#      * *
+#       **
+#        *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            564.50 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#        *
+#     *  *
+#      * *
+#       **
+#        *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            629.10 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            693.70 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            758.30 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            822.90 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#            970.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#            970.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1035.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1035.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1099.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1099.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1164.54 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#    *****
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1164.54 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#    *****
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1229.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1229.14 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1293.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1293.74 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1358.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1358.34 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1422.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1422.94 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1570.76 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ****
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1570.76 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     ****
+#    *    
+#    *    
+#     *** 
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1635.36 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ** *
+#       **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1635.36 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     ****
+#    *    
+#    *    
+#     *** 
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1699.96 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     ** *
+#       **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1699.96 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     ****
+#    *    
+#    *    
+#     *** 
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1764.56 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#      * *
+#       **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1764.56 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     ****
+#    *    
+#    *    
+#     *** 
+#        *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           1829.16 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1829.16 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#    *    
+#    *    
+#    **** 
+#        *
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           1893.76 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1893.76 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#    *    
+#    *    
+#    **** 
+#        *
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           1958.36 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           1958.36 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#    *    
+#    *    
+#    **** 
+#        *
+#        *
+#    **** 
+run
+# REGISTER UPDATE - Matrix           1
+#           2022.96 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2022.96 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 46
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    *****
+#    *    
+#    *    
+#    **** 
+#        *
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           2170.78 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *    
+#    **   
+#    * *  
+#    *  * 
+#    *    
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2170.78 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    **** 
+#    *   *
+#    *   *
+#    *****
+#        *
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           2235.38 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     **  
+#    *    
+#    **   
+#    * *  
+#    *    
+#    *    
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2235.38 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    **** 
+#    *   *
+#    *   *
+#    *** *
+#       **
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           2299.98 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     **  
+#    * *  
+#    ***  
+#    * *  
+#    * *  
+#    * *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2299.98 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    **** 
+#    *   *
+#    *   *
+#    *** *
+#       **
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           2364.58 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#    ***  
+#    * *  
+#    * *  
+#    * *  
+#    * *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2364.58 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 79
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#    **** 
+#    *   *
+#    **  *
+#    * * *
+#       **
+#        *
+#    **** 
+# REGISTER UPDATE - Matrix           1
+#           2429.18 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#     **  
+#      *  
+#      *  
+#      *  
+#      *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2429.18 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2493.78 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#     **  
+#      *  
+#      *  
+#      *  
+#      *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2493.78 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2558.38 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#     **  
+#      *  
+#      *  
+#      *  
+#      *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2558.38 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2622.98 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 00
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#     **  
+#      *  
+#      *  
+#      *  
+#      *  
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2622.98 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2770.80 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 01
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      *  
+#     ** *
+#      * *
+#      *  
+#      * *
+#      * *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2770.80 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 45
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * * *
+#    *  **
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2835.40 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 7f
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      ** 
+#     ** *
+#      * *
+#      ** 
+#      * *
+#      * *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2835.40 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2900.00 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 21
+# Register @5: Digit_4      : 00
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#      ** 
+#     *  *
+#        *
+#      ** 
+#        *
+#        *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           2900.00 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 51
+# Register @5: Digit_4      : 3e
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           0
+#         
+#     *** 
+#    *   *
+#    **  *
+#    * ***
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           1
+#           2964.60 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 36
 # Register @2: Digit_1      : 49
 # Register @3: Digit_2      : 49
 # Register @4: Digit_3      : 49
@@ -1745,19 +6968,19 @@ run
 #     *** 
 #        *
 #        *
-#     ****
+#     *** 
 #        *
 #        *
 #     *** 
 # REGISTER UPDATE - Matrix           0
-#            561.94 us
+#           2964.60 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 3e
 # Register @6: Digit_5      : 00
 # Register @7: Digit_6      : 00
 # Register @8: Digit_7      : 00
@@ -1770,15 +6993,43 @@ run
 # 
 # Matrix           0
 #         
-#     ****
-#        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
+#     *** 
+#    *   *
+#    *   *
+#    *****
+#    *   *
+#    *   *
+#     *** 
 # REGISTER UPDATE - Matrix           1
-#            626.54 us
+#           3029.20 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 36
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           3029.20 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
@@ -1796,7 +7047,7 @@ run
 # Register @F: Display_Test : 00
 # 
 # 
-# Matrix           1
+# Matrix           0
 #         
 #     *** 
 #    *   *
@@ -1805,15 +7056,15 @@ run
 #        *
 #    *   *
 #     *** 
-# REGISTER UPDATE - Matrix           0
-#            626.54 us
+# REGISTER UPDATE - Matrix           1
+#           3093.80 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 40
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 36
 # Register @6: Digit_5      : 00
 # Register @7: Digit_6      : 00
 # Register @8: Digit_7      : 00
@@ -1824,17 +7075,17 @@ run
 # Register @F: Display_Test : 00
 # 
 # 
-# Matrix           0
+# Matrix           1
 #         
-#    *****
-#        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
-# REGISTER UPDATE - Matrix           1
-#            691.14 us
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           3093.80 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
@@ -1852,7 +7103,7 @@ run
 # Register @F: Display_Test : 00
 # 
 # 
-# Matrix           1
+# Matrix           0
 #         
 #     *** 
 #    *   *
@@ -1861,15 +7112,15 @@ run
 #        *
 #    *   *
 #     *** 
-# REGISTER UPDATE - Matrix           0
-#            691.14 us
+# REGISTER UPDATE - Matrix           1
+#           3158.40 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 40
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 36
 # Register @6: Digit_5      : 00
 # Register @7: Digit_6      : 00
 # Register @8: Digit_7      : 00
@@ -1880,17 +7131,17 @@ run
 # Register @F: Display_Test : 00
 # 
 # 
-# Matrix           0
+# Matrix           1
 #         
-#    *****
-#        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
-# REGISTER UPDATE - Matrix           1
-#            755.74 us
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           3158.40 us
 # 
 # Register @0: No-Op        : 00
 # Register @1: Digit_0      : 3e
@@ -1908,7 +7159,7 @@ run
 # Register @F: Display_Test : 00
 # 
 # 
-# Matrix           1
+# Matrix           0
 #         
 #     *** 
 #    *   *
@@ -1917,15 +7168,43 @@ run
 #        *
 #    *   *
 #     *** 
-# REGISTER UPDATE - Matrix           0
-#            755.74 us
+# REGISTER UPDATE - Matrix           1
+#           3223.00 us
 # 
 # Register @0: No-Op        : 00
-# Register @1: Digit_0      : 60
-# Register @2: Digit_1      : 50
-# Register @3: Digit_2      : 4f
-# Register @4: Digit_3      : 40
-# Register @5: Digit_4      : 40
+# Register @1: Digit_0      : 36
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 36
+# Register @6: Digit_5      : 00
+# Register @7: Digit_6      : 00
+# Register @8: Digit_7      : 00
+# Register @9: Decode_Mode  : 00
+# Register @A: Intensity    : 07
+# Register @B: Scan_Limit   : 07
+# Register @C: Shutdown     : 01
+# Register @F: Display_Test : 00
+# 
+# 
+# Matrix           1
+#         
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+#    *   *
+#    *   *
+#     *** 
+# REGISTER UPDATE - Matrix           0
+#           3223.00 us
+# 
+# Register @0: No-Op        : 00
+# Register @1: Digit_0      : 3e
+# Register @2: Digit_1      : 49
+# Register @3: Digit_2      : 49
+# Register @4: Digit_3      : 49
+# Register @5: Digit_4      : 32
 # Register @6: Digit_5      : 00
 # Register @7: Digit_6      : 00
 # Register @8: Digit_7      : 00
@@ -1938,12 +7217,10 @@ run
 # 
 # Matrix           0
 #         
-#    *****
+#     *** 
+#    *   *
+#    *   *
+#     ****
 #        *
-#       * 
-#      *  
-#      *  
-#      *  
-#      *  
-# End time: 11:31:37 on Jun 14,2020, Elapsed time: 0:04:54
-# Errors: 0, Warnings: 6
+#    *   *
+#     *** 

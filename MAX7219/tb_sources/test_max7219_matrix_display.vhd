@@ -112,13 +112,13 @@ begin  -- architecture behv
     wait for 300 us;
 
     -- DISPLAY 00 on Matrix
-    -- s_score     <= x"00000000";
-    -- wait until falling_edge(clk);
-    -- s_score_val <= '1';
-    -- wait until falling_edge(clk);
-    -- s_score_val <= '0';
+    s_score     <= x"00000000";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
 
-    -- wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
     -- DISPLAY 99 on Matrix
     s_score     <= x"00000063";
@@ -130,14 +130,33 @@ begin  -- architecture behv
     wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
     -- DISPLAY 50 on Matrix
-    -- s_score     <= x"00000032";
-    -- wait until falling_edge(clk);
-    -- s_score_val <= '1';
-    -- wait until falling_edge(clk);
-    -- s_score_val <= '0';
+    s_score     <= x"00000032";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
 
-    -- wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
+    -- DISPLAY 01 on Matrix
+    s_score     <= x"00000001";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+
+
+    -- DISPLAY 98 on Matrix
+    s_score     <= x"00000062";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+    
     wait;
 
     -- OLD TEST
