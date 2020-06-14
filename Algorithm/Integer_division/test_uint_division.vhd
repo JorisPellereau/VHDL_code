@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-17
--- Last update: 2020-04-17
+-- Last update: 2020-06-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ architecture behv of test_uint_division is
   end component uint_division;
 
   -- CONSTANTS
-  constant C_WIDTH : integer := 8;      -- Width of data
+  constant C_WIDTH : integer := 32;      -- Width of data
 
   -- TB INTERNAL SIGNALS
   signal clk   : std_logic := '0';      -- Clock
@@ -92,84 +92,103 @@ begin  -- architecture behv
     wait for 50 ns;
 
 
+
     -- 11/2
-    s_i_q   <= x"0B";
-    s_i_m   <= x"02";
-    s_i_n   <= x"04";
+    s_i_q   <= x"0000000B";
+    s_i_m   <= x"00000002";
+    s_i_n   <= x"00000020";
     wait until falling_edge(clk);
     s_start <= '1';
     wait until falling_edge(clk);
     s_start <= '0';
 
     wait until rising_edge(s_done);
-    assert s_o_q = x"05" report "QUOTIENT /= 5" severity error;
-    assert s_o_r = x"01" report "REMAINDER /= 1" severity error;
+    assert s_o_q = x"00000005" report "QUOTIENT /= 5" severity error;
+    assert s_o_r = x"00000001" report "REMAINDER /= 1" severity error;
 
     wait for 50 ns;
+
+
+    -- OLD TESTS with C_WIDTH = 8
+    
+    -- 11/2
+    -- s_i_q   <= x"0B";
+    -- s_i_m   <= x"02";
+    -- s_i_n   <= x"04";
+    -- wait until falling_edge(clk);
+    -- s_start <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start <= '0';
+
+    -- wait until rising_edge(s_done);
+    -- assert s_o_q = x"05" report "QUOTIENT /= 5" severity error;
+    -- assert s_o_r = x"01" report "REMAINDER /= 1" severity error;
+
+    -- wait for 50 ns;
 
     -- 255/6
-    s_i_q   <= x"FF";
-    s_i_m   <= x"06";
-    s_i_n   <= x"04";
-    wait until falling_edge(clk);
-    s_start <= '1';
-    wait until falling_edge(clk);
-    s_start <= '0';
+    -- s_i_q   <= x"FF";
+    -- s_i_m   <= x"06";
+    -- s_i_n   <= x"04";
+    -- wait until falling_edge(clk);
+    -- s_start <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start <= '0';
 
-    wait until rising_edge(s_done);
-    assert s_o_q = x"2A" report "QUOTIENT /= 42" severity error;
-    assert s_o_r = x"03" report "REMAINDER /= 3" severity error;
+    -- wait until rising_edge(s_done);
+    -- assert s_o_q = x"2A" report "QUOTIENT /= 42" severity error;
+    -- assert s_o_r = x"03" report "REMAINDER /= 3" severity error;
 
 
-    wait for 50 ns;
+    -- wait for 50 ns;
 
     -- 15/15
-    s_i_q   <= x"0F";
-    s_i_m   <= x"0F";
-    s_i_n   <= x"08";
-    wait until falling_edge(clk);
-    s_start <= '1';
-    wait until falling_edge(clk);
-    s_start <= '0';
+    -- s_i_q   <= x"0F";
+    -- s_i_m   <= x"0F";
+    -- s_i_n   <= x"08";
+    -- wait until falling_edge(clk);
+    -- s_start <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start <= '0';
 
-    wait until rising_edge(s_done);
-    assert s_o_q = x"01" report "QUOTIENT /= 1" severity error;
-    assert s_o_r = x"00" report "REMAINDER /= 0" severity error;
+    -- wait until rising_edge(s_done);
+    -- assert s_o_q = x"01" report "QUOTIENT /= 1" severity error;
+    -- assert s_o_r = x"00" report "REMAINDER /= 0" severity error;
 
 
-    wait for 50 ns;
+    -- wait for 50 ns;
 
     -- 2/9
-    s_i_q   <= x"02";
-    s_i_m   <= x"09";
-    s_i_n   <= x"08";
-    wait until falling_edge(clk);
-    s_start <= '1';
-    wait until falling_edge(clk);
-    s_start <= '0';
+    -- s_i_q   <= x"02";
+    -- s_i_m   <= x"09";
+    -- s_i_n   <= x"08";
+    -- wait until falling_edge(clk);
+    -- s_start <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start <= '0';
 
-    wait until rising_edge(s_done);
-    assert s_o_q = x"00" report "QUOTIENT /= 0" severity error;
-    assert s_o_r = x"02" report "REMAINDER /= 2" severity error;
+    -- wait until rising_edge(s_done);
+    -- assert s_o_q = x"00" report "QUOTIENT /= 0" severity error;
+    -- assert s_o_r = x"02" report "REMAINDER /= 2" severity error;
 
 
 
-    wait for 50 ns;
+    -- wait for 50 ns;
 
     -- 150/36
-    s_i_q   <= x"96";
-    s_i_m   <= x"24";
-    s_i_n   <= x"08";
-    wait until falling_edge(clk);
-    s_start <= '1';
-    wait until falling_edge(clk);
-    s_start <= '0';
+    -- s_i_q   <= x"96";
+    -- s_i_m   <= x"24";
+    -- s_i_n   <= x"08";
+    -- wait until falling_edge(clk);
+    -- s_start <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start <= '0';
 
-    wait until rising_edge(s_done);
-    assert s_o_q = x"04" report "QUOTIENT /= 4" severity error;
-    assert s_o_r = x"06" report "REMAINDER /= 6" severity error;
+    -- wait until rising_edge(s_done);
+    -- assert s_o_q = x"04" report "QUOTIENT /= 4" severity error;
+    -- assert s_o_r = x"06" report "REMAINDER /= 6" severity error;
 
-    report "end of simu !!";
+    -- report "end of simu !!";
 
     wait;
 

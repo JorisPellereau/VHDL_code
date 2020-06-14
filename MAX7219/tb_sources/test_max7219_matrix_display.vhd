@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-06-13
+-- Last update: 2020-06-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -111,13 +111,32 @@ begin  -- architecture behv
 
     wait for 300 us;
 
-    s_score     <= x"00000051";
+    -- DISPLAY 00 on Matrix
+    -- s_score     <= x"00000000";
+    -- wait until falling_edge(clk);
+    -- s_score_val <= '1';
+    -- wait until falling_edge(clk);
+    -- s_score_val <= '0';
+
+    -- wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+
+    -- DISPLAY 99 on Matrix
+    s_score     <= x"00000063";
     wait until falling_edge(clk);
     s_score_val <= '1';
     wait until falling_edge(clk);
     s_score_val <= '0';
 
     wait for 600 us; --1000*C_CLK_HALF_PERIOD;
+
+    -- DISPLAY 50 on Matrix
+    -- s_score     <= x"00000032";
+    -- wait until falling_edge(clk);
+    -- s_score_val <= '1';
+    -- wait until falling_edge(clk);
+    -- s_score_val <= '0';
+
+    -- wait for 600 us; --1000*C_CLK_HALF_PERIOD;
 
     wait;
 

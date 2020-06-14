@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-05-10
+-- Last update: 2020-06-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -218,6 +218,18 @@ begin  -- architecture behv
         s_m_shift   <= s_m(s_cnt*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto s_cnt*G_DATA_WIDTH);
         s_i_q_shift <= s_data2decod_sat;
         s_start     <= '1';
+      end if;
+
+
+      -- RESET signals
+      if(s_decod_done_p = '1' and s_decod_done = '0') then
+        s_n            <= (others => '0');
+        s_start        <= '0';
+        s_decod_done   <= '0';
+        s_decod_done_p <= '0';
+        s_m_shift      <= (others => '0');
+        s_i_q_shift    <= (others => '0');
+        s_cnt          <= G_DIGITS_NB - 2;
       end if;
 
     end if;

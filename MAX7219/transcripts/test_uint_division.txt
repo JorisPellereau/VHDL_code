@@ -1,0 +1,26 @@
+# vsim -novopt -t ps -wlf /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../WLF/wave_test_uint_division.wlf lib_tb_top.test_uint_division -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/test_uint_division.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_uint_division.do" 
+# Start time: 11:19:39 on Jun 14,2020
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading lib_tb_top.test_uint_division(behv)
+# Loading lib_tb_top.uint_division(behv)
+# /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_uint_division.do
+# invalid command name "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_uint_division.do"
+add wave -position insertpoint sim:/test_uint_division/uint_division_inst_0/*
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Error: QUOTIENT /= 5
+#    Time: 580 ns  Iteration: 2  Instance: /test_uint_division
+# ** Error: REMAINDER /= 1
+#    Time: 580 ns  Iteration: 2  Instance: /test_uint_division
+restart
+# Loading lib_tb_top.test_uint_division(behv)
+# Loading lib_tb_top.uint_division(behv)
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Error: QUOTIENT /= 5
+#    Time: 2820 ns  Iteration: 2  Instance: /test_uint_division
+# End time: 11:26:27 on Jun 14,2020, Elapsed time: 0:06:48
+# Errors: 4, Warnings: 2
