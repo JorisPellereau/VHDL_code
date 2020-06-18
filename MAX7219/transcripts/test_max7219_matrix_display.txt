@@ -1,5 +1,5 @@
 # vsim -novopt -t ps -wlf /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../WLF/wave_test_max7219_matrix_display.wlf lib_tb_top.test_max7219_matrix_display -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/test_max7219_matrix_display.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_max7219_matrix_display.do" 
-# Start time: 23:03:38 on Jun 14,2020
+# Start time: 19:58:04 on Jun 18,2020
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -27,8 +27,19 @@
 # This port will contribute value (U) to the signal network.
 # do /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/run_max7219_matrix_display.do
 # ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #                 
@@ -46,8 +57,19 @@
 #                 
 #                 
 run
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #                 
@@ -64,8 +86,19 @@ run
 #                 
 #                 
 #                 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #                 
@@ -82,8 +115,19 @@ run
 #                 
 #                 
 #                 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #                 
@@ -100,8 +144,19 @@ run
 #                 
 #                 
 #                 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #                 
@@ -118,8 +173,19 @@ run
 #                 
 #                 
 #                 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #                 
 #        *       *
@@ -136,8 +202,19 @@ run
 #        *       *
 #        *       *
 #                 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #       *       * 
 #        *       *
@@ -154,8 +231,19 @@ run
 #       **      **
 #        *       *
 #       *       * 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #      **      ** 
 #        *       *
@@ -172,8 +260,19 @@ run
 #       **      **
 #        *       *
 #      **      ** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #        *       *
@@ -190,8 +289,19 @@ run
 #       **      **
 #        *       *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -208,8 +318,19 @@ run
 #    *  **   *  **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -226,8 +347,19 @@ run
 #    *  **   *  **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -244,8 +376,19 @@ run
 #    *  **   *  **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -262,8 +405,19 @@ run
 #    *  **   *  **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -280,8 +434,19 @@ run
 #    *  **   *  **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -298,8 +463,19 @@ run
 #    *   *   *   *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -316,8 +492,19 @@ run
 #    *   *   *   *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -334,8 +521,19 @@ run
 #    *   *   *   *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -352,8 +550,19 @@ run
 #        *       *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -370,8 +579,19 @@ run
 #        *       *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -388,8 +608,19 @@ run
 #        *       *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -406,8 +637,19 @@ run
 #        *       *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ****    *** 
 #    *       *   *
@@ -424,8 +666,19 @@ run
 #        *       *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ****    *** 
 #    *       *   *
@@ -442,8 +695,19 @@ run
 #        *      **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ****    *** 
 #    *       *   *
@@ -460,8 +724,19 @@ run
 #        *      **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ****    *** 
 #    *       *   *
@@ -478,8 +753,19 @@ run
 #        *      **
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    *****    *** 
 #    *       *   *
@@ -496,8 +782,19 @@ run
 #        *   *  **
 #        *   *   *
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    *****    *** 
 #    *       *   *
@@ -514,8 +811,19 @@ run
 #        *   *  **
 #        *   *   *
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    *****    *** 
 #    *       *   *
@@ -532,8 +840,19 @@ run
 #        *   *  **
 #        *   *   *
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    *****    *** 
 #    *       *   *
@@ -550,8 +869,19 @@ run
 #        *   *  **
 #        *   *   *
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    ****     *** 
 #    *   *   *    
@@ -568,8 +898,19 @@ run
 #        *   *  * 
 #        *   *    
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    ****     **  
 #    *   *   *    
@@ -586,8 +927,19 @@ run
 #       **   *    
 #        *   *    
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    ****     **  
 #    *   *   * *  
@@ -604,8 +956,19 @@ run
 #       **   * *  
 #        *   * *  
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #    ****      *  
 #    *   *   ***  
@@ -622,8 +985,19 @@ run
 #       **   * *  
 #        *   * *  
 #    ****     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      *  
 #    *   *    **  
@@ -640,8 +1014,19 @@ run
 #    *  **     *  
 #    *   *     *  
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      *  
 #    *   *    **  
@@ -658,8 +1043,19 @@ run
 #    *  **     *  
 #    *   *     *  
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      *  
 #    *   *    **  
@@ -676,8 +1072,19 @@ run
 #    *  **     *  
 #    *   *     *  
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      *  
 #    *   *    **  
@@ -694,8 +1101,19 @@ run
 #    *  **     *  
 #    *   *     *  
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      *  
 #    *   *    ** *
@@ -712,8 +1130,19 @@ run
 #    *  **     * *
 #    *   *     * *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      ** 
 #    *   *    ** *
@@ -730,8 +1159,19 @@ run
 #    *   *     * *
 #    *   *     * *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***      ** 
 #    *   *    *  *
@@ -748,8 +1188,19 @@ run
 #    *   *       *
 #    *   *       *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *       *
@@ -766,8 +1217,19 @@ run
 #    *   *       *
 #    *   *       *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -784,8 +1246,19 @@ run
 #        *   *   *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -802,8 +1275,19 @@ run
 #        *   *   *
 #    *   *   *   *
 #     ***     *** 
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
+# ERROR in Register @
 # Matrix           0
 # Matrix           1
+# Matrix           2
+# Matrix           3
+# Matrix           4
+# Matrix           5
+# Matrix           6
+# Matrix           7
 #                 
 #     ***     *** 
 #    *   *   *   *
@@ -820,5 +1304,3 @@ run
 #        *   *   *
 #    *   *   *   *
 #     ***     *** 
-# End time: 23:06:18 on Jun 14,2020, Elapsed time: 0:02:40
-# Errors: 0, Warnings: 2

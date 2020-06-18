@@ -220,6 +220,18 @@ run_test_uint_division : clean libs compile_vhd_src compile_tb_v_files compile_t
 
 # ========================
 
+# TEST 4
+# == TEST TOP MATRIX DISPLAY ON DE0 NANO BOARD ==
+entity_test4=test_uint_division
+run_test4=run_uint_division.do
+trans_test4=test_uint_division.txt
+wave_test4=wave_test_uint_division
+run_test_uint_division : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+	cd $(WORK_DIR); \
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test4).wlf $(LIB_TB_TOP).$(entity_test4) -l $(TRANSCRIPTS_DIR)/$(trans_test4); # -do $(RUN_DO_DIR)/$(run_test3);
+
+# ========================
+
 # Launch modelsim Simulation in console
 run_csl_1 : 	compile_vhd_src
 		cd $(WORK_DIR); \
