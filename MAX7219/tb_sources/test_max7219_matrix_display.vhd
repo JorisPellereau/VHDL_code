@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-06-14
+-- Last update: 2020-06-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -37,7 +37,8 @@ architecture behv of test_max7219_matrix_display is
   -- COMPONENTS
   component max7219_emul is
     generic(
-      G_MATRIX_I : integer := 0);
+      G_MATRIX_I : integer := 0
+      );
     port (
       clk               : in  std_logic;
       rst_n             : in  std_logic;
@@ -52,7 +53,8 @@ architecture behv of test_max7219_matrix_display is
 
   component max7219_matrix_emul is
     generic (
-      G_MATRIX_NB : integer := 2);
+      G_MATRIX_NB : integer                      := 2;
+      G_VERBOSE   : std_logic_vector(7 downto 0) := x"FF");
     port (
       clk            : in std_logic;
       rst_n          : in std_logic;
@@ -268,7 +270,8 @@ begin  -- architecture behv
   -- MAX7219 MATRIX DISPLAY EMUL
   max7219_matrix_emul_inst : max7219_matrix_emul
     generic map (
-      G_MATRIX_NB => 2)
+      G_MATRIX_NB => 2,
+      G_VERBOSE   => x"03")
     port map (
       clk            => clk,
       rst_n          => rst_n,
