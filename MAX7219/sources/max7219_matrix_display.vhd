@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-05-09
+-- Last update: 2020-06-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -100,12 +100,6 @@ architecture behv of max7219_matrix_display is
   signal s_config_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_config_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
-  signal s_config_new_val : std_logic;
-  signal s_decod_mode     : std_logic_vector(7 downto 0);
-  signal s_intensity      : std_logic_vector(7 downto 0);
-  signal s_scan_limit     : std_logic_vector(7 downto 0);
-  signal s_shutdown       : std_logic_vector(7 downto 0);
-
   signal s_score_cmd        : t_score_array;
   signal s_score_val        : std_logic;
   signal s_score_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
@@ -145,11 +139,6 @@ begin  -- architecture behv
       o_score_val       => s_score_val
       );
 
-  -- s_decod_mode     <= x"00";
-  -- s_intensity      <= x"07";
-  -- s_scan_limit     <= x"07";
-  -- s_shutdown       <= x"01";
-  -- s_config_new_val <= '0';
 
   -- CONFIG MATRIX INST
   max7219_config_matrix_inst_0 : max7219_config_matrix
