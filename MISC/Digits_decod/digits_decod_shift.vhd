@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-06-14
+-- Last update: 2020-06-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -79,10 +79,13 @@ architecture behv of digits_decod_shift is
 
   signal s_decod : std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Decod output
 
-  signal s_val    : std_logic;          -- S val
-  signal s_start  : std_logic;          -- Start the DIVISION
-  signal s_cnt    : integer;            -- Counter
-  signal s_done_p : std_logic;          -- cnt INC
+  signal s_val   : std_logic;           -- S val
+  signal s_start : std_logic;           -- Start the DIVISION
+  signal s_cnt   : integer;             -- Counter
+
+  signal s_done_p        : std_logic;   -- cnt INC
+  signal s_done_r_edge   : std_logic;   -- rising edge of Done DIV
+  signal s_done_r_edge_p : std_logic;
 
   signal s_decod_done   : std_logic;
   signal s_decod_done_p : std_logic;
@@ -189,25 +192,29 @@ begin  -- architecture behv
       s_n          <= conv_std_logic_vector(G_DATA_WIDTH, s_n'length);
       s_start      <= '0';
       s_decod_done <= '0';
-      if(s_done = '1') then
+
+      if(s_done_r_edge = '1') then
         s_i_q_shift <= s_r;
 
         if(s_cnt > 0) then              --G_DIGITS_NB - 2) then
           s_cnt <= s_cnt - 1;
         else
           s_decod_done <= '1';
-          --s_cnt        <= 0;
-          s_cnt        <= G_DIGITS_NB - 2;
         end if;
-        s_done_p <= '1';
-      else
-        s_done_p <= '0';
       end if;
 
       s_decod_done_p <= s_decod_done;
 
       -- REMAINDER becomes Input
-      if(s_done_p = '1' and s_decod_done = '0') then
+      if(s_decod_done = '1') then
+        s_n            <= (others => '0');
+        s_start        <= '0';
+        s_decod_done   <= '0';
+        s_decod_done_p <= '0';
+        s_m_shift      <= (others => '0');
+        s_i_q_shift    <= (others => '0');
+        s_cnt          <= G_DIGITS_NB - 2;
+      elsif(s_done_r_edge_p = '1') then  -- and s_cnt /= 0) then  --s_done_p = '1' and s_decod_done = '0') then
         s_m_shift   <= s_m(s_cnt*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto s_cnt*G_DATA_WIDTH);
         s_i_q_shift <= s_r;
         s_start     <= '1';
@@ -222,15 +229,15 @@ begin  -- architecture behv
 
 
       -- RESET signals
-      if(s_decod_done_p = '1' and s_decod_done = '0') then
-        s_n            <= (others => '0');
-        s_start        <= '0';
-        s_decod_done   <= '0';
-        s_decod_done_p <= '0';
-        s_m_shift      <= (others => '0');
-        s_i_q_shift    <= (others => '0');
-        s_cnt          <= G_DIGITS_NB - 2;
-      end if;
+      -- if(s_decod_done = '1') then  --s_decod_done_p = '1' and s_decod_done = '0') then
+      --   s_n            <= (others => '0');
+      --   s_start        <= '0';
+      --   s_decod_done   <= '0';
+      --   s_decod_done_p <= '0';
+      --   s_m_shift      <= (others => '0');
+      --   s_i_q_shift    <= (others => '0');
+      --   s_cnt          <= G_DIGITS_NB - 2;
+      -- end if;
 
     end if;
   end process p_shift_mngt;
@@ -260,6 +267,20 @@ begin  -- architecture behv
     end if;
   end process p_out_mngt;
 
+  p_latch_signals : process (clk, rst_n) is
+  begin  -- process p_latch_signals
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_done_p        <= '0';
+      s_done_r_edge_p <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_done_p        <= s_done;
+      s_done_r_edge_p <= s_done_r_edge;
+    end if;
+  end process p_latch_signals;
+
+  -- R EDGE DETECTION
+  s_done_r_edge <= s_done and not s_done_p;
+
   uint_division_inst_0 : uint_division
     generic map (
       G_WIDTH => G_DATA_WIDTH
@@ -277,7 +298,7 @@ begin  -- architecture behv
       );
 
   -- OUTPUTS AFFECTATION
-  o_done  <= s_decod_done_p and s_decod_done;
+  o_done  <= s_decod_done;              --_p and s_decod_done;
   o_decod <= s_decod;
 
 end architecture behv;

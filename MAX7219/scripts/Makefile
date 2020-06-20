@@ -100,8 +100,11 @@ all:
 	@echo "- Run test : UINT DIVISION"
 	@echo "make run_test_uint_division"
 	@echo ""
-	@echo "- Run test : TOP MATRIC DISPLAY ON DE0 NANO BOARD"
+	@echo "- Run test : TOP MATRIX DISPLAY ON DE0 NANO BOARD"
 	@echo "make run_test_top_max7219_matrix_display"
+	@echo ""
+	@echo "- Run test : TEST MATRIX DISPLAY 8 MATRIX"
+	@echo "make run_test_matrix_display_8"
 	@echo "============================================"
 
 
@@ -156,6 +159,7 @@ src_tb_vhd=	$(TB_SRC_DIR)/test_max7219_cmd_decod.vhd \
 		$(SRC_MISC_VHD)/test_digits_decod.vhd \
 		$(SRC_ALG_VHD)/test_uint_division.vhd \
 		$(TB_SRC_DIR)/test_top_max7219_matrix_display.vhd \
+		$(TB_SRC_DIR)/test_matrix_display_8.vhd \
 # =====================
 
 
@@ -234,6 +238,19 @@ wave_test4=wave_top_max7219_matrix_display
 run_test_top_max7219_matrix_display : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 	cd $(WORK_DIR); \
 	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test4).wlf $(LIB_TB_TOP).$(entity_test4) -l $(TRANSCRIPTS_DIR)/$(trans_test4) -do $(RUN_DO_DIR)/$(run_test4);
+
+# ========================
+
+
+# TEST 5
+# == TEST MATRIX DISPLAY 8 MATRIX ==
+entity_test5=test_matrix_display_8
+run_test5=run_matrix_display_8.do
+trans_test5=test_matrix_display_8.txt
+wave_test5=wave_test_matrix_display_8
+run_test_matrix_display_8 : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+	cd $(WORK_DIR); \
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test5).wlf $(LIB_TB_TOP).$(entity_test5) -l $(TRANSCRIPTS_DIR)/$(trans_test5) -do $(RUN_DO_DIR)/$(run_test4);
 
 # ========================
 
