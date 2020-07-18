@@ -166,6 +166,9 @@ begin  -- architecture behv
   -- SET START @
   s_config_start_addr <= (others => '0');
   s_score_start_addr  <= x"50";
+  s_msg_start_addr    <= x"B0";
+
+  s_msg <= (others => (others => '0'));
 
   -- RAM SEQUENCER INST
   max7219_ram_sequencer_inst_0 : max7219_ram_sequencer

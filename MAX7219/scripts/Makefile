@@ -148,6 +148,8 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_config_matrix.vhd \
 		$(SRC_DIR)/max7219_digit2conf.vhd \
 		$(SRC_DIR)/max7219_cmd_organizer.vhd \
+		$(SRC_DIR)/max7219_digit2letter.vhd \
+		$(SRC_DIR)/max7219_msg_organizer.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
 		$(SRC_DIR)/max7219_matrix_display.vhd \
@@ -250,7 +252,7 @@ trans_test5=test_matrix_display_8.txt
 wave_test5=wave_test_matrix_display_8
 run_test_matrix_display_8 : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test5).wlf $(LIB_TB_TOP).$(entity_test5) -l $(TRANSCRIPTS_DIR)/$(trans_test5) -do $(RUN_DO_DIR)/$(run_test4);
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test5).wlf $(LIB_TB_TOP).$(entity_test5) -l $(TRANSCRIPTS_DIR)/$(trans_test5) -do $(RUN_DO_DIR)/$(run_test5);
 
 # ========================
 

@@ -377,6 +377,45 @@ package pkg_max7219 is
 
   end component max7219_display_manager;
 
+
+
+
+
+  component max7219_digit2letter is
+    port (
+      clk      : in  std_logic;                      -- Clock
+      rst_n    : in  std_logic;                      -- Asynchronous reset
+      i_letter : in  std_logic_vector(7 downto 0);   -- Letter to decod
+      i_val    : in  std_logic;
+      o_seg_7  : out std_logic_vector(11 downto 0);  -- Config. Seg N7
+      o_seg_6  : out std_logic_vector(11 downto 0);  -- Config. Seg N6
+      o_seg_5  : out std_logic_vector(11 downto 0);  -- Config. Seg N5
+      o_seg_4  : out std_logic_vector(11 downto 0);  -- Config. Seg N4
+      o_seg_3  : out std_logic_vector(11 downto 0);  -- Config. Seg N3
+      o_seg_2  : out std_logic_vector(11 downto 0);  -- Config. Seg N2
+      o_seg_1  : out std_logic_vector(11 downto 0);  -- Config. Seg N1
+      o_seg_0  : out std_logic_vector(11 downto 0);  -- Config. Seg N0
+      o_done   : out std_logic                       -- Conf Available
+      );
+  end component max7219_digit2letter;
+
+
+  component max7219_msg_organizer is
+    generic (
+      G_RAM_DATA_WIDTH : integer              := 16;  -- RAM DATA SIZE
+      G_DIGITS_NB      : integer range 2 to 8 := 8);  -- DIGITS Number on the DISPLAY
+
+    port (
+      clk          : in  std_logic;     -- Clock
+      rst_n        : in  std_logic;     -- Asynchronous reset
+      i_msg_nb     : in  std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Sel msg
+      i_msg_nb_val : in  std_logic;     -- SCORE DECOD valid
+      o_msg        : out t_msg_array;   -- ARRAY of message
+      o_msg_val    : out std_logic
+      );
+  end component max7219_msg_organizer;
+
+
   component max7219_matrix_display is
     generic (
       G_DIGITS_NB                  : integer range 2 to 8          := 8;  -- DIGIT NB on THE MATRIX DISPLAY
