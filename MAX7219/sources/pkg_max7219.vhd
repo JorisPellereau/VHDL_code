@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-05-09
+-- Last update: 2020-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -77,7 +77,9 @@ package pkg_max7219 is
   -- =======================================
 
   type t_score_array is array (0 to 63) of std_logic_vector(15 downto 0);   --
+  type t_msg_array is array (0 to 63) of std_logic_vector(15 downto 0);
   type t_config_array is array (0 to 31) of std_logic_vector(15 downto 0);  -- Config ARRAY
+
 
   -- COMPONENTS
   component max7219_interface
@@ -311,6 +313,13 @@ package pkg_max7219 is
       i_score_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
       o_score_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
       o_score_done       : out std_logic;      -- SCORE IN RAM DONE
+
+      -- MESSAGE I/F
+      i_msg            : in  t_msg_array;  -- Message
+      i_msg_val        : in  std_logic;    -- Message Valid
+      i_msg_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_msg_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_msg_done       : out std_logic;    -- SCORE IN RAM DONE
 
       -- RAM I/F
       o_me    : out std_logic;          -- Memory Enable

@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-05-09
+-- Last update: 2020-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,6 +51,13 @@ entity max7219_ram_sequencer is
     o_score_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
     o_score_done       : out std_logic;      -- SCORE IN RAM DONE
 
+    -- MESSAGE I/F
+    i_msg            : in  t_msg_array;  -- Message
+    i_msg_val        : in  std_logic;    -- Message Valid
+    i_msg_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_msg_last_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    o_msg_done       : out std_logic;    -- SCORE IN RAM DONE
+
     -- RAM I/F
     o_me    : out std_logic;            -- Memory Enable
     o_we    : out std_logic;            -- W/R Memory Command
@@ -66,9 +73,10 @@ architecture behv of max7219_ram_sequencer is
   -- CONSTANTS
   constant C_MAX_SCORE_CNT  : integer := 8*G_DIGITS_NB;
   constant C_MAX_CONFIG_CNT : integer := 4*G_DIGITS_NB;
+  constant C_MAX_MSG_CNT    : integer := 8*G_DIGITS_NB;
 
   -- TYPES
-  type t_ram_seq_states is (IDLE, WR_CONFIG, WR_SCORE);  -- STATES
+  type t_ram_seq_states is (IDLE, WR_CONFIG, WR_SCORE, WR_MSG);  -- STATES
 
   -- INTERNAL SIGNALS
   signal s_curr_state : t_ram_seq_states;  -- Current state
@@ -81,6 +89,10 @@ architecture behv of max7219_ram_sequencer is
   signal s_score_cnt  : integer range 0 to C_MAX_SCORE_CNT;  -- Score Counter index
   signal s_score_done : std_logic;
   signal s_score_en   : std_logic;
+
+  signal s_msg_cnt  : integer range 0 to C_MAX_MSG_CNT;
+  signal s_msg_done : std_logic;        -- MESSAGE WR Done
+  signal s_msg_en   : std_logic;        -- Message WR enable
 
   signal s_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_me    : std_logic;
@@ -103,6 +115,8 @@ begin  -- architecture behv
             s_next_state <= WR_CONFIG;
           elsif(i_score_val = '1') then
             s_next_state <= WR_SCORE;
+          elsif(i_msg_val = '1') then
+            s_next_state <= WR_MSG;
           end if;
 
         when WR_CONFIG =>
@@ -112,6 +126,11 @@ begin  -- architecture behv
 
         when WR_SCORE =>
           if(s_score_done = '1') then
+            s_next_state <= IDLE;
+          end if;
+
+        when WR_MSG =>
+          if(s_msg_done = '1') then
             s_next_state <= IDLE;
           end if;
 
@@ -194,6 +213,27 @@ begin  -- architecture behv
             end if;
           end if;
 
+        when WR_MSG =>
+          if(s_msg_en = '0') then
+            s_me      <= '1';
+            s_we      <= '1';
+            s_wdata   <= i_msg(s_msg_cnt);
+            s_msg_cnt <= s_msg_cnt + 1;           -- INC cnt
+            s_msg_en  <= '1';
+          else
+            if(s_msg_cnt < C_MAX_MSG_CNT) then
+              s_me      <= '1';
+              s_we      <= '1';
+              s_wdata   <= i_msg(s_msg_cnt);
+              s_addr    <= unsigned(s_addr) + 1;  -- INC addr
+              s_msg_cnt <= s_msg_cnt + 1;         -- INC cnt
+            else
+              s_msg_done <= '1';
+              s_me       <= '0';
+              s_we       <= '0';
+            end if;
+          end if;
+
         when others => null;
       end case;
     end if;
@@ -204,10 +244,11 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       o_config_last_addr <= (others => '0');
       o_score_last_addr  <= (others => '0');
+      o_msg_last_addr    <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
       o_config_last_addr <= unsigned(i_config_start_addr) + unsigned(conv_std_logic_vector(C_MAX_CONFIG_CNT, o_config_last_addr'length));
       o_score_last_addr  <= unsigned(i_score_start_addr) + unsigned(conv_std_logic_vector(C_MAX_SCORE_CNT, o_score_last_addr'length));
-
+      o_msg_last_addr    <= unsigned(i_msg_start_addr) + unsigned(conv_std_logic_vector(C_MAX_MSG_CNT, o_msg_last_addr'length));
     end if;
   end process p_last_addr_mngt;
 
@@ -219,5 +260,6 @@ begin  -- architecture behv
   o_wdata       <= s_wdata;
   o_config_done <= s_config_done;
   o_score_done  <= s_score_done;
-  
+  o_msg_done    <= s_msg_done;
+
 end architecture behv;

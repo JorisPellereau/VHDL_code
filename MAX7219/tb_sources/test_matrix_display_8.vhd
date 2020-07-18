@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-06-20
+-- Last update: 2020-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -165,9 +165,44 @@ begin  -- architecture behv
 
     wait for 3 ms;
 
+    -- DISPLAY SCORE : 00 000 001
+    s_score     <= x"00000001";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 3 ms;
+
+    -- DISPLAY SCORE : 00 000 012
+    s_score     <= x"0000000C";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 3 ms;
 
 
-    report "end of Simulation !!!";
+    -- DISPLAY SCORE : 00 000 000
+    s_score     <= x"00000000";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 3 ms;
+
+    -- DISPLAY SCORE : 77 777 777
+    s_score     <= x"04A2CB71";
+    wait until falling_edge(clk);
+    s_score_val <= '1';
+    wait until falling_edge(clk);
+    s_score_val <= '0';
+
+    wait for 3 ms;
+
+    assert FALSE Report "End of simulation !!!" severity FAILURE;    
     wait;
   end process p_stimulis;
 

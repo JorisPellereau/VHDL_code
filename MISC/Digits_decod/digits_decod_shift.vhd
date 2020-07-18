@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-02
--- Last update: 2020-06-20
+-- Last update: 2020-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -207,13 +207,12 @@ begin  -- architecture behv
 
       -- REMAINDER becomes Input
       if(s_decod_done = '1') then
-        s_n            <= (others => '0');
-        s_start        <= '0';
-        s_decod_done   <= '0';
-        s_decod_done_p <= '0';
-        s_m_shift      <= (others => '0');
-        s_i_q_shift    <= (others => '0');
-        s_cnt          <= G_DIGITS_NB - 2;
+        s_n          <= (others => '0');
+        s_start      <= '0';
+        s_decod_done <= '0';
+        s_m_shift    <= (others => '0');
+        s_i_q_shift  <= (others => '0');
+        s_cnt        <= G_DIGITS_NB - 2;
       elsif(s_done_r_edge_p = '1') then  -- and s_cnt /= 0) then  --s_done_p = '1' and s_decod_done = '0') then
         s_m_shift   <= s_m(s_cnt*G_DATA_WIDTH + G_DATA_WIDTH - 1 downto s_cnt*G_DATA_WIDTH);
         s_i_q_shift <= s_r;
@@ -227,18 +226,6 @@ begin  -- architecture behv
         s_start     <= '1';
       end if;
 
-
-      -- RESET signals
-      -- if(s_decod_done = '1') then  --s_decod_done_p = '1' and s_decod_done = '0') then
-      --   s_n            <= (others => '0');
-      --   s_start        <= '0';
-      --   s_decod_done   <= '0';
-      --   s_decod_done_p <= '0';
-      --   s_m_shift      <= (others => '0');
-      --   s_i_q_shift    <= (others => '0');
-      --   s_cnt          <= G_DIGITS_NB - 2;
-      -- end if;
-
     end if;
   end process p_shift_mngt;
 
@@ -248,12 +235,12 @@ begin  -- architecture behv
       s_decod <= (others => '0');
 
     elsif clk'event and clk = '1' then  -- rising clock edge
-      if(s_done = '1') then
+
+      if(s_done_r_edge = '1') then
         s_decod(3 downto 0) <= s_q(3 downto 0);
       end if;
 
-      if(s_done_p = '1') then
-
+      if(s_done_r_edge_p = '1') then
         if(s_decod_done = '1') then
           s_decod(3 downto 0) <= s_r(3 downto 0);
         end if;
@@ -261,9 +248,6 @@ begin  -- architecture behv
         s_decod(G_DIGITS_NB*4 - 1 downto 4) <= s_decod((G_DIGITS_NB-1)*4 - 1 downto 0);
       end if;
 
-      if(s_decod_done_p = '1') then
-        s_decod <= (others => '0');
-      end if;
     end if;
   end process p_out_mngt;
 
@@ -298,7 +282,7 @@ begin  -- architecture behv
       );
 
   -- OUTPUTS AFFECTATION
-  o_done  <= s_decod_done;              --_p and s_decod_done;
+  o_done  <= s_decod_done_p;
   o_decod <= s_decod;
 
 end architecture behv;

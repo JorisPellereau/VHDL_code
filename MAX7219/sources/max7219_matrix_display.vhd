@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-06-20
+-- Last update: 2020-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ entity max7219_matrix_display is
 
     -- SCORE to DISPLAY
     i_score     : in std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
-    i_score_val : in std_logic;         -- Scare Valid
+    i_score_val : in std_logic;         -- Score Valid
 
     -- MAX7219 I/F
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
@@ -105,8 +105,14 @@ architecture behv of max7219_matrix_display is
   signal s_score_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_score_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
+  signal s_msg            : t_msg_array;
+  signal s_msg_val        : std_logic;
+  signal s_msg_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_msg_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
   signal s_config_done : std_logic;
   signal s_score_done  : std_logic;
+  signal s_msg_done    : std_logic;
 
 begin  -- architecture behv
 
@@ -169,23 +175,32 @@ begin  -- architecture behv
       G_DIGITS_NB      => G_DIGITS_NB
       )
     port map(
-      clk                 => clk,
-      rst_n               => rst_n,
+      clk   => clk,
+      rst_n => rst_n,
+
       i_config_array      => s_config_array,
       i_config_val        => s_config_val,
       i_config_start_addr => s_config_start_addr,
       o_config_last_addr  => s_config_last_addr,
       o_config_done       => s_config_done,
-      i_score_cmd         => s_score_cmd,
-      i_score_val         => s_score_val,
-      i_score_start_addr  => s_score_start_addr,
-      o_score_last_addr   => s_score_last_addr,
-      o_score_done        => s_score_done,
-      o_me                => s_me,
-      o_we                => s_we,
-      o_addr              => s_addr,
-      o_wdata             => s_wdata,
-      i_rdata             => s_rdata);
+
+      i_score_cmd        => s_score_cmd,
+      i_score_val        => s_score_val,
+      i_score_start_addr => s_score_start_addr,
+      o_score_last_addr  => s_score_last_addr,
+      o_score_done       => s_score_done,
+
+      i_msg            => s_msg,
+      i_msg_val        => s_msg_val,
+      i_msg_start_addr => s_msg_start_addr,
+      o_msg_last_addr  => s_msg_last_addr,
+      o_msg_done       => s_msg_done,
+
+      o_me    => s_me,
+      o_we    => s_we,
+      o_addr  => s_addr,
+      o_wdata => s_wdata,
+      i_rdata => s_rdata);
 
   -- DISPLAY MANAGER
   max7219_display_manager_inst_0 : max7219_display_manager
