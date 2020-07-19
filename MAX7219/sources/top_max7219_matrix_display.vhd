@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-05-10
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -59,6 +59,9 @@ architecture behv of top_max7219_matrix_display is
   signal s_max7219_load   : std_logic;
   signal s_max7219_data   : std_logic;
   signal s_max7219_clk    : std_logic;
+
+  signal s_msg_sel     : std_logic_vector(7 downto 0);
+  signal s_msg_sel_val : std_logic;
 
   signal s_cnt      : std_logic_vector(31 downto 0);
   signal s_cnt_done : std_logic;
@@ -129,18 +132,24 @@ begin  -- architecture behv
       G_MAX7219_IF_MAX_HALF_PERIOD => G_MAX7219_IF_MAX_HALF_PERIOD,
       G_MAX7219_LOAD_DUR           => G_MAX7219_LOAD_DUR)
     port map(
-      clk              => clk,
-      rst_n            => rst_n,
+      clk   => clk,
+      rst_n => rst_n,
+
       i_decod_mode     => s_decod_mode,
       i_intensity      => s_intensity,
       i_scan_limit     => s_scan_limit,
       i_shutdown       => s_shutdown,
       i_new_config_val => s_new_config_val,
-      i_score          => s_score,
-      i_score_val      => s_score_val,
-      o_max7219_load   => s_max7219_load,
-      o_max7219_data   => s_max7219_data,
-      o_max7219_clk    => s_max7219_clk
+
+      i_score     => s_score,
+      i_score_val => s_score_val,
+
+      i_msg_sel     => s_msg_sel,
+      i_msg_sel_val => s_msg_sel_val,
+
+      o_max7219_load => s_max7219_load,
+      o_max7219_data => s_max7219_data,
+      o_max7219_clk  => s_max7219_clk
       );
 
   -- OUTPUTS AFFECTATION

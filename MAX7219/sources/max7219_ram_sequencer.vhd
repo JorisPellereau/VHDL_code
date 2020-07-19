@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-07-18
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -149,6 +149,7 @@ begin  -- architecture behv
       s_config_done <= '0';
       s_score_cnt   <= 0;
       s_score_done  <= '0';
+      s_msg_done    <= '0';
       s_me          <= '0';
       s_we          <= '0';
       s_wdata       <= (others => '0');
@@ -164,10 +165,14 @@ begin  -- architecture behv
           s_score_cnt   <= 0;
           s_score_done  <= '0';
           s_score_en    <= '0';
+          s_msg_cnt     <= 0;
+          s_msg_done    <= '0';
           if(i_config_val = '1') then
             s_addr <= i_config_start_addr;
           elsif(i_score_val = '1') then
             s_addr <= i_score_start_addr;
+          elsif(i_msg_val = '1') then
+            s_addr <= i_msg_start_addr;
           end if;
 
         when WR_CONFIG =>

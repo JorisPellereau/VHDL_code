@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-07-18
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -362,17 +362,21 @@ package pkg_max7219 is
       i_config_val        : in std_logic;  -- New Config Available
       i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
       i_config_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-      i_score_val         : in std_logic;  -- New SCORE available
-      i_score_start_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-      i_score_last_addr   : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
+      i_score_val        : in std_logic;  -- New SCORE available
+      i_score_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_score_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+      i_msg_val        : in  std_logic;  -- New Message available
+      i_msg_start_addr : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      i_msg_last_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
       -- MAX7219 RAM DECOD I/F
-      i_ptr_equality : in  std_logic;   -- PTR EQUALITY
-      o_start_ptr    : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- START PTR
-      o_last_ptr     : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST PTR
-      o_ptr_val      : out std_logic;   -- PTR VALID
-      o_loop         : out std_logic;   -- LOOP MODE
-      o_en           : out std_logic    -- ENABLE CMD DECOD BLOCK
+      i_ptr_equality   : in  std_logic;  -- PTR EQUALITY
+      o_start_ptr      : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- START PTR
+      o_last_ptr       : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST PTR
+      o_ptr_val        : out std_logic;  -- PTR VALID
+      o_loop           : out std_logic;  -- LOOP MODE
+      o_en             : out std_logic  -- ENABLE CMD DECOD BLOCK
       );
 
   end component max7219_display_manager;
@@ -406,14 +410,29 @@ package pkg_max7219 is
       G_DIGITS_NB      : integer range 2 to 8 := 8);  -- DIGITS Number on the DISPLAY
 
     port (
-      clk          : in  std_logic;     -- Clock
-      rst_n        : in  std_logic;     -- Asynchronous reset
-      i_msg_nb     : in  std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Sel msg
-      i_msg_nb_val : in  std_logic;     -- SCORE DECOD valid
-      o_msg        : out t_msg_array;   -- ARRAY of message
-      o_msg_val    : out std_logic
+      clk           : in  std_logic;    -- Clock
+      rst_n         : in  std_logic;    -- Asynchronous reset
+      i_msg_cmd     : in  std_logic_vector(G_DIGITS_NB*8 - 1 downto 0);  -- Sel msg
+      i_msg_cmd_val : in  std_logic;    -- SCORE DECOD valid
+      o_msg         : out t_msg_array;  -- ARRAY of message
+      o_msg_val     : out std_logic
       );
   end component max7219_msg_organizer;
+
+
+  component max7219_msg_sel is
+
+    generic (
+      G_DIGITS_NB : integer range 2 to 8 := 8);          -- DIGIT NB
+    port (
+      clk           : in  std_logic;                     -- Clock
+      rst_n         : in  std_logic;                     -- Asynchronous Reset
+      i_msg_sel     : in  std_logic_vector(7 downto 0);  -- MSG SEL
+      i_msg_sel_val : in  std_logic;                     -- MSG SEL VALID
+      o_msg_cmd     : out std_logic_vector(G_DIGITS_NB*8 - 1 downto 0);
+      o_msg_cmd_val : out std_logic);                    -- MSG CMD VAL
+
+  end component max7219_msg_sel;
 
 
   component max7219_matrix_display is
@@ -439,6 +458,10 @@ package pkg_max7219 is
       -- SCORE to DISPLAY
       i_score     : in std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
       i_score_val : in std_logic;       -- Scare Valid
+
+      -- MESSAGE to DISPLAY
+      i_msg_sel     : in std_logic_vector(7 downto 0);  -- Message Selector
+      i_msg_sel_val : in std_logic;     -- Message Selector Valid
 
       -- MAX7219 I/F
       o_max7219_load : out std_logic;   -- MAX7219 LOAD

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-07-18
--- Last update: 2020-07-18
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -354,8 +354,43 @@ begin  -- architecture behv
             o_seg_1 <= x"251";
             o_seg_0 <= x"161";
 
+          -- SPACE
+          when x"1A" =>
+            o_seg_7 <= x"800";
+            o_seg_6 <= x"700";
+            o_seg_5 <= x"600";
+            o_seg_4 <= x"500";
+            o_seg_3 <= x"400";
+            o_seg_2 <= x"300";
+            o_seg_1 <= x"200";
+            o_seg_0 <= x"100";
+
+          -- !
+          when x"1B" =>
+            o_seg_7 <= x"800";
+            o_seg_6 <= x"700";
+            o_seg_5 <= x"600";
+            o_seg_4 <= x"500";
+            o_seg_3 <= x"400";
+            o_seg_2 <= x"37D";
+            o_seg_1 <= x"200";
+            o_seg_0 <= x"100";
+
+            -- >
+          when x"1C" =>
+            o_seg_7 <= x"8C3";
+            o_seg_6 <= x"7E7";
+            o_seg_5 <= x"6E7";
+            o_seg_4 <= x"5FF";
+            o_seg_3 <= x"4FF";
+            o_seg_2 <= x"37E";
+            o_seg_1 <= x"23C";
+            o_seg_0 <= x"118";
+
           when others => null;
         end case;
+      else
+        o_done <= '0';
       end if;
 
     end if;

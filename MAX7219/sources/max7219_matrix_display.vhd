@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-07-18
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -49,6 +49,10 @@ entity max7219_matrix_display is
     -- SCORE to DISPLAY
     i_score     : in std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Score to Display
     i_score_val : in std_logic;         -- Score Valid
+
+    -- MESSAGE to DISPLAY
+    i_msg_sel     : in std_logic_vector(7 downto 0);  -- Message Selector
+    i_msg_sel_val : in std_logic;                     -- Message Selector Valid
 
     -- MAX7219 I/F
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
@@ -104,6 +108,9 @@ architecture behv of max7219_matrix_display is
   signal s_score_val        : std_logic;
   signal s_score_start_addr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_score_last_addr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+  signal s_msg_cmd     : std_logic_vector(G_DIGITS_NB*8 - 1 downto 0);
+  signal s_msg_cmd_val : std_logic;
 
   signal s_msg            : t_msg_array;
   signal s_msg_val        : std_logic;
@@ -163,12 +170,39 @@ begin  -- architecture behv
       o_config_array_val => s_config_val);
 
 
+  -- MAX7219 MSG SELECTOR
+  max7219_msg_sel_inst_0 : max7219_msg_sel
+    generic map (
+      G_DIGITS_NB => G_DIGITS_NB)
+    port map(
+      clk           => clk,
+      rst_n         => rst_n,
+      i_msg_sel     => i_msg_sel,
+      i_msg_sel_val => i_msg_sel_val,
+      o_msg_cmd     => s_msg_cmd,
+      o_msg_cmd_val => s_msg_cmd_val);
+
+  -- MAX7219 MSG ORGANIZER
+  max7219_msg_organizer_inst_0 : max7219_msg_organizer
+    generic map(
+      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH,
+      G_DIGITS_NB      => G_DIGITS_NB)
+    port map(
+      clk           => clk,
+      rst_n         => rst_n,
+      i_msg_cmd     => s_msg_cmd,
+      i_msg_cmd_val => s_msg_cmd_val,
+      o_msg         => s_msg,
+      o_msg_val     => s_msg_val
+      );
+
+
   -- SET START @
   s_config_start_addr <= (others => '0');
   s_score_start_addr  <= x"50";
-  s_msg_start_addr    <= x"B0";
+  s_msg_start_addr    <= x"8F";
 
-  s_msg <= (others => (others => '0'));
+
 
   -- RAM SEQUENCER INST
   max7219_ram_sequencer_inst_0 : max7219_ram_sequencer
@@ -218,9 +252,14 @@ begin  -- architecture behv
       i_config_val        => s_config_done,
       i_config_start_addr => s_config_start_addr,
       i_config_last_addr  => s_config_last_addr,
-      i_score_val         => s_score_done,
-      i_score_start_addr  => s_score_start_addr,
-      i_score_last_addr   => s_score_last_addr,
+
+      i_score_val        => s_score_done,
+      i_score_start_addr => s_score_start_addr,
+      i_score_last_addr  => s_score_last_addr,
+
+      i_msg_val        => s_msg_done,
+      i_msg_start_addr => s_msg_start_addr,
+      i_msg_last_addr  => s_msg_last_addr,
 
       -- MAX7219 RAM DECOD I/F
       i_ptr_equality => s_ptr_equality,

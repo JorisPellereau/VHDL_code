@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-05-10
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,9 +39,14 @@ entity max7219_display_manager is
     i_config_val        : in std_logic;  -- New Config Available
     i_config_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
     i_config_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-    i_score_val         : in std_logic;  -- New SCORE available
-    i_score_start_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-    i_score_last_addr   : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+    i_score_val        : in std_logic;  -- New SCORE available
+    i_score_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    i_score_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+    i_msg_val        : in std_logic;    -- New Message available
+    i_msg_start_addr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+    i_msg_last_addr  : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
 
     -- MAX7219 RAM DECOD I/F
     i_ptr_equality : in  std_logic;     -- PTR EQUALITY
@@ -57,7 +62,7 @@ end entity max7219_display_manager;
 architecture behv of max7219_display_manager is
 
   -- TYPES
-  type t_display_manager_states is (IDLE, WAIT_CMD, SET_CONFIG, SET_SCORE, WAIT_EQU);  -- STATES
+  type t_display_manager_states is (IDLE, WAIT_CMD, SET_CONFIG, SET_SCORE, SET_MSG, WAIT_EQU);  -- STATES
 
   -- INTERNAL SIGNALS
   signal s_curr_state : t_display_manager_states;  -- Current State
@@ -87,6 +92,8 @@ begin  -- architecture behv
             s_next_state <= SET_CONFIG;
           elsif(i_score_val = '1') then
             s_next_state <= SET_SCORE;
+          elsif(i_msg_val = '1') then
+            s_next_state <= SET_MSG;
           end if;
 
         when SET_CONFIG =>
@@ -95,6 +102,11 @@ begin  -- architecture behv
           end if;
 
         when SET_SCORE =>
+          if(s_ptr_val = '1') then
+            s_next_state <= WAIT_EQU;
+          end if;
+
+        when SET_MSG =>
           if(s_ptr_val = '1') then
             s_next_state <= WAIT_EQU;
           end if;
@@ -128,12 +140,18 @@ begin  -- architecture behv
           elsif(i_score_val = '1') then
             s_start_ptr <= i_score_start_addr;
             s_last_ptr  <= i_score_last_addr;
+          elsif(i_msg_val = '1') then
+            s_start_ptr <= i_msg_start_addr;
+            s_last_ptr  <= i_msg_last_addr;
           end if;
 
         when SET_CONFIG =>
           s_ptr_val <= '1';
 
         when SET_SCORE =>
+          s_ptr_val <= '1';
+
+        when SET_MSG =>
           s_ptr_val <= '1';
 
         when others => null;

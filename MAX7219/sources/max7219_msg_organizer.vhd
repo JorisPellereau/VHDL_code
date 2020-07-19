@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-07-18
--- Last update: 2020-07-18
+-- Last update: 2020-07-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,12 +32,12 @@ entity max7219_msg_organizer is
     G_DIGITS_NB      : integer range 2 to 8 := 8);  -- DIGITS Number on the DISPLAY
 
   port (
-    clk          : in  std_logic;       -- Clock
-    rst_n        : in  std_logic;       -- Asynchronous reset
-    i_msg_nb     : in  std_logic_vector(G_DIGITS_NB*4 - 1 downto 0);  -- Sel msg
-    i_msg_nb_val : in  std_logic;       -- SCORE DECOD valid
-    o_msg        : out t_msg_array;     -- ARRAY of message
-    o_msg_val    : out std_logic
+    clk           : in  std_logic;      -- Clock
+    rst_n         : in  std_logic;      -- Asynchronous reset
+    i_msg_cmd     : in  std_logic_vector(G_DIGITS_NB*8 - 1 downto 0);  -- Sel msg
+    i_msg_cmd_val : in  std_logic;      -- SCORE DECOD valid
+    o_msg         : out t_msg_array;    -- ARRAY of message
+    o_msg_val     : out std_logic
     );
 end entity max7219_msg_organizer;
 
@@ -61,14 +61,17 @@ architecture behv of max7219_msg_organizer is
 begin  -- architecture behv
 
 
+
+
+
   g_digit2letter_inst_0 : for i in 0 to G_DIGITS_NB - 1 generate
 
     i_digit2letter_inst : max7219_digit2letter
       port map (
         clk      => clk,
         rst_n    => rst_n,
-        i_letter => i_score_decod(i*4 + 3 downto i*4),
-        i_val    => i_score_decod_val,
+        i_letter => i_msg_cmd(i*8 + 7 downto i*8),
+        i_val    => i_msg_cmd_val,
         o_seg_7  => s_segs_7((12*(G_DIGITS_NB -i)- 1) downto 12*(G_DIGITS_NB - 1 - i)),
         o_seg_6  => s_segs_6((12*(G_DIGITS_NB -i)- 1) downto 12*(G_DIGITS_NB - 1 - i)),
         o_seg_5  => s_segs_5((12*(G_DIGITS_NB -i)- 1) downto 12*(G_DIGITS_NB - 1 - i)),
@@ -84,10 +87,10 @@ begin  -- architecture behv
 
 
   --s_seg MATRIX0 on MSB
-  s_conf_done <= s_digits2conf_done(0);
+  s_conf_done <= s_digits2letter_done(0);
 
   -- SCORE_CMD MNGT
-  p_msg__mngt : process (clk, rst_n) is
+  p_msg_mngt : process (clk, rst_n) is
   begin  -- process p_score_cmd_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       o_msg      <= (others => (others => '0'));
