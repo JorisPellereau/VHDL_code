@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-03
--- Last update: 2020-07-19
+-- Last update: 2020-07-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -198,9 +198,23 @@ begin  -- architecture behv
 
 
   -- SET START @
-  s_config_start_addr <= (others => '0');
-  s_score_start_addr  <= x"50";
-  s_msg_start_addr    <= x"8F";
+  -- s_config_start_addr <= (others => '0');
+  -- s_score_start_addr  <= x"50";
+  -- s_msg_start_addr    <= x"8F";
+
+  -- START ADDR. MNGT INST
+  max7219_start_addr_inst_0 : max7219_start_addr_mngt
+    generic map (
+      G_RAM_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
+      G_DIGITS_NB      => G_DIGITS_NB
+      )
+    port map (
+      clk                 => clk,
+      rst_n               => rst_n,
+      o_config_start_addr => s_config_start_addr,
+      o_score_start_addr  => s_score_start_addr,
+      o_msg_start_addr    => s_msg_start_addr
+      );
 
 
 

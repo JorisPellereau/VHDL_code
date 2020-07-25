@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-05-09
--- Last update: 2020-07-19
+-- Last update: 2020-07-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -72,6 +72,7 @@ architecture behv of max7219_display_manager is
   signal s_last_ptr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_ptr_val   : std_logic;
   signal s_en        : std_logic;
+  signal s_loop      : std_logic;       -- Loop
 
 begin  -- architecture behv
 
@@ -159,11 +160,13 @@ begin  -- architecture behv
     end if;
   end process p_command_mngt;
 
+  s_loop <= '0';
 
   -- OUTPUTS AFFECTATION
   o_start_ptr <= s_start_ptr;
   o_last_ptr  <= s_last_ptr;
   o_ptr_val   <= s_ptr_val;
   o_en        <= s_en;
+  o_loop      <= s_loop;
 
 end architecture behv;

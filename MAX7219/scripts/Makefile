@@ -105,6 +105,9 @@ all:
 	@echo ""
 	@echo "- Run test : TEST MATRIX DISPLAY 8 MATRIX"
 	@echo "make run_test_matrix_display_8"
+	@echo ""
+	@echo "- Run test : TEST MAX7219 SCROLLER"
+	@echo "make run_test_max7219_scroller"
 	@echo "============================================"
 
 
@@ -151,8 +154,11 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_digit2letter.vhd \
 		$(SRC_DIR)/max7219_msg_organizer.vhd \
 		$(SRC_DIR)/max7219_msg_sel.vhd \
+		$(SRC_DIR)/max7219_start_addr_mngt.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
+		$(SRC_DIR)/max7219_scroller_rd_mem.vhd \
+		$(SRC_DIR)/max7219_scroller.vhd \
 		$(SRC_DIR)/max7219_matrix_display.vhd \
 		$(SRC_DIR)/top_max7219_matrix_display.vhd \
 
@@ -163,6 +169,8 @@ src_tb_vhd=	$(TB_SRC_DIR)/test_max7219_cmd_decod.vhd \
 		$(SRC_ALG_VHD)/test_uint_division.vhd \
 		$(TB_SRC_DIR)/test_top_max7219_matrix_display.vhd \
 		$(TB_SRC_DIR)/test_matrix_display_8.vhd \
+		$(TB_SRC_DIR)/test_max7219_scroller.vhd
+
 # =====================
 
 
@@ -254,6 +262,18 @@ wave_test5=wave_test_matrix_display_8
 run_test_matrix_display_8 : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
 	cd $(WORK_DIR); \
 	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test5).wlf $(LIB_TB_TOP).$(entity_test5) -l $(TRANSCRIPTS_DIR)/$(trans_test5) -do $(RUN_DO_DIR)/$(run_test5);
+
+# ========================
+
+# TEST 6
+# == TEST MATRIX DISPLAY 8 MATRIX ==
+entity_test6=test_max7219_scroller
+run_test6=run_max7219_scroller.do
+trans_test6=test_max7219_scroller.txt
+wave_test6=wave_test_max7219_scroller
+run_test_max7219_scroller : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+	cd $(WORK_DIR); \
+	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test6).wlf $(LIB_TB_TOP).$(entity_test6) -l $(TRANSCRIPTS_DIR)/$(trans_test6) -do $(RUN_DO_DIR)/$(run_test6);
 
 # ========================
 

@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-07-19
+-- Last update: 2020-07-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -79,6 +79,9 @@ package pkg_max7219 is
   type t_score_array is array (0 to 63) of std_logic_vector(15 downto 0);   --
   type t_msg_array is array (0 to 63) of std_logic_vector(15 downto 0);
   type t_config_array is array (0 to 31) of std_logic_vector(15 downto 0);  -- Config ARRAY
+
+
+  type t_msg2scroll_array is array(integer range <>) of std_logic_vector(15 downto 0);
 
 
   -- COMPONENTS
@@ -434,6 +437,73 @@ package pkg_max7219 is
 
   end component max7219_msg_sel;
 
+
+  component max7219_start_addr_mngt is
+    generic (
+      G_RAM_ADDR_WIDTH : integer              := 16;  -- RAM ADDR WIDTH
+      G_DIGITS_NB      : integer range 2 to 8 := 8);  -- Digits Number on the Display
+    port (
+      clk                 : in  std_logic;
+      rst_n               : in  std_logic;            -- Asynchronous reset
+      o_config_start_addr : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_score_start_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+      o_msg_start_addr    : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0)
+      );
+  end component max7219_start_addr_mngt;
+
+
+  component max7219_scroller_rd_mem is
+
+    generic (
+      G_RAM_ADDR_WIDTH : integer := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer := 16;  -- RAM DATA_WIDTH
+      G_DIGITS_NB      : integer := 8);  -- DIGITS NUMBER
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      i_start_scroll : in std_logic;    -- Start Scroll
+
+      o_me    : out std_logic;          -- Memory Enable
+      o_we    : out std_logic;          -- R/W enable
+      o_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM DATA
+
+      o_msg2scroll_array : out t_msg2scroll_array(0 to 2**G_RAM_ADDR_WIDTH - 2);  -- Mesage to Scroll
+      o_shift_nb         : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Number of shift to perform
+      o_start            : out std_logic);  -- Start
+
+  end component max7219_scroller_rd_mem;
+
+
+  component max7219_scroller is
+
+    generic (
+      G_RAM_ADDR_WIDTH : integer := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer := 16;  -- RAM DATA WIDTH
+      G_DIGITS_NB      : integer := 8);  -- DIGIT NUMBER
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- COMMANDS
+      i_start_scroll : in std_logic;    -- START SCROLL COMMAND
+
+      -- MEMORY I/F
+      o_me    : out std_logic;          -- Memory Enable
+      o_we    : out std_logic;          -- R/W enable
+      o_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- MEMORY ADDR
+      i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- MEMORY RDATA
+
+      -- MAX7219 I/F
+      o_start   : out std_logic;        -- MAX7219 I/F Start
+      o_en_load : out std_logic;        -- MAX7219 I/F Enable Load
+      o_data    : out std_logic_vector(15 downto 0);  -- MAX7219 I/F DATA
+      i_done    : in  std_logic);       -- MAX7219 DONE
+
+  end component max7219_scroller;
 
   component max7219_matrix_display is
     generic (
