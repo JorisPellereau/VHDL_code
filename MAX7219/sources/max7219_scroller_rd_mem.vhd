@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-07-25
--- Last update: 2020-07-25
+-- Last update: 2020-07-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -53,18 +53,26 @@ end entity max7219_scroller_rd_mem;
 
 architecture behv of max7219_scroller_rd_mem is
 
+  -- TYPES
+  type t_scroller_rd_mem_states is (IDLE, RD_MSG_LENGTH, RD_MEM);  -- States
+
   -- INTERNAL SIGNALS
   signal s_start_scroll        : std_logic;  -- Latch i_start_scroll
   signal s_start_scroll_r_edge : std_logic;  -- R EDGE pf i_start_scroll
 
+  signal s_current_state : t_scroller_rd_mem_states;
+  signal s_next_state    : t_scroller_rd_mem_states;
+
   signal s_me         : std_logic;      -- Memory Enable
+  signal s_me_p1      : std_logic;      -- Memory Enable
   signal s_we         : std_logic;      -- R/W memory
   signal s_addr       : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
   signal s_msg_length : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Message length
 
-  signal s_read_msg_length : std_logic;  -- Read Message Length
-  signal s_read_ram        : std_logic;  -- Read RAM info.
-  signal s_read_done       : std_logic;  -- Read Done
+  signal s_read_msg_length    : std_logic;  -- Read Message Length
+  signal s_read_msg_length_p1 : std_logic;  -- Read Message Length
+  signal s_read_ram           : std_logic;  -- Read RAM info.
+  signal s_read_done          : std_logic;  -- Read Done
 
   signal s_shift_nb : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Shift Number
 
@@ -75,9 +83,13 @@ begin  -- architecture behv
   p_latch_inputs : process (clk, rst_n) is
   begin  -- process p_latch_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_start_scroll <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
-      s_start_scroll <= i_start_scroll;
+      s_start_scroll       <= '0';
+      s_read_msg_length_p1 <= '0';
+      s_me_p1              <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge      
+      s_start_scroll       <= i_start_scroll;
+      s_read_msg_length_p1 <= s_read_msg_length;
+      s_me_p1              <= s_me;
     end if;
   end process p_latch_inputs;
 
@@ -85,6 +97,35 @@ begin  -- architecture behv
   -- R EDGE DETECTION
   s_start_scroll_r_edge <= i_start_scroll and not s_start_scroll;
 
+
+  p_curr_state_update : process (clk, rst_n) is
+  begin  -- process p_curr_state_update
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_current_state <= IDLE;
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_current_state <= s_next_state;
+    end if;
+  end process p_curr_state_update;
+
+  p_next_state_computation : process (clk, rst_n) is
+  begin  -- process p_next_state_computation
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_next_state <= IDLE;
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      case s_current_state is
+        when IDLE =>
+          if(s_start_scroll_r_edge = '1') then
+            s_next_state <= RD_MSG_LENGTH;
+          end if;
+
+        when RD_MSG_LENGTH =>
+
+        when RD_MEM =>
+
+        when others => null;
+      end case;
+    end if;
+  end process p_next_state_computation;
 
   p_rd_mem_access : process (clk, rst_n) is
   begin  -- process p_rd_mem_access
@@ -96,6 +137,7 @@ begin  -- architecture behv
       s_read_ram        <= '0';
       s_read_done       <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
+
       if(s_start_scroll_r_edge = '1') then
         s_me              <= '1';
         s_we              <= '0';       -- Read Access
@@ -106,21 +148,27 @@ begin  -- architecture behv
         s_read_msg_length <= '0';
       end if;
 
-      if(s_read_msg_length = '1') then
+      if(s_read_msg_length_p1 = '1') then
         s_addr     <= unsigned(s_addr) + 1;
         s_read_ram <= '1';
       end if;
 
+
+
       if(s_read_ram = '1') then
-        if(s_addr < unsigned(s_msg_length) + 1) then
-          s_me   <= '1';
-          s_we   <= '0';
-          s_addr <= unsigned(s_addr) + 1;
+        if(unsigned(s_addr) < unsigned(s_msg_length) + 1) then
+          s_me <= '1';
+          s_we <= '0';
+        --s_addr <= unsigned(s_addr) + 1;
         else
           s_me        <= '0';
           s_addr      <= (others => '0');
           s_read_done <= '1';
           s_read_ram  <= '0';
+        end if;
+
+        if(s_me_p1 = '1') then
+          s_addr <= unsigned(s_addr) + 1;
         end if;
       else
         s_read_done <= '0';
@@ -137,12 +185,12 @@ begin  -- architecture behv
       o_msg2scroll_array <= (others => (others => '0'));
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(s_read_msg_length = '1') then
+      if(s_read_msg_length_p1 = '1') then
         s_msg_length <= i_rdata;
       end if;
 
       if(s_read_ram = '1') then
-        if(s_me = '1') then
+        if(s_me_p1 = '1') then
           o_msg2scroll_array(conv_integer(unsigned(s_addr))) <= i_rdata;
         end if;
       end if;
@@ -156,7 +204,9 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_shift_nb <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_shift_nb <= conv_unsigned(8*G_DIGITS_NB, s_shift_nb'length) + unsigned(s_msg_length);
+      if(s_read_ram = '1') then
+        s_shift_nb <= conv_unsigned(8*G_DIGITS_NB, s_shift_nb'length) + unsigned(s_msg_length);
+      end if;
     end if;
   end process p_shift_nb_mngt;
 
