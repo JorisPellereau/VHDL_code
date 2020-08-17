@@ -1,14 +1,30 @@
+/*
+ * crc_computation.c
+ *
+ * Computation of CRC
+ *
+ * Example utilisation : ./crc_computation.o 8 16 65535 1
+ *
+ * argv[1] = Data In Size
+ * argv[2] = Polynome Size
+ * argv[3] = CRC INIT
+ * argv[4] = CRC Number of polynome size
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 //#include "crc_functions.h"
 
+
 // == PROTOTYPES ==
-void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbose);
-void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, int *i_crc_serial, int crc_par_verbose, int crc_serial_verbose);
-void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h1_matrix, int h1_verbose, int crc_par_verbose, int crc_ser_verbose);
-void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h2_matrix, int h2_verbose, int crc_par_verbose, int crc_ser_verbose);
+void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbose, int crc_number);
+void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, int *i_crc_serial, int crc_par_verbose, int crc_serial_verbose, int crc_number);
+void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h1_matrix, int h1_verbose, int crc_par_verbose, int crc_ser_verbose, int crc_number);
+void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h2_matrix, int h2_verbose, int crc_par_verbose, int crc_ser_verbose, int crc_number);
+void print_impl_crc_par(int data_in_width, int poly_width, int **h1_matrix, int **h2_matrix);
 // ================
 
 
@@ -18,26 +34,34 @@ int main(int argc, char **argv) {
 
   int poly_width;
   int data_in_size;
+  int crc_init;
+  int crc_number;
 
   
-  // CRC 16
-  poly_width   = 16;  // to set with argv
-  data_in_size = 8;
+  // CRC INPUTS
+  data_in_size = atoi(argv[1]);
+  poly_width   = atoi(argv[2]);
+  crc_init     = atoi(argv[3]);
+  crc_number   = atoi(argv[4]);
+
+  printf("%d %d %d \n\n\n", data_in_size, poly_width, crc_number);  
+
   
   int i_data[data_in_size];
   int i_crc[poly_width];
   int i_crc_serial[poly_width];
-  int M_out[poly_width];  
   int j;
   int i;
   
-  int verbose;
+  int verbose_on;
+  int verbose_off;
 
 
   // == INITIALIZATION ==
   j = 0;
   i = 0;
-  verbose = 1;
+  verbose_on = 1;
+  verbose_off = 0;
 
   for(i = 0 ; i < data_in_size ; i++) {
     i_data[i] = 0;
@@ -46,7 +70,6 @@ int main(int argc, char **argv) {
   for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 0;
     i_crc_serial[i] = 0;
-    M_out[i] = 0;
   }
   
 
@@ -78,33 +101,34 @@ int main(int argc, char **argv) {
   
   
   // == CRC SERIAL TEST ==
-  /*i_data[0] = 1;
+  
+  i_data[0] = 1;
   i_crc[0]  = 1;
-  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose);
-  i_data[0] = 0;  
-  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose);
-  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose);
-  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose);
-  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose);*/
+  //crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose_on, crc_number);
+  i_data[0] = 0;
+  
+  /*crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose, 1);
+  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose, 1);
+  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose, 1);
+  crc_serial(poly_width, i_data[0], i_crc, i_crc_serial, verbose, 1);*/
   // =====================
   
   // == RAZ inputs ==
-  for(i = 0 ; i < data_in_size ; i++) {
+  /*for(i = 0 ; i < data_in_size ; i++) {
     i_data[i] = 0;
-  }
+    }*/
 
-  for(i = 0 ; i < poly_width ; i++) {
+  /*for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 0;
     i_crc_serial[i] = 0;
-    M_out[i] = 0;
-  }
+    }*/
   // ===============
   
   
   // == CRC PARALELL TEST ==
   // CRC 16
-  poly_width   = 16;  // to set with argv
-  data_in_size = 8;
+  //poly_width   = 16;  // to set with argv
+  //data_in_size = 8;
   
   // Input Data : 0xBB
   i_data[7] = 1;
@@ -120,7 +144,7 @@ int main(int argc, char **argv) {
   for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 1;
   }
-  crc_parallel(data_in_size, poly_width, i_data, i_crc, i_crc_serial, 0, 0);
+  //crc_parallel(data_in_size, poly_width, i_data, i_crc, i_crc_serial, verbose_on, verbose_on, crc_number);
   // =======================
   
 
@@ -132,7 +156,6 @@ int main(int argc, char **argv) {
   for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 0;
     i_crc_serial[i] = 0;
-    M_out[i] = 0;
   }
   // ===============
   
@@ -140,15 +163,25 @@ int main(int argc, char **argv) {
   // == H1 FILL TEST ==
 
   // CRC 16
-  poly_width   = 16;  // to set with argv
-  data_in_size = 8;  
+  //poly_width   = 16;  // to set with argv
+  //data_in_size = 8;  
   
   // CRC init = 0xFFFF
-  for(i = 0 ; i < poly_width ; i++) {
-    i_crc[i] = 1;
+  if(crc_init != 0) {
+    for(i = 0 ; i < poly_width ; i++) {
+      i_crc[i] = 1;
+    }
   }
+  else {
+    for(i = 0 ; i < poly_width ; i++) {
+      i_crc[i] = 0;
+    }
+  }
+  printf("data_in_size = %d \n", data_in_size);
+  printf("poly_width = %d \n", poly_width);
+  printf("crc_number = %d \n", crc_number);
   
-  fill_h1(data_in_size, poly_width, i_crc, i_crc_serial, h1_matrix, verbose, 0, 0);
+  fill_h1(data_in_size, poly_width, i_crc, i_crc_serial, h1_matrix, verbose_on, verbose_off, verbose_off, crc_number);
   // ==================
 
 
@@ -160,21 +193,27 @@ int main(int argc, char **argv) {
   for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 0;
     i_crc_serial[i] = 0;
-    M_out[i] = 0;
   }
   // ===============
   
 
   // == FILL H2 TEST ==
   // CRC 16
-  poly_width   = 16;  // to set with argv
-  data_in_size = 8;  
+  //poly_width   = 16;  // to set with argv
+  //data_in_size = 8;  
   
   // CRC init = 0xFFFF
-  for(i = 0 ; i < poly_width ; i++) {
-    i_crc[i] = 1;
+  if(crc_init != 0) {
+    for(i = 0 ; i < poly_width ; i++) {
+      i_crc[i] = 1;
+    }
   }
-  fill_h2(data_in_size, poly_width, i_crc, i_crc_serial, h2_matrix, verbose, 0, 0);
+  else {
+    for(i = 0 ; i < poly_width ; i++) {
+      i_crc[i] = 0;
+    }
+  }
+  fill_h2(data_in_size, poly_width, i_crc, i_crc_serial, h2_matrix, verbose_off, verbose_off, verbose_off, crc_number);
   // ==================
  
 
@@ -185,10 +224,11 @@ int main(int argc, char **argv) {
   for(i = 0 ; i < poly_width ; i++) {
     i_crc[i] = 0;
     i_crc_serial[i] = 0;
-    M_out[i] = 0;
   }
+
   
-  //fill_h2(data_in_size, poly_width, i_crc_serial, i_crc, M_out, h2_matrix);
+  
+  print_impl_crc_par(data_in_size, poly_width, h1_matrix, h2_matrix);
   
   // Free H1
   for (i = 0; i < data_in_size; i++) {
@@ -210,80 +250,92 @@ int main(int argc, char **argv) {
 
 /*
 *  CRC SERIAL Computation
-*  i_data     : input        - Bit of data (0 or 1)
+*  i_data      : input        - Bit of data (0 or 1)
 *  poly_width  : input        - CRC polynom Width
 *  *crc        : input/output - Current CRC 
 *  *crc_serial : output       - CRC result
 *  verbose     : input        - 1 : Verbose On - 0 : Verbose Off
+*  crc_numer   : input        - CRC Number selected
 */
-void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbose) {
+void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbose, int crc_number) {
 
   int i = 0;
 
-  // CRC SERIAL - HArd Coded
-  // CRC : x^5 + x^2 + 1
-  /*crc_serial[0] = crc[4] ^ i_data;
-  crc_serial[1] = crc[0];
-  crc_serial[2] = crc[1] ^ crc[4] ^ i_data;
-  crc_serial[3] = crc[2];
-  crc_serial[4] = crc[3];*/
-  
-  
-  // CRC : x^16 + x^12 + x^5 + 1
-  /*crc_serial[0] = crc[15] ^ i_data;
-  crc_serial[1] = crc[0];
-  crc_serial[2] = crc[1];
-  crc_serial[3] = crc[2];
-  crc_serial[4] = crc[3];
-  crc_serial[5] = crc[4] ^ crc[3] ^ crc[15];
-  crc_serial[6] = crc[5];
-  crc_serial[7] = crc[6];
-  crc_serial[8] = crc[7];
-  crc_serial[9] = crc[8];
-  crc_serial[10] = crc[9];
-  crc_serial[11] = crc[10];
-  crc_serial[12] = crc[11] ^ crc[10] ^ crc[15];
-  crc_serial[13] = crc[12];
-  crc_serial[14] = crc[13];
-  crc_serial[15] = crc[14] ^ crc[13] ^ crc[15];
-  */
-  
-  /*crc_serial[0] = crc[15] ^ i_data;
-  crc_serial[1] = crc[0];
-  crc_serial[2] = crc[1];
-  crc_serial[3] = crc[2];
-  crc_serial[4] = crc[3];
-  crc_serial[5] = crc[4]  ^ crc[15];
-  crc_serial[6] = crc[5];
-  crc_serial[7] = crc[6];
-  crc_serial[8] = crc[7];
-  crc_serial[9] = crc[8];
-  crc_serial[10] = crc[9];
-  crc_serial[11] = crc[10];
-  crc_serial[12] = crc[11]  ^ crc[15];
-  crc_serial[13] = crc[12];
-  crc_serial[14] = crc[13];
-  crc_serial[15] = crc[14]  ^ crc[15];*/
+  // HARD CODED CRC
+  switch(poly_width) {
+  case 5 :
+    if(crc_number == 1) {
 
-  crc_serial[0] = crc[15] ^ i_data;
-  crc_serial[1] = crc[0];
-  crc_serial[2] = crc[1];
-  crc_serial[3] = crc[2];
-  crc_serial[4] = crc[3];
-  crc_serial[5] = crc[4]  ^ crc[15] ^ i_data;
-  crc_serial[6] = crc[5];
-  crc_serial[7] = crc[6];
-  crc_serial[8] = crc[7];
-  crc_serial[9] = crc[8];
-  crc_serial[10] = crc[9];
-  crc_serial[11] = crc[10];
-  crc_serial[12] = crc[11]  ^ crc[15] ^ i_data;
-  crc_serial[13] = crc[12];
-  crc_serial[14] = crc[13];
-  crc_serial[15] = crc[14];
+      // CRC : x^5 + x^2 + 1
+      crc_serial[0] = crc[4] ^ i_data;
+      crc_serial[1] = crc[0];
+      crc_serial[2] = crc[1] ^ crc[4] ^ i_data;
+      crc_serial[3] = crc[2];
+      crc_serial[4] = crc[3];
 
-  
-  
+      break;
+    }
+    else {
+      printf("CRC 5 ERROR \n\n");
+
+      break;
+    }
+
+  case 16 :
+    if(crc_number == 1) {
+
+      // CRC : x^16 + x^12 + x^5 + 1
+      crc_serial[0] = crc[15] ^ i_data;
+      crc_serial[1] = crc[0];
+      crc_serial[2] = crc[1];
+      crc_serial[3] = crc[2];
+      crc_serial[4] = crc[3];
+      crc_serial[5] = crc[4]  ^ crc[15] ^ i_data;
+      crc_serial[6] = crc[5];
+      crc_serial[7] = crc[6];
+      crc_serial[8] = crc[7];
+      crc_serial[9] = crc[8];
+      crc_serial[10] = crc[9];
+      crc_serial[11] = crc[10];
+      crc_serial[12] = crc[11]  ^ crc[15] ^ i_data;
+      crc_serial[13] = crc[12];
+      crc_serial[14] = crc[13];
+      crc_serial[15] = crc[14];
+
+      break;
+    }
+    else if(crc_number == 2) {
+      // CRC : x^16 + x^12 + x^5 + 1 - bis
+      crc_serial[0] = crc[15] ^ i_data;
+      crc_serial[1] = crc[0];
+      crc_serial[2] = crc[1];
+      crc_serial[3] = crc[2];
+      crc_serial[4] = crc[3];
+      crc_serial[5] = crc[4]  ^ crc[15];
+      crc_serial[6] = crc[5];
+      crc_serial[7] = crc[6];
+      crc_serial[8] = crc[7];
+      crc_serial[9] = crc[8];
+      crc_serial[10] = crc[9];
+      crc_serial[11] = crc[10];
+      crc_serial[12] = crc[11]  ^ crc[15];
+      crc_serial[13] = crc[12];
+      crc_serial[14] = crc[13];
+      crc_serial[15] = crc[14];
+      
+      break;
+    }
+    else {
+      printf("CRC 16 ERROR \n\n");
+
+      break;
+    }
+
+  default :
+    printf("ERROR : CRC Not in the list \n\n");
+   
+    
+  }
 
   // Update
   for(i = 0 ; i < poly_width ; i++) {
@@ -314,16 +366,16 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
 *  *i_crc_serial      : output       - CRC RESULT
 *  crc_par_verbose    : input        - 1 : Verbose On - 0 : Verbose Off
 *  crc_serial_verbose : input        - 1 : Verbose On - 0 : Verbose Off
-*
+*  crc_number         : input        - CRC Number selected
 */
-void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, int *i_crc_serial, int crc_par_verbose, int crc_serial_verbose) {//, int *M_out, int i_poly_width) {
+void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, int *i_crc_serial, int crc_par_verbose, int crc_serial_verbose, int crc_number) {
 
   int i = 0;
   int crc_hex = 0;
 
   // MSB FIRST
   for(i = data_in_width - 1 ; i >= 0 ; i --) {  
-    crc_serial(poly_width, i_data[i], i_crc, i_crc_serial, crc_serial_verbose);    
+    crc_serial(poly_width, i_data[i], i_crc, i_crc_serial, crc_serial_verbose, crc_number);    
   }
 
   if(crc_par_verbose == 1) {
@@ -352,17 +404,17 @@ void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, in
  *  h1_verbose         : input        - 1 : Verbose On - 0 : Verbose Off
  *  crc_par_verbose    : input        - 1 : Verbose On - 0 : Verbose Off
  *  crc_ser_verbose    : input        - 1 : Verbose On - 0 : Verbose Off
- *
+ *  crc_number         : input        - CRC Number selected
  */
-void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h1_matrix, int h1_verbose, int crc_par_verbose, int crc_ser_verbose) {
+void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h1_matrix, int h1_verbose, int crc_par_verbose, int crc_ser_verbose, int crc_number) {
   
   int j = 0;
   int i = 0;
   int k = 0;
   int data[data_in_width];
-  int *data_ptr;
+  //int *data_ptr;
 
-  data_ptr = data; // INIT PTR
+  //data_ptr = data; // INIT PTR
 
   // INIT DATA
   for(i = 0 ; i < data_in_width ; i++) {
@@ -370,7 +422,7 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
   }
 
   data[0] = 1;
-  *data_ptr = data[0];
+  //*data_ptr = data[0];
   
   for(j = 0 ; j < data_in_width ; j++) {
 
@@ -382,18 +434,23 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
       }
       printf("\n");
     }
-    crc_parallel(data_in_width, poly_width, data, i_crc, i_crc_serial, crc_par_verbose, crc_ser_verbose);
+    
+    crc_parallel(data_in_width, poly_width, data, i_crc, i_crc_serial, crc_par_verbose, crc_ser_verbose, crc_number);
     for(i = 0 ; i < poly_width ; i++) {
       h1_matrix[j][i] = i_crc_serial[i];
     }
 
     // RAZ inputs
     for(k = 0 ; k < poly_width ; k++) {
-      data[k] = 0;
       i_crc[k] = 0;
       i_crc_serial[k] = 0;
     }
+    for(k = 0 ; k < data_in_width ; k++) {
+      //printf("data[%d] : %d ", k, data[k]);
+      data[k] = 0;
+    }
 
+   
     // SHIFT i_data
     data[j+1] = 1;
 
@@ -409,7 +466,7 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
     for(j = 0; j < data_in_width ; j++) {
       printf("Nin[%d]", j );
       for(i = 0 ; i < poly_width ; i++) {
-        printf("     %d", h1_matrix[data_in_width - 1 - j][poly_width - 1 - i]);
+        printf("     %d", h1_matrix[j][poly_width - 1 - i]);
       }
       printf("\n");
     }
@@ -422,7 +479,18 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
   
 }
 
-void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h2_matrix, int h2_verbose, int crc_par_verbose, int crc_ser_verbose) {
+/*
+ *  data_in_width      : input        - Data in width
+ *  poly_width         : input        - CRC Polynom Width
+ *  *i_crc             : input/output - Current CRC
+ *  *i_crc_serial      : output       - CRC Result
+ *  **h2_matrix        : output       - H2 Matrix result
+ *  h2_verbose         : input        - 1 : Verbose On - 0 : Verbose Off
+ *  crc_par_verbose    : input        - 1 : Verbose On - 0 : Verbose Off
+ *  crc_ser_verbose    : input        - 1 : Verbose On - 0 : Verbose Off
+ *  crc_number         : input        - CRC Number selected
+ */
+void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h2_matrix, int h2_verbose, int crc_par_verbose, int crc_ser_verbose, int crc_number) {
     
   int j = 0;
   int i = 0;
@@ -435,12 +503,11 @@ void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
       h2_data[i] = 0;
   }
   
-  //i_data = h2_data; // PTR INIT
   
   i_crc[0] = 1; // MIN init
   for(j = 0 ; j < poly_width ; j++) {
       
-    crc_parallel(data_in_width, poly_width, h2_data, i_crc, i_crc_serial, crc_par_verbose, crc_ser_verbose);
+    crc_parallel(data_in_width, poly_width, h2_data, i_crc, i_crc_serial, crc_par_verbose, crc_ser_verbose, crc_number);
 
     for(i = 0 ; i < poly_width ; i++) {
       h2_matrix[j][i] = i_crc_serial[i];
@@ -466,9 +533,49 @@ void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
   for(j = 0; j < poly_width; j++) {
     printf("Min[%d]", j);
     for(i = 0 ; i < poly_width ; i++) {
-      printf("     %d", h2_matrix[poly_width- 1 - j][poly_width - 1 - i]);
+      printf("     %d", h2_matrix[j][poly_width - 1 - i]);
     }
     printf("\n");
   }
+  
+}
+
+
+void print_impl_crc_par(int data_in_width, int poly_width, int **h1_matrix, int **h2_matrix) {
+
+  int i;
+  int j;
+  /*for(i = 0 ; i < data_in_width ; i++) {
+    for(j = 0 ; j < poly_width ; j++) {
+      printf("h1_matrix[%d][%d] : %d ", i, j, h1_matrix[i][j]);
+    }
+    printf("\n");
+  }
+
+  for(i = 0 ; i < poly_width ; i++) {
+    for(j = 0 ; j < poly_width ; j++) {
+      printf("h2_matrix[%d][%d] : %d", i, j, h2_matrix[i][j]);
+    }
+    printf("\n");
+    }*/
+
+  for(i = 0 ; i < poly_width ; i++) {
+    printf("Mout[%d] = ", i);
+    //if(i < data_in_width) {
+      for(j = 0 ; j < data_in_width ; j++) {
+        if(h1_matrix[j][i] == 1) {
+  	  printf("Nin[%d] xor ", j);
+        }
+      }
+      //}
+    for(j = 0 ; j < poly_width ; j++) {
+      if(h2_matrix[j][i] == 1) {
+	printf("Min[%d] xor ", j);
+      }
+    }
+    printf("\n");
+    
+  }
+  
   
 }
