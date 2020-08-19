@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
       i_crc[i] = 0;
     }
   }
-  fill_h2(data_in_size, poly_width, i_crc, i_crc_serial, h2_matrix, verbose_off, verbose_off, verbose_off, crc_number);
+  fill_h2(data_in_size, poly_width, i_crc, i_crc_serial, h2_matrix, verbose_on, verbose_off, verbose_off, crc_number);
   // ==================
  
 
@@ -297,7 +297,7 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
       crc_serial[9] = crc[8];
       crc_serial[10] = crc[9];
       crc_serial[11] = crc[10];
-      crc_serial[12] = crc[11]  ^ crc[15] ^ i_data;
+      crc_serial[12] = crc[11] ^ crc[15] ^ i_data;
       crc_serial[13] = crc[12];
       crc_serial[14] = crc[13];
       crc_serial[15] = crc[14];
@@ -322,6 +322,27 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
       crc_serial[13] = crc[12];
       crc_serial[14] = crc[13];
       crc_serial[15] = crc[14];
+      
+      break;
+    }
+    else if(crc_number == 3) {
+      // CRC : x^16 + x^12 + x^5 + 1 - ter
+      crc_serial[0] = crc[15] ^ i_data;
+      crc_serial[1] = crc[0];
+      crc_serial[2] = crc[1];
+      crc_serial[3] = crc[2];
+      crc_serial[4] = crc[3];
+      crc_serial[5] = crc[4]  ^ crc[15] ^ i_data;
+      crc_serial[6] = crc[5];
+      crc_serial[7] = crc[6];
+      crc_serial[8] = crc[7];
+      crc_serial[9] = crc[8];
+      crc_serial[10] = crc[9];
+      crc_serial[11] = crc[10];
+      crc_serial[12] = crc[11]  ^ crc[15] ^ i_data;
+      crc_serial[13] = crc[12];
+      crc_serial[14] = crc[13];
+      crc_serial[15] = crc[14] ^ crc[15] ^ i_data;
       
       break;
     }
@@ -428,7 +449,7 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
 
 
     if(h1_verbose == 1) {
-      printf("Data in CRC parallel (MSB first) : 0b");
+      printf("Data in CRC parallel for H1 Matrix (MSB first) : 0b");
       for(k = data_in_width - 1 ; k >= 0 ; k--) {
         printf("%d", data[k]);
       }
@@ -506,6 +527,14 @@ void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
   
   i_crc[0] = 1; // MIN init
   for(j = 0 ; j < poly_width ; j++) {
+
+    if(h2_verbose == 1) {
+      printf("CRC data in CRC parallel for H2 Matrix (MSB first) : 0b");
+      for(k = data_in_width - 1 ; k >= 0 ; k--) {
+        printf("%d", i_crc[k]);
+      }
+      printf("\n");
+    }
       
     crc_parallel(data_in_width, poly_width, h2_data, i_crc, i_crc_serial, crc_par_verbose, crc_ser_verbose, crc_number);
 
