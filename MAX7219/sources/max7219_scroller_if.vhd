@@ -54,8 +54,7 @@ architecture behv of max7219_scroller_if is
   -- TYPES
   type t_matrix_array is array (0 to G_MATRIX_NB - 1) of std_logic_vector(63 downto 0);
 
-  -- CONSTANT
-  constant C_MATRIX_NB : std_logic_vector(2 downto 0) := conv_std_logic_vector(G_MATRIX_NB, C_MATRIX_NB'length);
+
 
   -- INTERNAL SIGNALS
 
@@ -74,7 +73,7 @@ architecture behv of max7219_scroller_if is
   signal s_busy : std_logic;            -- Busy
 
   -- COUNTERS
-  signal s_segment_cnt : integer range 0 to 7;
+  signal s_segment_cnt : integer range 0 to 8;
   signal s_matrix_cnt  : integer range 0 to G_MATRIX_NB;  -- Matrix Counter
   signal s_tempo_cnt   : std_logic_vector(31 downto 0);   -- Tempo. Counter
 
@@ -140,8 +139,8 @@ begin  -- architecture behv
           s_matrix_array(i)(63 downto 8) <= s_matrix_array(i)(55 downto 0);
         end loop;  -- i
 
-      elsif(s_matrix_updated_flag = '1') then
-        s_new_data_flag <= '0';
+      else                              --if(s_matrix_updated_flag = '1') then
+        s_new_data_flag <= '0';         -- Pulse
 
       end if;
 
@@ -156,39 +155,43 @@ begin  -- architecture behv
       s_max7219_start       <= '0';
       s_max7219_en_load     <= '0';
       s_max7219_data        <= (others => '0');
-      s_matrix_cnt          <= G_MATRIX_NB - 1;
+      s_matrix_cnt          <= G_MATRIX_NB- 1;
       s_segment_cnt         <= 0;
       s_segment_addr        <= x"01";
       s_matrix_updated_flag <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- On RE ?
-      if(s_new_data_flag = '1' and i_max7219_if_done = '1') then
-        if(s_segment_cnt < 7) then
+      if(s_new_data_flag = '1' or i_max7219_if_done = '1') then  -- and i_max7219_if_done = '1') then
+        if(s_segment_cnt < 8) then
           if(s_matrix_cnt > 0) then
             -- Last Matrix First - Segment 0 First => Segment 7
             s_max7219_data <= s_segment_addr & s_matrix_array(s_matrix_cnt)(8*s_segment_cnt + 7 downto 8*s_segment_cnt);
 
-            -- En Load Management
-            -- Bug ...
-            if(s_matrix_cnt = 1) then
-              s_max7219_en_load <= '1';
-            end if;
             s_matrix_cnt    <= s_matrix_cnt - 1;
             s_max7219_start <= '1';
+
           else
-            s_segment_cnt  <= s_segment_cnt + 1;
-            s_segment_addr <= unsigned(s_segment_addr) + 1;
-            s_matrix_cnt   <= G_MATRIX_NB - 1;
+            s_max7219_start   <= '1';
+            s_max7219_en_load <= '1';
+            s_max7219_data    <= s_segment_addr & s_matrix_array(s_matrix_cnt)(8*s_segment_cnt + 7 downto 8*s_segment_cnt);
+            s_segment_cnt     <= s_segment_cnt + 1;
+            s_segment_addr    <= unsigned(s_segment_addr) + 1;
+            s_matrix_cnt      <= G_MATRIX_NB - 1;
           end if;
 
         -- All Segment of All Matrix Updated
         else
+          s_segment_cnt         <= 0;
           s_matrix_updated_flag <= '1';
+          s_segment_addr        <= x"01";
         end if;
+        --elsif(s_start_tempo = '1') then
+
       else
-        s_max7219_start   <= '0';       -- Pulse
-        s_max7219_en_load <= '0';       -- Pulse
+        s_matrix_updated_flag <= '0';
+        s_max7219_start       <= '0';   -- Pulse
+        s_max7219_en_load     <= '0';   -- Pulse
       end if;
 
 
@@ -206,7 +209,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Start Counter On R Edge and after Matrix Update
-      if(s_max7219_if_done_r_edge = '1' and s_matrix_updated_flag = '1') then
+      if(s_matrix_updated_flag = '1') then  --s_max7219_if_done_r_edge = '1' and s_matrix_updated_flag = '1') then
         s_start_tempo <= '1';
       end if;
 
@@ -224,6 +227,8 @@ begin  -- architecture behv
     end if;
   end process p_tempo_cnt_mngt;
 
+  s_shift_matrix <= s_tempo_done;
+
 
   -- BUSY MANAGEMENT
   p_busy_mngt : process (clk, rst_n) is
@@ -232,10 +237,10 @@ begin  -- architecture behv
       s_busy <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(s_max7219_if_done_f_edge = '1') then
+      if(s_new_data_flag = '1') then
         s_busy <= '1';
       elsif(s_tempo_done = '1') then
-        s_busy <= '0'
+        s_busy <= '0';
       end if;
 
     end if;

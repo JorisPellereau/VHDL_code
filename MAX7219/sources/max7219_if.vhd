@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-05
--- Last update: 2020-04-05
+-- Last update: 2020-08-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -202,6 +202,7 @@ begin  -- architecture behv
   begin  -- process p_pipe_load
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_load_px <= (others => '0');
+      s_done    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
       if(s_en_load = '1') then
         s_load_px(0)                            <= s_max7219_load;

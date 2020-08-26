@@ -70,6 +70,10 @@ architecture behv of test_max7219_scroller is
 
   end component max7219_matrix_emul;
 
+  -- TYPE
+  type t_message_array is array (0 to 100) of std_logic_vector(7 downto 0);
+
+
 
   -- TB CONSTANTS
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
@@ -80,6 +84,8 @@ architecture behv of test_max7219_scroller is
   -- TB INTERNAL SIGNALS
   signal clk   : std_logic := '0';      -- Clock
   signal rst_n : std_logic := '1';      -- Asynchronous reset
+
+  signal s_message_array : t_message_array;  -- MEssage array
 
   -- INTERNAL SIGNALS
   signal s_me_a    : std_logic;
@@ -94,14 +100,14 @@ architecture behv of test_max7219_scroller is
   signal s_rdata_b : std_logic_vector(C_RAM_DATA_WIDTH - 1 downto 0);
 
 
-  
-  -- signal s_start        : std_logic;
-  -- signal s_en_load      : std_logic;
-  -- signal s_data         : std_logic_vector(15 downto 0);
-  -- signal s_done         : std_logic;
+
+  signal s_start   : std_logic;
+  signal s_en_load : std_logic;
+  signal s_data    : std_logic_vector(15 downto 0);
+  signal s_done    : std_logic;
   -- signal s_start_scroll : std_logic;
 
-  signal s_seg_data       : std_logic_vector(15 downto 0);
+  signal s_seg_data       : std_logic_vector(7 downto 0);
   signal s_seg_data_valid : std_logic;
   signal s_max_tempo_cnt  : std_logic_vector(31 downto 0);
   signal s_busy           : std_logic;
@@ -121,6 +127,8 @@ begin  -- architecture behv
 
                                         -- STIMULIS
   p_stimulis : process is
+
+    variable v_i : integer := 0;
   begin  -- process p_stimuli
 
     -- SIGNALS INIT
@@ -133,6 +141,17 @@ begin  -- architecture behv
     s_seg_data       <= (others => '0');
     s_seg_data_valid <= '0';
     s_max_tempo_cnt  <= x"000000FF";
+
+    -- s_message_array <= (others => (others => '1'));
+    s_message_array <= (others => (others => '0'));
+    s_message_array(0) <= x"C0";
+    s_message_array(1) <= x"C2";
+    s_message_array(2) <= x"C1";
+    s_message_array(3) <= x"FF";
+    s_message_array(4) <= x"FE";
+    s_message_array(5) <= x"C0";
+    s_message_array(6) <= x"C0";
+    s_message_array(7) <= x"C0";
 
 
     wait for 10*C_CLK_HALF_PERIOD;
@@ -168,13 +187,31 @@ begin  -- architecture behv
     -- s_start_scroll <= '0';
 
     wait until falling_edge(clk);
-    
+    s_seg_data       <= s_message_array(0);
+    wait until falling_edge(clk);
+    s_seg_data_valid <= '1';
+    wait until falling_edge(clk);
+    s_seg_data_valid <= '0';
 
+
+
+    for v_i in 1 to 73 loop
+      wait until falling_edge(s_busy);
+      wait until falling_edge(clk);
+      s_seg_data     <= s_message_array(v_i);
+      wait until falling_edge(clk);
+      s_seg_data_valid <= '1';
+      wait until falling_edge(clk);
+      s_seg_data_valid <= '0';
+    end loop;  -- v_i
 
 
     wait for 200 us;
 
+    wait for 10 ms;
+
     assert false report "end of simulation" severity failure;
+    wait;
 
   end process p_stimulis;
 
@@ -209,9 +246,9 @@ begin  -- architecture behv
   --     i_done    => s_done);
 
   -- Max7219 SCROLLER INST
-  generic map (
-    G_MATRIX_NB => 8)
-
+  max7219_scroller_inst_0 : max7219_scroller_if
+    generic map (
+      G_MATRIX_NB => 8)
     port map(
       clk   => clk,
       rst_n => rst_n,
@@ -278,7 +315,7 @@ begin  -- architecture behv
   max7219_matrix_emul_inst : max7219_matrix_emul
     generic map (
       G_MATRIX_NB => 8,
-      G_VERBOSE   => x"FF")
+      G_VERBOSE   => x"00")
     port map (
       clk            => clk,
       rst_n          => rst_n,
