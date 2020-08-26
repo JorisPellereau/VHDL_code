@@ -155,6 +155,7 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_msg_organizer.vhd \
 		$(SRC_DIR)/max7219_msg_sel.vhd \
 		$(SRC_DIR)/max7219_start_addr_mngt.vhd \
+		$(SRC_DIR)/max7219_scroller_if.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
 		$(SRC_DIR)/max7219_scroller_rd_mem.vhd \

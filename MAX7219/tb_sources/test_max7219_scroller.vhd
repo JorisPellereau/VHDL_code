@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-04-18
+-- Last update: 2020-08-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -94,11 +94,17 @@ architecture behv of test_max7219_scroller is
   signal s_rdata_b : std_logic_vector(C_RAM_DATA_WIDTH - 1 downto 0);
 
 
-  signal s_start        : std_logic;
-  signal s_en_load      : std_logic;
-  signal s_data         : std_logic_vector(15 downto 0);
-  signal s_done         : std_logic;
-  signal s_start_scroll : std_logic;
+  
+  -- signal s_start        : std_logic;
+  -- signal s_en_load      : std_logic;
+  -- signal s_data         : std_logic_vector(15 downto 0);
+  -- signal s_done         : std_logic;
+  -- signal s_start_scroll : std_logic;
+
+  signal s_seg_data       : std_logic_vector(15 downto 0);
+  signal s_seg_data_valid : std_logic;
+  signal s_max_tempo_cnt  : std_logic_vector(31 downto 0);
+  signal s_busy           : std_logic;
 
   signal s_max7219_load : std_logic;
   signal s_max7219_data : std_logic;
@@ -118,11 +124,16 @@ begin  -- architecture behv
   begin  -- process p_stimuli
 
     -- SIGNALS INIT
-    s_me_a         <= '0';
-    s_we_a         <= '0';
-    s_addr_a       <= (others => '0');
-    s_wdata_a      <= (others => '0');
-    s_start_scroll <= '0';
+    s_me_a    <= '0';
+    s_we_a    <= '0';
+    s_addr_a  <= (others => '0');
+    s_wdata_a <= (others => '0');
+    -- s_start_scroll <= '0';
+
+    s_seg_data       <= (others => '0');
+    s_seg_data_valid <= '0';
+    s_max_tempo_cnt  <= x"000000FF";
+
 
     wait for 10*C_CLK_HALF_PERIOD;
     rst_n <= '0';
@@ -151,10 +162,15 @@ begin  -- architecture behv
 
     wait for 10*C_CLK_HALF_PERIOD;
 
+    -- wait until falling_edge(clk);
+    -- s_start_scroll <= '1';
+    -- wait until falling_edge(clk);
+    -- s_start_scroll <= '0';
+
     wait until falling_edge(clk);
-    s_start_scroll <= '1';
-    wait until falling_edge(clk);
-    s_start_scroll <= '0';
+    
+
+
 
     wait for 200 us;
 
@@ -168,31 +184,51 @@ begin  -- architecture behv
 
 
   -- INST
-  max7219_scroller_inst_0 : max7219_scroller
-    generic map(
-      G_RAM_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
-      G_RAM_DATA_WIDTH => C_RAM_DATA_WIDTH,
-      G_DIGITS_NB      => 8)
-    port map (
+  -- max7219_scroller_inst_0 : max7219_scroller
+  --   generic map(
+  --     G_RAM_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
+  --     G_RAM_DATA_WIDTH => C_RAM_DATA_WIDTH,
+  --     G_DIGITS_NB      => 8)
+  --   port map (
+  --     clk   => clk,
+  --     rst_n => rst_n,
+
+  --                                       -- COMMANDS
+  --     i_start_scroll => s_start_scroll,
+
+  --                                       -- MEMORY I/F
+  --     o_me    => s_me_b,
+  --     o_we    => s_we_b,
+  --     o_addr  => s_addr_b,
+  --     i_rdata => s_rdata_b,
+
+  --                                       -- MAX7219 I/F
+  --     o_start   => s_start,
+  --     o_en_load => s_en_load,
+  --     o_data    => s_data,
+  --     i_done    => s_done);
+
+  -- Max7219 SCROLLER INST
+  generic map (
+    G_MATRIX_NB => 8)
+
+    port map(
       clk   => clk,
       rst_n => rst_n,
 
-                                        -- COMMANDS
-      i_start_scroll => s_start_scroll,
+      i_seg_data       => s_seg_data,
+      i_seg_data_valid => s_seg_data_valid,
+      i_max_tempo_cnt  => s_max_tempo_cnt,
+      o_busy           => s_busy,
 
-                                        -- MEMORY I/F
-      o_me    => s_me_b,
-      o_we    => s_we_b,
-      o_addr  => s_addr_b,
-      i_rdata => s_rdata_b,
+      -- MAX7219 I/F
+      i_max7219_if_done    => s_done,
+      o_max7219_if_start   => s_start,
+      o_max7219_if_en_load => s_en_load,
+      o_max7219_if_data    => s_data);
 
-                                        -- MAX7219 I/F
-      o_start   => s_start,
-      o_en_load => s_en_load,
-      o_data    => s_data,
-      i_done    => s_done);
 
-                                        -- TDPRAM INST
+  -- TDPRAM INST
   tdpram_inst_0 : tdpram_sclk
     generic map (
       G_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
@@ -214,7 +250,7 @@ begin  -- architecture behv
       );
 
 
-                                        -- MAX7219 I/F
+  -- MAX7219 I/F
   max7219_if_inst_0 : max7219_if
     generic map (
       G_MAX_HALF_PERIOD => 50,
@@ -238,7 +274,7 @@ begin  -- architecture behv
       o_done => s_done);
 
 
-                                        -- MAX7219 MATRIX DISPLAY EMUL
+  -- MAX7219 MATRIX DISPLAY EMUL
   max7219_matrix_emul_inst : max7219_matrix_emul
     generic map (
       G_MATRIX_NB => 8,

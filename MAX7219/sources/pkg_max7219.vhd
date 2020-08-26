@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-07-25
+-- Last update: 2020-08-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -504,6 +504,28 @@ package pkg_max7219 is
       i_done    : in  std_logic);       -- MAX7219 DONE
 
   end component max7219_scroller;
+
+  component max7219_scroller_if is
+
+    generic (
+      G_MATRIX_NB : integer range 2 to 8 := 8);  -- MATRIX_NB
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      i_seg_data       : in  std_logic_vector(7 downto 0);   -- Segment Data
+      i_seg_data_valid : in  std_logic;
+      i_max_tempo_cnt  : in  std_logic_vector(31 downto 0);  -- Max Tempo Counter
+      o_busy           : out std_logic;  -- Scroller I/F Busy
+
+      -- MAX7219 I/F
+      i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F Done
+      o_max7219_if_start   : out std_logic;  -- MAX7219 I/F Start
+      o_max7219_if_en_load : out std_logic;  -- MAX7219 Enable Load
+      o_max7219_if_data    : out std_logic_vector(15 downto 0));  -- MAX7219 I/F Data
+
+  end component max7219_scroller_if;
 
   component max7219_matrix_display is
     generic (
