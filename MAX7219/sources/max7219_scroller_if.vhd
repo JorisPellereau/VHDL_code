@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-26
--- Last update: 2020-08-26
+-- Last update: 2020-08-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -78,23 +78,19 @@ architecture behv of max7219_scroller_if is
   signal s_tempo_cnt   : std_logic_vector(31 downto 0);   -- Tempo. Counter
 
   -- Segment Adr : 0x01 => 0x09
-  signal s_segment_addr : std_logic_vector(7 downto 0);
-
+  signal s_segment_addr  : std_logic_vector(7 downto 0);
   signal s_new_data_flag : std_logic;   -- New Data Flag
 
   -- MAX7219 I/F SIGNALS
-  signal s_max7219_start   : std_logic;
-  signal s_max7219_en_load : std_logic;
-  signal s_max7219_data    : std_logic_vector(15 downto 0);
-
+  signal s_max7219_start          : std_logic;
+  signal s_max7219_en_load        : std_logic;
+  signal s_max7219_data           : std_logic_vector(15 downto 0);
   signal s_max7219_if_done        : std_logic;
   signal s_max7219_if_done_r_edge : std_logic;
   signal s_max7219_if_done_f_edge : std_logic;
-
-  signal s_matrix_updated_flag : std_logic;  -- Matrix Updated
-
-  signal s_start_tempo : std_logic;     -- Start Tempo
-  signal s_tempo_done  : std_logic;     -- Tempo. Done
+  signal s_matrix_updated_flag    : std_logic;  -- Matrix Updated
+  signal s_start_tempo            : std_logic;  -- Start Tempo
+  signal s_tempo_done             : std_logic;  -- Tempo. Done
 
 
 begin  -- architecture behv
