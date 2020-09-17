@@ -11,8 +11,8 @@
  *
  *
  * Example utilisation : 
- * A) ./crc_computation.o 8 16 "input_file_path" 65535 0 0 => CRC INIT = 0xFFFF Print result without debug messages
- * B) ./crc_computation.o 8 16 "input_file_path" 65535 0 1 => CRC INIT = 0xFFFF Print result with debug messages
+ * A) ./crc_computation.o 8 16 1 "input_file_path" 65535 0 0 => CRC INIT = 0xFFFF Print result without debug messages
+ * B) ./crc_computation.o 8 16 1 "input_file_path" 65535 0 1 => CRC INIT = 0xFFFF Print result with debug messages
  *
  * argv[1] = Data In Size
  * argv[2] = Polynome Size
@@ -186,6 +186,28 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
 
       break;
     }
+	
+  case 8 :
+    if(crc_number == 1) {
+		
+		// CRC : X^8 + X^2 + X + 1
+		crc_serial[0] = crc[7] ^ i_data;
+		crc_serial[1] = crc[0] ^ crc[7] ^ i_data;
+		crc_serial[2] = crc[1] ^ crc[7] ^ i_data;
+		crc_serial[3] = crc[2];
+		crc_serial[4] = crc[3];
+		crc_serial[5] = crc[4];
+		crc_serial[6] = crc[5];
+		crc_serial[7] = crc[6];
+		
+		break;
+	}
+	else {
+		printf("CRC 8 ERROR \n\n");
+		
+		break;
+	}
+	
 
   case 16 :
     if(crc_number == 1) {

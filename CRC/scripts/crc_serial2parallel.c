@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "crc_functions.h"
+//#include "crc_functions.h" // TODO .....
 
 
 // == PROTOTYPES ==
@@ -184,6 +184,27 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
 
       break;
     }
+	
+	case 8 :
+    if(crc_number == 1) {
+		
+		// CRC : X^8 + X^2 + X + 1
+		crc_serial[0] = crc[7] ^ i_data;
+		crc_serial[1] = crc[0] ^ crc[7] ^ i_data;
+		crc_serial[2] = crc[1] ^ crc[7] ^ i_data;
+		crc_serial[3] = crc[2];
+		crc_serial[4] = crc[3];
+		crc_serial[5] = crc[4];
+		crc_serial[6] = crc[5];
+		crc_serial[7] = crc[6];
+		
+		break;
+	}
+	else {
+		printf("CRC 8 ERROR \n\n");
+		
+		break;
+	}
 
   case 16 :
     if(crc_number == 1) {
