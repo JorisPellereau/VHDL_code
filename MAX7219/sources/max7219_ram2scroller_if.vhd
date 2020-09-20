@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2020-08-28
+-- Last update: 2020-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -57,3 +57,53 @@ entity max7219_ram2scroller_if is
 
     o_busy : out std_logic);            -- Scroller Controller Busy
 end entity max7219_ram2scroller_if;
+
+
+architecture behv of max7219_ram2scroller_if is
+
+  -- INTERNAL SIGNALS
+  signal s_busy             : std_logic;  -- Busy
+  signal s_start            : std_logic;  -- Start Pipe
+  signal s_scroller_if_busy : std_logic;  -- S_scroller if busy pipe
+
+begin  -- architecture behv
+
+  p_pipe_in : process (clk, rst_n) is
+  begin  -- process p_pipe_in
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_start            <= '0';
+      s_scroller_if_busy <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_start            <= i_start;
+      s_scroller_if_busy <= i_scroller_if_busy;
+    end if;
+  end process p_pipe_in;
+
+
+  p_busy_mngt : process (clk, rst_n) is
+  begin  -- process p_busy_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_busy <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- On start Rising Edge
+      if(i_start = '1' and s_start = '0') then
+        if(i_scroller_if_busy = '0') then
+          s_busy <= '1';
+        else
+          s_busy <= '0';
+        end if;
+      end if;
+
+      -- On falling Edge of Scroller IF
+      if(i_scroller_if_busy = '0' and s_scroller_if_busy = '1') then
+        s_busy <= '0';
+      end if;
+
+    end if;
+  end process p_busy_mngt;
+
+
+  -- Outputs Affectations
+  o_busy <= s_busy;
+end architecture behv;

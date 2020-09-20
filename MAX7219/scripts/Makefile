@@ -137,7 +137,7 @@ create_libs:
 	$(vmap) $(LIB_TB_TOP) ./$(LIB_1);		
 
 libs:  prepare_libs create_libs
-# =============================
+#=============================
 
 
 # == VHD FILES LIST ==
@@ -156,6 +156,8 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_msg_sel.vhd \
 		$(SRC_DIR)/max7219_start_addr_mngt.vhd \
 		$(SRC_DIR)/max7219_scroller_if.vhd \
+		$(SRC_DIR)/max7219_ram2scroller_if.vhd \
+		$(SRC_DIR)/max7219_scroller_ctrl.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
 		$(SRC_DIR)/max7219_scroller_rd_mem.vhd \

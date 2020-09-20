@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2020-08-28
+-- Last update: 2020-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -104,6 +104,31 @@ architecture behv of max7219_scroller_ctrl is
 
 begin  -- architecture behv
 
+  -- MAX7219 RAM2SCROLLER IF INST
+  max7219_ram2scroller_if_inst_0 : max7219_ram2scroller_if
+    generic map (
+      G_MATRIX_NB      => G_MATRIX_NB,
+      G_RAM_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
+      G_RAM_DATA_WIDTH => G_RAM_DATA_WIDTH)
+    port map(
+      clk   => clk,
+      rst_n => rst_n,
+
+      i_start => ,
+      i_rdata => ,
+
+      o_me => ,
+      o_we => ,
+      o_addr =>
+
+      o_seg_data       => ,
+      o_seg_data_valid => ,
+
+      i_scroller_if_busy => ,
+      o_busy =>
+
+      );
+
   -- Max7219 SCROLLER INST
   max7219_scroller_inst_0 : max7219_scroller_if
     generic map (
@@ -130,8 +155,8 @@ begin  -- architecture behv
   -- TDPRAM INST
   tdpram_inst_0 : tdpram_sclk
     generic map (
-      G_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
-      G_DATA_WIDTH => C_RAM_DATA_WIDTH
+      G_ADDR_WIDTH => G_RAM_ADDR_WIDTH,
+      G_DATA_WIDTH => G_RAM_DATA_WIDTH
       )
     port map(
       clk       => clk,
