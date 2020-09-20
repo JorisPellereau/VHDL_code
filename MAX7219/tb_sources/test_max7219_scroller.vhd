@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-08-26
+-- Last update: 2020-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -101,16 +101,17 @@ architecture behv of test_max7219_scroller is
 
 
 
-  signal s_start   : std_logic;
-  signal s_en_load : std_logic;
-  signal s_data    : std_logic_vector(15 downto 0);
-  signal s_done    : std_logic;
-  -- signal s_start_scroll : std_logic;
+  signal s_start        : std_logic;
+  signal s_en_load      : std_logic;
+  signal s_data         : std_logic_vector(15 downto 0);
+  signal s_done         : std_logic;
+  signal s_start_scroll : std_logic;
 
-  signal s_seg_data       : std_logic_vector(7 downto 0);
-  signal s_seg_data_valid : std_logic;
-  signal s_max_tempo_cnt  : std_logic_vector(31 downto 0);
-  signal s_busy           : std_logic;
+  signal s_ram_start_ptr : std_logic_vector(C_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_msg_length    : std_logic_vector(C_RAM_DATA_WIDTH - 1 downto 0);
+
+  signal s_max_tempo_cnt : std_logic_vector(31 downto 0);
+  signal s_busy          : std_logic;
 
   signal s_max7219_load : std_logic;
   signal s_max7219_data : std_logic;
@@ -132,18 +133,18 @@ begin  -- architecture behv
   begin  -- process p_stimuli
 
     -- SIGNALS INIT
-    s_me_a    <= '0';
-    s_we_a    <= '0';
-    s_addr_a  <= (others => '0');
-    s_wdata_a <= (others => '0');
-    -- s_start_scroll <= '0';
+    s_me_a          <= '0';
+    s_we_a          <= '0';
+    s_addr_a        <= (others => '0');
+    s_wdata_a       <= (others => '0');
+    s_start_scroll  <= '0';
+    s_ram_start_ptr <= (others => '0');
+    s_msg_length    <= (others => '0');
 
-    s_seg_data       <= (others => '0');
-    s_seg_data_valid <= '0';
-    s_max_tempo_cnt  <= x"000000FF";
+    s_max_tempo_cnt <= x"000000FF";
 
     -- s_message_array <= (others => (others => '1'));
-    s_message_array <= (others => (others => '0'));
+    s_message_array    <= (others => (others => '0'));
     s_message_array(0) <= x"C0";
     s_message_array(1) <= x"C2";
     s_message_array(2) <= x"C1";
@@ -170,7 +171,6 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_me_a    <= '0';
 
-
     s_wdata_a <= x"007E";
     s_addr_a  <= x"01";
     wait until falling_edge(clk);
@@ -178,37 +178,18 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_me_a    <= '0';
 
-
     wait for 10*C_CLK_HALF_PERIOD;
 
-    -- wait until falling_edge(clk);
-    -- s_start_scroll <= '1';
-    -- wait until falling_edge(clk);
-    -- s_start_scroll <= '0';
 
+    --
+    s_msg_length    <= x"02";
+    s_ram_start_ptr <= (others => '0');
     wait until falling_edge(clk);
-    s_seg_data       <= s_message_array(0);
+    s_start_scroll  <= '1';
     wait until falling_edge(clk);
-    s_seg_data_valid <= '1';
-    wait until falling_edge(clk);
-    s_seg_data_valid <= '0';
+    s_start_scroll  <= '0';
 
-
-
-    for v_i in 1 to 73 loop
-      wait until falling_edge(s_busy);
-      wait until falling_edge(clk);
-      s_seg_data     <= s_message_array(v_i);
-      wait until falling_edge(clk);
-      s_seg_data_valid <= '1';
-      wait until falling_edge(clk);
-      s_seg_data_valid <= '0';
-    end loop;  -- v_i
-
-
-    wait for 200 us;
-
-    wait for 10 ms;
+    wait for 1 ms;
 
     assert false report "end of simulation" severity failure;
     wait;
@@ -216,75 +197,35 @@ begin  -- architecture behv
   end process p_stimulis;
 
 
-
-
-
-
   -- INST
-  -- max7219_scroller_inst_0 : max7219_scroller
-  --   generic map(
-  --     G_RAM_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
-  --     G_RAM_DATA_WIDTH => C_RAM_DATA_WIDTH,
-  --     G_DIGITS_NB      => 8)
-  --   port map (
-  --     clk   => clk,
-  --     rst_n => rst_n,
-
-  --                                       -- COMMANDS
-  --     i_start_scroll => s_start_scroll,
-
-  --                                       -- MEMORY I/F
-  --     o_me    => s_me_b,
-  --     o_we    => s_we_b,
-  --     o_addr  => s_addr_b,
-  --     i_rdata => s_rdata_b,
-
-  --                                       -- MAX7219 I/F
-  --     o_start   => s_start,
-  --     o_en_load => s_en_load,
-  --     o_data    => s_data,
-  --     i_done    => s_done);
-
-  -- Max7219 SCROLLER INST
-  max7219_scroller_inst_0 : max7219_scroller_if
+  max7219_scroller_ctrl_inst_0 : max7219_scroller_ctrl
     generic map (
-      G_MATRIX_NB => 8)
+      G_MATRIX_NB      => 8,
+      G_RAM_ADDR_WIDTH => C_RAM_DATA_WIDTH,
+      G_RAM_DATA_WIDTH => C_RAM_DATA_WIDTH)
     port map(
       clk   => clk,
       rst_n => rst_n,
 
-      i_seg_data       => s_seg_data,
-      i_seg_data_valid => s_seg_data_valid,
-      i_max_tempo_cnt  => s_max_tempo_cnt,
-      o_busy           => s_busy,
+      -- RAM I/F
+      i_me    => s_me_a,
+      i_we    => s_we_a,
+      i_addr  => s_addr_a,
+      i_wdata => s_wdata_a,
+      o_rdata => s_rdata_a,
+
+      -- RAM Commands
+      i_ram_start_ptr => s_ram_start_ptr,
+      i_msg_length    => s_msg_length,
+      i_start_scroll  => s_start_scroll,
 
       -- MAX7219 I/F
       i_max7219_if_done    => s_done,
       o_max7219_if_start   => s_start,
       o_max7219_if_en_load => s_en_load,
-      o_max7219_if_data    => s_data);
+      o_max7219_if_data    => s_data,
 
-
-  -- TDPRAM INST
-  tdpram_inst_0 : tdpram_sclk
-    generic map (
-      G_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
-      G_DATA_WIDTH => C_RAM_DATA_WIDTH
-      )
-    port map(
-      clk       => clk,
-      i_me_a    => s_me_a,
-      i_we_a    => s_we_a,
-      i_addr_a  => s_addr_a,
-      i_wdata_a => s_wdata_a,
-      o_rdata_a => s_rdata_a,
-
-      i_me_b    => s_me_b,
-      i_we_b    => s_we_b,
-      i_addr_b  => s_addr_b,
-      i_wdata_b => s_wdata_b,
-      o_rdata_b => s_rdata_b
-      );
+      o_busy => s_busy);                -- Scroller Controller Busy
 
 
   -- MAX7219 I/F
@@ -297,17 +238,16 @@ begin  -- architecture behv
       clk   => clk,
       rst_n => rst_n,
 
-                                        -- Input commands
-      i_start   => s_start,
-      i_en_load => s_en_load,
-      i_data    => s_data,
-
+      -- Input commands
+      i_start        => s_start,
+      i_en_load      => s_en_load,
+      i_data         => s_data,
                                         -- MAX7219 I/F
       o_max7219_load => s_max7219_load,
       o_max7219_data => s_max7219_data,
       o_max7219_clk  => s_max7219_clk,
 
-                                        -- Transaction Done
+      -- Transaction Done
       o_done => s_done);
 
 

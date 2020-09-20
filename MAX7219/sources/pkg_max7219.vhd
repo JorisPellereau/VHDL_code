@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-08-26
+-- Last update: 2020-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -526,6 +526,69 @@ package pkg_max7219 is
       o_max7219_if_data    : out std_logic_vector(15 downto 0));  -- MAX7219 I/F Data
 
   end component max7219_scroller_if;
+
+
+  component max7219_ram2scroller_if is
+    generic (
+      G_MATRIX_NB      : integer range 2 to 8 := 8;   -- MATRIX NUMBER
+      G_RAM_ADDR_WIDTH : integer              := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH : integer              := 8);  -- RAM DATA WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- EXTERNAL I/F
+      i_start         : in std_logic;   -- START SCROLL
+      i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+      i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+
+      -- RAM I/F
+      i_rdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+      o_me    : out std_logic;          -- Memory Enable
+      o_we    : out std_logic;          -- W/R command
+      o_addr  : out std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+
+      -- RAM SCROLLER I/F
+      o_seg_data       : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- SEG DATA
+      o_seg_data_valid : out std_logic;  -- SEG DATA VAL
+
+      i_scroller_if_busy : in  std_logic;
+      o_busy             : out std_logic);  -- Scroller Controller Busy
+  end component max7219_ram2scroller_if;
+
+  component max7219_scroller_ctrl is
+
+    generic (
+      G_MATRIX_NB      : integer range 2 to 8 := 8;   -- MATRIX NUMBER
+      G_RAM_ADDR_WIDTH : integer              := 8;   -- RAM ADDR WITH
+      G_RAM_DATA_WIDTH : integer              := 8);  -- RAM DATA WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- RAM I/F
+      i_me    : in  std_logic;          -- Memory Enable
+      i_we    : in  std_logic;          -- W/R command
+      i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+      i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM DATA
+      o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+
+      -- RAM Commands
+      i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM START PTR
+      i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Message Length
+      i_start_scroll  : in std_logic;   -- Valid - Start Scroller
+
+      -- MAX7219 I/F
+      i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F Done
+      o_max7219_if_start   : out std_logic;  -- MAX7219 I/F Start
+      o_max7219_if_en_load : out std_logic;  -- MAX7219 Enable Load
+      o_max7219_if_data    : out std_logic_vector(15 downto 0);  -- MAX7219 I/F Data
+
+      o_busy : out std_logic);          -- Scroller Controller Busy
+
+  end component max7219_scroller_ctrl;
 
   component max7219_matrix_display is
     generic (

@@ -47,7 +47,7 @@ entity max7219_scroller_ctrl is
     -- RAM Commands
     i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM START PTR
     i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Message Length
-    i_val           : in std_logic;     -- Valid - Start Scroller
+    i_start_scroll  : in std_logic;     -- Valid - Start Scroller
 
     -- MAX7219 I/F
     i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F Done
@@ -114,23 +114,25 @@ begin  -- architecture behv
       clk   => clk,
       rst_n => rst_n,
 
-      i_start => ,
-      i_rdata => ,
+      i_start         => i_start_scroll,
+      i_msg_length    => i_msg_length,
+      i_ram_start_ptr => i_ram_start_ptr,
 
-      o_me => ,
-      o_we => ,
-      o_addr =>
+      i_rdata => s_rdata_b,
+      o_me    => s_me_b,
+      o_we    => s_we_b,
+      o_addr  => s_addr_b,
 
-      o_seg_data       => ,
-      o_seg_data_valid => ,
+      o_seg_data       => s_seg_data,
+      o_seg_data_valid => s_seg_data_valid,
 
-      i_scroller_if_busy => ,
-      o_busy =>
+      i_scroller_if_busy => s_scroller_if_busy,
+      o_busy             => o_busy
 
       );
 
   -- Max7219 SCROLLER INST
-  max7219_scroller_inst_0 : max7219_scroller_if
+  max7219_scroller_if_inst_0 : max7219_scroller_if
     generic map (
       G_MATRIX_NB => G_MATRIX_NB)
     port map(
@@ -147,10 +149,6 @@ begin  -- architecture behv
       o_max7219_if_start   => s_start,
       o_max7219_if_en_load => s_en_load,
       o_max7219_if_data    => s_data);
-
-
-  -- MAX7219 RAM2SCROLLER IF INST
-
 
   -- TDPRAM INST
   tdpram_inst_0 : tdpram_sclk
