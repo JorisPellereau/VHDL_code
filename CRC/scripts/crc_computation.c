@@ -11,8 +11,8 @@
  *
  *
  * Example utilisation : 
- * A) ./crc_computation.o 8 16 1 "input_file_path" 65535 0 0 => CRC INIT = 0xFFFF Print result without debug messages
- * B) ./crc_computation.o 8 16 1 "input_file_path" 65535 0 1 => CRC INIT = 0xFFFF Print result with debug messages
+ * A) ./crc_computation.o 8 16 1 "input_file_path" 65535 0 => CRC INIT = 0xFFFF Print result without debug messages
+ * B) ./crc_computation.o 8 16 1 "input_file_path" 65535 1 => CRC INIT = 0xFFFF Print result with debug messages
  *
  * argv[1] = Data In Size
  * argv[2] = Polynome Size
