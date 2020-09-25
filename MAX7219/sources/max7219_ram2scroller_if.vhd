@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2020-09-20
+-- Last update: 2020-09-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,13 +70,13 @@ architecture behv of max7219_ram2scroller_if is
   signal s_me_p                    : std_logic;
   signal s_rdata_valid             : std_logic;
   signal s_read_ram_done           : std_logic;  -- Last Ram Data Read
-  signal s_scroller_access_done    : std_logic;  -- Number of scroller access done
+  signal s_access_cnt_done         : std_logic;
 
-  signal s_msg_length    : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_ram_start_ptr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-  signal s_ram_addr      : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
-  signal s_rdata         : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_access_cnt    : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_msg_length : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_ram_addr   : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
+  signal s_rdata      : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_access_cnt : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_max_access : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
 
 begin  -- architecture behv
 
@@ -123,14 +123,16 @@ begin  -- architecture behv
   p_ram_rd_access_mngt : process (clk, rst_n) is
   begin  -- process p_ram_rd_access_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_ram_addr      <= (others => '0');
-      s_me            <= '0';
-      s_we            <= '0';
-      s_me_p          <= '0';
-      s_rdata         <= (others => '0');
-      s_rdata_valid   <= '0';
-      s_read_ram_done <= '0';
-      s_access_cnt    <= unsigned(8*G_MATRIX_NB);
+      s_ram_addr        <= (others => '0');
+      s_me              <= '0';
+      s_we              <= '0';
+      s_me_p            <= '0';
+      s_rdata           <= (others => '0');
+      s_rdata_valid     <= '0';
+      s_read_ram_done   <= '0';
+      s_access_cnt      <= (others => '0');
+      s_max_access      <= (others => '0');
+      s_access_cnt_done <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_me_p <= s_me;
@@ -142,13 +144,28 @@ begin  -- architecture behv
 
       -- 1st access from start
       if(s_inputs_val = '1') then
-        s_me <= '1';
-        s_we <= '0';
+        s_me         <= '1';
+        s_we         <= '0';
+        s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(s_msg_length);
 
       -- Next access
       elsif(s_scroller_if_busy_f_edge = '1') then
-        s_me <= '1';
-        s_we <= '0';
+
+        -- RAM access until the end of message to scroll
+        if(s_read_ram_done = '0') then
+          s_me <= '1';
+          s_we <= '0';
+        else
+          -- End of RAM access
+          -- Only Shift from scroller if
+          if(s_access_cnt < s_max_access) then
+            s_rdata_valid <= '1';
+            s_access_cnt  <= unsigned(s_access_cnt) + 1;
+          else
+            s_access_cnt_done <= '1';
+          end if;
+        end if;
+
       else
         s_me <= '0';
         s_we <= '0';
@@ -157,17 +174,31 @@ begin  -- architecture behv
       if(s_me_p = '1' and s_read_ram_done = '0') then
         s_rdata       <= i_rdata;
         s_rdata_valid <= '1';
-        if(unsigned(s_ram_addr) < unsigned(s_ram_addr) + unsigned(s_msg_length)) then
-          s_ram_addr <= unsigned(s_ram_addr) + 1;
+        if(s_access_cnt < unsigned(s_msg_length) - 1) then
+          s_ram_addr   <= unsigned(s_ram_addr) + 1;
+          s_access_cnt <= unsigned(s_access_cnt) + 1;
         else
           s_read_ram_done <= '1';
+          s_rdata         <= (others => '0');
         end if;
-      elsif(s_read_ram_done = '1') then
-        
+
       else
-        s_rdata         <= (others => '0');
-        s_read_ram_done <= '0';
-        s_rdata_valid   <= '0';
+        s_rdata       <= (others => '0');
+        --s_read_ram_done <= '0';
+        s_rdata_valid <= '0';
+      end if;
+
+      if(s_access_cnt_done = '1') then
+        s_ram_addr        <= (others => '0');
+        s_me              <= '0';
+        s_we              <= '0';
+        s_me_p            <= '0';
+        s_rdata           <= (others => '0');
+        s_rdata_valid     <= '0';
+        s_read_ram_done   <= '0';
+        s_access_cnt      <= (others => '0');
+        s_max_access      <= (others => '0');
+        s_access_cnt_done <= '0';
       end if;
 
 
@@ -183,7 +214,7 @@ begin  -- architecture behv
       -- On start Rising Edge
       if(s_start_r_edge = '1') then
         s_busy <= '1';
-      elsif(s_scroller_access_done = '1') then
+      elsif(s_access_cnt_done = '1') then
         s_busy <= '0';
       end if;
 
@@ -196,5 +227,8 @@ begin  -- architecture behv
   o_busy           <= s_busy;
   o_seg_data       <= s_rdata;
   o_seg_data_valid <= s_rdata_valid;
+  o_me             <= s_me;
+  o_we             <= s_we;
+  o_addr           <= s_ram_addr;
 
 end architecture behv;

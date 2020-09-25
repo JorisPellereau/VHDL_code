@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-09-20
+-- Last update: 2020-09-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ architecture behv of test_max7219_scroller is
   constant C_CLK_HALF_PERIOD : time := 10 ns;  -- HALF PERIOD of clk
 
   constant C_RAM_ADDR_WIDTH : integer := 8;
-  constant C_RAM_DATA_WIDTH : integer := 16;
+  constant C_RAM_DATA_WIDTH : integer := 8;
 
   -- TB INTERNAL SIGNALS
   signal clk   : std_logic := '0';      -- Clock
@@ -163,7 +163,7 @@ begin  -- architecture behv
     wait for 10*C_CLK_HALF_PERIOD;
 
     -- INIT RAM
-    s_wdata_a <= x"0001";
+    s_wdata_a <= x"01";
     s_addr_a  <= (others => '0');
     s_we_a    <= '1';
     wait until falling_edge(clk);
@@ -171,7 +171,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_me_a    <= '0';
 
-    s_wdata_a <= x"007E";
+    s_wdata_a <= x"7E";
     s_addr_a  <= x"01";
     wait until falling_edge(clk);
     s_me_a    <= '1';
@@ -189,7 +189,7 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_start_scroll  <= '0';
 
-    wait for 1 ms;
+    wait until falling_edge(s_busy);
 
     assert false report "end of simulation" severity failure;
     wait;
@@ -201,7 +201,7 @@ begin  -- architecture behv
   max7219_scroller_ctrl_inst_0 : max7219_scroller_ctrl
     generic map (
       G_MATRIX_NB      => 8,
-      G_RAM_ADDR_WIDTH => C_RAM_DATA_WIDTH,
+      G_RAM_ADDR_WIDTH => C_RAM_ADDR_WIDTH,
       G_RAM_DATA_WIDTH => C_RAM_DATA_WIDTH)
     port map(
       clk   => clk,
