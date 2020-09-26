@@ -19,6 +19,10 @@
 -- 2020-09-26  1.0      jorisp  Created
 -------------------------------------------------------------------------------
 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+
 package pkg_max7219_scroller is
 
   -- MAX7219 SCROLLER INTERFACE

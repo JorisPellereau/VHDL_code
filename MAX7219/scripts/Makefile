@@ -6,6 +6,8 @@
 # /(ROOT)
 # 	|__ /scripts        => Scripts - Makefile
 #	|__ /sources        => Design VHD - V files
+#	     |__ /lib_x
+#	     |__ /lib_y
 #	|__ /tb_sources     => TestBench  files
 #	|__ /do_files       => Do Files
 #	     |__ /run_files => Run .do
@@ -142,10 +144,11 @@ libs:  prepare_libs create_libs
 
 # == VHD FILES LIST ==
 src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
-		$(SRC_DIR)/max7219_if.vhd \
-		$(SRC_DIR)/max7219_ram_decod.vhd \
 		$(SRC_RAM_VHD)/tdpram_sclk.vhd \
-		$(SRC_DIR)/max7219_cmd_decod.vhd \
+		$(SRC_DIR)/max7219_if.vhd \
+		$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd \
+		$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd \
+		$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd \
 		$(SRC_DIR)/max7219_ram_sequencer.vhd\
 		$(SRC_DIR)/max7219_display_manager.vhd \
 		$(SRC_DIR)/max7219_config_matrix.vhd \
@@ -155,13 +158,12 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_msg_organizer.vhd \
 		$(SRC_DIR)/max7219_msg_sel.vhd \
 		$(SRC_DIR)/max7219_start_addr_mngt.vhd \
-		$(SRC_DIR)/max7219_scroller_if.vhd \
-		$(SRC_DIR)/max7219_ram2scroller_if.vhd \
-		$(SRC_DIR)/max7219_scroller_ctrl.vhd \
+		$(SRC_DIR)/lib_max7219_scroller/pkg_max7219_scroller.vhd \
+		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd \
+		$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd \
+		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
-		$(SRC_DIR)/max7219_scroller_rd_mem.vhd \
-		$(SRC_DIR)/max7219_scroller.vhd \
 		$(SRC_DIR)/max7219_matrix_display.vhd \
 		$(SRC_DIR)/max7219_display_controller.vhd \
 		$(SRC_DIR)/top_max7219_matrix_display.vhd \
