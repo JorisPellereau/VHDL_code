@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2020-09-20
+-- Last update: 2020-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,6 +48,7 @@ entity max7219_scroller_ctrl is
     i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM START PTR
     i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Message Length
     i_start_scroll  : in std_logic;     -- Valid - Start Scroller
+    i_max_tempo_cnt : in std_logic_vector(31 downto 0);  -- Scroller Tempo
 
     -- MAX7219 I/F
     i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F Done
@@ -94,7 +95,6 @@ architecture behv of max7219_scroller_ctrl is
 
   signal s_seg_data         : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
   signal s_seg_data_valid   : std_logic;
-  signal s_max_tempo_cnt    : std_logic_vector(31 downto 0);
   signal s_scroller_if_busy : std_logic;
 
   signal s_done    : std_logic;
@@ -141,7 +141,7 @@ begin  -- architecture behv
 
       i_seg_data       => s_seg_data,
       i_seg_data_valid => s_seg_data_valid,
-      i_max_tempo_cnt  => s_max_tempo_cnt,
+      i_max_tempo_cnt  => i_max_tempo_cnt,
       o_busy           => s_scroller_if_busy,
 
       -- MAX7219 I/F

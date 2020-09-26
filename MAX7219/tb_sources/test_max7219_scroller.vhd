@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-18
--- Last update: 2020-09-25
+-- Last update: 2020-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -100,7 +100,6 @@ architecture behv of test_max7219_scroller is
   signal s_rdata_b : std_logic_vector(C_RAM_DATA_WIDTH - 1 downto 0);
 
 
-
   signal s_start        : std_logic;
   signal s_en_load      : std_logic;
   signal s_data         : std_logic_vector(15 downto 0);
@@ -141,7 +140,7 @@ begin  -- architecture behv
     s_ram_start_ptr <= (others => '0');
     s_msg_length    <= (others => '0');
 
-    s_max_tempo_cnt <= x"000000FF";
+    s_max_tempo_cnt <= x"0000000F";
 
     -- s_message_array <= (others => (others => '1'));
     s_message_array    <= (others => (others => '0'));
@@ -163,7 +162,7 @@ begin  -- architecture behv
     wait for 10*C_CLK_HALF_PERIOD;
 
     -- INIT RAM
-    s_wdata_a <= x"01";
+    s_wdata_a <= x"FF";
     s_addr_a  <= (others => '0');
     s_we_a    <= '1';
     wait until falling_edge(clk);
@@ -178,11 +177,53 @@ begin  -- architecture behv
     wait until falling_edge(clk);
     s_me_a    <= '0';
 
+    s_wdata_a <= x"3C";
+    s_addr_a  <= x"02";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
+
+    s_wdata_a <= x"18";
+    s_addr_a  <= x"03";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
+    s_wdata_a <= x"18";
+    s_addr_a  <= x"04";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
+    s_wdata_a <= x"3C";
+    s_addr_a  <= x"05";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
+    s_wdata_a <= x"7F";
+    s_addr_a  <= x"06";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
+    s_wdata_a <= x"FF";
+    s_addr_a  <= x"07";
+    wait until falling_edge(clk);
+    s_me_a    <= '1';
+    wait until falling_edge(clk);
+    s_me_a    <= '0';
+
     wait for 10*C_CLK_HALF_PERIOD;
 
-
     --
-    s_msg_length    <= x"02";
+    s_msg_length    <= x"08";
     s_ram_start_ptr <= (others => '0');
     wait until falling_edge(clk);
     s_start_scroll  <= '1';
@@ -215,10 +256,10 @@ begin  -- architecture behv
       o_rdata => s_rdata_a,
 
       -- RAM Commands
-      i_ram_start_ptr => s_ram_start_ptr,
-      i_msg_length    => s_msg_length,
-      i_start_scroll  => s_start_scroll,
-
+      i_ram_start_ptr      => s_ram_start_ptr,
+      i_msg_length         => s_msg_length,
+      i_start_scroll       => s_start_scroll,
+      i_max_tempo_cnt      => s_max_tempo_cnt,
       -- MAX7219 I/F
       i_max7219_if_done    => s_done,
       o_max7219_if_start   => s_start,

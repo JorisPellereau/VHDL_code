@@ -6,7 +6,7 @@
 -- Author     :   <pellereau@D-R81A4E3>
 -- Company    : 
 -- Created    : 2019-07-19
--- Last update: 2020-09-20
+-- Last update: 2020-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -220,35 +220,69 @@ package pkg_max7219 is
 
 
   component max7219_cmd_decod is
+    -- generic (
+    --   G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
+    --   G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
+    --   G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
+    --   G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
+    --   G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
+
+    -- port (
+    --   clk     : in  std_logic;          -- Clock
+    --   rst_n   : in  std_logic;          -- Asynchronous reset
+    --   i_en    : in  std_logic;          -- Enable the Function
+    --   -- RAM I/F
+    --   i_me    : in  std_logic;          -- Memory Enable
+    --   i_we    : in  std_logic;          -- W/R command
+    --   i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+    --   i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+    --   o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+
+    --   -- RAM INFO.
+    --   i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST PTR
+    --   i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    --   i_ptr_val      : in  std_logic;   -- PTRS VALIDS
+    --   i_loop         : in  std_logic;   -- LOOP CONFIG.
+    --   o_ptr_equality : out std_logic;   -- ADDR = LAST PTR
+
+    --   -- MAX7219 I/F
+    --   o_max7219_load : out std_logic;   -- MAX7219 LOAD
+    --   o_max7219_data : out std_logic;   -- MAX7219 DATA
+    --   o_max7219_clk  : out std_logic);  -- MAX7219 CLK
+
+
+
+
     generic (
-      G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
-      G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
-      G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
-      G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
+    G_RAM_ADDR_WIDTH    : integer                       := 8;  -- RAM ADDR WIDTH
+    G_RAM_DATA_WIDTH    : integer                       := 16;  -- RAM DATA WIDTH
+    G_DECOD_MAX_CNT_32B : std_logic_vector(31 downto 0) := x"02FAF080");
+  port (
+    clk   : in std_logic;               -- Clock
+    rst_n : in std_logic;               -- Asynchronous reset
+    i_en  : in std_logic;               -- Enable the Function
 
-    port (
-      clk     : in  std_logic;          -- Clock
-      rst_n   : in  std_logic;          -- Asynchronous reset
-      i_en    : in  std_logic;          -- Enable the Function
-      -- RAM I/F
-      i_me    : in  std_logic;          -- Memory Enable
-      i_we    : in  std_logic;          -- W/R command
-      i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
-      i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
-      o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
+    -- RAM I/F
+    i_me    : in  std_logic;            -- Memory Enable
+    i_we    : in  std_logic;            -- W/R command
+    i_addr  : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
+    i_wdata : in  std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM WDATA
+    o_rdata : out std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RAM RDATA
 
-      -- RAM INFO.
-      i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST PTR
-      i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
-      i_ptr_val      : in  std_logic;   -- PTRS VALIDS
-      i_loop         : in  std_logic;   -- LOOP CONFIG.
-      o_ptr_equality : out std_logic;   -- ADDR = LAST PTR
+    -- RAM INFO.
+    i_start_ptr    : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- ST PTR
+    i_last_ptr     : in  std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST ADDR
+    i_ptr_val      : in  std_logic;     -- PTRS VALIDS
+    i_loop         : in  std_logic;     -- LOOP CONFIG.
+    o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
 
-      -- MAX7219 I/F
-      o_max7219_load : out std_logic;   -- MAX7219 LOAD
-      o_max7219_data : out std_logic;   -- MAX7219 DATA
-      o_max7219_clk  : out std_logic);  -- MAX7219 CLK
+    -- MAX7219 I/F
+    i_max7219_if_done    : in  std_logic;  -- MAX7219 IF Done
+    o_max7219_if_start   : out std_logic;
+    o_max7219_if_en_load : out std_logic;
+    o_max7219_if_data    : out std_logic_vector(15 downto 0));
+
+    
   end component max7219_cmd_decod;
 
   -- ===============
@@ -579,6 +613,7 @@ package pkg_max7219 is
       i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM START PTR
       i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- Message Length
       i_start_scroll  : in std_logic;   -- Valid - Start Scroller
+      i_max_tempo_cnt : in std_logic_vector(31 downto 0);  -- Scroller Tempo
 
       -- MAX7219 I/F
       i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F Done

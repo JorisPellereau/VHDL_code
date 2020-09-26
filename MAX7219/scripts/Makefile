@@ -163,6 +163,7 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/max7219_scroller_rd_mem.vhd \
 		$(SRC_DIR)/max7219_scroller.vhd \
 		$(SRC_DIR)/max7219_matrix_display.vhd \
+		$(SRC_DIR)/max7219_display_controller.vhd \
 		$(SRC_DIR)/top_max7219_matrix_display.vhd \
 
 

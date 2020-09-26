@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-06-13
+-- Last update: 2020-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -327,36 +327,36 @@ begin  -- architecture behv
 
 
   -- MAX7219 CMD DECOD INST
-  max7219_cmd_decod_inst : max7219_cmd_decod
-    generic map (
-      G_RAM_ADDR_WIDTH             => 8,  -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH             => 16,  -- RAM DATA WIDTH
-      G_MAX7219_IF_MAX_HALF_PERIOD => 50,  -- MAX HALF PERIOD for MAX729 CLK generation
-      G_MAX7219_LOAD_DUR           => 4)  -- MAX7219 LOAD duration in period of clk
+  -- max7219_cmd_decod_inst : max7219_cmd_decod
+  --   generic map (
+  --     G_RAM_ADDR_WIDTH             => 8,  -- RAM ADDR WIDTH
+  --     G_RAM_DATA_WIDTH             => 16,  -- RAM DATA WIDTH
+  --     G_MAX7219_IF_MAX_HALF_PERIOD => 50,  -- MAX HALF PERIOD for MAX729 CLK generation
+  --     G_MAX7219_LOAD_DUR           => 4)  -- MAX7219 LOAD duration in period of clk
 
-    port map (
-      clk   => clk,
-      rst_n => rst_n,
-      i_en  => s_en,
+  --   port map (
+  --     clk   => clk,
+  --     rst_n => rst_n,
+  --     i_en  => s_en,
 
-      -- RAM I/F
-      i_me    => s_me,
-      i_we    => s_we,
-      i_addr  => s_addr,
-      i_wdata => s_wdata,
-      o_rdata => s_rdata,
+  --     -- RAM I/F
+  --     i_me    => s_me,
+  --     i_we    => s_we,
+  --     i_addr  => s_addr,
+  --     i_wdata => s_wdata,
+  --     o_rdata => s_rdata,
 
-      -- RAM INFO.
-      i_start_ptr    => s_start_ptr,
-      i_last_ptr     => s_last_ptr,
-      i_ptr_val      => s_ptr_val,
-      i_loop         => s_loop,
-      o_ptr_equality => s_ptr_equality,
+  --     -- RAM INFO.
+  --     i_start_ptr    => s_start_ptr,
+  --     i_last_ptr     => s_last_ptr,
+  --     i_ptr_val      => s_ptr_val,
+  --     i_loop         => s_loop,
+  --     o_ptr_equality => s_ptr_equality,
 
-      -- MAX7219 I/F
-      o_max7219_load => s_max7219_load,
-      o_max7219_data => s_max7219_data,
-      o_max7219_clk  => s_max7219_clk);  -- MAX7219 CLK
+  --     -- MAX7219 I/F
+  --     o_max7219_load => s_max7219_load,
+  --     o_max7219_data => s_max7219_data,
+  --     o_max7219_clk  => s_max7219_clk);  -- MAX7219 CLK
 
 
 

@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-05-02
+-- Last update: 2020-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,12 +29,9 @@ use lib_max7219.pkg_max7219.all;
 entity max7219_cmd_decod is
 
   generic (
-    G_RAM_ADDR_WIDTH             : integer                       := 8;  -- RAM ADDR WIDTH
-    G_RAM_DATA_WIDTH             : integer                       := 16;  -- RAM DATA WIDTH
-    G_DECOD_MAX_CNT_32B          : std_logic_vector(31 downto 0) := x"02FAF080";
-    G_MAX7219_IF_MAX_HALF_PERIOD : integer                       := 50;  -- MAX HALF PERIOD for MAX729 CLK generation
-    G_MAX7219_LOAD_DUR           : integer                       := 4);  -- MAX7219 LOAD duration in period of clk
-
+    G_RAM_ADDR_WIDTH    : integer                       := 8;  -- RAM ADDR WIDTH
+    G_RAM_DATA_WIDTH    : integer                       := 16;  -- RAM DATA WIDTH
+    G_DECOD_MAX_CNT_32B : std_logic_vector(31 downto 0) := x"02FAF080");
   port (
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous reset
@@ -55,9 +52,14 @@ entity max7219_cmd_decod is
     o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
 
     -- MAX7219 I/F
-    o_max7219_load : out std_logic;     -- MAX7219 LOAD
-    o_max7219_data : out std_logic;     -- MAX7219 DATA
-    o_max7219_clk  : out std_logic);    -- MAX7219 CLK
+    i_max7219_if_done    : in  std_logic;  -- MAX7219 IF Done
+    o_max7219_if_start   : out std_logic;
+    o_max7219_if_en_load : out std_logic;
+    o_max7219_if_data    : out std_logic_vector(15 downto 0));
+
+  -- o_max7219_if_load : out std_logic;   -- MAX7219 LOAD
+  -- o_max7219_if_data : out std_logic;   -- MAX7219 DATA
+  -- o_max7219_if_clk  : out std_logic);  -- MAX7219 CLK
 
 end entity max7219_cmd_decod;
 
@@ -151,38 +153,32 @@ begin  -- architecture behv
       i_loop         => i_loop,
       o_ptr_equality => o_ptr_equality,
 
-      o_start   => s_start,
-      o_en_load => s_en_load,
-      o_data    => s_data,
-      i_done    => s_done);
+      o_start   => o_max7219_if_start,
+      o_en_load => o_max7219_if_en_load,
+      o_data    => o_max7219_if_data,
+      i_done    => i_max7219_if_done);
 
   -- MAX7219 I/F
-  max7219_if_inst_0 : max7219_if
-    generic map (
-      G_MAX_HALF_PERIOD => G_MAX7219_IF_MAX_HALF_PERIOD,
-      G_LOAD_DURATION   => G_MAX7219_LOAD_DUR
-      )
-    port map (
-      clk   => clk,
-      rst_n => rst_n,
+  -- max7219_if_inst_0 : max7219_if
+  --   generic map (
+  --     G_MAX_HALF_PERIOD => G_MAX7219_IF_MAX_HALF_PERIOD,
+  --     G_LOAD_DURATION   => G_MAX7219_LOAD_DUR
+  --     )
+  --   port map (
+  --     clk   => clk,
+  --     rst_n => rst_n,
 
-      -- Input commands
-      i_start   => s_start,
-      i_en_load => s_en_load,
-      i_data    => s_data,
+  --     -- Input commands
+  --     i_start   => s_start,
+  --     i_en_load => s_en_load,
+  --     i_data    => s_data,
 
-      -- MAX7219 I/F
-      o_max7219_load => s_max7219_load,
-      o_max7219_data => s_max7219_data,
-      o_max7219_clk  => s_max7219_clk,
+  --     -- MAX7219 I/F
+  --     o_max7219_load => s_max7219_load,
+  --     o_max7219_data => s_max7219_data,
+  --     o_max7219_clk  => s_max7219_clk,
 
-      -- Transaction Done
-      o_done => s_done);
-
-
-  -- OUTPUTS AFFECTATION
-  o_max7219_clk  <= s_max7219_clk;
-  o_max7219_data <= s_max7219_data;
-  o_max7219_load <= s_max7219_load;
+  --     -- Transaction Done
+  --     o_done => s_done);
 
 end architecture behv;

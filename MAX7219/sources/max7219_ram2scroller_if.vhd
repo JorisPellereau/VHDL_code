@@ -176,6 +176,7 @@ begin  -- architecture behv
       if(s_me_p = '1' and s_ram_sel = '1') then
         s_rdata       <= i_rdata;
         s_rdata_valid <= '1';
+        s_ram_addr    <= unsigned(s_ram_addr) + 1;
       else
         s_rdata_valid <= '0';
       end if;
