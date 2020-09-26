@@ -27,9 +27,7 @@ library lib_max7219;
 use lib_max7219.pkg_max7219.all;
 
 entity max7219_display_controller is
-
   generic (
-
     G_MATRIX_NB : integer range 2 to 8 := 8;  -- MATRIX NUMBER
 
     -- MAX7219 I/F GENERICS
@@ -48,10 +46,16 @@ entity max7219_display_controller is
     clk   : in std_logic;                       -- Clock
     rst_n : in std_logic;                       -- Asynchronous clock
 
-
     -- SELECTION
     i_static_dyn : in std_logic;        -- STATIC or DYNNAMIC Display sel
 
+    -- MATRIX CONFIG.
+    i_decod_mode     : in  std_logic_vector(7 downto 0);  -- DECOD MODE
+    i_intensity      : in  std_logic_vector(7 downto 0);  -- INTENSITY
+    i_scan_limit     : in  std_logic_vector(7 downto 0);  -- SCAN LIMIT
+    i_shutdown       : in  std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
+    i_new_config_val : in  std_logic;                     -- CONFIG. VALID
+    o_config_done    : out std_logic;                     -- CONFIG. DONE
 
     -- STATIC DISPLAY I/O    
     i_en_static : in std_logic;
@@ -69,15 +73,15 @@ entity max7219_display_controller is
     i_ptr_val_static      : in  std_logic;  -- PTRS VALIDS
     i_loop_static         : in  std_logic;  -- LOOP CONFIG.
     o_ptr_equality_static : out std_logic;  -- ADDR = LAST PTR
-
-
+    o_static_busy         : out std_logic;  -- STATIC BUSY
 
     -- SCROLLER I/O
     -- RAM Commands
-    i_ram_start_ptr_scroller : in std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
-    i_msg_length_scroller    : in std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
-    i_start_scroll           : in std_logic;  -- Valid - Start Scroller
-    i_max_tempo_cnt_scroller : in std_logic_vector(31 downto 0);  -- Scroller Tempo
+    i_ram_start_ptr_scroller : in  std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
+    i_msg_length_scroller    : in  std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
+    i_start_scroll           : in  std_logic;  -- Valid - Start Scroller
+    i_max_tempo_cnt_scroller : in  std_logic_vector(31 downto 0);  -- Scroller Tempo
+    o_scroller_busy          : out std_logic;  -- SCROLLER BUSY
 
     -- RAM SCROLLER I/F
     i_me_scroller    : in  std_logic;   -- Memory Enable
@@ -92,9 +96,7 @@ entity max7219_display_controller is
     o_max7219_data : out std_logic;     -- DATA to send
     o_max7219_clk  : out std_logic      -- CLK
 
-
     );
-
 end entity max7219_display_controller;
 
 architecture behv of max7219_display_controller is
@@ -114,9 +116,7 @@ architecture behv of max7219_display_controller is
   signal s_max7219_if_en_load_scroller : std_logic;
   signal s_max7219_if_data_scroller    : std_logic_vector(15 downto 0);
 
-
   -- MAX7219 I/F signals
-
   signal s_max7219_if_start   : std_logic;
   signal s_max7219_if_en_load : std_logic;
   signal s_max7219_if_data    : std_logic_vector(15 downto 0);
@@ -182,8 +182,8 @@ begin  -- architecture behv
       i_ram_start_ptr      => i_ram_start_ptr_scroller,
       i_msg_length         => i_msg_length_scroller,
       i_start_scroll       => i_start_scroll,
-      i_max_tempo_cnt      => i_max_tempo_cnt_scroller
-,
+      i_max_tempo_cnt      => i_max_tempo_cnt_scroller,
+      
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_scroller,
       o_max7219_if_start   => s_max7219_if_start_scroller,
@@ -235,5 +235,7 @@ begin  -- architecture behv
   o_max7219_load <= s_max7219_load;
   o_max7219_data <= s_max7219_data;
   o_max7219_clk  <= s_max7219_clk;
+
+  o_scroller_busy <= s_busy_scroller;
 
 end architecture behv;
