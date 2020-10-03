@@ -162,10 +162,11 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd \
+		$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd \
+		$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
 		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
 		$(SRC_DIR)/max7219_matrix_display.vhd \
-		$(SRC_DIR)/max7219_display_controller.vhd \
 		$(SRC_DIR)/top_max7219_matrix_display.vhd \
 
 

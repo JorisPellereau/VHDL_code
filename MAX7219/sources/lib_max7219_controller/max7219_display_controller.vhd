@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2020-09-26
+-- Last update: 2020-10-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -127,6 +127,10 @@ architecture behv of max7219_display_controller is
 
 begin  -- architecture behv
 
+
+
+  -- MAX7219 CONFIG INST
+
   -- MAX7219 STATIC DISPLAY CONTROLLER INST
   max7219_cmd_decod_inst_0 : max7219_cmd_decod
     generic map (
@@ -179,11 +183,11 @@ begin  -- architecture behv
       o_rdata => o_rdata_scroller,
 
       -- RAM Commands
-      i_ram_start_ptr      => i_ram_start_ptr_scroller,
-      i_msg_length         => i_msg_length_scroller,
-      i_start_scroll       => i_start_scroll,
-      i_max_tempo_cnt      => i_max_tempo_cnt_scroller,
-      
+      i_ram_start_ptr => i_ram_start_ptr_scroller,
+      i_msg_length    => i_msg_length_scroller,
+      i_start_scroll  => i_start_scroll,
+      i_max_tempo_cnt => i_max_tempo_cnt_scroller,
+
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_scroller,
       o_max7219_if_start   => s_max7219_if_start_scroller,
