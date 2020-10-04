@@ -42,6 +42,8 @@ vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 
 # Library List
 LIB_1=lib_max7219
+LIB_2=lib_max7219_static
+LIB_3=lib_max7219_scroller
 #LIB_2=lib_2
 LIB_TB_TOP=lib_tb_top
 
@@ -132,11 +134,15 @@ clean:
 prepare_libs:
 	cd $(WORK_DIR); \
 	$(vlib) ./${LIB_1}; \
+	$(vlib) ./${LIB_2}; \
+	$(vlib) ./${LIB_3}; \
 	$(vlib) ./$(LIB_TB_TOP);
 
 create_libs:
 	cd $(WORK_DIR); \
-	$(vmap) $(LIB_TB_TOP) ./$(LIB_1);		
+	$(vmap) $(LIB_TB_TOP) ./$(LIB_1); \
+	$(vmap) $(LIB_TB_TOP) ./$(LIB_2); \
+	$(vmap) $(LIB_TB_TOP) ./$(LIB_3); \
 
 libs:  prepare_libs create_libs
 #=============================
@@ -162,6 +168,7 @@ src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd \
 		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd \
+		$(SRC_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd \
 		$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd \
 		$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd \
 		$(SRC_ALG_VHD)/uint_division.vhd \
