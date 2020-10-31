@@ -18,7 +18,7 @@
 #	|__ /transcripts    => Transcripts files
 
 ROOT=$(PWD)/..
-WORK_DIR_NAME=TB_WORK
+WORK_DIR_NAME=TOTO_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
@@ -41,13 +41,11 @@ vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 # == SOURCES DIRECTORY ==
 SRC_DIR=$(ROOT)/TOTO
 
-LIB_LIST=
-TB_LIB_LIST=
-
 
 # == LIBRARY LIST AFFECTATION ==
-LIB_LIST += TOTO
-TB_LIB_LIST += lib_tb_top
+LIB_LIST+=TOTO
+LIB_LIST+=TARA
+TB_LIB_LIST+=lib_tb_top
 # ==============================
 
 all: 
@@ -75,10 +73,13 @@ all:
 	@echo ""
 	@echo "=========================="
 	@echo ""
-	@echo "======     RUN TESTS MAX7219          ======"
+	@echo "== RUN TESTS =="
 	@echo "- Run test : :"
 	@echo "make run_test TEST=[TEST_NAME]"
-	@echo "============================================"
+	@echo "==============="
+	@echo ""
+	@echo "$(LIB_LIST)"
+	@echo "$(TB_LIB_LIST)"
 
 
 # == PREPARE PROJECT ==
@@ -87,7 +88,7 @@ create_dir:
 	mkdir $(WORK_DIR_NAME); \
 	mkdir transcripts; \
 	mkdir do_files; \
-	mkdir WLF;
+	mkdir WLF; \
 	mkdir sources; \
 	mkdir tb_sources;
 # ======================
@@ -103,8 +104,8 @@ clean:
 # == PREPARE MODELSIM LIBRARY ==
 prepare_libs:
 	cd $(WORK_DIR); \
-	$(vlib) ./$(LIB_LIST); \
-	$(vlib) ./$(TB_LIB_LIST);
+	$(vlib) $(LIB_LIST); \
+	$(vlib) $(TB_LIB_LIST);
 
 create_libs:
 	cd $(WORK_DIR); \
