@@ -4,117 +4,112 @@
 
 # Repository Organization
 # /(ROOT)
-# 	|__ /scripts => Makefile
-#	|__ /sources => VHD - V files
-#	|__ /work    => Modelsim Libs
+# 	|__ /scripts        => Scripts - Makefile
+#	|__ /sources        => Design VHD - V files
+#	     |__ /lib_x
+#	     |__ /lib_y
+#	|__ /tb_sources     => Specific TestBench files
+#	     |__ /tb_top.sv
+#	|__ /do_files       => Do Files
+#	     |__ /run_files => Run .do
+#	     |__ /waves     => Waves .do
+#	|__ /scenario       => Scenario list
+#	|__ /WLF            => WLF files
+#	|__ /transcripts    => Transcripts files
 
-
-
-# 
 ROOT=$(PWD)/..
-WORK_DIR=$(ROOT)/work
-SRC_DIR=$(ROOT)/sources
+WORK_DIR_NAME=TB_WORK
+WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
+
+# == GENERIC TESTBENCH SOURCES DIRECTORY ==
+GENERIC_TB_SRC_DIR=~/GitHub/Verilog/lib_testbench
+# =========================================
+
 SCRIPTS_DIR=$(ROOT)/scripts
+RUN_DO_DIR=$(ROOT)/do_files/run_files
+TRANSCRIPTS_DIR=$(ROOT)/transcripts
+WLF_DIR=$(ROOT)/WLF
+
+# MODELSIM ALIAS
+vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
+vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
+vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
+vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
+vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 
 
-# Library List
-LIB_1=lib_1
-LIB_2=lib_2
-LIB_TB_TOP=lib_tb_top
+# == SOURCES DIRECTORY ==
+SRC_DIR=$(ROOT)/TOTO
+
+LIB_LIST=
+TB_LIB_LIST=
 
 
-
-# .vhd file compilation
-VCOM1=vcom -nologo -work
-
-
-
-# .v file compilation
-VLOG1=vlog -nologo -work
-
-
+# == LIBRARY LIST AFFECTATION ==
+LIB_LIST += TOTO
+TB_LIB_LIST += lib_tb_top
+# ==============================
 
 all: 
 	@echo "Makefile for compilation & Simulation with Modelsim"
 	@echo ""
-	@echo "Clean work reposotory : "
+	@echo "== PROJECT CONFIGURATION =="
+	@echo "- Create Work Directory : "
+	@echo "make create_dir"
+	@echo ""
+	@echo "- Clean work repository : "
 	@echo "make clean"
 	@echo ""
-	@echo "Prepare Modelsim Library :"
+	@echo "- Prepare Modelsim Library :"
 	@echo "make libs"
 	@echo ""
-	@echo "Compile VHD files :"
-	@echo "make compile_vhd_src"
+	@echo "==========================="
 	@echo ""
-	@echo "Compile V files :"
-	@echo "make compile_v_src"
+	@echo "== SOURCES COMPILATIONS =="	
 	@echo ""
-	@echo "Run VHD simulation :"
-	@echo "make run_vhd_1"
+	@echo "- Source Compilation :"
+	@echo "make compile_src"
+	@echo ""
+	@echo "- Compile all :"
+	@echo "make compile_tb"
+	@echo ""
+	@echo "=========================="
+	@echo ""
+	@echo "======     RUN TESTS MAX7219          ======"
+	@echo "- Run test : :"
+	@echo "make run_test TEST=[TEST_NAME]"
+	@echo "============================================"
 
 
-# create work dir
+# == PREPARE PROJECT ==
 create_dir:
 	cd $(ROOT); \
-	mkdir work;
+	mkdir $(WORK_DIR_NAME); \
+	mkdir transcripts; \
+	mkdir do_files; \
+	mkdir WLF;
+	mkdir sources; \
+	mkdir tb_sources;
+# ======================
 
-# Delete files inside work dir.
+
+# == CLEAN PROJECT ==
 clean:
 	cd $(WORK_DIR); \
 	rm -rRf *;
+# ====================
 
 
-# prepare Modelsim Library
+# == PREPARE MODELSIM LIBRARY ==
 prepare_libs:
 	cd $(WORK_DIR); \
-	vlib ./${LIB_1}; \
-	vlib ./${LIB_2}; \
-	vlib ./$(LIB_TB_TOP);
+	$(vlib) ./$(LIB_LIST); \
+	$(vlib) ./$(TB_LIB_LIST);
 
 create_libs:
 	cd $(WORK_DIR); \
-	vmap $(LIB_TB_TOP) ./$(LIB_1);	
-	vmap $(LIB_TB_TOP) ./$(LIB_2);	
+	$(vmap) $(TB_LIB_TOP) ./$(LIB_LIST);
 
-
-# prepare and create_dir
 libs:  prepare_libs create_libs
+#=============================
 
-
-# List of vhd file
-src_vhd=	$(SRC_DIR)/file_1.vhd \
-		$(SRC_DIR)/file_2.vhd \
-		$(SRC_DIR)/file_3.vhd \
-		$(SRC_DIR)/file_4.vhd
-
-
-# List of v file
-src_v=		$(SRC_DIR)/file_1.v \
-		$(SRC_DIR)/file_2.v \
-		$(SRC_DIR)/file_3.v \
-		$(SRC_DIR)/file_4.v
-
-
-
-
-# Compile vhd files in LIB_TB_TOP
-compile_vhd_src : clean libs
-	cd $(WORK_DIR); \
-	$(VCOM1) $(LIB_TB_TOP) $(src_vhd);
-
-
-# Compile v files in LIB_TB_TOP
-compile_v_src : clean libs
-	cd $(WORK_DIR); \
-	$(VLOG1) $(LIB_TB_TOP) $(src_v);
-
-
-# Launch VHD simulation in GUI
-run_vhd_1 :	compile_vhd_src
-		cd $(WORK_DIR); \
-		vsim  -novopt -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
-
-# Launch modelsim Simulation in console
-run_csl_1 : 	compile_vhd_src
-		cd $(WORK_DIR); \
-		vsim -c -wlf wave.wlf -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
