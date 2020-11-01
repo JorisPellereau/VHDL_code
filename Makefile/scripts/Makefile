@@ -141,6 +141,7 @@ src_gen_tb_v=	$(GENERIC_TB_SRC_DIR)/sequencer.sv \
 		$(GENERIC_TB_SRC_DIR)/decoder.sv \
 		$(GENERIC_TB_SRC_DIR)/set_injector.sv \
 		$(GENERIC_TB_SRC_DIR)/wait_event.sv \
+		$(GENERIC_TB_SRC_DIR)/wait_duration.sv \
 		$(GENERIC_TB_SRC_DIR)/check_level.sv \
 		$(GENERIC_TB_SRC_DIR)/tb_seq_wrapper.sv \
 # =================================
@@ -158,11 +159,15 @@ src_tb_vhd=	$(TB_SRC_DIR)/max7219_if.vhd \
 
 
 # == DESIGN VHD FILE LIST ==
-src_vhd=
+src_vhd_i=
 # ==========================
 
 
-
+# == COMPILES DESIGN LIBRARIES ==
+compile_design :
+	cd $(WORK_DIR); \
+	$(vcom) -work $(LIB_SRC_VHD_i) $(src_vhd_i);
+# ===============================
 
 # == COMPILES TESTBENCH V FILES ==
 compile_tb_v :
