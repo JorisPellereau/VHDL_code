@@ -22,45 +22,69 @@ ROOT=$(PWD)/..
 WORK_DIR_NAME=TOTO_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 
+
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
 GENERIC_TB_SRC_DIR=~/GitHub/Verilog/lib_testbench
 # =========================================
 
-# == TESTBENCH SOURCES DIRECTORY ==
+# == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
 TB_SRC_DIR=$(ROOT)/tb_sources
-# =================================
+# ==========================================
 
+# == PROJECT DIRECTORIES ==
 SCRIPTS_DIR=$(ROOT)/scripts
 RUN_DO_DIR=$(ROOT)/do_files/run_files
 TRANSCRIPTS_DIR=$(ROOT)/transcripts
 WLF_DIR=$(ROOT)/WLF
 SCN_DIR=$(ROOT)/scenarios
+# =========================
 
-
-# MODELSIM ALIAS
+# == MODELSIM ALIAS ==
 vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
 vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
 vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
 vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
 vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
-
+# ====================
 
 # == SOURCES DIRECTORY ==
-SRC_DIR=$(ROOT)/TOTO
+SRC_DIR=$(ROOT)/sources
 # =======================
 
 # == VSIM ARGS ==
 VSIM_ARGS+=-novopt -t ps
-VSIM_G_ARGS+=-G/tb_top/i_tb_seq_wrapper_0/SCN_FILE_PATH=$(SCN_DIR)/
+VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
 # ===============
 
-# == LIBRARY LIST AFFECTATION ==
-LIB_LIST+=TOTO
-LIB_LIST+=TARA
+# == DESIGN LIBRARIES ==
+LIB_MAX7219=lib_max7219
+LIB_TATA=lib_tata
+# ======================
+
+
+# == TESTBENCH LIBRARIES ==
+LIB_TESTBENCH=lib_testbench
+LIB_TB_TOP=lib_tb_top
+# =========================
+
+
+## == LIBRARY LIST AFFECTATION == ##
+
+# == DESIGN LIBRARIES ==
+LIB_LIST+=lib_max7219
+LIB_LIST+=TATA
+# ======================
+
+# == TESTBENCH LIBRARIES ==
+TB_LIB_LIST+=lib_testbench
 TB_LIB_LIST+=lib_tb_top
-# ==============================
+# =========================
+
+## ============================== ##
+
 
 all: 
+	@echo ""
 	@echo "Makefile for compilation & Simulation with Modelsim"
 	@echo ""
 	@echo "== PROJECT CONFIGURATION =="
@@ -77,16 +101,19 @@ all:
 	@echo ""
 	@echo "== SOURCES COMPILATIONS =="	
 	@echo ""
-	@echo "- Source Compilation :"
-	@echo "make compile_src"
+	@echo "- Design Sources Compilation :"
+	@echo "make compile_design"
+	@echo ""	
+	@echo "- Compile Testbench :"
+	@echo "make compile_testbench"
 	@echo ""
-	@echo "- Compile all :"
-	@echo "make compile_tb"
+	@echo "- Compile Design & Testbench :"
+	@echo "make compile_all"
 	@echo ""
 	@echo "=========================="
 	@echo ""
 	@echo "== RUN TESTS =="
-	@echo "- Run test : :"
+	@echo "- Run test :"
 	@echo "make run_test TEST=[TEST_NAME]"
 	@echo "==============="
 	@echo ""
@@ -95,6 +122,7 @@ all:
 	@echo "VSIM_ARGS : $(VSIM_ARGS)"
 	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
 	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
+	@echo "SOURCE GENERIC TB V FILES : $(src_gen_tb_v)"
 
 
 
@@ -132,59 +160,92 @@ create_libs:
 	$(vmap) $(TB_LIB_TOP) ./$(LIB_LIST);
 
 libs:  prepare_libs create_libs
-#=============================
-
-
-
-# == GENERIC TESTBENCH FILE LIST ==
-src_gen_tb_v=	$(GENERIC_TB_SRC_DIR)/sequencer.sv \
-		$(GENERIC_TB_SRC_DIR)/decoder.sv \
-		$(GENERIC_TB_SRC_DIR)/set_injector.sv \
-		$(GENERIC_TB_SRC_DIR)/wait_event.sv \
-		$(GENERIC_TB_SRC_DIR)/wait_duration.sv \
-		$(GENERIC_TB_SRC_DIR)/check_level.sv \
-		$(GENERIC_TB_SRC_DIR)/tb_seq_wrapper.sv \
-# =================================
-
-
-# == TESTBENCH FILE LIST ==
-src_tb_v=	$(TB_SRC_DIR)/testbench_setup.sv \
-		$(TB_SRC_DIR)/clk_gen.sv \
-		$(TB_SRC_DIR)/tb_top.sv \
-
-
-
-src_tb_vhd=	$(TB_SRC_DIR)/max7219_if.vhd \
-#==========================
+#===============================
 
 
 # == DESIGN VHD FILE LIST ==
-src_vhd_i=
+src_vhd_lib_max7219+=$(SRC_DIR)/pkg_max7219.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/max7219_if.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/max7219_msg_sel.vhd
 # ==========================
 
 
-# == COMPILES DESIGN LIBRARIES ==
+
+
+## == TESTBENCH FILES == ##
+
+# == TB VHD FILES ==
+src_tb_vhd+=
+#===================
+
+
+# == GENERIC TB FILES ==
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
+# ======================
+
+# == TB SETUP & Internal modules ==
+src_tb_v+=$(TB_SRC_DIR)/testbench_setup.sv
+src_tb_v+=$(TB_SRC_DIR)/clk_gen.sv
+# =================================
+
+# == TB TOP ==
+src_tb_v+=$(TB_SRC_DIR)/tb_top.sv
+# ============
+
+## ===================== ##
+
+
+
+# == COMPILE DESIGN ==
+# Compile Design Library here
 compile_design :
 	cd $(WORK_DIR); \
-	$(vcom) -work $(LIB_SRC_VHD_i) $(src_vhd_i);
-# ===============================
+	$(foreach list, $(src_vhd_lib_max7219), $(vcom) -work $(LIB_MAX7219) $(list);)
 
-# == COMPILES TESTBENCH V FILES ==
-compile_tb_v :
-	cd $(WORK_DIR); \
-	$(vlog) -work $(TB_LIB_LIST) $(src_gen_tb_v); \
-	$(vlog) -work $(TB_LIB_LIST) $(src_tb_v)
-# ================================
+# ====================
 
-# == COMPILES TESTBENCH VHD FILES ==
-compile_tb_vhd :
+
+
+# == TB COMPILES VHD FILES ==
+compile_tb_vhd_files :
 	cd $(WORK_DIR); \
-	$(vcom) -work $(TB_LIB_LIST) $(src_tb_vhd);
-# ================================
+	$(foreach list, $(src_tb_vhd), $(vcom) -work $(LIB_TESTBENCH) $(list);)
+# ===========================
+
+# == COMPILES GENERIC V FILES ==
+compile_generic_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TESTBENCH) $(list);)
+# ==============================
+
+# == COMPILES TB V FILES ==
+compile_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TESTBENCH) $(list);)
+# =========================
+
+# == COMPILE TESTBENCH ==
+compile_testbench : compile_tb_vhd_files compile_generic_tb_v_files compile_tb_v_files
+# =======================
+
+
+# == COMPILE ALL ==
+compile_all : clean libs compile_design compile_testbench
+# =================
 
 # == RUN TEST ==
-run_test : clean libs compile_tb_v
+run_test :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(TB_LIB_LIST).tb_top $(VSIM_G_ARGS)$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(TB_LIB_TOP).tb_top $(VSIM_G_ARGS)$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============
 
+
+
+
+##################################################
