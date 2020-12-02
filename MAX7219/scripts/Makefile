@@ -1,71 +1,101 @@
 #
 #	Makefile for Compilation & Simulation with modelsim
 #
-
 # Repository Organization
 # /(ROOT)
 # 	|__ /scripts        => Scripts - Makefile
 #	|__ /sources        => Design VHD - V files
 #	     |__ /lib_x
 #	     |__ /lib_y
-#	|__ /tb_sources     => TestBench  files
+#	|__ /tb_sources     => Specific TestBench files
+#	     |__ /testbench_setup.sv
+#	     |__ /tb_top.sv
 #	|__ /do_files       => Do Files
 #	     |__ /run_files => Run .do
 #	     |__ /waves     => Waves .do
+#	|__ /scenarios      => Scenario list
+#	|__ /WLF            => WLF files
+#	|__ /transcripts    => Transcripts files
+#
+#
+#
+# Makefile for MAX7219 blocks tests
+# Author : J.P
+# Date   : 02/12/2020
+#
+# Version : 1.0 - Initialization for MAS7219 test
+#
+#
 
-# MAKEFILE for MAX7219 Tests
-
-# 
 ROOT=$(PWD)/..
 WORK_DIR_NAME=MAX7219_WORK
 WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
 
-# == SOURCES DIRECTORY ==
-SRC_DIR=$(ROOT)/sources
-SRC_RAM_VHD=$(ROOT)/../RAM/TDPRAM
-TB_SRC_DIR=$(ROOT)/tb_sources
-TB_V_SRC_DIR=$(ROOT)/../../Verilog/TB_modules
-SRC_MISC_VHD=$(ROOT)/../MISC/Digits_decod
-SRC_ALG_VHD=$(ROOT)/../Algorithm/Integer_division
 
+# == GENERIC TESTBENCH SOURCES DIRECTORY ==
+GENERIC_TB_SRC_DIR=~/GitHub/Verilog/lib_testbench
+# =========================================
+
+# == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
+TB_SRC_DIR=$(ROOT)/tb_sources
+# ==========================================
+
+# == PROJECT DIRECTORIES ==
 SCRIPTS_DIR=$(ROOT)/scripts
 RUN_DO_DIR=$(ROOT)/do_files/run_files
 TRANSCRIPTS_DIR=$(ROOT)/transcripts
 WLF_DIR=$(ROOT)/WLF
+SCN_DIR=$(ROOT)/scenarios
+# =========================
 
-# MODELSIM ALIAS
+# == MODELSIM ALIAS ==
 vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
 vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
 vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
 vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
 vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
+# ====================
 
-# Library List
-LIB_1=lib_max7219
-LIB_2=lib_max7219_static
-LIB_3=lib_max7219_scroller
-#LIB_2=lib_2
+# == SOURCES DIRECTORY ==
+SRC_DIR=$(ROOT)/sources
+# =======================
+
+# == VSIM ARGS ==
+VSIM_ARGS+=-novopt -t ps
+VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
+# ===============
+
+# == DESIGN LIBRARIES ==
+LIB_MAX7219=lib_max7219
+
+# ======================
+
+
+# == TESTBENCH LIBRARIES ==
+LIB_TESTBENCH=lib_testbench
 LIB_TB_TOP=lib_tb_top
 
+# =========================
 
 
-# .vhd file compilation
-#VCOM1=$(vcom) -nologo -work
+## == LIBRARY LIST AFFECTATION == ##
 
+## == DESIGN LIBRARIES ==
+LIB_LIST+=lib_max7219
+## ======================
 
+## == TESTBENCH LIBRARY ==
+LIB_LIST+=$(LIB_TESTBENCH)
+## =======================
 
-# .v file compilation
-#VLOG1=$(vlog) -nologo -work
-
+## ============================== ##
 
 
 all: 
 	@echo ""
 	@echo "Makefile for compilation & Simulation with Modelsim"
 	@echo ""
-	@echo "MAX7219 Tests & Simulation"
-	@echo ""
-	@echo "======     PROJECT CONFIGURATION      ======"
+	@echo "== PROJECT CONFIGURATION =="
 	@echo "- Create Work Directory : "
 	@echo "make create_dir"
 	@echo ""
@@ -75,51 +105,47 @@ all:
 	@echo "- Prepare Modelsim Library :"
 	@echo "make libs"
 	@echo ""
-	@echo "============================================"
+	@echo "==========================="
 	@echo ""
+	@echo "== SOURCES COMPILATIONS =="	
 	@echo ""
-	@echo "====== SOURCES COMPILATIONS           ======"
-	@echo "- Compile Design - VHD files :"
-	@echo "make compile_vhd_src"
+	@echo "- Design Sources Compilation :"
+	@echo "make compile_design"
+	@echo ""	
+	@echo "- Compile Testbench :"
+	@echo "make compile_testbench"
 	@echo ""
-	@echo "- Compile Design - V files :"
-	@echo "make compile_v_src"
-	@echo ""
-	@echo "- Compile TestBench sources - VHD files :"
-	@echo "make compile_tb_vhd_src"
-	@echo ""
-	@echo "- Compile all :"
+	@echo "- Compile Design & Testbench :"
 	@echo "make compile_all"
 	@echo ""
-	@echo "============================================"
+	@echo "=========================="
 	@echo ""
+	@echo "== RUN TESTS =="
+	@echo "- Run test :"
+	@echo "make run_test TEST=[TEST_NAME]"
+	@echo "==============="
 	@echo ""
-	@echo "======     RUN TESTS MAX7219          ======"
-	@echo "- Run test : MAX7219_CMD_DECOD :"
-	@echo "make run_test_max7219_cmd_decod"
-	@echo ""
-	@echo "- Run test : MAX7219_MATRIX_DISPLAY"
-	@echo "make run_test_max7219_matrix_display"
-	@echo ""
-	@echo "- Run test : UINT DIVISION"
-	@echo "make run_test_uint_division"
-	@echo ""
-	@echo "- Run test : TOP MATRIX DISPLAY ON DE0 NANO BOARD"
-	@echo "make run_test_top_max7219_matrix_display"
-	@echo ""
-	@echo "- Run test : TEST MATRIX DISPLAY 8 MATRIX"
-	@echo "make run_test_matrix_display_8"
-	@echo ""
-	@echo "- Run test : TEST MAX7219 SCROLLER"
-	@echo "make run_test_max7219_scroller"
-	@echo "============================================"
+	@echo "LIB_LIST : $(LIB_LIST)"
+	@echo "VSIM_ARGS : $(VSIM_ARGS)"
+	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
+	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
+	@echo "SOURCE GENERIC TB V FILES : $(src_gen_tb_v)"
 
 
 
 # == PREPARE PROJECT ==
 create_dir:
 	cd $(ROOT); \
-	mkdir $(WORK_DIR_NAME);
+	mkdir $(WORK_DIR_NAME); \
+	mkdir transcripts; \
+	mkdir do_files; \
+	mkdir WLF; \
+	mkdir sources; \
+	mkdir tb_sources; \
+	mkdir scenarios; \
+	cd ./do_files; \
+	mkdir run_files; \
+	mkdir waves; \
 # ======================
 
 
@@ -133,165 +159,107 @@ clean:
 # == PREPARE MODELSIM LIBRARY ==
 prepare_libs:
 	cd $(WORK_DIR); \
-	$(vlib) ./${LIB_1}; \
-	$(vlib) ./${LIB_2}; \
-	$(vlib) ./${LIB_3}; \
-	$(vlib) ./$(LIB_TB_TOP);
+	$(foreach list, $(LIB_LIST),$(vlib) ./$(list);) \
+	#$(vlib) $(LIB_TB_TOP);
 
 create_libs:
 	cd $(WORK_DIR); \
-	$(vmap) $(LIB_TB_TOP) ./$(LIB_1); \
-	$(vmap) $(LIB_TB_TOP) ./$(LIB_2); \
-	$(vmap) $(LIB_TB_TOP) ./$(LIB_3); \
+	$(foreach list, $(LIB_LIST),$(vmap) $(LIB_TB_TOP) ./$(list);) \
 
 libs:  prepare_libs create_libs
-#=============================
+#===============================
 
 
-# == VHD FILES LIST ==
-src_vhd=	$(SRC_DIR)/pkg_max7219.vhd \
-		$(SRC_RAM_VHD)/tdpram_sclk.vhd \
-		$(SRC_DIR)/max7219_if.vhd \
-		$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd \
-		$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd \
-		$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd \
-		$(SRC_DIR)/max7219_ram_sequencer.vhd\
-		$(SRC_DIR)/max7219_display_manager.vhd \
-		$(SRC_DIR)/max7219_config_matrix.vhd \
-		$(SRC_DIR)/max7219_digit2conf.vhd \
-		$(SRC_DIR)/max7219_cmd_organizer.vhd \
-		$(SRC_DIR)/max7219_digit2letter.vhd \
-		$(SRC_DIR)/max7219_msg_organizer.vhd \
-		$(SRC_DIR)/max7219_msg_sel.vhd \
-		$(SRC_DIR)/max7219_start_addr_mngt.vhd \
-		$(SRC_DIR)/lib_max7219_scroller/pkg_max7219_scroller.vhd \
-		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd \
-		$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd \
-		$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd \
-		$(SRC_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd \
-		$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd \
-		$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd \
-		$(SRC_ALG_VHD)/uint_division.vhd \
-		$(SRC_MISC_VHD)/digits_decod_shift.vhd \
-		$(SRC_DIR)/max7219_matrix_display.vhd \
-		$(SRC_DIR)/top_max7219_matrix_display.vhd \
+# == DESIGN VHD FILE LIST ==
+src_vhd_lib_max7219+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/pkg_max7219.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
+# ==========================
 
 
-src_tb_vhd=	$(TB_SRC_DIR)/test_max7219_cmd_decod.vhd \
-		$(TB_SRC_DIR)/test_max7219_matrix_display.vhd \
-		$(SRC_MISC_VHD)/test_digits_decod.vhd \
-		$(SRC_ALG_VHD)/test_uint_division.vhd \
-		$(TB_SRC_DIR)/test_top_max7219_matrix_display.vhd \
-		$(TB_SRC_DIR)/test_matrix_display_8.vhd \
-		$(TB_SRC_DIR)/test_max7219_scroller.vhd
-
-# =====================
 
 
-# == V FILES LIST ==
-src_v=		$(SRC_DIR)/file_1.v \
-		$(SRC_DIR)/file_2.v \
-		$(SRC_DIR)/file_3.v \
-		$(SRC_DIR)/file_4.v
+## == TESTBENCH FILES == ##
 
-src_tb_v=	$(TB_V_SRC_DIR)/max7219_emul.sv \
-		$(TB_V_SRC_DIR)/max7219_matrix_emul.sv \
-		$(TB_V_SRC_DIR)/max7219_display_n_matrix.sv
-# ==================
+# == TB VHD FILES ==
+src_tb_vhd+=
+#===================
 
 
-# == COMPIlES VHD SOURCES FILES ==
-compile_vhd_src :
-	cd $(WORK_DIR); \
-	$(vcom) -work  ${LIB_1} $(src_vhd);
-
-
-compile_tb_vhd_src :
-	cd $(WORK_DIR); \
-	$(vcom) -work $(LIB_TB_TOP) $(src_tb_vhd);
-# ================================
-
-# == COMPILES V FILES ==
-compile_tb_v_files :
-	cd $(WORK_DIR); \
-	$(vlog) -work $(LIB_TB_TOP) $(src_tb_v)
+# == GENERIC TB FILES ==
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 # ======================
 
-compile_all: clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+# == TB SETUP & Internal modules ==
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/testbench_setup.sv
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/clk_gen.sv
+# =================================
 
-# == TEST1 ==
-entity_test1=test_max7219_cmd_decod
-run_test1=run_max7219_cmd_decod.do
-trans_test1=test_max7219_cmd_decod.txt
-wave_test1=wave_test_max7219_cmd_decod
-run_test_max7219_cmd_decod : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+# == TB TOP ==
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.sv
+# ============
+
+## ===================== ##
+
+
+
+## == COMPILE DESIGN == ##
+
+# Compile Design Library here
+compile_design :
 	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test1).wlf $(LIB_TB_TOP).$(entity_test1) -l $(TRANSCRIPTS_DIR)/$(trans_test1) -do $(RUN_DO_DIR)/$(run_test1);
-# ===========
+	$(foreach list, $(src_vhd_lib_max7219), $(vcom) -work $(LIB_MAX7219) $(list);)
+
+## ==================== ##
 
 
-# TEST 2
-# == TEST MATRIX DISPLAY ==
-entity_test2=test_max7219_matrix_display
-run_test2=run_max7219_matrix_display.do
-trans_test2=test_max7219_matrix_display.txt
-wave_test2=wave_test_max7219_matrix_display
-run_test_max7219_matrix_display : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+## == COMPILE TESTBENCH == ##
+
+# == TB COMPILES VHD FILES ==
+compile_tb_vhd_files :
 	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test2).wlf $(LIB_TB_TOP).$(entity_test2) -l $(TRANSCRIPTS_DIR)/$(trans_test2) -do $(RUN_DO_DIR)/$(run_test2);
+	$(foreach list, $(src_tb_vhd), $(vcom) -work $(LIB_TB_TOP) $(list);)
+# ===========================
 
+# == COMPILES GENERIC V FILES ==
+compile_generic_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TESTBENCH) $(list);)
+# ==============================
+
+# == COMPILES TB V FILES ==
+compile_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_TOP) $(list);)
 # =========================
 
-# TEST 3
-# == TEST UINT DIVISION ==
-entity_test3=test_uint_division
-run_test3=run_uint_division.do
-trans_test3=test_uint_division.txt
-wave_test3=wave_test_uint_division
-run_test_uint_division : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
+# == COMPILE ALL TESTBENCH files ==
+compile_testbench : compile_tb_vhd_files compile_generic_tb_v_files compile_tb_v_files
+# =======================
+
+## ======================= ##
+
+
+# == COMPILE ALL ==
+compile_all : clean libs compile_design compile_testbench
+# =================
+
+
+# == RUN TEST ==
+run_tb_max7219_static :
 	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test3).wlf $(LIB_TB_TOP).$(entity_test3) -l $(TRANSCRIPTS_DIR)/$(trans_test3); # -do $(RUN_DO_DIR)/$(run_test3);
-
-# ========================
-
-# TEST 4
-# == TEST TOP MATRIX DISPLAY ON DE0 NANO BOARD ==
-entity_test4=test_top_max7219_matrix_display
-run_test4=run_top_max7219_matrix_display.do
-trans_test4=test_top_max7219_matrix_display.txt
-wave_test4=wave_top_max7219_matrix_display
-run_test_top_max7219_matrix_display : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
-	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test4).wlf $(LIB_TB_TOP).$(entity_test4) -l $(TRANSCRIPTS_DIR)/$(trans_test4) -do $(RUN_DO_DIR)/$(run_test4);
-
-# ========================
+	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(LIB_TB_TOP).tb_top $(VSIM_G_ARGS)scn_lib_max7219_static/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+# ==============
 
 
-# TEST 5
-# == TEST MATRIX DISPLAY 8 MATRIX ==
-entity_test5=test_matrix_display_8
-run_test5=run_matrix_display_8.do
-trans_test5=test_matrix_display_8.txt
-wave_test5=wave_test_matrix_display_8
-run_test_matrix_display_8 : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
-	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test5).wlf $(LIB_TB_TOP).$(entity_test5) -l $(TRANSCRIPTS_DIR)/$(trans_test5) -do $(RUN_DO_DIR)/$(run_test5);
 
-# ========================
 
-# TEST 6
-# == TEST MATRIX DISPLAY 8 MATRIX ==
-entity_test6=test_max7219_scroller
-run_test6=run_max7219_scroller.do
-trans_test6=test_max7219_scroller.txt
-wave_test6=wave_test_max7219_scroller
-run_test_max7219_scroller : clean libs compile_vhd_src compile_tb_v_files compile_tb_vhd_src
-	cd $(WORK_DIR); \
-	$(vsim)  -novopt -t ps -wlf $(WLF_DIR)/$(wave_test6).wlf $(LIB_TB_TOP).$(entity_test6) -l $(TRANSCRIPTS_DIR)/$(trans_test6) -do $(RUN_DO_DIR)/$(run_test6);
-
-# ========================
-
-# Launch modelsim Simulation in console
-run_csl_1 : 	compile_vhd_src
-		cd $(WORK_DIR); \
-		vsim -c -wlf wave.wlf -t ps $(LIB_TB_TOP).arch_vhd  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
+##################################################

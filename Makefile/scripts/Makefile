@@ -200,14 +200,17 @@ src_tb_v+=$(TB_SRC_DIR)/tb_top.sv
 
 
 
-# == COMPILE DESIGN ==
+## == COMPILE DESIGN == ##
+
 # Compile Design Library here
 compile_design :
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_max7219), $(vcom) -work $(LIB_MAX7219) $(list);)
-# ====================
+
+## ==================== ##
 
 
+## == COMPILE TESTBENCH == ##
 
 # == TB COMPILES VHD FILES ==
 compile_tb_vhd_files :
@@ -227,14 +230,17 @@ compile_tb_v_files :
 	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_TOP) $(list);)
 # =========================
 
-# == COMPILE TESTBENCH ==
+# == COMPILE ALL TESTBENCH files ==
 compile_testbench : compile_tb_vhd_files compile_generic_tb_v_files compile_tb_v_files
 # =======================
+
+## ======================= ##
 
 
 # == COMPILE ALL ==
 compile_all : clean libs compile_design compile_testbench
 # =================
+
 
 # == RUN TEST ==
 run_test :
