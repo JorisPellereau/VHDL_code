@@ -79,3 +79,13 @@ MAX7219/MAX7219_WORK/lib_tb_top/_info
 *.txt
 
 
+
+Makefile/TOTO_WORK/lib_max7219/_info
+
+Makefile/TOTO_WORK/lib_max7219/_vmake
+
+Makefile/TOTO_WORK/lib_tb_top/_info
+
+Makefile/TOTO_WORK/lib_testbench/_info
+
+Makefile/TOTO_WORK/lib_testbench/_vmake
