@@ -58,27 +58,26 @@ VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
 
 # == DESIGN LIBRARIES ==
 LIB_MAX7219=lib_max7219
-LIB_TATA=lib_tata
+
 # ======================
 
 
 # == TESTBENCH LIBRARIES ==
 LIB_TESTBENCH=lib_testbench
 LIB_TB_TOP=lib_tb_top
+
 # =========================
 
 
 ## == LIBRARY LIST AFFECTATION == ##
 
-# == DESIGN LIBRARIES ==
+## == DESIGN LIBRARIES ==
 LIB_LIST+=lib_max7219
-LIB_LIST+=TATA
-# ======================
+## ======================
 
-# == TESTBENCH LIBRARIES ==
-TB_LIB_LIST+=lib_testbench
-TB_LIB_LIST+=lib_tb_top
-# =========================
+## == TESTBENCH LIBRARY ==
+LIB_LIST+=$(LIB_TESTBENCH)
+## =======================
 
 ## ============================== ##
 
@@ -118,7 +117,6 @@ all:
 	@echo "==============="
 	@echo ""
 	@echo "LIB_LIST : $(LIB_LIST)"
-	@echo "TB_LIB_LIST : $(TB_LIB_LIST)"
 	@echo "VSIM_ARGS : $(VSIM_ARGS)"
 	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
 	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
@@ -153,11 +151,11 @@ clean:
 prepare_libs:
 	cd $(WORK_DIR); \
 	$(foreach list, $(LIB_LIST),$(vlib) ./$(list);) \
-	$(foreach tb_list, $(TB_LIB_LIST),$(vlib) ./$(tb_list);)
+	$(vlib) $(LIB_TB_TOP);
 
 create_libs:
 	cd $(WORK_DIR); \
-	$(vmap) $(TB_LIB_TOP) ./$(LIB_LIST);
+	$(foreach list, $(LIB_LIST),$(vmap) $(LIB_TB_TOP) ./$(list);) \
 
 libs:  prepare_libs create_libs
 #===============================
@@ -207,7 +205,6 @@ src_tb_v+=$(TB_SRC_DIR)/tb_top.sv
 compile_design :
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_max7219), $(vcom) -work $(LIB_MAX7219) $(list);)
-
 # ====================
 
 
@@ -215,7 +212,7 @@ compile_design :
 # == TB COMPILES VHD FILES ==
 compile_tb_vhd_files :
 	cd $(WORK_DIR); \
-	$(foreach list, $(src_tb_vhd), $(vcom) -work $(LIB_TESTBENCH) $(list);)
+	$(foreach list, $(src_tb_vhd), $(vcom) -work $(LIB_TB_TOP) $(list);)
 # ===========================
 
 # == COMPILES GENERIC V FILES ==
@@ -227,7 +224,7 @@ compile_generic_tb_v_files :
 # == COMPILES TB V FILES ==
 compile_tb_v_files :
 	cd $(WORK_DIR); \
-	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TESTBENCH) $(list);)
+	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_TOP) $(list);)
 # =========================
 
 # == COMPILE TESTBENCH ==
@@ -242,7 +239,7 @@ compile_all : clean libs compile_design compile_testbench
 # == RUN TEST ==
 run_test :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(TB_LIB_TOP).tb_top $(VSIM_G_ARGS)$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(LIB_TB_TOP).tb_top $(VSIM_G_ARGS)$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============
 
 
