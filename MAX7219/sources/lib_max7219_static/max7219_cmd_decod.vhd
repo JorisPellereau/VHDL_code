@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-09-26
+-- Last update: 2020-12-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -57,10 +57,6 @@ entity max7219_cmd_decod is
     o_max7219_if_en_load : out std_logic;
     o_max7219_if_data    : out std_logic_vector(15 downto 0));
 
-  -- o_max7219_if_load : out std_logic;   -- MAX7219 LOAD
-  -- o_max7219_if_data : out std_logic;   -- MAX7219 DATA
-  -- o_max7219_if_clk  : out std_logic);  -- MAX7219 CLK
-
 end entity max7219_cmd_decod;
 
 architecture behv of max7219_cmd_decod is
@@ -92,14 +88,6 @@ architecture behv of max7219_cmd_decod is
   end component tdpram_sclk;
 
   -- INTERNAL SIGNALS
-  signal s_start        : std_logic;
-  signal s_en_load      : std_logic;
-  signal s_data         : std_logic_vector(15 downto 0);
-  signal s_done         : std_logic;
-  signal s_max7219_load : std_logic;
-  signal s_max7219_clk  : std_logic;
-  signal s_max7219_data : std_logic;
-
   signal s_me_decod    : std_logic;
   signal s_we_decod    : std_logic;
   signal s_addr_decod  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
@@ -158,27 +146,5 @@ begin  -- architecture behv
       o_data    => o_max7219_if_data,
       i_done    => i_max7219_if_done);
 
-  -- MAX7219 I/F
-  -- max7219_if_inst_0 : max7219_if
-  --   generic map (
-  --     G_MAX_HALF_PERIOD => G_MAX7219_IF_MAX_HALF_PERIOD,
-  --     G_LOAD_DURATION   => G_MAX7219_LOAD_DUR
-  --     )
-  --   port map (
-  --     clk   => clk,
-  --     rst_n => rst_n,
-
-  --     -- Input commands
-  --     i_start   => s_start,
-  --     i_en_load => s_en_load,
-  --     i_data    => s_data,
-
-  --     -- MAX7219 I/F
-  --     o_max7219_load => s_max7219_load,
-  --     o_max7219_data => s_max7219_data,
-  --     o_max7219_clk  => s_max7219_clk,
-
-  --     -- Transaction Done
-  --     o_done => s_done);
 
 end architecture behv;

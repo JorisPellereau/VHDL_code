@@ -202,6 +202,8 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 # == TB SETUP & Internal modules ==
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/testbench_setup.sv
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/clk_gen.sv
+src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_emul.sv
+src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_matrix_emul.sv
 # =================================
 
 # == TB TOP ==

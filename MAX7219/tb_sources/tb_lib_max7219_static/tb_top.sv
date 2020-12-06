@@ -226,8 +226,9 @@ module tb_top
    // ========================
 
 
+   
 
-   // MAX7219 IF INST
+   // == MAX7219 IF INST ==
    max7219_if #(
 		.G_MAX_HALF_PERIOD (4),
 		.G_LOAD_DURATION   (4)
@@ -246,6 +247,22 @@ module tb_top
 		   .o_done          (s_max7219_if_done)
    );
    
+   // =======================
+
+   // == MAX7219 MATRIX EMUL ==
+   max7219_matrix_emul #(
+                         .G_MATRIX_NB  (2),
+                         .G_VERBOSE    (8'hFF)
+    )
+    i_max7219_matrix_emul_0
+    (
+                          .clk(clk),
+                          .rst_n(rst_n),
+                          .i_max7219_clk   (s_max7219_clk),
+                          .i_max7219_din   (s_max7219_data),
+                          .i_max7219_load  (s_max7219_load)
+    );
+   // =========================
    
 
 
