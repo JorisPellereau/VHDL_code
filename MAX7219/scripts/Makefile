@@ -121,8 +121,8 @@ all:
 	@echo "=========================="
 	@echo ""
 	@echo "== RUN TESTS =="
-	@echo "- Run test :"
-	@echo "make run_test TEST=[TEST_NAME]"
+	@echo "- Run test MAX7219_STATIC :"
+	@echo "make run_tb_max7219_static TEST=[TEST_NAME]"
 	@echo "==============="
 	@echo ""
 	@echo "LIB_LIST : $(LIB_LIST)"
@@ -160,11 +160,11 @@ clean:
 prepare_libs:
 	cd $(WORK_DIR); \
 	$(foreach list, $(LIB_LIST),$(vlib) ./$(list);) \
-	#$(vlib) $(LIB_TB_TOP);
+	$(vlib) $(LIB_TB_TOP);
 
 create_libs:
 	cd $(WORK_DIR); \
-	$(foreach list, $(LIB_LIST),$(vmap) $(LIB_TB_TOP) ./$(list);) \
+	$(foreach list, $(LIB_LIST),$(vmap) $(list) $(LIB_TB_TOP);) \
 
 libs:  prepare_libs create_libs
 #===============================
@@ -176,6 +176,7 @@ src_vhd_lib_max7219+=$(SRC_DIR)/pkg_max7219.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/max7219_if.vhd
 # ==========================
 
 
@@ -256,7 +257,9 @@ compile_all : clean libs compile_design compile_testbench
 # == RUN TEST ==
 run_tb_max7219_static :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(LIB_TB_TOP).tb_top $(VSIM_G_ARGS)scn_lib_max7219_static/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_static/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+
+
 # ==============
 
 

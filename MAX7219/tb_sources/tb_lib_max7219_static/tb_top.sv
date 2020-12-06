@@ -16,7 +16,7 @@
 `timescale 1ps/1ps
 
 
-`include "/home/jorisp/GitHub/VHDL_code/Makefile/tb_sources/testbench_setup.sv"
+`include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_static/testbench_setup.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
@@ -37,6 +37,30 @@ module tb_top
    
    wire clk;
    wire rst_n;
+
+   wire s_en;
+   wire s_me;
+   wire s_we;
+   wire [7:0] s_addr;
+   wire [15:0] s_wdata;
+   wire [15:0] s_rdata;
+   wire [7:0]  s_start_ptr;   
+   wire [7:0]  s_last_ptr;
+   
+   wire      s_ptr_val;
+   wire      s_loop;
+   wire      s_ptr_equality;
+
+   wire      s_max7219_if_done;
+   wire      s_max7219_if_start;
+   wire      s_max7219_if_en_load;
+   wire [15:0] s_max7219_if_data;
+   
+   wire        s_max7219_load;
+   wire        s_max7219_data;
+   wire        s_max7219_clk;
+   
+   
 
    // SET INJECTOR signals
    wire [31:0] i0;
@@ -88,39 +112,51 @@ module tb_top
 
    // INIT WAIT EVENT ALIAS
    assign s_wait_event_if.wait_alias[0] = "RST_N";
-   assign s_wait_event_if.wait_alias[1] = "O1";
+   assign s_wait_event_if.wait_alias[1] = "CLK";
    assign s_wait_event_if.wait_alias[2] = "O2";
    assign s_wait_event_if.wait_alias[3] = "O3";
    assign s_wait_event_if.wait_alias[4] = "O4";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
-   assign s_wait_event_if.wait_signals[1] = 1'b0;
+   assign s_wait_event_if.wait_signals[1] = clk;
    assign s_wait_event_if.wait_signals[2] = 1'b0;
    assign s_wait_event_if.wait_signals[3] = 1'b0;
    assign s_wait_event_if.wait_signals[4] = 1'b0;
 
    // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0] = "I0";
-   assign s_set_injector_if.set_alias[1] = "I1";
-   assign s_set_injector_if.set_alias[2] = "I2";
-   assign s_set_injector_if.set_alias[3] = "I3";
-   assign s_set_injector_if.set_alias[4] = "I4";
+   assign s_set_injector_if.set_alias[0] = "ME";
+   assign s_set_injector_if.set_alias[1] = "WE";
+   assign s_set_injector_if.set_alias[2] = "ADDR";
+   assign s_set_injector_if.set_alias[3] = "WDATA";
+   assign s_set_injector_if.set_alias[4] = "START_PTR";
+   assign s_set_injector_if.set_alias[5] = "LAST_PTR";
+   assign s_set_injector_if.set_alias[6] = "PTR_VAL";
+   assign s_set_injector_if.set_alias[7] = "LOOP";
+   assign s_set_injector_if.set_alias[8] = "EN";
    
    // SET SET_INJECTOR SIGNALS
-   assign i0 = s_set_injector_if.set_signals_synch[0];
-   assign i1 = s_set_injector_if.set_signals_synch[1];
-   assign i2 = s_set_injector_if.set_signals_synch[2];
-   assign i3 = s_set_injector_if.set_signals_synch[3];
-   assign i4 = s_set_injector_if.set_signals_synch[4];
-
+   assign s_me        = s_set_injector_if.set_signals_synch[0];
+   assign s_we        = s_set_injector_if.set_signals_synch[1];
+   assign s_addr      = s_set_injector_if.set_signals_synch[2];
+   assign s_wdata     = s_set_injector_if.set_signals_synch[3];
+   assign s_start_ptr = s_set_injector_if.set_signals_synch[4];
+   assign s_last_ptr  = s_set_injector_if.set_signals_synch[5];
+   assign s_ptr_val   = s_set_injector_if.set_signals_synch[6];
+   assign s_loop      = s_set_injector_if.set_signals_synch[7];
+   assign s_en        = s_set_injector_if.set_signals_synch[8];
+   
    // SET SET_INJECTOR INITIAL VALUES
-   assign s_set_injector_if.set_signals_asynch_init_value[0] = 32'hAAAAAAAA;
-   assign s_set_injector_if.set_signals_asynch_init_value[1] = 32'h22222222;
-   assign s_set_injector_if.set_signals_asynch_init_value[2] = 32'h55555555;
-   assign s_set_injector_if.set_signals_asynch_init_value[3] = 32'hZZZZZZZZ;
-   assign s_set_injector_if.set_signals_asynch_init_value[4] = 32'hFFFFFFFF;
-
+   assign s_set_injector_if.set_signals_asynch_init_value[0] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[1] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[2] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[3] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[4] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[5] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[6] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[7] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[8] = 0;
+   
    // INIT CHECK LEVEL ALIAS
    assign s_check_level_if.check_alias[0] = "TOTO0";
    assign s_check_level_if.check_alias[1] = "TOTO1";
@@ -182,14 +218,35 @@ module tb_top
                         s_check_level_if);
    
    
-   initial begin : TB_SEQUENCER
+   initial begin// : TB_SEQUENCER
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
-   end : TB_SEQUENCER
+   end// : TB_SEQUENCER
    
    // ========================
 
 
+
+   // MAX7219 IF INST
+   max7219_if #(
+		.G_MAX_HALF_PERIOD (4),
+		.G_LOAD_DURATION   (4)
+   )
+   i_max7219_if_0 (
+		   .clk    (clk),
+		   .rst_n  (rst_n),
+
+		   .i_start    (s_max7219_if_start),
+		   .i_en_load  (s_max7219_if_en_load),
+		   .i_data     (s_max7219_if_data),
+
+		   .o_max7219_load  (s_max7219_load),
+		   .o_max7219_data  (s_max7219_data),
+		   .o_max7219_clk   (s_max7219_clk),
+		   .o_done          (s_max7219_if_done)
+   );
+   
+   
 
 
 
@@ -200,26 +257,26 @@ module tb_top
 		       .G_DECOD_MAX_CNT_32B  (100)
    )
    i_dut (
-	  .clk   (),
-	  .rst_n (),
-	  .i_en  (),
+	  .clk   (clk),
+	  .rst_n (rst_n),
+	  .i_en  (s_en),
 
-	  .i_me     (),
-	  .i_we     (),
-	  .i_addr   (),
-	  .i_wdata  (),
-	  .o_rdata  (),
+	  .i_me     (s_me),
+	  .i_we     (s_we),
+	  .i_addr   (s_addr),
+	  .i_wdata  (s_wdata),
+	  .o_rdata  (s_rdata),
 
-	  .i_start_ptr     (),
-	  .i_last_ptr      (),
-	  .i_ptrval        (),
-	  .i_loop          (),
-	  .o_ptr_equality  (),
+	  .i_start_ptr     (s_start_ptr),
+	  .i_last_ptr      (s_last_ptr),
+	  .i_ptr_val       (s_ptr_val),
+	  .i_loop          (s_loop),
+	  .o_ptr_equality  (s_ptr_equality),
 
-	  .i_max7219_if_done    (),
-	  .o_max7219_if_start   (),
-	  .o_max7219_if_en_load (),
-	  .o_max7219_if_data    ()
+	  .i_max7219_if_done    (s_max7219_if_done),
+	  .o_max7219_if_start   (s_max7219_if_start),
+	  .o_max7219_if_en_load (s_max7219_if_en_load),
+	  .o_max7219_if_data    (s_max7219_if_data)
    );
    
    // ==============
