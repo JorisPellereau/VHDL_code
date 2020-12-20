@@ -60,6 +60,8 @@ module tb_top
    wire        s_max7219_data;
    wire        s_max7219_clk;
    
+
+   wire [7:0]  s_display_reg_matrix_n;
    
 
    // SET INJECTOR signals
@@ -125,15 +127,17 @@ module tb_top
    assign s_wait_event_if.wait_signals[4] = 1'b0;
 
    // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0] = "ME";
-   assign s_set_injector_if.set_alias[1] = "WE";
-   assign s_set_injector_if.set_alias[2] = "ADDR";
-   assign s_set_injector_if.set_alias[3] = "WDATA";
-   assign s_set_injector_if.set_alias[4] = "START_PTR";
-   assign s_set_injector_if.set_alias[5] = "LAST_PTR";
-   assign s_set_injector_if.set_alias[6] = "PTR_VAL";
-   assign s_set_injector_if.set_alias[7] = "LOOP";
-   assign s_set_injector_if.set_alias[8] = "EN";
+   assign s_set_injector_if.set_alias[0]  = "ME";
+   assign s_set_injector_if.set_alias[1]  = "WE";
+   assign s_set_injector_if.set_alias[2]  = "ADDR";
+   assign s_set_injector_if.set_alias[3]  = "WDATA";
+   assign s_set_injector_if.set_alias[4]  = "START_PTR";
+   assign s_set_injector_if.set_alias[5]  = "LAST_PTR";
+   assign s_set_injector_if.set_alias[6]  = "PTR_VAL";
+   assign s_set_injector_if.set_alias[7]  = "LOOP";
+   assign s_set_injector_if.set_alias[8]  = "EN";
+   assign s_set_injector_if.set_alias[9]  = "DISPLAY_REG_MATRIX_N";
+   assign s_set_injector_if.set_alias[10] = "DISPLAY_SCREEN_MATRIX";
    
    // SET SET_INJECTOR SIGNALS
    assign s_me        = s_set_injector_if.set_signals_synch[0];
@@ -146,16 +150,21 @@ module tb_top
    assign s_loop      = s_set_injector_if.set_signals_synch[7];
    assign s_en        = s_set_injector_if.set_signals_synch[8];
    
+   assign s_display_reg_matrix_n  = s_set_injector_if.set_signals_synch[9];
+   assign s_display_screen_matrix = s_set_injector_if.set_signals_synch[10];
+   
    // SET SET_INJECTOR INITIAL VALUES
-   assign s_set_injector_if.set_signals_asynch_init_value[0] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[1] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[2] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[3] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[4] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[5] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[6] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[7] = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[8] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[4]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[5]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[6]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[7]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[8]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[9]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[10] = 0;
    
    // INIT CHECK LEVEL ALIAS
    assign s_check_level_if.check_alias[0] = "TOTO0";
@@ -250,17 +259,21 @@ module tb_top
    // =======================
 
    // == MAX7219 MATRIX EMUL ==
-   max7219_matrix_emul #(
-                         .G_MATRIX_NB  (2),
-                         .G_VERBOSE    (8'hFF)
+   max7219_checker_wrapper #(
+                         .G_NB_MATRIX  (8)
     )
-    i_max7219_matrix_emul_0
+    i_max7219_checker_wrapper_0
     (
-                          .clk(clk),
-                          .rst_n(rst_n),
+                          .clk  (clk),
+                          .rst_n  (rst_n),
+     
                           .i_max7219_clk   (s_max7219_clk),
                           .i_max7219_din   (s_max7219_data),
-                          .i_max7219_load  (s_max7219_load)
+                          .i_max7219_load  (s_max7219_load),
+     
+                          .i_display_reg_matrix_n   (s_display_reg_matrix_n),
+                          .i_display_screen_matrix  (s_display_screen_matrix)
+     
     );
    // =========================
    
