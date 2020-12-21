@@ -115,14 +115,14 @@ module tb_top
    // INIT WAIT EVENT ALIAS
    assign s_wait_event_if.wait_alias[0] = "RST_N";
    assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "O2";
+   assign s_wait_event_if.wait_alias[2] = "PTR_EQUALITY";
    assign s_wait_event_if.wait_alias[3] = "O3";
    assign s_wait_event_if.wait_alias[4] = "O4";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
-   assign s_wait_event_if.wait_signals[2] = 1'b0;
+   assign s_wait_event_if.wait_signals[2] = s_ptr_equality;
    assign s_wait_event_if.wait_signals[3] = 1'b0;
    assign s_wait_event_if.wait_signals[4] = 1'b0;
 
