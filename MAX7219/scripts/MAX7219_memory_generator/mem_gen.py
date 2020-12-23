@@ -124,7 +124,6 @@ class window(QtWidgets.QDialog):
         self.digit_2_matrix_n = []
         self.digit_1_matrix_n = []
         self.digit_0_matrix_n = []
-        digit_tmp        = ""
         
         # Creates Array
         for i in range (0, self.matrix_nb):
@@ -147,34 +146,27 @@ class window(QtWidgets.QDialog):
                 
         # == Fill Matrix af DIGITn Registers
         for j in range (0, self.matrix_line_nb):
-            for i in range(0, 8*self.matrix_n):
-                if(self.grid[j][i] == False):
-                    digit_tmp = "0"
-                else:
-                    digit_tmp = "1"
-
-                #if i == i*8 :                
-                #    self.digit_7_matrix_n[i*8] = self.digit_7_matrix_n[k] + digit_tmp
-                #elif i == i*8 + 1:
-                #    self.digit_6_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 2:
-                #    self.digit_5_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 3:
-                #    self.digit_4_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 4:
-                #    self.digit_3_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 5:
-                #    self.digit_2_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 6:
-                #    self.digit_1_matrix_n.append(digit_tmp)
-                #elif i == i*8 + 7:
-                #    self.digit_0_matrix_n.append(digit_tmp)
-
-            digit_tmp        = ""
+            for i in range(0, self.matrix_nb):
+                self.digit_7_matrix_n[i] = self.digit_7_matrix_n[i] + ("1" if self.grid[j][i*8] else "0")
+                self.digit_6_matrix_n[i] = self.digit_6_matrix_n[i] + ("1" if self.grid[j][i*8 + 1] else "0")
+                self.digit_5_matrix_n[i] = self.digit_5_matrix_n[i] + ("1" if self.grid[j][i*8 + 2] else "0")
+                self.digit_4_matrix_n[i] = self.digit_4_matrix_n[i] + ("1" if self.grid[j][i*8 + 3] else "0")
+                self.digit_3_matrix_n[i] = self.digit_3_matrix_n[i] + ("1" if self.grid[j][i*8 + 4] else "0")
+                self.digit_2_matrix_n[i] = self.digit_2_matrix_n[i] + ("1" if self.grid[j][i*8 + 5] else "0")
+                self.digit_1_matrix_n[i] = self.digit_1_matrix_n[i] + ("1" if self.grid[j][i*8 + 6] else "0")
+                self.digit_0_matrix_n[i] = self.digit_0_matrix_n[i] + ("1" if self.grid[j][i*8 + 7] else "0")
+                
 
         for i in range (0, self.matrix_nb):
             print(self.digit_7_matrix_n[i])
-        #print(self.field_decod_mode.text())
+            print(self.digit_6_matrix_n[i])
+            print(self.digit_5_matrix_n[i])
+            print(self.digit_4_matrix_n[i])
+            print(self.digit_3_matrix_n[i])
+            print(self.digit_2_matrix_n[i])
+            print(self.digit_1_matrix_n[i])
+            print(self.digit_0_matrix_n[i])
+            
         self.write_file()
 
 
@@ -226,9 +218,59 @@ class window(QtWidgets.QDialog):
             # Write Digit 0
             elif i >= 5*self.matrix_nb and i < 6*self.matrix_nb :
                 if i == 6*self.matrix_nb - 1 :
-                    wdata[i] = "11" + "00" #self.digit_0_matrix_n[
+                    wdata[i] = "11" + format(int( (self.digit_0_matrix_n[self.matrix_nb - 1 - (i - 5*self.matrix_nb)]), 2), '02x')
                 else:
-                    wdata[i] = "01" + "00"
+                    wdata[i] = "01" + format(int( (self.digit_0_matrix_n[self.matrix_nb - 1 - (i - 5*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 1
+            elif i >= 6*self.matrix_nb and i < 7*self.matrix_nb :
+                if i == 7*self.matrix_nb - 1 :
+                    wdata[i] = "12" + format(int( (self.digit_1_matrix_n[self.matrix_nb - 1 - (i - 6*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "02" + format(int( (self.digit_1_matrix_n[self.matrix_nb - 1 - (i - 6*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 2
+            elif i >= 7*self.matrix_nb and i < 8*self.matrix_nb :
+                if i == 8*self.matrix_nb - 1 :
+                    wdata[i] = "13" + format(int( (self.digit_2_matrix_n[self.matrix_nb - 1 - (i - 7*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "03" + format(int( (self.digit_2_matrix_n[self.matrix_nb - 1 - (i - 7*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 3
+            elif i >= 8*self.matrix_nb and i < 9*self.matrix_nb :
+                if i == 9*self.matrix_nb - 1 :
+                    wdata[i] = "14" + format(int( (self.digit_3_matrix_n[self.matrix_nb - 1 - (i - 8*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "04" + format(int( (self.digit_3_matrix_n[self.matrix_nb - 1 - (i - 8*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 4
+            elif i >= 9*self.matrix_nb and i < 10*self.matrix_nb :
+                if i == 10*self.matrix_nb - 1 :
+                    wdata[i] = "15" + format(int( (self.digit_4_matrix_n[self.matrix_nb - 1 - (i - 9*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "05" + format(int( (self.digit_4_matrix_n[self.matrix_nb - 1 - (i - 9*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 5
+            elif i >= 10*self.matrix_nb and i < 11*self.matrix_nb :
+                if i == 11*self.matrix_nb - 1 :
+                    wdata[i] = "16" + format(int( (self.digit_5_matrix_n[self.matrix_nb - 1 - (i - 10*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "06" + format(int( (self.digit_5_matrix_n[self.matrix_nb - 1 - (i - 10*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 6
+            elif i >= 11*self.matrix_nb and i < 12*self.matrix_nb :
+                if i == 12*self.matrix_nb - 1 :
+                    wdata[i] = "17" + format(int( (self.digit_6_matrix_n[self.matrix_nb - 1 - (i - 11*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "07" + format(int( (self.digit_6_matrix_n[self.matrix_nb - 1 - (i - 11*self.matrix_nb)]), 2), '02x')
+
+            # Write Digit 7
+            elif i >= 12*self.matrix_nb and i < 13*self.matrix_nb :
+                if i == 13*self.matrix_nb - 1 :
+                    wdata[i] = "18" + format(int( (self.digit_7_matrix_n[self.matrix_nb - 1 - (i - 12*self.matrix_nb)]), 2), '02x')
+                else:
+                    wdata[i] = "08" + format(int( (self.digit_7_matrix_n[self.matrix_nb - 1 - (i - 12*self.matrix_nb)]), 2), '02x')
+                    
             
             # =========================================
         # =============================
@@ -240,7 +282,7 @@ class window(QtWidgets.QDialog):
         f.writelines("// instance=" + self.field_instance_path.text() + "\n")
         f.writelines("// format=mti addressradix=d dataradix=h version=1.0 wordsperline=1\n")
         for i in range(0, int(self.field_memory_size.text())):
-            # /!\ : Ajout des espaces pas bien gerer
+            # /!\ : Ajout des espaces pas bien gere
             if len(str(i)) == 1 :
                 f.writelines("  " + str(i) + ": " + wdata[i] + "\n")
             elif len(str(i)) == 2 :
