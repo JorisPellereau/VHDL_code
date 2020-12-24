@@ -6,8 +6,11 @@
 # Version : 1.0
 #
 #
+# Example 1 : python mem_gen.py 1
+#            - Display a window for 1 Matrix configuration via Checkboxes
 #
-#
+# Example 2 : python mem_gen.py 8
+#            - Display a window for 8 Matrix configuration via Checkboxes#
 #
 
 import sys
@@ -22,7 +25,10 @@ class window(QtWidgets.QDialog):
 
         # == Window Config. ==
         self.matrix_line_nb = 8
-        self.matrix_nb      = int(sys.argv[1])
+        if int(sys.argv[1]) < 1 or int(sys.argv[1]) > 8 :
+            sys.exit("ARGV ERROR - argv[1] must be between [1:8]")
+        else:
+            self.matrix_nb      = int(sys.argv[1])
         self.grid           = np.zeros([self.matrix_line_nb,8*self.matrix_nb], dtype=bool)
         self.grid_layout    = QtWidgets.QGridLayout()
         self.setLayout(self.grid_layout)
@@ -101,9 +107,15 @@ class window(QtWidgets.QDialog):
         
         # ==========================================
 
+        # == Bouton Inversion CheckBoxes Matrix ==
+        self.__boutonInvCheckbox = QtWidgets.QPushButton("Inverser CheckBox")
+        self.grid_layout.addWidget(self.__boutonInvCheckbox, 17, 8*self.matrix_nb)
+        self.__boutonInvCheckbox.clicked.connect(self.inv_checkbox)
+        # =============================
+
         # == Set bouton generer ==
         self.__boutonGenerer = QtWidgets.QPushButton("Generer")
-        self.grid_layout.addWidget(self.__boutonGenerer, 17, 8*self.matrix_nb)
+        self.grid_layout.addWidget(self.__boutonGenerer, 18, 8*self.matrix_nb)
         self.__boutonGenerer.clicked.connect(self.generer_mem)
         # ========================
 
@@ -113,6 +125,32 @@ class window(QtWidgets.QDialog):
 
         self.setWindowTitle("Memory Generator")
 
+
+    # Function : GetCheckboxes states
+    def get_checkbox_states(self):
+        for j in range(self.matrix_line_nb):
+            for i in range(8*self.matrix_nb):
+                item = self.grid_layout.itemAtPosition(j,i)
+                self.widget = item.widget()
+                self.grid[j][i] = self.widget.isChecked()
+
+                
+    # Function : Inversion de l'etat des checkboxes
+    def inv_checkbox(self):
+        for j in range(self.matrix_line_nb):
+            for i in range(8*self.matrix_nb):
+                item = self.grid_layout.itemAtPosition(j,i)
+                widget = item.widget()
+                self.grid[j][i] = widget.isChecked()
+
+                if self.grid[j][i] == True :
+                    widget.setChecked(False)
+                else:
+                    widget.setChecked(True)
+
+
+        
+    # Generation of Memory file Function
     def generer_mem(self):
         #print("Generer Mem fctn")
 
@@ -137,13 +175,8 @@ class window(QtWidgets.QDialog):
              self.digit_0_matrix_n.append("")
         
         # == Save in self.grid the state of checkboxes
-        for j in range(self.matrix_line_nb):
-            for i in range(8*self.matrix_nb):
-                item = self.grid_layout.itemAtPosition(j,i)
-                widget = item.widget()
-                self.grid[j][i] = widget.isChecked()
-
-                
+        self.get_checkbox_states()
+                     
         # == Fill Matrix af DIGITn Registers
         for j in range (0, self.matrix_line_nb):
             for i in range(0, self.matrix_nb):
