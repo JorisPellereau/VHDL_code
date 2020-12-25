@@ -1,0 +1,2 @@
+Installer : pip install PySide2
+pip instal numpy

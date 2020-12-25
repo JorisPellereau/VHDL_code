@@ -1,0 +1,77 @@
+//
+// Scenario MAX_STATIC_03
+// Test of MAX7219 CMD DECOD Block
+//
+//
+// Aim of test : Test of loop Features - RAM set by modelsim Command
+//
+--
+
+
+
+// == Load RAM with a defined File ==
+MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_0.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+
+
+WTR RST_N
+WAIT 100 ns
+
+// ENABLE Function
+
+SET EN 1
+SET LOOP 1
+
+// == Init Memory with MAX7219 Configuration for 8 Matrix ==
+// Done via Do file
+
+
+
+// == SET START and STOP PTR ==
+
+SET START_PTR 0
+SET LAST_PTR 0x68
+
+WTRS CLK
+SET PTR_VAL 1
+WTRS CLK
+SET PTR_VAL 0
+
+// ============================
+
+
+// == Wait For PTR_EQUALIT twice - Display 2 times the same pattern
+
+WTR PTR_EQUALITY 1 ms
+
+
+SET DISPLAY_SCREEN_MATRIX 1
+WAIT 1 us
+
+SET DISPLAY_SCREEN_MATRIX 0
+
+
+WTR PTR_EQUALITY 1 ms
+
+
+SET DISPLAY_SCREEN_MATRIX 1
+WAIT 1 us
+
+SET DISPLAY_SCREEN_MATRIX 0
+
+WAIT 10 us
+
+
+// Set Loop to 0 and Check if patternl is displayed one more time and then stoppped
+SET LOOP 0
+
+WTR PTR_EQUALITY 1 ms
+
+
+SET DISPLAY_SCREEN_MATRIX 1
+WAIT 1 us
+
+SET DISPLAY_SCREEN_MATRIX 0
+
+
+
+END_TEST

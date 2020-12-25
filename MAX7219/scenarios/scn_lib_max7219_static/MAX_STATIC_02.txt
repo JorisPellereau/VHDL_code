@@ -1,0 +1,111 @@
+//
+// Scenario MAX_STATIC_02
+// Test of MAX7219 CMD DECOD Block
+//
+//
+// Aim of test : Test of internal counters (Counter set by Generic and set by RAM Data)
+//
+--
+
+
+WTR RST_N
+WAIT 100 ns
+
+
+// ENABLE Function
+
+SET EN 1
+
+
+// INIT DECODE MODE
+
+SET ME 1
+SET WE 1
+
+WTFS CLK
+
+SET ADDR 0
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x001
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x002
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x003
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x004
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x005
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x006
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x007
+SET WDATA 0x1900
+
+WTFS CLK
+
+
+// Set A Wait command of 0xFF clock Period
+SET ADDR 0x008
+SET WDATA 0x20FF
+
+WTFS CLK
+
+
+SET ADDR 0x009
+SET WDATA 0x0900
+
+WTFS CLK
+
+// Set A Wait command of G_DECOD_MAX_CNT_32B clock Period (Defined in TestBench)
+SET ADDR 0x00A
+SET WDATA 0x40FF
+
+WTFS CLK
+
+SET ADDR 0x00B
+SET WDATA 0x1900
+
+WTFS CLK
+
+SET ME 0
+SET WE 0
+
+// ==========
+
+
+// == SET START and STOP PTR ==
+
+SET START_PTR 0
+SET LAST_PTR 0x0C
+
+WTRS CLK
+SET PTR_VAL 1
+WTRS CLK
+SET PTR_VAL 0
+
+// ============================
+
+WTR PTR_EQUALITY 1 ms
+
+END_TEST
