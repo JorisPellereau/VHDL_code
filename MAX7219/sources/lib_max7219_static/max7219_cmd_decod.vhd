@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-12-06
+-- Last update: 2020-12-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -96,6 +96,7 @@ architecture behv of max7219_cmd_decod is
 
 begin  -- architecture behv
 
+  s_wdata_decod <= (others => '0');
 
   -- TDPRAM INST
   tdpram_inst_0 : tdpram_sclk
