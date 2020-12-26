@@ -132,6 +132,9 @@ all:
 	@echo "== RUN TESTS =="
 	@echo "- Run test MAX7219_STATIC :"
 	@echo "make run_tb_max7219_static TEST=[TEST_NAME]"
+	@echo ""
+	@echo "- Run test MAX7219_SCROLLER :"
+	@echo "make run_tb_max7219_scroller TEST=[TEST_NAME]"
 	@echo "==============="
 	@echo ""
 	@echo "== RUN SYMBOLATOR =="
@@ -144,7 +147,6 @@ all:
 	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
 	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
 	@echo "SOURCE GENERIC TB V FILES : $(src_gen_tb_v)"
-
 
 
 # == PREPARE PROJECT ==
@@ -187,9 +189,16 @@ libs:  prepare_libs create_libs
 # == DESIGN VHD FILE LIST ==
 src_vhd_lib_max7219+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/pkg_max7219.vhd
+
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
+
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/pkg_max7219_scroller.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd
+
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_interface/max7219_if.vhd
 # ==========================
 
@@ -221,10 +230,16 @@ src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/MAX7219_checker/max7219_checker.sv
 src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/MAX7219_checker/max7219_checker_wrapper.sv
 src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_emul.sv
 src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_matrix_emul.sv
+
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/testbench_setup.sv
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/clk_gen.sv
+
 # =================================
 
 # == TB TOP ==
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.sv
+
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/tb_top.sv
 # ============
 
 ## ===================== ##
@@ -277,6 +292,12 @@ compile_all : clean libs compile_design compile_testbench
 run_tb_max7219_static :
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_static/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+
+
+run_tb_max7219_scroller :
+	cd $(WORK_DIR); \
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_scroller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+
 
 
 # ==============
