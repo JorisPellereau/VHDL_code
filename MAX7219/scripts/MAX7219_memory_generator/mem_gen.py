@@ -113,10 +113,14 @@ class window(QtWidgets.QDialog):
         self.__boutonInvCheckbox.clicked.connect(self.inv_checkbox)
         # =============================
 
-        # == Set bouton generer ==
+        # == Set boutons generer ==
         self.__boutonGenerer = QtWidgets.QPushButton("Generer")
         self.grid_layout.addWidget(self.__boutonGenerer, 18, 8*self.matrix_nb)
         self.__boutonGenerer.clicked.connect(self.generer_mem)
+
+        self.boutonGenCst = QtWidgets.QPushButton("Generer Constant")
+        self.grid_layout.addWidget(self.boutonGenCst, 18, 8*self.matrix_nb + 1)
+        self.boutonGenCst.clicked.connect(self.generer_cst)
         # ========================
 
         # == DEBUG ==
@@ -325,6 +329,30 @@ class window(QtWidgets.QDialog):
     
             
         f.close()
+
+    # Generation of a VHD file with a Constant wich contain the pattern of the Matrix
+    def generer_cst(self):
+        print("Generer Constant Def")
+        data_array = []
+        self.get_checkbox_states()
+        for i in range(8*self.matrix_nb):
+            data_array.append("")
+            data_array[i] = str(int(self.grid[0][i])) + str(int(self.grid[1][i])) + str(int(self.grid[2][i])) + str(int(self.grid[3][i]))            
+            data_array[i] = data_array[i] + str(int(self.grid[4][i])) + str(int(self.grid[5][i])) + str(int(self.grid[6][i])) + str(int(self.grid[7][i]))
+
+
+                
+        f = open("constant_gen.vhd", "w")
+        f.writelines("type t_cst_array is array (0 to %d) of std_logic_vector(7 downto 0);\n" %(self.matrix_nb * 8 - 1))
+        f.writelines("constant C_CST_0 : t_cst_array := (\n")
+        for i in range(0, self.matrix_nb * 8):
+            f.writelines("  %s => x\"%s\",\n" %(i , format(int(data_array[i], 2), '02x') )  )
+        f.writelines(");") 
+        f.close()
+
+    # Save the status of checkboxes in order to load a specific pattern
+    def save_state_checkboxes(self):
+        print("Save States checkboxes")
 
 
 
