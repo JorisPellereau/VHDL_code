@@ -190,7 +190,7 @@ src_vhd_lib_max7219+=$(SRC_DIR)/pkg_max7219.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/pkg_max7219_static.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_ram_decod.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
-src_vhd_lib_max7219+=$(SRC_DIR)/max7219_if.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_interface/max7219_if.vhd
 # ==========================
 
 
@@ -289,6 +289,10 @@ run_tb_max7219_static :
 
 ## Symbolator - Generate Symbole from Packages ##
 
+# Lib_max7219_interface
+I_DIR_SRC_INTERFACE=~/GitHub/VHDL_code/MAX7219/sources/lib_max7219_interface
+O_DIR_PNG_INTERFACE=~/GitHub/VHDL_code/MAX7219/docs/images/images_lib_max_7219_interface
+
 # Lib_max7219_static
 I_DIR_SRC_STATIC=~/GitHub/VHDL_code/MAX7219/sources/lib_max7219_static
 O_DIR_PNG_STATIC=~/GitHub/VHDL_code/MAX7219/docs/images/images_lib_max_7219_static
@@ -299,6 +303,7 @@ O_DIR_PNG_SCROLLER=~/GitHub/VHDL_code/MAX7219/docs/images/images_lib_max_7219_sc
 
 # Image in PNg format with transparent background
 symbolator_generate_png:
+	symbolator -i $(I_DIR_SRC_INTERFACE) -o $(O_DIR_PNG_INTERFACE) -f PNG -t
 	symbolator -i $(I_DIR_SRC_STATIC) -o $(O_DIR_PNG_STATIC) -f PNG -t
 	symbolator -i $(I_DIR_SRC_SCROLLER) -o $(O_DIR_PNG_SCROLLER) -f PNG -t
 #################################################
