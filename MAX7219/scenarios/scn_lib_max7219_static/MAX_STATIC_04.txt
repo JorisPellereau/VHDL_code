@@ -1,0 +1,68 @@
+//
+// Scenario MAX_STATIC_04
+// Test of MAX7219 CMD DECOD Block
+//
+//
+// Aim of test : Test of Enable input
+//
+--
+
+WTR RST_N
+WAIT 100 ns
+
+// DISABLE Function
+
+SET EN 0
+
+
+
+// INIT DECODE MODE
+
+SET ME 1
+SET WE 1
+
+WTFS CLK
+
+SET ADDR 0
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x001
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ADDR 0x002
+SET WDATA 0x0900
+
+WTFS CLK
+
+SET ME 0
+SET WE 0
+
+// ==========
+
+
+
+// == SET START and STOP PTR ==
+
+SET START_PTR 0
+SET LAST_PTR 0x28
+
+WTRS CLK
+SET PTR_VAL 1
+WTRS CLK
+SET PTR_VAL 0
+
+// ============================
+
+
+// == Wait for the end of the transfert and Display registers
+
+WTR PTR_EQUALITY 1 ms
+
+
+
+
+END_TEST

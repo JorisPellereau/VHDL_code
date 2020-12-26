@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-05-02
+-- Last update: 2020-12-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -99,6 +99,7 @@ begin  -- architecture behv
       s_last_ptr   <= (others => '0');
       s_update_ptr <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
+      
       if(i_ptr_val = '1' and s_ptr_equality = '1') then
         s_last_ptr   <= i_last_ptr;
         s_start_ptr  <= i_start_ptr;

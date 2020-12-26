@@ -60,9 +60,18 @@ vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 SRC_DIR=$(ROOT)/sources
 # =======================
 
+# == INIT Variables ==
+COVER=OFF
+# ====================
+
 # == VSIM ARGS ==
 VSIM_ARGS+=-novopt -t ps
 VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
+
+# Not supported on my Modelsim Licence
+ifeq ($(COVER), ON)
+	VSIM_ARGS+=-coverage
+endif
 # ===============
 
 # == DESIGN LIBRARIES ==
@@ -123,6 +132,11 @@ all:
 	@echo "== RUN TESTS =="
 	@echo "- Run test MAX7219_STATIC :"
 	@echo "make run_tb_max7219_static TEST=[TEST_NAME]"
+	@echo "==============="
+	@echo ""
+	@echo "== RUN SYMBOLATOR =="
+	@echo "- Run Symbolator in order to generate PNG files :"
+	@echo "make symbolator_generate_png"
 	@echo "==============="
 	@echo ""
 	@echo "LIB_LIST : $(LIB_LIST)"
@@ -271,3 +285,20 @@ run_tb_max7219_static :
 
 
 ##################################################
+
+
+## Symbolator - Generate Symbole from Packages ##
+
+# Lib_max7219_static
+I_DIR_SRC_STATIC=~/GitHub/VHDL_code/MAX7219/sources/lib_max7219_static
+O_DIR_PNG_STATIC=~/GitHub/VHDL_code/MAX7219/docs/images/images_lib_max_7219_static
+
+# Lib_max7219_scroller
+I_DIR_SRC_SCROLLER=~/GitHub/VHDL_code/MAX7219/sources/lib_max7219_scroller
+O_DIR_PNG_SCROLLER=~/GitHub/VHDL_code/MAX7219/docs/images/images_lib_max_7219_scroller
+
+# Image in PNg format with transparent background
+symbolator_generate_png:
+	symbolator -i $(I_DIR_SRC_STATIC) -o $(O_DIR_PNG_STATIC) -f PNG -t
+	symbolator -i $(I_DIR_SRC_SCROLLER) -o $(O_DIR_PNG_SCROLLER) -f PNG -t
+#################################################
