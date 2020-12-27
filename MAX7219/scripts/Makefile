@@ -208,7 +208,7 @@ src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_interface/max7219_if.vhd
 ## == TESTBENCH FILES == ##
 
 # == TB VHD FILES ==
-src_tb_vhd+=
+src_tb_vhd+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/load_ram_injector.vhd
 #===================
 
 

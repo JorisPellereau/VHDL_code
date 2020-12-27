@@ -38,12 +38,34 @@ module tb_top
    wire clk;
    wire rst_n;
 
-   wire s_en;
+   // Signals from SET Injector
    wire s_me;
    wire s_we;
    wire [7:0]  s_addr;
    wire [7:0]  s_wdata;
    wire [7:0]  s_rdata;
+
+   // Signals to DUT
+   wire s_me_dut;
+   wire s_we_dut;
+   wire [7:0]  s_addr_dut;
+   wire [7:0]  s_wdata_dut;
+   wire [7:0]  s_rdata_dut;
+
+   // Signals from LOAD RAM Injector
+   wire s_me_load_ram;
+   wire s_we_load_ram;
+   wire [7:0]  s_addr_load_ram;
+   wire [7:0]  s_wdata_load_ram;
+   wire [7:0]  s_rdata_load_ram;
+   wire [7:0]  s_sel_load_ram;
+
+   wire [7:0]  s_ram_start_addr_load_ram;
+   wire [7:0]  s_ram_stop_ptr_load_ram;
+   wire        s_start_load_ram;
+   wire        s_done_load_ram;   
+      
+   
    wire [7:0]  s_ram_start_ptr;   
    wire [7:0]  s_msg_length;
    wire [31:0] s_max_tempo_cnt;
@@ -66,7 +88,10 @@ module tb_top
    wire [7:0]  s_display_reg_matrix_n;
    wire        s_display_screen_matrix_checker;
    wire        s_display_screen_matrix;
-   wire        s_display_screen_sel;      
+   wire        s_display_screen_sel;  
+
+   wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
+    
    
 
    // SET INJECTOR signals
@@ -122,14 +147,14 @@ module tb_top
    assign s_wait_event_if.wait_alias[1] = "CLK";
    assign s_wait_event_if.wait_alias[2] = "BUSY";
    assign s_wait_event_if.wait_alias[3] = "MAX7219_LOAD";
-   assign s_wait_event_if.wait_alias[4] = "O4";
+   assign s_wait_event_if.wait_alias[4] = "DONE_LOAD_RAM";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
    assign s_wait_event_if.wait_signals[2] = s_busy;
    assign s_wait_event_if.wait_signals[3] = s_max7219_load;
-   assign s_wait_event_if.wait_signals[4] = 1'b0;
+   assign s_wait_event_if.wait_signals[4] = s_done_load_ram;
 
    // INIT SET ALIAS
    assign s_set_injector_if.set_alias[0]  = "ME";
@@ -142,8 +167,19 @@ module tb_top
    assign s_set_injector_if.set_alias[7]  = "MAX_TEMPO_CNT";
    assign s_set_injector_if.set_alias[8]  = "DISPLAY_REG_MATRIX_N";
    assign s_set_injector_if.set_alias[9]  = "DISPLAY_SCREEN_MATRIX";
-   
+
+   // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
    assign s_set_injector_if.set_alias[10]  = "DISPLAY_SCREEN_SEL";
+
+   // MUX : Sel SET inj or checker
+   assign s_set_injector_if.set_alias[11]  = "LOAD_RAM_SEL";
+
+   // RAM LOAD Injector Control signals
+   assign s_set_injector_if.set_alias[12]  = "START_ADDR_LOAD_RAM";
+   assign s_set_injector_if.set_alias[13]  = "STOP_ADDR_LOAD_RAM";
+   assign s_set_injector_if.set_alias[14]  = "START_LOAD_RAM";
+   assign s_set_injector_if.set_alias[15]  = "SEL_PATTERN_LOAD_RAM";
+   
    
    // SET SET_INJECTOR SIGNALS
    assign s_me                    = s_set_injector_if.set_signals_synch[0];
@@ -157,6 +193,15 @@ module tb_top
    assign s_display_reg_matrix_n  = s_set_injector_if.set_signals_synch[8];
    assign s_display_screen_matrix = s_set_injector_if.set_signals_synch[9];
    assign s_display_screen_sel    = s_set_injector_if.set_signals_synch[10];
+
+   // MAX : Sel SET inj or checker
+   assign s_load_ram_sel          = s_set_injector_if.set_signals_synch[11];
+
+   // RAM LOAD Injector Control signals
+   assign s_ram_start_addr_load_ram = s_set_injector_if.set_signals_synch[12];
+   assign s_ram_stop_ptr_load_ram   = s_set_injector_if.set_signals_synch[13];
+   assign s_start_load_ram          = s_set_injector_if.set_signals_synch[14];
+   assign s_sel_load_ram            = s_set_injector_if.set_signals_synch[15];
    
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
@@ -170,6 +215,11 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[8]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[9]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[10]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[11]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[12]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[13]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[14]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[15]  = 0;
    
    // INIT CHECK LEVEL ALIAS
    assign s_check_level_if.check_alias[0] = "BUSY";
@@ -284,8 +334,41 @@ module tb_top
    
 
    assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : s_max7219_load;
+
+
+   // RAM Load Injector
+   load_ram_injector #(
+		       .G_RAM_ADDR_WIDTH  (8),
+		       .G_RAM_DATA_WIDTH  (8),
+		       .G_SEL_WIDTH       (8)
+		       )
+   i_load_ram_injector_0 (
+			  .clk    (clk),
+			  .rst_n  (rst_n),
+
+			  .i_ram_start_addr  (s_ram_start_addr_load_ram),
+			  .i_ram_stop_addr   (s_ram_stop_ptr_load_ram),
+			  .i_sel             (s_sel_load_ram),
+			  .i_start           (s_start_load_ram),
+
+			  .o_me     (s_me_load_ram),
+			  .o_we     (s_we_load_ram),
+			  .o_addr   (s_addr_load_ram),
+			  .o_wdata  (s_wdata_load_ram),
+			  .i_rdata  (s_rdata_load_ram),
+
+			  .o_done (s_done_load_ram)
+   );
+   
    
 
+
+   assign s_me_dut    = (s_load_ram_sel == 0) ? s_me    : s_me_load_ram;
+   assign s_we_dut    = (s_load_ram_sel == 0) ? s_we    : s_we_load_ram;
+   assign s_addr_dut  = (s_load_ram_sel == 0) ? s_addr  : s_addr_load_ram;
+   assign s_wdata_dut = (s_load_ram_sel == 0) ? s_wdata : s_wdata_load_ram;
+   assign s_rdata     = s_rdata_dut;
+   
 
    // == DUT INST ==
    max7219_scroller_ctrl #(
@@ -297,11 +380,11 @@ module tb_top
 	  .clk   (clk),
 	  .rst_n (rst_n),
 
-	  .i_me     (s_me),
-	  .i_we     (s_we),
-	  .i_addr   (s_addr),
-	  .i_wdata  (s_wdata),
-	  .o_rdata  (s_rdata),
+	  .i_me     (s_me_dut),
+	  .i_we     (s_we_dut),
+	  .i_addr   (s_addr_dut),
+	  .i_wdata  (s_wdata_dut),
+	  .o_rdata  (s_rdata_dut),
 
 	  .i_ram_start_ptr     (s_ram_start_ptr),
 	  .i_msg_length        (s_msg_length),

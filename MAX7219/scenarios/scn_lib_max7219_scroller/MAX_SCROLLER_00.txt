@@ -1,9 +1,9 @@
 //
-// Scenario MAX_STATIC_04
-// Test of MAX7219 CMD DECOD Block
+// Scenario MAX_SCROLLER_00
+// Test of MAX7219 SCROLLER Controler
 //
 //
-// Aim of test : Test of Enable input
+// Aim of test : Test a simple Pattern scroller
 //
 --
 

@@ -346,7 +346,10 @@ class window(QtWidgets.QDialog):
         f.writelines("type t_cst_array is array (0 to %d) of std_logic_vector(7 downto 0);\n" %(self.matrix_nb * 8 - 1))
         f.writelines("constant C_CST_0 : t_cst_array := (\n")
         for i in range(0, self.matrix_nb * 8):
-            f.writelines("  %s => x\"%s\",\n" %(i , format(int(data_array[i], 2), '02x') )  )
+            if (i < self.matrix_nb * 8 - 1):
+                f.writelines("  %s => x\"%s\",\n" %(i , format(int(data_array[i], 2), '02x') )  )
+            else:
+                f.writelines("  %s => x\"%s\"\n" %(i , format(int(data_array[i], 2), '02x') )  )
         f.writelines(");") 
         f.close()
 
