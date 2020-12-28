@@ -1,9 +1,9 @@
 //
-// Scenario MAX_SCROLLER_01
+// Scenario MAX_SCROLLER_02
 // Test of MAX7219 SCROLLER Controler
 //
 //
-// Aim of test : Load a defined pattern via LOAD RAM Injector and check pattern generation in transcript - No Tempo
+// Aim of test : Load a defined pattern via LOAD RAM Injector and check pattern generation in transcript - Tempo Set at 0xFF
 //
 --
 
@@ -44,7 +44,7 @@ WTRS DONE_LOAD_RAM 1 ms
 
 SET RAM_START_PTR 0
 SET MSG_LENGTH 64
-SET MAX_TEMPO_CNT 0x00
+SET MAX_TEMPO_CNT 0x00000FFF
 
 WTFS CLK
 

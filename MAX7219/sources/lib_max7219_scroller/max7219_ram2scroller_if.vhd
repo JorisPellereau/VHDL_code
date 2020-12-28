@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2020-09-26
+-- Last update: 2020-12-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -81,8 +81,8 @@ architecture behv of max7219_ram2scroller_if is
   signal s_msg_length : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
   signal s_ram_addr   : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
   signal s_rdata      : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_access_cnt : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
-  signal s_max_access : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
+  signal s_access_cnt : std_logic_vector(G_RAM_DATA_WIDTH downto 0);
+  signal s_max_access : std_logic_vector(G_RAM_DATA_WIDTH downto 0);
   signal s_seg_data   : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
 
 begin  -- architecture behv
@@ -122,7 +122,11 @@ begin  -- architecture behv
         -- Only if not busy
         if(s_busy = '0') then
           s_msg_length <= i_msg_length;
+          --if(i_msg_length /= x"FF") then
           s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length);
+          --else
+          --s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length) - 1;
+          --end if;
           s_inputs_val <= '1';
         end if;
       else
@@ -203,24 +207,32 @@ begin  -- architecture behv
           s_access_cnt_done <= '1';
         end if;
 
-      else
+      elsif(s_access_cnt_done = '1' and s_busy = '0') then
         s_access_cnt_done <= '0';
+        s_access_cnt      <= (others => '0');
       end if;
 
-      if(s_ram_sel = '1') then
-        if(s_rdata_valid = '1') then
-          s_seg_data       <= s_rdata;
-          s_seg_data_valid <= s_rdata_valid;
+      if(s_access_cnt_done = '0') then
+        if(s_ram_sel = '1') then
+          if(s_rdata_valid = '1') then
+            s_seg_data       <= s_rdata;
+            s_seg_data_valid <= s_rdata_valid;
+          else
+            s_seg_data_valid <= '0';
+          end if;
         else
-          s_seg_data_valid <= '0';
+          if(s_scroller_if_busy_f_edge_p2 = '1') then
+            s_seg_data       <= (others => '0');
+            s_seg_data_valid <= '1';
+          else
+            s_seg_data_valid <= '0';
+          end if;
         end if;
+
       else
-        if(s_scroller_if_busy_f_edge_p2 = '1') then
-          s_seg_data       <= (others => '0');
-          s_seg_data_valid <= '1';
-        else
-          s_seg_data_valid <= '0';
-        end if;
+        s_seg_data       <= (others => '0');
+        s_seg_data_valid <= '0';
+
       end if;
 
     end if;
@@ -232,11 +244,19 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_ram_sel <= '1';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      if(s_access_cnt > unsigned(s_msg_length) - 1) then
-        s_ram_sel <= '0';
+
+      if(s_access_cnt_done = '0') then
+        if(s_access_cnt > unsigned('0' & s_msg_length) - 1) then
+          s_ram_sel <= '0';
+        else
+        --s_ram_sel <= '0';
+        end if;
+
       else
-      --s_ram_sel <= '0';
+        s_ram_sel <= '1';
       end if;
+
+
     end if;
   end process p_ram_sel;
 
