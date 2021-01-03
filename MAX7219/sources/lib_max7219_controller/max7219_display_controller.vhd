@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2020-10-04
+-- Last update: 2020-12-31
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,6 +25,7 @@ use ieee.std_logic_arith.all;
 
 library lib_max7219;
 use lib_max7219.pkg_max7219.all;
+use lib_max7219.pkg_max7219_controller.all;
 
 entity max7219_display_controller is
   generic (
@@ -50,12 +51,13 @@ entity max7219_display_controller is
     i_static_dyn : in std_logic;        -- STATIC or DYNNAMIC Display sel
 
     -- MATRIX CONFIG.
+    i_display_test   : in  std_logic;   -- DISPLAY TEST Config
     i_decod_mode     : in  std_logic_vector(7 downto 0);  -- DECOD MODE
     i_intensity      : in  std_logic_vector(7 downto 0);  -- INTENSITY
     i_scan_limit     : in  std_logic_vector(7 downto 0);  -- SCAN LIMIT
     i_shutdown       : in  std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
-    i_new_config_val : in  std_logic;                     -- CONFIG. VALID
-    o_config_done    : out std_logic;                     -- CONFIG. DONE
+    i_new_config_val : in  std_logic;   -- CONFIG. VALID
+    o_config_done    : out std_logic;   -- CONFIG. DONE
 
     -- STATIC DISPLAY I/O    
     i_en_static : in std_logic;
