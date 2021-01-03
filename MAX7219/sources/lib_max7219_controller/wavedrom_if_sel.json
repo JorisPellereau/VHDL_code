@@ -1,0 +1,13 @@
+{signal: [
+  {name: 'clk',                     wave: 'p........................' },
+  {name: 'i_init_config',             wave: '0..1..............................' , data: ['head', 'body', 'tail', 'data']},
+  {},
+  {name: 'i_static_dyn',              wave: '0.................', data: ['0', '1', '2', 'data']},
+  {name: 'i_config_done',              wave: '0............1..........', data: ['0', '1', '2', 'data']},
+  {},
+  {name: 'i_start_scroll',              wave: '0...............10.........', data: ['0', '1', '2', 'data']},
+  {name: 'i_config_done',              wave: '0............1..........', data: ['0', '1', '2', 'data']},
+  
+ 
+ 
+]}
