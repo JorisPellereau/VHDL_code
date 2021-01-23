@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2020-12-31
+-- Last update: 2021-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,7 +48,8 @@ entity max7219_display_controller is
     rst_n : in std_logic;                       -- Asynchronous clock
 
     -- SELECTION
-    i_static_dyn : in std_logic;        -- STATIC or DYNNAMIC Display sel
+    i_static_dyn  : in std_logic;       -- STATIC or DYNNAMIC Display sel
+    i_new_display : in std_logic;       -- New display
 
     -- MATRIX CONFIG.
     i_display_test   : in  std_logic;   -- DISPLAY TEST Config
@@ -135,6 +136,50 @@ architecture behv of max7219_display_controller is
   signal s_max7219_if_done    : std_logic;
 
 begin  -- architecture behv
+
+
+  -- MAX7219 DISPLAY SEQUENCER
+
+  max7219_display_sequencer_inst_0 : max7219_display_sequencer
+    generic map (
+      G_FIFO_DEPTH              => 10,
+      G_RAM_ADDR_WIDTH_STATIC   => 8,
+      G_RAM_DATA_WIDTH_STATIC   => 16,
+      G_RAM_ADDR_WIDTH_SCROLLER => 8,
+      G_RAM_DATA_WIDTH_SCROLLER => 8)
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      i_static_dyn  => i_static_dyn,
+      i_new_display => i_new_display,
+
+
+      -- Config I/F
+      i_new_config_val => i_new_config_val,
+      i_config_done    => s_config_done,
+
+
+      -- Static I/F
+      i_start_ptr => i_start_ptr_static,
+      i_last_ptr  => i_last_ptr_static,
+
+      i_ptr_equality => s_ptr_equality,
+      o_start_ptr    => open,
+      o_last_ptr     => open,
+      o_static_val   => open,
+
+      -- Scroller I/F
+      i_ram_start_ptr => i_ram_start_ptr_scroller,
+      i_msg_length    => i_msg_length_scroller,
+
+      i_busy_scroller => s_busy_scroller,
+
+      o_ram_start_ptr => open,
+      o_msg_length    => open,
+      o_start_scroll  => open
+
+      );
 
 
 

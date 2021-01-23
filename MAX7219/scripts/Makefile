@@ -204,6 +204,7 @@ src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd
 
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_display_sequencer.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd
 
@@ -242,12 +243,17 @@ src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_matrix_emul.sv
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/testbench_setup.sv
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/clk_gen.sv
 
+
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/testbench_setup.sv
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/clk_gen.sv
 # =================================
 
 # == TB TOP ==
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.sv
 
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/tb_top.sv
+
+src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/tb_top.sv
 # ============
 
 ## ===================== ##

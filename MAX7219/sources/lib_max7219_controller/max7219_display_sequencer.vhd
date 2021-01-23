@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-01-17
+-- Last update: 2021-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ entity max7219_display_sequencer is
   port (
     clk              : in std_logic;            -- Clock
     rst_n            : in std_logic;            -- Asynchronos reset
-    i_new_config_val : in std_logic;            -- New config
+    
     i_static_dyn     : in std_logic;            -- Static or Dynamic selection
     i_new_display    : in std_logic;            -- Display Static or Dyn Valid
 
@@ -131,7 +131,7 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process is
+  p_next_state_mngt : process (s_current_state) is
   begin  -- process p_next_state_mngt
 
     case s_current_state is

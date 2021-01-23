@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-03
--- Last update: 2020-10-03
+-- Last update: 2021-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -130,6 +130,52 @@ package pkg_max7219_controller is
       o_max7219_clk  : out std_logic    -- CLK
 
       );
+  end component;
+
+
+  -- DISPLAY SEQUENCER
+  component max7219_display_sequencer is
+
+    generic (
+      G_FIFO_DEPTH              : integer := 10;  -- Fifo DEPTH
+      G_RAM_ADDR_WIDTH_STATIC   : integer := 8;   -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC   : integer := 16;  -- RAM DATA WIDTH
+      G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;   -- RAM ADDR WITH
+      G_RAM_DATA_WIDTH_SCROLLER : integer := 8);  -- RAM DATA WIDTH
+    port (
+      clk   : in std_logic;                       -- Clock
+      rst_n : in std_logic;                       -- Asynchronos reset
+
+      i_static_dyn  : in std_logic;     -- Static or Dynamic selection
+      i_new_display : in std_logic;     -- Display Static or Dyn Valid
+
+
+      -- Config I/F
+      i_new_config_val : in std_logic;  -- CONFIG. VALID
+      i_config_done    : in std_logic;  -- CONFIG. DONE
+
+
+      -- Static I/F
+      i_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+      i_last_ptr  : in std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+
+      i_ptr_equality : in  std_logic;
+      o_start_ptr    : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+      o_last_ptr     : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+      o_static_val   : out std_logic;
+
+      -- Scroller I/F
+      i_ram_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
+      i_msg_length    : in std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
+
+      i_busy_scroller : in std_logic;
+
+      o_ram_start_ptr : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
+      o_msg_length    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
+      o_start_scroll  : out std_logic
+
+      );
+
   end component;
 
 end package pkg_max7219_controller;
