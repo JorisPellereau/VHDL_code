@@ -135,6 +135,9 @@ all:
 	@echo ""
 	@echo "- Run test MAX7219_SCROLLER :"
 	@echo "make run_tb_max7219_scroller TEST=[TEST_NAME]"
+	@echo ""
+	@echo "- Run test MAX7219_CONTROLLER :"
+	@echo "make run_tb_max7219_controller TEST=[TEST_NAME]"
 	@echo "==============="
 	@echo ""
 	@echo "== RUN SYMBOLATOR =="
@@ -147,6 +150,7 @@ all:
 	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
 	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
 	@echo "SOURCE GENERIC TB V FILES : $(src_gen_tb_v)"
+
 
 
 # == PREPARE PROJECT ==
@@ -198,6 +202,10 @@ src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/pkg_max7219_scroller.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd
+
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd
 
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_interface/max7219_if.vhd
 # ==========================
@@ -297,6 +305,10 @@ run_tb_max7219_static :
 run_tb_max7219_scroller :
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_scroller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+
+run_tb_max7219_controller :
+	cd $(WORK_DIR); \
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_controller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 
 
 
