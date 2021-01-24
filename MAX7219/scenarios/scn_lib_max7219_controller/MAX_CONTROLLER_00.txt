@@ -1,0 +1,15 @@
+//
+// Scenario MAX_CONTROLLER_00
+// Test of MAX7219 Display Controler
+//
+//
+// Aim of test : Check the configuration phase
+//
+
+
+WTR RST_N
+WAIT 100 ns
+
+
+
+END_TEST

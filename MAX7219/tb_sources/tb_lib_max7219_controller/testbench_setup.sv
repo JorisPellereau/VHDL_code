@@ -23,8 +23,8 @@
 `define C_CMD_ARGS_NB 5
 
 // SET ALIAS Configuration
-`define C_SET_ALIAS_NB 16
-`define C_SET_SIZE     16
+`define C_SET_ALIAS_NB 20
+`define C_SET_SIZE     20
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration

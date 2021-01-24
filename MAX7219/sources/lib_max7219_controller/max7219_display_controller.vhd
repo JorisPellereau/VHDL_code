@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-01-23
+-- Last update: 2021-01-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -105,6 +105,15 @@ end entity max7219_display_controller;
 architecture behv of max7219_display_controller is
 
   -- INTERNAL SIGNALS
+  signal s_start_ptr_static : std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+  signal s_last_ptr_static  : std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+  signal s_ptr_val_static   : std_logic;
+  signal s_loop_static      : std_logic;
+
+  signal s_ram_start_ptr_scroller : std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
+  signal s_msg_length_scroller    : std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
+  signal s_start_scroll           : std_logic;
+  signal s_max_tempo_cnt_scroller : std_logic_vector(31 downto 0);
 
   -- MAX7219 CONFIG signals
   signal s_max7219_if_done_config    : std_logic;
@@ -118,6 +127,9 @@ architecture behv of max7219_display_controller is
   signal s_max7219_if_start_static   : std_logic;
   signal s_max7219_if_en_load_static : std_logic;
   signal s_max7219_if_data_static    : std_logic_vector(15 downto 0);
+
+  -- MAX7219 STATIC Status signals
+  signal s_ptr_equality_static : std_logic;
 
   -- MAX7219 SCROLLER CTRL signals
   signal s_busy_scroller               : std_logic;
@@ -139,7 +151,6 @@ begin  -- architecture behv
 
 
   -- MAX7219 DISPLAY SEQUENCER
-
   max7219_display_sequencer_inst_0 : max7219_display_sequencer
     generic map (
       G_FIFO_DEPTH              => 10,
@@ -164,10 +175,10 @@ begin  -- architecture behv
       i_start_ptr => i_start_ptr_static,
       i_last_ptr  => i_last_ptr_static,
 
-      i_ptr_equality => s_ptr_equality,
-      o_start_ptr    => open,
-      o_last_ptr     => open,
-      o_static_val   => open,
+      i_ptr_equality => s_ptr_equality_static,
+      o_start_ptr    => s_start_ptr_static,
+      o_last_ptr     => s_last_ptr_static,
+      o_static_val   => s_ptr_val_static,
 
       -- Scroller I/F
       i_ram_start_ptr => i_ram_start_ptr_scroller,
@@ -175,9 +186,9 @@ begin  -- architecture behv
 
       i_busy_scroller => s_busy_scroller,
 
-      o_ram_start_ptr => open,
-      o_msg_length    => open,
-      o_start_scroll  => open
+      o_ram_start_ptr => s_ram_start_ptr_scroller,
+      o_msg_length    => s_msg_length_scroller,
+      o_start_scroll  => s_start_scroll
 
       );
 
@@ -228,11 +239,11 @@ begin  -- architecture behv
       o_rdata => o_rdata_static,
 
       -- RAM INFO.
-      i_start_ptr    => i_start_ptr_static,
-      i_last_ptr     => i_last_ptr_static,
-      i_ptr_val      => i_ptr_val_static,
-      i_loop         => i_loop_static,
-      o_ptr_equality => o_ptr_equality_static,
+      i_start_ptr    => s_start_ptr_static,
+      i_last_ptr     => s_last_ptr_static,
+      i_ptr_val      => s_ptr_val_static,
+      i_loop         => s_loop_static,
+      o_ptr_equality => s_ptr_equality_static,
 
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_static,
@@ -260,10 +271,10 @@ begin  -- architecture behv
       o_rdata => o_rdata_scroller,
 
       -- RAM Commands
-      i_ram_start_ptr => i_ram_start_ptr_scroller,
-      i_msg_length    => i_msg_length_scroller,
-      i_start_scroll  => i_start_scroll,
-      i_max_tempo_cnt => i_max_tempo_cnt_scroller,
+      i_ram_start_ptr => s_ram_start_ptr_scroller,
+      i_msg_length    => s_msg_length_scroller,
+      i_start_scroll  => s_start_scroll,
+      i_max_tempo_cnt => s_max_tempo_cnt_scroller,
 
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_scroller,
@@ -278,24 +289,24 @@ begin  -- architecture behv
   -- MUX SELECTION
   -- Priority on Config
   -- !!! config ...
-  s_max7219_if_start <= s_max7219_if_start_config when s_config_done = '0' else
-                        s_max7219_if_start_static   when i_static_dyn = '0' and s_config_done = '1' else
-                        s_max7219_if_start_scroller when i_static_dyn = '1' and s_config_done = '1' else
-                        '0';
+  -- s_max7219_if_start <= s_max7219_if_start_config when s_config_done = '0' else
+  --                       s_max7219_if_start_static   when i_static_dyn = '0' and s_config_done = '1' else
+  --                       s_max7219_if_start_scroller when i_static_dyn = '1' and s_config_done = '1' else
+  --                       '0';
 
-  s_max7219_if_en_load <= s_max7219_if_en_load_config when s_config_done = '0' else
-                          s_max7219_if_en_load_static   when i_static_dyn = '0' and s_config_done = '1' else
-                          s_max7219_if_en_load_scroller when i_static_dyn = '1' and s_config_done = '1' else
-                          '0';
+  -- s_max7219_if_en_load <= s_max7219_if_en_load_config when s_config_done = '0' else
+  --                         s_max7219_if_en_load_static   when i_static_dyn = '0' and s_config_done = '1' else
+  --                         s_max7219_if_en_load_scroller when i_static_dyn = '1' and s_config_done = '1' else
+  --                         '0';
 
-  s_max7219_if_data <= s_max7219_if_data_config when s_config_done = '0' else
-                       s_max7219_if_data_static   when i_static_dyn = '0' and s_config_done = '1' else
-                       s_max7219_if_data_scroller when i_static_dyn = '1' and s_config_done = '1' else
-                       (others => '0');
+  -- s_max7219_if_data <= s_max7219_if_data_config when s_config_done = '0' else
+  --                      s_max7219_if_data_static   when i_static_dyn = '0' and s_config_done = '1' else
+  --                      s_max7219_if_data_scroller when i_static_dyn = '1' and s_config_done = '1' else
+  --                      (others => '0');
 
-  s_max7219_if_done_config   <= s_max7219_if_done when s_config_done = '0'                        else '0';
-  s_max7219_if_done_static   <= s_max7219_if_done when i_static_dyn = '0' and s_config_done = '1' else '0';
-  s_max7219_if_done_scroller <= s_max7219_if_done when i_static_dyn = '1' and s_config_done = '1' else '0';
+  -- s_max7219_if_done_config   <= s_max7219_if_done when s_config_done = '0'                        else '0';
+  -- s_max7219_if_done_static   <= s_max7219_if_done when i_static_dyn = '0' and s_config_done = '1' else '0';
+  -- s_max7219_if_done_scroller <= s_max7219_if_done when i_static_dyn = '1' and s_config_done = '1' else '0';
 
 
   -- MAX7219 I/F INST
