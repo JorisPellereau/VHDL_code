@@ -239,7 +239,7 @@ module tb_top
    assign s_set_injector_if.set_alias[7]   = "I_WDATA_STATIC";
    assign s_set_injector_if.set_alias[8]   = "I_START_PTR_STATIC";
    assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";
-   assign s_set_injector_if.set_alias[10]  = "I_PTR_VAL_STATIC";
+   assign s_set_injector_if.set_alias[10]  = "TOTO";
    assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
    
    assign s_set_injector_if.set_alias[12]  = "I_RAM_START_PTR_SCROLLER";
@@ -285,7 +285,7 @@ module tb_top
    assign s_wdata_static                  = s_set_injector_if.set_signals_synch[7];   
    assign s_start_ptr_static              = s_set_injector_if.set_signals_synch[8];
    assign s_last_ptr_static               = s_set_injector_if.set_signals_synch[9];
-   assign s_ptr_val_static                = s_set_injector_if.set_signals_synch[10];
+   //assign s_ptr_val_static                = s_set_injector_if.set_signals_synch[10];
    assign s_loop_static                   = s_set_injector_if.set_signals_synch[11];
    assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[12];
    assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[13];
@@ -477,7 +477,7 @@ module tb_top
     .i_new_config_val  (s_new_config_val),
     .o_config_done     (s_config_done),
  
-    .i_en_static (s_en_static),
+    .i_en_static (s_static_en),
 
     .i_me_static     (s_me_static),
     .i_we_static     (s_we_static),
@@ -487,7 +487,7 @@ module tb_top
    
     .i_start_ptr_static      (s_start_ptr_static),
     .i_last_ptr_static       (s_last_ptr_static),
-    .i_ptr_val_static        (s_ptr_val_static),
+    //.i_ptr_val_static        (s_ptr_val_static),  // TO RM
     .i_loop_static           (s_loop_static),
     .o_ptr_equality_static   (s_ptr_equality_static),
     .o_static_busy           (s_static_busy),

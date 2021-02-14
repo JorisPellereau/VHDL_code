@@ -103,7 +103,7 @@ package pkg_max7219_controller is
       -- RAM INFO.
       i_start_ptr_static    : in  std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- ST PTR
       i_last_ptr_static     : in  std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- LAST ADDR
-      i_ptr_val_static      : in  std_logic;  -- PTRS VALIDS
+      --i_ptr_val_static      : in  std_logic;  -- PTRS VALIDS
       i_loop_static         : in  std_logic;  -- LOOP CONFIG.
       o_ptr_equality_static : out std_logic;  -- ADDR = LAST PTR
       o_static_busy         : out std_logic;  -- STATIC BUSY

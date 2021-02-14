@@ -73,7 +73,7 @@ entity max7219_display_controller is
     -- RAM INFO.
     i_start_ptr_static    : in  std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- ST PTR
     i_last_ptr_static     : in  std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- LAST ADDR
-    i_ptr_val_static      : in  std_logic;  -- PTRS VALIDS
+    --i_ptr_val_static      : in  std_logic;  -- PTRS VALIDS
     i_loop_static         : in  std_logic;  -- LOOP CONFIG.
     o_ptr_equality_static : out std_logic;  -- ADDR = LAST PTR
     o_static_busy         : out std_logic;  -- STATIC BUSY
@@ -257,7 +257,7 @@ begin  -- architecture behv
       o_max7219_if_en_load => s_max7219_if_en_load_static,
       o_max7219_if_data    => s_max7219_if_data_static);
 
-
+  s_loop_static <= '0';                 -- Not used here
 
   -- MAX7219 SCROLLER CONTROLLER INST
   max7219_scroller_ctrl_inst_0 : max7219_scroller_ctrl
@@ -377,7 +377,8 @@ begin  -- architecture behv
   o_max7219_clk  <= s_max7219_clk;
 
   -- o_static_busy <=
-  o_scroller_busy <= s_busy_scroller;
-  o_config_done   <= s_config_done;
+  o_scroller_busy       <= s_busy_scroller;
+  o_config_done         <= s_config_done;
+  o_ptr_equality_static <= s_ptr_equality_static;
 
 end architecture behv;

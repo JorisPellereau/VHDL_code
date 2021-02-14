@@ -130,20 +130,26 @@ architecture behv of max7219_display_sequencer is
   signal s_ram_start_ptr : std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
   signal s_msg_length    : std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
 
+  signal s_ptr_equality_r_edge : std_logic;
+  signal s_ptr_equality        : std_logic;
+
 begin  -- architecture behv
 
 
   p_pipe_inputs : process (clk, rst_n) is
   begin  -- process p_pipe_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_config_done <= '0';
+      s_config_done  <= '0';
+      s_ptr_equality <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_config_done <= i_config_done;
+      s_config_done  <= i_config_done;
+      s_ptr_equality <= i_ptr_equality;
     end if;
   end process p_pipe_inputs;
 
-  s_config_done_r_edge <= i_config_done and not s_config_done;
-
+  -- Rising Edge detection
+  s_config_done_r_edge  <= i_config_done and not s_config_done;
+  s_ptr_equality_r_edge <= i_ptr_equality and not s_ptr_equality;
 
   -- purpose: Current State management
   p_curr_state_mngt : process (clk, rst_n) is
@@ -155,7 +161,7 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller) is
+  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge) is
   begin  -- process p_next_state_mngt
 
     case s_current_state is
@@ -177,6 +183,9 @@ begin  -- architecture behv
         end if;
 
       when STATIC =>
+        if(s_ptr_equality_r_edge = '1') then
+          s_next_state <= WAIT_CMD;
+        end if;
 
       when SCROLL =>
 
@@ -257,6 +266,8 @@ begin  -- architecture behv
       s_next_cmd_static   <= '0';
       s_next_cmd_scroller <= '0';
       s_cmd_rd_ptr_up     <= '0';
+
+      s_static_rd_ptr <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_next_cmd_config   <= '0';       -- Pulse
@@ -265,6 +276,8 @@ begin  -- architecture behv
       s_cmd_rd_ptr_up     <= '0';
       -- Only when Fifo Not Empty
       if(s_fifo_empty = '0') then
+
+
         if(s_next_state = WAIT_CMD) then
           if(s_cmd_array(s_cmd_rd_ptr) = "00") then
             s_next_cmd_config <= '1';
@@ -286,6 +299,16 @@ begin  -- architecture behv
             s_cmd_rd_ptr <= 0;
           end if;
         end if;
+
+
+        if(s_next_cmd_static = '1') then
+          if(s_static_rd_ptr < G_FIFO_DEPTH - 1) then
+            s_static_rd_ptr <= s_static_rd_ptr + 1;
+          else
+            s_static_rd_ptr <= 0;
+          end if;
+        end if;
+
 
       end if;
 
@@ -359,14 +382,31 @@ begin  -- architecture behv
   end process p_fifo_data_static_write;
 
 
+
+  p_fifo_data_scroller_write : process (clk, rst_n) is
+  begin  -- process p_fifo_data_scroller_write
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+    end if;
+  end process p_fifo_data_scroller_write;
+
+
+
   -- Management of outputs
   p_outputs_mngt : process (clk, rst_n) is
   begin  -- process p_outputs_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_new_config_val <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-
       s_new_config_val <= '0';
+
+      o_static_val <= '0';
+      o_start_ptr  <= (others => '0');
+      o_last_ptr   <= (others => '0');
+
+
       case s_current_state is
         when IDLE =>
 
@@ -377,7 +417,9 @@ begin  -- architecture behv
           if(s_next_cmd_config = '1') then
             s_new_config_val <= '1';
           elsif(s_next_cmd_static = '1') then
-
+            o_static_val <= '1';
+            o_start_ptr  <= s_start_ptr_static_array(s_static_rd_ptr);
+            o_last_ptr   <= s_last_ptr_static_array(s_static_rd_ptr);
           elsif(s_next_cmd_scroller = '1') then
 
           end if;
