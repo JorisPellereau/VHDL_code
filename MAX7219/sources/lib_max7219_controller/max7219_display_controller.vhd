@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-01-24
+-- Last update: 2021-02-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -147,6 +147,10 @@ architecture behv of max7219_display_controller is
   signal s_max7219_clk        : std_logic;
   signal s_max7219_if_done    : std_logic;
 
+  signal s_mux_sel : std_logic_vector(1 downto 0);
+
+  signal s_new_config_val : std_logic;
+
 begin  -- architecture behv
 
 
@@ -167,9 +171,9 @@ begin  -- architecture behv
 
 
       -- Config I/F
-      i_new_config_val => i_new_config_val,
+      i_new_config_val => i_new_config_val,  -- TBD shall be connected to SEQUENCER
       i_config_done    => s_config_done,
-
+      o_new_config_val => s_new_config_val,
 
       -- Static I/F
       i_start_ptr => i_start_ptr_static,
@@ -188,7 +192,9 @@ begin  -- architecture behv
 
       o_ram_start_ptr => s_ram_start_ptr_scroller,
       o_msg_length    => s_msg_length_scroller,
-      o_start_scroll  => s_start_scroll
+      o_start_scroll  => s_start_scroll,
+
+      o_mux_sel => s_mux_sel
 
       );
 
@@ -209,7 +215,7 @@ begin  -- architecture behv
       i_scan_limit     => i_scan_limit,
       i_shutdown       => i_shutdown,
       i_display_test   => i_display_test,
-      i_new_config_val => i_new_config_val,
+      i_new_config_val => s_new_config_val,
       o_config_done    => s_config_done,
 
       -- MAX7219 I/F
@@ -287,6 +293,39 @@ begin  -- architecture behv
 
 
   -- MUX SELECTION
+  max7219_mux_sel_inst_0 : max7219_mux_sel
+    port map(
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- MAX selector
+      i_mux_sel => s_mux_sel,
+
+      -- Config
+      i_max7219_if_start_config   => s_max7219_if_start_config,
+      i_max7219_if_en_load_config => s_max7219_if_en_load_config,
+      i_max7219_if_data_config    => s_max7219_if_data_config,
+      o_max7219_if_done_config    => s_max7219_if_done_config,
+
+      -- Static
+      i_max7219_if_start_static   => s_max7219_if_start_static,
+      i_max7219_if_en_load_static => s_max7219_if_en_load_static,
+      i_max7219_if_data_static    => s_max7219_if_data_static,
+      o_max7219_if_done_static    => s_max7219_if_done_static,
+
+      -- Scroller
+      i_max7219_if_start_Scroller   => s_max7219_if_start_scroller,
+      i_max7219_if_en_load_Scroller => s_max7219_if_en_load_scroller,
+      i_max7219_if_data_Scroller    => s_max7219_if_data_scroller,
+      o_max7219_if_done_Scroller    => s_max7219_if_done_scroller,
+
+      -- MAX7219 I/F
+      i_max7219_if_done    => s_max7219_if_done,
+      o_max7219_if_start   => s_max7219_if_start,
+      o_max7219_if_en_load => s_max7219_if_en_load,
+      o_max7219_if_data    => s_max7219_if_data
+
+      );
   -- Priority on Config
   -- !!! config ...
   -- s_max7219_if_start <= s_max7219_if_start_config when s_config_done = '0' else

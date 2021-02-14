@@ -174,6 +174,32 @@ module tb_top
     s_check_level_if();
    
 
+
+    // == HDL GENERIC TESTBENCH MODULES ==
+
+    // WAIT EVENT TB WRAPPER INST
+    wait_event_wrapper #(
+			.ARGS_NB    (`C_CMD_ARGS_NB),
+			.CLK_PERIOD (`C_TB_CLK_PERIOD)
+    )
+    i_wait_event_wrapper (
+       .clk            (clk),
+       .rst_n          (rst_n),
+       .wait_event_if  (s_wait_event_if)			 
+    );
+
+
+    // SET INJECTOR TB WRAPPER INST
+    set_injector_wrapper #(
+			  .ARGS_NB(`C_CMD_ARGS_NB) 
+    )
+    i_set_injector_wrapper (
+       .clk              (clk),
+       .rst_n            (rst_n),
+       .set_injector_if  (s_set_injector_if)			   
+    );
+
+   
    // =====================================================
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
@@ -181,37 +207,56 @@ module tb_top
    // INIT WAIT EVENT ALIAS
    assign s_wait_event_if.wait_alias[0] = "RST_N";
    assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "BUSY";
-   assign s_wait_event_if.wait_alias[3] = "MAX7219_LOAD";
-   assign s_wait_event_if.wait_alias[4] = "DONE_LOAD_RAM";
+   assign s_wait_event_if.wait_alias[2] = "O_CONFIG_DONE";
+   assign s_wait_event_if.wait_alias[3] = "O_MAX7219_LOAD";
+   assign s_wait_event_if.wait_alias[4] = "O_PTR_EQUALITY_STATIC";
+   assign s_wait_event_if.wait_alias[5] = "O_STATIC_BUSY";
+   assign s_wait_event_if.wait_alias[6] = "O_SCROLLER_BUSY";
+   
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
-   assign s_wait_event_if.wait_signals[2] = 0;
+   assign s_wait_event_if.wait_signals[2] = s_config_done;
    assign s_wait_event_if.wait_signals[3] = s_max7219_load;
-   assign s_wait_event_if.wait_signals[4] = 0;
+   assign s_wait_event_if.wait_signals[4] = s_ptr_equality_static;
+   assign s_wait_event_if.wait_signals[5] = s_static_busy;
+   assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
+   
+   
 
    // INIT SET ALIAS
    assign s_set_injector_if.set_alias[0]   = "I_STATIC_DYN";
    assign s_set_injector_if.set_alias[1]   = "I_NEW_DISPLAY";
+   
    assign s_set_injector_if.set_alias[2]   = "I_NEW_CONFIG_VAL";
-   assign s_set_injector_if.set_alias[3]   = "I_STATIC_EN";
+   
+   assign s_set_injector_if.set_alias[3]   = "I_EN_STATIC";
+   
    assign s_set_injector_if.set_alias[4]   = "I_ME_STATIC";
    assign s_set_injector_if.set_alias[5]   = "I_WE_STATIC";
    assign s_set_injector_if.set_alias[6]   = "I_ADDR_STATIC";
    assign s_set_injector_if.set_alias[7]   = "I_WDATA_STATIC";
    assign s_set_injector_if.set_alias[8]   = "I_START_PTR_STATIC";
    assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";
-   assign s_set_injector_if.set_alias[10]  = "I_LOOP_STATIC";
-   assign s_set_injector_if.set_alias[11]  = "I_RAM_START_PTR_SCROLLER";
-   assign s_set_injector_if.set_alias[12]  = "I_MSG_LENGTH_SCROLLER";
-   assign s_set_injector_if.set_alias[13]  = "I_START_SCROLL";   
-   assign s_set_injector_if.set_alias[14]  = "I_MAX_TEMPO_CNT_SCROLLER";   
-   assign s_set_injector_if.set_alias[15]  = "I_ME_SCROLLER";   
-   assign s_set_injector_if.set_alias[16]  = "I_WE_SCROLLER";
-   assign s_set_injector_if.set_alias[17]  = "I_ADDR_SCROLLER";
-   assign s_set_injector_if.set_alias[18]  = "I_WDATA_SCROLLER";
+   assign s_set_injector_if.set_alias[10]  = "I_PTR_VAL_STATIC";
+   assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
+   
+   assign s_set_injector_if.set_alias[12]  = "I_RAM_START_PTR_SCROLLER";
+   assign s_set_injector_if.set_alias[13]  = "I_MSG_LENGTH_SCROLLER";
+   assign s_set_injector_if.set_alias[14]  = "I_START_SCROLL";   
+   assign s_set_injector_if.set_alias[15]  = "I_MAX_TEMPO_CNT_SCROLLER";   
+   assign s_set_injector_if.set_alias[16]  = "I_ME_SCROLLER";   
+   assign s_set_injector_if.set_alias[17]  = "I_WE_SCROLLER";
+   assign s_set_injector_if.set_alias[18]  = "I_ADDR_SCROLLER";
+   assign s_set_injector_if.set_alias[19]  = "I_WDATA_SCROLLER";
+
+   assign s_set_injector_if.set_alias[20]  = "I_DISPLAY_TEST";
+   assign s_set_injector_if.set_alias[21]  = "I_DECOD_MODE";
+   assign s_set_injector_if.set_alias[22]  = "I_INTENSITY";
+   assign s_set_injector_if.set_alias[23]  = "I_SCAN_LIMIT";
+   assign s_set_injector_if.set_alias[24]  = "I_SHUTDOWN";
+   
    
    
    
@@ -240,15 +285,21 @@ module tb_top
    assign s_wdata_static                  = s_set_injector_if.set_signals_synch[7];   
    assign s_start_ptr_static              = s_set_injector_if.set_signals_synch[8];
    assign s_last_ptr_static               = s_set_injector_if.set_signals_synch[9];
-   assign s_loop_static                   = s_set_injector_if.set_signals_synch[10];
-   assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[11];
-   assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[12];
-   assign s_start_scroll                  = s_set_injector_if.set_signals_synch[13];
-   assign s_max_tempo_cnt_scroller        = s_set_injector_if.set_signals_synch[14];
-   assign s_me_scroller                   = s_set_injector_if.set_signals_synch[15];
-   assign s_we_scroller                   = s_set_injector_if.set_signals_synch[16];
-   assign s_addr_scroller                 = s_set_injector_if.set_signals_synch[17];
-   assign s_wdata_scroller                = s_set_injector_if.set_signals_synch[18];
+   assign s_ptr_val_static                = s_set_injector_if.set_signals_synch[10];
+   assign s_loop_static                   = s_set_injector_if.set_signals_synch[11];
+   assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[12];
+   assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[13];
+   assign s_start_scroll                  = s_set_injector_if.set_signals_synch[14];
+   assign s_max_tempo_cnt_scroller        = s_set_injector_if.set_signals_synch[15];
+   assign s_me_scroller                   = s_set_injector_if.set_signals_synch[16];
+   assign s_we_scroller                   = s_set_injector_if.set_signals_synch[17];
+   assign s_addr_scroller                 = s_set_injector_if.set_signals_synch[18];
+   assign s_wdata_scroller                = s_set_injector_if.set_signals_synch[19];
+   assign s_display_test                  = s_set_injector_if.set_signals_synch[20];
+   assign s_decod_mode                    = s_set_injector_if.set_signals_synch[21];
+   assign s_intensity                     = s_set_injector_if.set_signals_synch[22];
+   assign s_scan_limit                    = s_set_injector_if.set_signals_synch[23];
+   assign s_shutdown                      = s_set_injector_if.set_signals_synch[24];   
    
 
    // MAX : Sel SET inj or checker
@@ -280,52 +331,38 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[16]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[17]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[18]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[19]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[20]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[21]  = 8'hAA;
+   assign s_set_injector_if.set_signals_asynch_init_value[22]  = 8'hBB;
+   assign s_set_injector_if.set_signals_asynch_init_value[23]  = 8'hCC;
+   assign s_set_injector_if.set_signals_asynch_init_value[24]  = 8'hDD;
    
    // INIT CHECK LEVEL ALIAS
-   assign s_check_level_if.check_alias[0] = "O_PTR_EQUALITY_STATIC";
-   assign s_check_level_if.check_alias[1] = "O_SCROLLER_BUSY";
-   assign s_check_level_if.check_alias[2] = "TOTO2";
-   assign s_check_level_if.check_alias[3] = "TOTO3";
-   assign s_check_level_if.check_alias[4] = "TOTO4";
+
+   assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
+   assign s_check_level_if.check_alias[1] = "O_RDATA_STATIC";   
+   assign s_check_level_if.check_alias[2] = "O_PTR_EQUALITY_STATIC";
+   assign s_check_level_if.check_alias[3] = "O_STATIC_BUSY";      
+   assign s_check_level_if.check_alias[4] = "O_SCROLLER_BUSY";   
+   assign s_check_level_if.check_alias[5] = "O_RDATA_SCROLLER";      
+   assign s_check_level_if.check_alias[6] = "O_MAX7219_LOAD";
+   assign s_check_level_if.check_alias[7] = "O_MAX7219_DATA";
+   assign s_check_level_if.check_alias[8] = "O_MAX7219_CLK";
 
    // SET CHECK_SIGNALS
-   assign s_check_level_if.check_signals[0] =  s_ptr_equality_static;
-   assign s_check_level_if.check_signals[1] =  s_scroller_busy;
-   assign s_check_level_if.check_signals[2] =  32'hCAFEDEC1;
-   assign s_check_level_if.check_signals[3] =  32'hCAFEDEC2;
-   assign s_check_level_if.check_signals[4] =  32'hCAFEDEC3;
-  
+   assign s_check_level_if.check_signals[0] =  s_config_done;
+   assign s_check_level_if.check_signals[1] =  s_rdata_static;
+   assign s_check_level_if.check_signals[3] =  s_ptr_equality_static;
+   assign s_check_level_if.check_signals[4] =  s_static_busy;
+   assign s_check_level_if.check_signals[5] =  s_rdata_scroller;
+   assign s_check_level_if.check_signals[6] =  s_max7219_load;
+   assign s_check_level_if.check_signals[7] =  s_max7219_data;
+   assign s_check_level_if.check_signals[8] =  s_max7219_clk;
+   
    // =====================================================
 
-
-   
-   // == HDL GENERIC TESTBENCH MODULES ==
-
-   // WAIT EVENT TB WRAPPER INST
-   wait_event_wrapper #(
-			.ARGS_NB    (`C_CMD_ARGS_NB),
-			.CLK_PERIOD (`C_TB_CLK_PERIOD)
-   )
-   i_wait_event_wrapper (
-       .clk            (clk),
-       .rst_n          (rst_n),
-       .wait_event_if  (s_wait_event_if)			 
-   );
-
-
-   // SET INJECTOR TB WRAPPER INST
-   set_injector_wrapper #(
-			  .ARGS_NB(`C_CMD_ARGS_NB) 
-   )
-   i_set_injector_wrapper (
-       .clk              (clk),
-       .rst_n            (rst_n),
-       .set_injector_if  (s_set_injector_if)			   
-   );
-   
-   
-   // ===========================
-
+ 
 
    // == TESTBENCH SEQUENCER ==
    
@@ -335,7 +372,9 @@ module tb_top
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
                       `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD) 
+                      `C_TB_CLK_PERIOD,
+                      `C_CHECK_SIZE,
+                      `C_CHECK_WIDTH) 
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,

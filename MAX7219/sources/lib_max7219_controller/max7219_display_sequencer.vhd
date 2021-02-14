@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-01-23
+-- Last update: 2021-02-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,16 +31,17 @@ entity max7219_display_sequencer is
     G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;   -- RAM ADDR WITH
     G_RAM_DATA_WIDTH_SCROLLER : integer := 8);  -- RAM DATA WIDTH
   port (
-    clk              : in std_logic;            -- Clock
-    rst_n            : in std_logic;            -- Asynchronos reset
-    
-    i_static_dyn     : in std_logic;            -- Static or Dynamic selection
-    i_new_display    : in std_logic;            -- Display Static or Dyn Valid
+    clk   : in std_logic;                       -- Clock
+    rst_n : in std_logic;                       -- Asynchronos reset
+
+    i_static_dyn  : in std_logic;       -- Static or Dynamic selection
+    i_new_display : in std_logic;       -- Display Static or Dyn Valid
 
 
     -- Config I/F
-    i_new_config_val : in std_logic;    -- CONFIG. VALID
-    i_config_done    : in std_logic;    -- CONFIG. DONE
+    i_new_config_val : in  std_logic;   -- CONFIG. VALID
+    i_config_done    : in  std_logic;   -- CONFIG. DONE
+    o_new_config_val : out std_logic;   -- New Config to CONFIG Block
 
 
     -- Static I/F
@@ -60,7 +61,10 @@ entity max7219_display_sequencer is
 
     o_ram_start_ptr : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
     o_msg_length    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
-    o_start_scroll  : out std_logic
+    o_start_scroll  : out std_logic;
+
+    -- MUX SEL
+    o_mux_sel : out std_logic_vector(1 downto 0)
 
     );
 
@@ -83,17 +87,26 @@ architecture behv of max7219_display_sequencer is
   signal s_current_state : t_states;
   signal s_next_state    : t_states;
 
-  signal s_config_done : std_logic;
+  signal s_config_done        : std_logic;
+  signal s_config_done_r_edge : std_logic;  -- rising Edge of Config. Done
 
-  signal s_next_display : std_logic;    -- '0' - Static '1' - Scroller
 
+  signal s_next_display   : std_logic;  -- '0' - Static '1' - Scroller
+  signal s_new_config_val : std_logic;
 
   -- Internal Writes and Read Ptrs
-  signal s_cmd_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
-  signal s_cmd_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
+  signal s_cmd_wr_ptr    : integer range 0 to G_FIFO_DEPTH - 1;
+  signal s_cmd_rd_ptr    : integer range 0 to G_FIFO_DEPTH - 1;
+  signal s_cmd_fifo_cnt  : integer range 0 to G_FIFO_DEPTH;
+  signal s_cmd_wr_ptr_up : std_logic;
+  signal s_cmd_rd_ptr_up : std_logic;
 
   signal s_static_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_static_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
+
+  signal s_next_cmd_config   : std_logic;
+  signal s_next_cmd_static   : std_logic;
+  signal s_next_cmd_scroller : std_logic;
 
 
   -- ARRAYS
@@ -120,6 +133,17 @@ architecture behv of max7219_display_sequencer is
 begin  -- architecture behv
 
 
+  p_pipe_inputs : process (clk, rst_n) is
+  begin  -- process p_pipe_inputs
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_config_done <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_config_done <= i_config_done;
+    end if;
+  end process p_pipe_inputs;
+
+  s_config_done_r_edge <= i_config_done and not s_config_done;
+
 
   -- purpose: Current State management
   p_curr_state_mngt : process (clk, rst_n) is
@@ -131,7 +155,7 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process (s_current_state) is
+  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller) is
   begin  -- process p_next_state_mngt
 
     case s_current_state is
@@ -139,13 +163,18 @@ begin  -- architecture behv
         s_next_state <= CONFIG;
 
       when CONFIG =>
-        -- if(s_config_done = '1') then
-        --   if(s_next_display = '0') then
-        --     s_next_state <= STATIC;
-        --   else
-        --     s_next_state <= SCROLL;
-        --   end if;
-        -- end if;
+        if(s_config_done_r_edge = '1') then
+          s_next_state <= WAIT_CMD;
+        end if;
+
+      when WAIT_CMD =>
+        if(s_next_cmd_config = '1') then
+          s_next_state <= CONFIG;
+        elsif(s_next_cmd_static = '1') then
+          s_next_state <= STATIC;
+        elsif(s_next_cmd_scroller = '1') then
+          s_next_state <= SCROLL;
+        end if;
 
       when STATIC =>
 
@@ -196,15 +225,22 @@ begin  -- architecture behv
   p_fifo_cmd_write : process (clk, rst_n) is
   begin  -- process p_fifo_cmd_write
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_cmd_array  <= (others => (others => '0'));
-      s_cmd_wr_ptr <= 0;
+      s_cmd_array     <= (others => (others => '0'));
+      s_cmd_wr_ptr    <= 0;
+      s_cmd_wr_ptr_up <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
+      s_cmd_wr_ptr_up <= '0';
       -- Write Authorized
       if(s_fifo_full = '0') then
         if(s_cmd_val = '1') then
-          s_cmd_array(s_cmd_wr_ptr) <= s_cmd_type;        -- Save Command Type
-          s_cmd_wr_ptr              <= s_cmd_wr_ptr + 1;  -- Inc Write Ptr
+          s_cmd_array(s_cmd_wr_ptr) <= s_cmd_type;  -- Save Command Type
+          if(s_cmd_wr_ptr < G_FIFO_DEPTH - 1) then
+            s_cmd_wr_ptr    <= s_cmd_wr_ptr + 1;    -- Inc Write Ptr
+            s_cmd_wr_ptr_up <= '1';
+          else
+            s_cmd_wr_ptr <= 0;
+          end if;
         end if;
       end if;
 
@@ -212,7 +248,67 @@ begin  -- architecture behv
     end if;
   end process p_fifo_cmd_write;
 
+  -- CMD Fifo Read Management
+  p_fifo_cmd_read : process (clk, rst_n) is
+  begin  -- process p_fifo_cmd_read
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_cmd_rd_ptr        <= 0;
+      s_next_cmd_config   <= '0';
+      s_next_cmd_static   <= '0';
+      s_next_cmd_scroller <= '0';
+      s_cmd_rd_ptr_up     <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
 
+      s_next_cmd_config   <= '0';       -- Pulse
+      s_next_cmd_static   <= '0';       -- Pulse
+      s_next_cmd_scroller <= '0';       -- Pulse
+      s_cmd_rd_ptr_up     <= '0';
+      -- Only when Fifo Not Empty
+      if(s_fifo_empty = '0') then
+        if(s_next_state = WAIT_CMD) then
+          if(s_cmd_array(s_cmd_rd_ptr) = "00") then
+            s_next_cmd_config <= '1';
+          elsif(s_cmd_array(s_cmd_rd_ptr) = "01") then
+            s_next_cmd_static <= '1';
+          elsif(s_cmd_array(s_cmd_rd_ptr) = "10") then
+            s_next_cmd_scroller <= '1';
+          else
+
+          end if;
+        end if;
+
+        -- READ PTR MNGT
+        if(s_next_cmd_config = '1' or s_next_cmd_static = '1' or s_next_cmd_scroller = '1') then
+          if(s_cmd_rd_ptr < G_FIFO_DEPTH - 1) then
+            s_cmd_rd_ptr    <= s_cmd_rd_ptr + 1;
+            s_cmd_rd_ptr_up <= '1';
+          else
+            s_cmd_rd_ptr <= 0;
+          end if;
+        end if;
+
+      end if;
+
+    end if;
+  end process p_fifo_cmd_read;
+
+  -- Save each WR access or Read Access to FIFO CMD
+  p_cmd_fifo_cnt : process (clk, rst_n) is
+  begin  -- process p_cmd_fifo_cnt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_cmd_fifo_cnt <= 0;
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      if(s_cmd_wr_ptr_up = '1') then
+        if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+          s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
+        end if;
+      elsif(s_cmd_rd_ptr_up = '1') then
+        if(s_cmd_fifo_cnt > 0) then
+          s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
+        end if;
+      end if;
+    end if;
+  end process p_cmd_fifo_cnt;
 
   -- purpose: Fifo Full & Empty Management 
   p_fifo_cmd_status : process (clk, rst_n) is
@@ -223,16 +319,19 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- FIFO Full mngt
-      if(s_cmd_wr_ptr - s_cmd_rd_ptr = G_FIFO_DEPTH - 1) then
+      if(s_cmd_fifo_cnt = G_FIFO_DEPTH) then
         s_fifo_full <= '1';
       else
         s_fifo_full <= '0';
       end if;
 
       -- FIFO Empty mngt
-      if(s_cmd_wr_ptr = s_cmd_rd_ptr) then
+      --if(s_cmd_wr_ptr = s_cmd_rd_ptr) then
+      --if(s_cmd_wr_ptr - s_cmd_rd_ptr = 0) then
+      if(s_cmd_fifo_cnt = 0) then
         s_fifo_empty <= '1';
-      else s_fifo_empty <= '0';
+      else
+        s_fifo_empty <= '0';
       end if;
 
     end if;
@@ -252,13 +351,53 @@ begin  -- architecture behv
         if(s_cmd_val = '1' and s_cmd_type = "01") then
           s_start_ptr_static_array(s_static_wr_ptr) <= s_start_ptr;
           s_last_ptr_static_array(s_static_wr_ptr)  <= s_last_ptr;
-          s_static_wr_ptr                           <= s_static_wr_ptr + 1;  -- Inc Ptr
+          s_static_wr_ptr                           <= s_static_wr_ptr + 1;  -- Inc Ptr       
         end if;
       end if;
 
     end if;
   end process p_fifo_data_static_write;
 
+
+  -- Management of outputs
+  p_outputs_mngt : process (clk, rst_n) is
+  begin  -- process p_outputs_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_new_config_val <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      s_new_config_val <= '0';
+      case s_current_state is
+        when IDLE =>
+
+
+        when CONFIG =>
+
+        when WAIT_CMD =>
+          if(s_next_cmd_config = '1') then
+            s_new_config_val <= '1';
+          elsif(s_next_cmd_static = '1') then
+
+          elsif(s_next_cmd_scroller = '1') then
+
+          end if;
+
+        when STATIC =>
+
+        when SCROLL =>
+
+
+        when others => null;
+      end case;
+
+
+    end if;
+  end process p_outputs_mngt;
+
+
+  -- Outputs affectation
+  o_mux_sel        <= s_cmd_type;
+  o_new_config_val <= s_new_config_val;
 
 
 end architecture behv;

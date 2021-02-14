@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-03
--- Last update: 2021-01-23
+-- Last update: 2021-02-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -151,9 +151,9 @@ package pkg_max7219_controller is
 
 
       -- Config I/F
-      i_new_config_val : in std_logic;  -- CONFIG. VALID
-      i_config_done    : in std_logic;  -- CONFIG. DONE
-
+      i_new_config_val : in  std_logic;  -- CONFIG. VALID
+      i_config_done    : in  std_logic;  -- CONFIG. DONE
+      o_new_config_val : out std_logic;  -- New Config to CONFIG Block
 
       -- Static I/F
       i_start_ptr : in std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
@@ -172,8 +172,49 @@ package pkg_max7219_controller is
 
       o_ram_start_ptr : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
       o_msg_length    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
-      o_start_scroll  : out std_logic
+      o_start_scroll  : out std_logic;
 
+      -- MUX SEL
+      o_mux_sel : out std_logic_vector(1 downto 0)
+
+      );
+
+  end component;
+
+
+
+  component max7219_mux_sel is
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- MAX selector
+      i_mux_sel : in std_logic_vector(1 downto 0);  -- Mux Selector
+
+      -- Config
+      i_max7219_if_start_config   : in  std_logic;  -- START MAX7219 I/F - Config
+      i_max7219_if_en_load_config : in  std_logic;  -- EN Load LAX7219 I/F - Config
+      i_max7219_if_data_config    : in  std_logic_vector(15 downto 0);  -- MAX7219 I/D Data - Config
+      o_max7219_if_done_config    : out std_logic;  -- MAX7219 I/F Done - Config
+
+      -- Static
+      i_max7219_if_start_static   : in  std_logic;  -- START MAX7219 I/F - Static
+      i_max7219_if_en_load_static : in  std_logic;  -- EN Load LAX7219 I/F - Static
+      i_max7219_if_data_static    : in  std_logic_vector(15 downto 0);  -- MAX7219 I/D Data - Static
+      o_max7219_if_done_static    : out std_logic;  -- MAX7219 I/F Done - Static
+
+      -- Scroller
+      i_max7219_if_start_Scroller   : in  std_logic;  -- START MAX7219 I/F - Scroller
+      i_max7219_if_en_load_Scroller : in  std_logic;  -- EN Load LAX7219 I/F - Scroller
+      i_max7219_if_data_Scroller    : in  std_logic_vector(15 downto 0);  -- MAX7219 I/D Data - Scroller
+      o_max7219_if_done_Scroller    : out std_logic;  -- MAX7219 I/F Done - Scroller
+
+      -- MAX7219 I/F
+      i_max7219_if_done    : in  std_logic;  -- MAX7219 I/F - Done
+      o_max7219_if_start   : out std_logic;  -- MAX7219 I/F - Start
+      o_max7219_if_en_load : out std_logic;  -- MAX7219 I/F - En Load
+      o_max7219_if_data    : out std_logic_vector(15 downto 0)  -- MAX7219 I/F - Data
       );
 
   end component;

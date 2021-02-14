@@ -204,6 +204,7 @@ src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd
 
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd
+src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_mux_sel.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_display_sequencer.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_config_if.vhd
 src_vhd_lib_max7219+=$(SRC_DIR)/lib_max7219_controller/max7219_display_controller.vhd

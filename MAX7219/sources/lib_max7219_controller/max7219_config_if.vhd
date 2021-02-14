@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2020-10-03
+-- Last update: 2021-02-14
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,8 +51,9 @@ architecture behv of max7219_config_if is
 
   -- INTERNAL SIGNALS
 
-  signal s_init_config   : std_logic;   -- Init Configuration
-  signal s_init_config_p : std_logic;   -- INIT Cnfig. p
+  signal s_init_config    : std_logic;  -- Init Configuration
+  signal s_init_config_p  : std_logic;  -- INIT Cnfig. p
+  signal s_init_config_p2 : std_logic;  -- INIT Cnfig. p2
 
   signal s_new_config_val        : std_logic;
   signal s_new_config_val_r_edge : std_logic;  -- Rising Edge of New Config. Val
@@ -109,11 +110,12 @@ begin  -- architecture behv
           s_cnt_matrix_up <= '1';
         else
           s_cnt_matrix_done <= '1';
+          s_cnt_matrix      <= (others => '0');
         end if;
       else
         s_cnt_matrix_up   <= '0';
         s_cnt_matrix_done <= '0';
-        s_cnt_matrix      <= (others => '0');
+      --   s_cnt_matrix      <= (others => '0');
       end if;
 
     end if;
@@ -142,11 +144,12 @@ begin  -- architecture behv
   p_config_mngt : process (clk, rst_n) is
   begin  -- process p_config_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_init_config   <= '1';
-      s_init_config_p <= '0';
-
+      s_init_config    <= '1';
+      s_init_config_p  <= '0';
+      s_init_config_p2 <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_init_config_p <= s_init_config;
+      s_init_config_p  <= s_init_config;
+      s_init_config_p2 <= s_init_config_p;
       if(s_cnt_config_done = '1') then
         s_init_config <= '0';
       end if;
@@ -164,7 +167,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- 1st Start after reset
-      if(s_init_config = '1' and s_init_config_p = '0') then
+      if(s_init_config_p = '1' and s_init_config_p2 = '0') then
         s_max7219_if_start <= '1';
 
       -- An other start 
@@ -173,6 +176,8 @@ begin  -- architecture behv
 
       -- Start auto
       elsif(s_cnt_matrix_up = '1') then
+        s_max7219_if_start <= '1';
+      elsif(s_cnt_matrix_done = '1' and s_cnt_config < "100") then
         s_max7219_if_start <= '1';
       else
         s_max7219_if_start <= '0';
@@ -222,5 +227,6 @@ begin  -- architecture behv
   o_max7219_if_start   <= s_max7219_if_start;
   o_max7219_if_en_load <= s_max7219_if_en_load;
   o_max7219_if_data    <= s_max7219_if_data;
+  o_config_done        <= s_config_done;
 
 end architecture behv;
