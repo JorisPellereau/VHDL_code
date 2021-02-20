@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-02-14
+-- Last update: 2021-02-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -376,7 +376,7 @@ begin  -- architecture behv
   o_max7219_data <= s_max7219_data;
   o_max7219_clk  <= s_max7219_clk;
 
-  -- o_static_busy <=
+  o_static_busy         <= not s_ptr_equality_static;
   o_scroller_busy       <= s_busy_scroller;
   o_config_done         <= s_config_done;
   o_ptr_equality_static <= s_ptr_equality_static;
