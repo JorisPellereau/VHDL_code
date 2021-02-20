@@ -1,0 +1,264 @@
+# vsim -novopt -t ps -l /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../transcripts/test_tasks_transcript.txt lib_tb_top.tb_top -do "/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/test_tasks_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../scenarios/test_tasks.txt 
+# Start time: 23:31:36 on Dec 02,2020
+# Loading sv_std.std
+# Loading lib_tb_top.tb_top_sv_unit
+# Loading lib_tb_top.tb_top
+# Loading lib_tb_top.clk_gen
+# Loading lib_tb_top.wait_event_intf
+# Loading lib_tb_top.set_injector_intf
+# Loading lib_tb_top.wait_duration_intf
+# Loading lib_tb_top.check_level_intf
+# Loading lib_tb_top.wait_event_wrapper
+# Loading lib_tb_top.wait_event_tb
+# Loading lib_tb_top.set_injector_wrapper
+# Loading lib_tb_top.set_injector_tb
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(97): Expected a system task, not a system function '$fgets'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::tb_sequencer/#ublk#49146052#65 File: /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(171): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv
+# do /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/test_tasks_run.do
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Beginning of sequencer
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected             21.00 ns
+# 
+# WTR O1 1 us
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 us
+# Error: Timeout reach :           1023.00 ns
+# 
+# WTF O1 20 us
+# 
+# Waiting for a falling edge ...
+# Timeout :          20 us
+# Error: Timeout reach :          21027.00 ns
+# 
+# WTR O2 100 ns
+# 
+# Waiting for a rising edge ...
+# Timeout :         100 ns
+# Error: Timeout reach :          21131.00 ns
+# 
+# WTF O2 2 ns
+# 
+# Waiting for a falling edge ...
+# Timeout :           2 ns
+# Error: Timeout reach :          21137.00 ns
+# 
+# SET I0 1
+# 
+# 
+# SET I1 0xA
+# 
+# 
+# SET I2 2
+# 
+# 
+# SET I3 3
+# 
+# 
+# SET I4 4
+# 
+# 
+# WTF O4 666 us
+# 
+# Waiting for a falling edge ...
+# Timeout :         666 us
+# Error: Timeout reach :         687141.00 ns
+# 
+# SET I0 z
+# 
+# 
+# SET I1 0x0000000z
+# 
+# 
+# SET I2 0xDEADBEEF
+# 
+# 
+# SET I3 0xCAFEDEC0
+# 
+# 
+# SET I4 0x45
+# 
+# 
+# WAIT 100 us
+# 
+# WAIT duration :         100 us
+# 
+# SET I0 0xFFFFFFFF
+# 
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# SET I2 0xFAFAFAFA
+# 
+# 
+# WAIT 1 ms
+# 
+# WAIT duration :           1 ms
+# 
+# SET I3 0x56565656
+# 
+# 
+# WAIT 20 ns
+# 
+# WAIT duration :          20 ns
+# 
+# SET I3 0
+# 
+# 
+# WAIT 325 us
+# 
+# WAIT duration :         325 us
+# 
+# CHK TOTO0 0xCAFEDECA OK
+# 
+# CHECK TOTO0 = 0xcafedeca - Expected : 0xcafedeca => OK
+# 
+# CHK TOTO1 0xCAFEDEC0 OK
+# 
+# CHECK TOTO1 = 0xcafedec0 - Expected : 0xcafedec0 => OK
+# 
+# CHK TOTO2 0xCAFEDEC1 OK
+# 
+# CHECK TOTO2 = 0xcafedec1 - Expected : 0xcafedec1 => OK
+# 
+# CHK TOTO3 0xCAFEDEC2 OK
+# 
+# CHECK TOTO3 = 0xcafedec2 - Expected : 0xcafedec2 => OK
+# 
+# CHK TOTO4 0xCAFEDEC3 OK
+# 
+# CHECK TOTO4 = 0xcafedec3 - Expected : 0xcafedec3 => OK
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# CHK TOTO0 0xCAFEDEC4 OK
+# 
+# Error: TOTO0 = 0xcafedeca - Expected : 0xcafedec4
+# 
+# CHK TOTO1 0xCAFEDEC7 OK
+# 
+# Error: TOTO1 = 0xcafedec0 - Expected : 0xcafedec7
+# 
+# CHK TOTO2 0xCAFEDEC8 OK
+# 
+# Error: TOTO2 = 0xcafedec1 - Expected : 0xcafedec8
+# 
+# CHK TOTO3 0xCAFEDEC6 OK
+# 
+# Error: TOTO3 = 0xcafedec2 - Expected : 0xcafedec6
+# 
+# CHK TOTO4 0xCAFEDEC9 OK
+# 
+# Error: TOTO4 = 0xcafedec3 - Expected : 0xcafedec9
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# CHK TOTO0 0xCAFEDEC4 KO
+# 
+# Error: Args[3] of CHECK command not defined
+# 
+# CHK TOTO1 0xCAFEDEC7 KO
+# 
+# Error: Args[3] of CHECK command not defined
+# 
+# CHK TOTO2 0xCAFEDEC8 KO
+# 
+# Error: Args[3] of CHECK command not defined
+# 
+# CHK TOTO3 0xCAFEDEC6 KO
+# 
+# Error: Args[3] of CHECK command not defined
+# 
+# CHK TOTO4 0xCAFEDEC9 KO
+# 
+# Error: Args[3] of CHECK command not defined
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# CHK TOTO0 0xCAFEDEC4 ERROR
+# 
+# CHECK TOTO0 != 0xcafedec4  => OK
+# 
+# CHK TOTO1 0xCAFEDEC7 ERROR
+# 
+# CHECK TOTO1 != 0xcafedec7  => OK
+# 
+# CHK TOTO2 0xCAFEDEC8 ERROR
+# 
+# CHECK TOTO2 != 0xcafedec8  => OK
+# 
+# CHK TOTO3 0xCAFEDEC6 ERROR
+# 
+# CHECK TOTO3 != 0xcafedec6  => OK
+# 
+# CHK TOTO4 0xCAFEDEC9 ERROR
+# 
+# CHECK TOTO4 != 0xcafedec9  => OK
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# CHK COTO0 0xCAFEDECA OK
+# 
+# Error: COTO0 alias doesn't exists
+# 
+# CHK COTO1 0xCAFEDEC0 OK
+# 
+# Error: COTO1 alias doesn't exists
+# 
+# CHK COTO2 0xCAFEDEC1 OK
+# 
+# Error: COTO2 alias doesn't exists
+# 
+# CHK COTO3 0xCAFEDEC2 OK
+# 
+# Error: COTO3 alias doesn't exists
+# 
+# CHK COTO4 0xCAFEDEC3 OK
+# 
+# Error: COTO4 alias doesn't exists
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# CHK TOOO0 0xCAFEDEC4 OK
+# 
+# Error: TOOO0 alias doesn't exists
+# 
+# CHK TOOO1 0xCAFEDEC7 OK
+# 
+# Error: TOOO1 alias doesn't exists
+# 
+# CHK TOOO2 0xCAFEDEC8 OK
+# 
+# Error: TOOO2 alias doesn't exists
+# 
+# CHK TOOO3 0xCAFEDEC6 OK
+# 
+# Error: TOOO3 alias doesn't exists
+# 
+# CHK TOOO4 0xCAFEDEC9 OK
+# 
+# Error: TOOO4 alias doesn't exists
+# 
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(110)
+#    Time: 2172183 ns  Iteration: 1  Instance: /tb_top
+# End time: 23:33:02 on Dec 02,2020, Elapsed time: 0:01:26
+# Errors: 0, Warnings: 3

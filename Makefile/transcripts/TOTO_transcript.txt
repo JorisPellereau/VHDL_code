@@ -1,0 +1,61 @@
+# vsim -novopt -t ps -l /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../transcripts/TOTO_transcript.txt lib_tb_top.tb_top -do "/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/TOTO_run.do" -G/tb_top/i_tb_seq_wrapper_0/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../scenarios/TOTO.txt 
+# Start time: 13:48:38 on Nov 01,2020
+# Loading sv_std.std
+# Loading lib_tb_top.tb_top
+# Loading lib_tb_top.clk_gen
+# Loading lib_tb_top.tb_seq_wrapper
+# Loading lib_tb_top.sequencer
+# Loading lib_tb_top.decoder
+# Loading lib_tb_top.set_injector
+# Loading lib_tb_top.wait_event
+# Loading lib_tb_top.check_level
+# Loading lib_tb_top.wait_duration
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv(107): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_tb_seq_wrapper_0/i_sequencer_0 File: /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv
+# do /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/TOTO_run.do
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Error (suppressible): (vsim-PLI-3084) /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv(95): $fgets : Argument 2 is not a valid file descriptor.
+#    Time: 1 ns  Iteration: 1  Instance: /tb_top/i_tb_seq_wrapper_0/i_sequencer_0
+# code :           0
+# Beginning of sequencer
+# code :           3
+# code :          17
+# code :           3
+# code :           3
+# code :           9
+# code :          11
+# code :           9
+# code :           9
+# code :           9
+# code :          11
+# code :          12
+# code :          14
+# code :          14
+# code :          18
+# code :          18
+# code :          14
+# code :          17
+# code :          11
+# code :          11
+# code :          24
+# code :          20
+# CHECK TOTO0 = 0xcafedeca - Expected : 0xcafedeca => OK
+# code :          18
+# CHECK TOTO1 = 0x00005678 - Expected : 0x00005678 => OK
+# code :          24
+# CHECK TOTO2 = 0x00000072 - Expected : 0x00000072 => OK
+# code :          15
+# Error: TOTO3 = 0x0000zzzz - Expected : 0x0000zzzz
+# code :          18
+# Error: TOTO4 = 0x0000000Z - Expected : 0xzzzzzzzz
+# code :          20
+# Error: TOTO3 = 0xzzzzzzzz
+# code :           9
+# Error: TOTO6 alias doesn't exists
+# End of sequencer
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv(91)
+#    Time: 59 ns  Iteration: 1  Instance: /tb_top/i_tb_seq_wrapper_0/i_sequencer_0
+# 1
+# Break in Module sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv line 91
+# End time: 13:49:12 on Nov 01,2020, Elapsed time: 0:00:34
+# Errors: 1, Warnings: 2

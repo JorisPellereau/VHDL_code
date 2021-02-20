@@ -239,12 +239,12 @@ module tb_top
    assign s_set_injector_if.set_alias[7]   = "I_WDATA_STATIC";
    assign s_set_injector_if.set_alias[8]   = "I_START_PTR_STATIC";
    assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";
-   assign s_set_injector_if.set_alias[10]  = "TOTO";
+   //assign s_set_injector_if.set_alias[10]  = "TOTO";
    assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
    
    assign s_set_injector_if.set_alias[12]  = "I_RAM_START_PTR_SCROLLER";
    assign s_set_injector_if.set_alias[13]  = "I_MSG_LENGTH_SCROLLER";
-   assign s_set_injector_if.set_alias[14]  = "I_START_SCROLL";   
+   //assign s_set_injector_if.set_alias[14]  = "I_START_SCROLL";   
    assign s_set_injector_if.set_alias[15]  = "I_MAX_TEMPO_CNT_SCROLLER";   
    assign s_set_injector_if.set_alias[16]  = "I_ME_SCROLLER";   
    assign s_set_injector_if.set_alias[17]  = "I_WE_SCROLLER";
@@ -256,16 +256,21 @@ module tb_top
    assign s_set_injector_if.set_alias[22]  = "I_INTENSITY";
    assign s_set_injector_if.set_alias[23]  = "I_SCAN_LIMIT";
    assign s_set_injector_if.set_alias[24]  = "I_SHUTDOWN";
+
+   // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
+   assign s_set_injector_if.set_alias[25]  = "DISPLAY_SCREEN_SEL";
    
-   
+   assign s_set_injector_if.set_alias[26]  = "DISPLAY_SCREEN_MATRIX";
+   assign s_set_injector_if.set_alias[27]  = "DISPLAY_REG_MATRIX_N";
+  
    
    
 
    // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
-   /*assign s_set_injector_if.set_alias[10]  = "DISPLAY_SCREEN_SEL";
+   
 
    // MUX : Sel SET inj or checker
-   assign s_set_injector_if.set_alias[11]  = "LOAD_RAM_SEL";
+   /*assign s_set_injector_if.set_alias[11]  = "LOAD_RAM_SEL";
 
    // RAM LOAD Injector Control signals
    assign s_set_injector_if.set_alias[12]  = "START_ADDR_LOAD_RAM";
@@ -289,7 +294,7 @@ module tb_top
    assign s_loop_static                   = s_set_injector_if.set_signals_synch[11];
    assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[12];
    assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[13];
-   assign s_start_scroll                  = s_set_injector_if.set_signals_synch[14];
+   //assign s_start_scroll                  = s_set_injector_if.set_signals_synch[14];
    assign s_max_tempo_cnt_scroller        = s_set_injector_if.set_signals_synch[15];
    assign s_me_scroller                   = s_set_injector_if.set_signals_synch[16];
    assign s_we_scroller                   = s_set_injector_if.set_signals_synch[17];
@@ -300,7 +305,9 @@ module tb_top
    assign s_intensity                     = s_set_injector_if.set_signals_synch[22];
    assign s_scan_limit                    = s_set_injector_if.set_signals_synch[23];
    assign s_shutdown                      = s_set_injector_if.set_signals_synch[24];   
-   
+   assign s_display_screen_sel            = s_set_injector_if.set_signals_synch[25];
+   assign s_display_screen_matrix         = s_set_injector_if.set_signals_synch[26];
+   assign s_display_reg_matrix_n          = s_set_injector_if.set_signals_synch[27];
 
    // MAX : Sel SET inj or checker
    /*assign s_load_ram_sel          = s_set_injector_if.set_signals_synch[11];
@@ -337,6 +344,10 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[22]  = 8'hBB;
    assign s_set_injector_if.set_signals_asynch_init_value[23]  = 8'hCC;
    assign s_set_injector_if.set_signals_asynch_init_value[24]  = 8'hDD;
+   assign s_set_injector_if.set_signals_asynch_init_value[25]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[26]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[27]  = 0;
+   
    
    // INIT CHECK LEVEL ALIAS
 
@@ -397,7 +408,7 @@ module tb_top
     )
     i_max7219_checker_wrapper_0
     (
-                          .clk  (clk),
+                          .clk    (clk),
                           .rst_n  (rst_n),
      
                           .i_max7219_clk   (s_max7219_clk),
@@ -411,7 +422,7 @@ module tb_top
    // =========================
    
 
-   //assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : s_max7219_load;
+   assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : s_max7219_load;
 
 
    // RAM Load Injector
@@ -494,7 +505,7 @@ module tb_top
 
     .i_ram_start_ptr_scroller  (s_ram_start_ptr_scroller),
     .i_msg_length_scroller     (s_msg_length_scroller),
-    .i_start_scroll            (s_start_scroll),
+    //.i_start_scroll            (s_start_scroll),
     .i_max_tempo_cnt_scroller  (s_max_tempo_cnt_scroller),
     .o_scroller_busy           (s_scroller_busy),
 

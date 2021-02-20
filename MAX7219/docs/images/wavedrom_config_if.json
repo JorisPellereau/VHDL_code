@@ -1,0 +1,18 @@
+{signal: [
+  {name: 'clk',                     wave: 'p...............' },
+  {name: 'init_config',             wave: '0..1.........................0.....' , data: ['head', 'body', 'tail', 'data']},
+  {name: 'init_config_p',             wave: '0...1............' , data: ['head', 'body', 'tail', 'data']},
+  
+  {name: 'o_max7219_if_start',      wave: '0...10..10.....'},
+  {name: 'o_max7219_if_data',       wave: 'x...2........'    , data: ['decod_mode', 'body', 'tail', 'data']},
+  {name: 'o_max7219_if_en_load',    wave: '0............'},
+  {name: 'i_max7219_if_done',       wave: '0....|1..0....'},
+  
+  {name: 'cnt_matrix',              wave: '2......2..........', data: ['0', '1', '2', 'data']},
+  {name: 'cnt_matrix_up',              wave: '0......10.........', data: ['0', '1', '2', 'data']},
+  {name: 'cnt_matrix_done',              wave: '0.............10.........', data: ['0', '1', '2', 'data']},
+  
+  {name: 'cnt_config',              wave: '2..............2..........', data: ['0', '1', '2', 'data']},
+  {name: 'cnt_config_done',              wave: '0...........................10.........', data: ['0', '1', '2', 'data']},
+ 
+]}

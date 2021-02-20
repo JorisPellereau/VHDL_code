@@ -1,0 +1,20 @@
+# vsim -novopt -t ps -l /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../transcripts/TOOT_transcript.txt lib_tb_top.tb_top -do "/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/TOOT_run.do" -G/tb_top/i_tb_seq_wrapper_0/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../scenarios/TOOT.txt 
+# Start time: 13:32:11 on Nov 01,2020
+# Loading sv_std.std
+# Loading lib_tb_top.tb_top
+# Loading lib_tb_top.clk_gen
+# Loading lib_tb_top.tb_seq_wrapper
+# Loading lib_tb_top.sequencer
+# Loading lib_tb_top.decoder
+# Loading lib_tb_top.set_injector
+# Loading lib_tb_top.wait_event
+# Loading lib_tb_top.check_level
+# Loading lib_tb_top.wait_duration
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv(92): Expected a system task, not a system function '$fgets'.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_tb_seq_wrapper_0/i_sequencer_0 File: /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv(100): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_tb_seq_wrapper_0/i_sequencer_0 File: /home/jorisp/GitHub/Verilog/lib_testbench/sequencer.sv
+# /home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/TOOT_run.do
+# invalid command name "/home/jorisp/GitHub/VHDL_code/Makefile/scripts/../do_files/run_files/TOOT_run.do"
+# End time: 13:32:25 on Nov 01,2020, Elapsed time: 0:00:14
+# Errors: 1, Warnings: 2

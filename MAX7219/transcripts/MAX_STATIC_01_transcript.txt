@@ -1,0 +1,444 @@
+# vsim -novopt -t ps lib_tb_top.tb_top -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/MAX_STATIC_01_transcript.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/MAX_STATIC_01_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../scenarios/scn_lib_max7219_static/MAX_STATIC_01.txt 
+# Start time: 18:41:44 on Dec 25,2020
+# Loading sv_std.std
+# Loading sv_std.mti_fli
+# Loading lib_tb_top.tb_top_sv_unit
+# Loading lib_tb_top.tb_top
+# Loading lib_tb_top.clk_gen
+# Loading lib_tb_top.wait_event_intf
+# Loading lib_tb_top.set_injector_intf
+# Loading lib_tb_top.wait_duration_intf
+# Loading lib_tb_top.check_level_intf
+# Loading lib_tb_top.wait_event_wrapper
+# Loading lib_tb_top.wait_event_tb
+# Loading lib_tb_top.set_injector_wrapper
+# Loading lib_tb_top.set_injector_tb
+# Loading lib_tb_top.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_top.max7219_checker_wrapper
+# Loading lib_tb_top.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(206): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv
+# Loading lib_tb_top.max7219_checker
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.numeric_std(body)
+# Loading ieee.math_real(body)
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.max7219_if(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# do /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/MAX_STATIC_01_run.do
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Beginning of sequencer
+# MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_0.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+# 
+# Line in double quote : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_0.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# string
+# Modelsim Command Exec : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_0.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# SET EN 1
+# 
+# 
+# SET START_PTR 0
+# 
+# 
+# SET LAST_PTR 0x68
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 1
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 0
+# 
+# 
+# WTR PTR_EQUALITY 1 ms
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 ms
+# WTR detected         294750.00 ns
+# 
+# SET DISPLAY_REG_MATRIX_N 0xFF
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+# Matrix :           0
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 01
+# Register @5: Digit_4      - Data : 01
+# Register @6: Digit_5      - Data : 01
+# Register @7: Digit_6      - Data : 01
+# Register @8: Digit_7      - Data : ff
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           1
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           2
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           3
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           4
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           5
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           6
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : 00
+# Register @2: Digit_1      - Data : 00
+# Register @3: Digit_2      - Data : 00
+# Register @4: Digit_3      - Data : 00
+# Register @5: Digit_4      - Data : 00
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# Matrix :           7
+# Register @0: No-Op        - Data : 00
+# Register @1: Digit_0      - Data : ff
+# Register @2: Digit_1      - Data : 01
+# Register @3: Digit_2      - Data : 01
+# Register @4: Digit_3      - Data : 01
+# Register @5: Digit_4      - Data : 01
+# Register @6: Digit_5      - Data : 00
+# Register @7: Digit_6      - Data : 00
+# Register @8: Digit_7      - Data : 00
+# Register @9: Decode_Mode  - Data : 00
+# Register @A: Intensity    - Data : 00
+# Register @B: Scan_Limit   - Data : 00
+# Register @C: Shutdown     - Data : 00
+# Register @F: Display_Test - Data : 00
+# 
+# 
+# SET DISPLAY_SCREEN_MATRIX 1
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+# *                                                              *
+# *                                                              *
+# *                                                              *
+# *                                                              *
+# *                                                              *
+# *                                                              *
+# *                                                              *
+# *****                                                      *****
+# 
+# SET DISPLAY_REG_MATRIX_N 0
+# 
+# 
+# SET DISPLAY_SCREEN_MATRIX 0
+# 
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_1.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+# 
+# Line in double quote : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_1.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# string
+# Modelsim Command Exec : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_1.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# SET START_PTR 0
+# 
+# 
+# SET LAST_PTR 0x68
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 1
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 0
+# 
+# 
+# WTR PTR_EQUALITY 1 ms
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 ms
+# WTR detected         601250.00 ns
+# 
+# SET DISPLAY_SCREEN_MATRIX 1
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+# *      *      *      *      *      *      *      *      *      *
+# **     **     **     **     **     **     **     **     **     *
+# * *    * *    * *    * *    * *    * *    * *    * *    * *    *
+# *  *   *  *   *  *   *      *  *   *  *   *  *   *  *   *  *   *
+# *   *  *   *  *   *  *   *  *   *  *   *  *   *  *   *  *   *  *
+# *    * *    * *    * *    * *    * *    * *    * *    * *    * *
+# *     **     **     **     **     **     **     **     **     **
+# *      *      *      *      *      *      *      *      *      *
+# 
+# SET DISPLAY_SCREEN_MATRIX 0
+# 
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_2.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+# 
+# Line in double quote : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_2.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# string
+# Modelsim Command Exec : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_2.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# SET START_PTR 0
+# 
+# 
+# SET LAST_PTR 0x68
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 1
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 0
+# 
+# 
+# WTR PTR_EQUALITY 1 ms
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 ms
+# WTR detected         906730.00 ns
+# 
+# SET DISPLAY_SCREEN_MATRIX 1
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# ****************************************************************
+# 
+# SET DISPLAY_SCREEN_MATRIX 0
+# 
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_3.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+# 
+# Line in double quote : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_3.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# string
+# Modelsim Command Exec : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_3.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# SET START_PTR 0
+# 
+# 
+# SET LAST_PTR 0x68
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 1
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 0
+# 
+# 
+# WTR PTR_EQUALITY 1 ms
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 ms
+# WTR detected        1212210.00 ns
+# 
+# SET DISPLAY_SCREEN_MATRIX 1
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+# ****************************************************************
+# ************************************************************   *
+# ************************************************************   *
+# ********************************************************   *****
+# ********************************************************   *****
+# ************************************************************   *
+# ************************************************************   *
+# ****************************************************************
+# 
+# SET DISPLAY_SCREEN_MATRIX 0
+# 
+# 
+# WAIT 10 us
+# 
+# WAIT duration :          10 us
+# 
+# MODELSIM_CMD "mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_4.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram"
+# 
+# Line in double quote : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_4.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# string
+# Modelsim Command Exec : mem load -i /home/jorisp/GitHub/VHDL_code/MAX7219/stimulis/max7219_ram_pattern_4.mem -format mti /tb_top/i_dut/tdpram_inst_0/v_ram
+# SET START_PTR 0
+# 
+# 
+# SET LAST_PTR 0x68
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 1
+# 
+# 
+# WTRS CLK
+# 
+# Waiting for a rising edge ...
+# SET PTR_VAL 0
+# 
+# 
+# WTR PTR_EQUALITY 1 ms
+# 
+# Waiting for a rising edge ...
+# Timeout :           1 ms
+# WTR detected        1517690.00 ns
+# 
+# SET DISPLAY_SCREEN_MATRIX 1
+# 
+# 
+# WAIT 1 us
+# 
+# WAIT duration :           1 us
+#                                                                 
+#                                                             *** 
+#                                                             *** 
+#                                                         ***     
+#                                                         ***     
+#                                                             *** 
+#                                                             *** 
+#                                                                 
+# 
+# SET DISPLAY_SCREEN_MATRIX 0
+# 
+# 
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(125)
+#    Time: 1518710 ns  Iteration: 1  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 125
+# End time: 18:41:59 on Dec 25,2020, Elapsed time: 0:00:15
+# Errors: 0, Warnings: 2

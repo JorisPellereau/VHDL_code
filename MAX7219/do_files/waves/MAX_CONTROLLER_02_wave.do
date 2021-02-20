@@ -5,18 +5,18 @@ add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /t
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/rst_n
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/i_static_dyn
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/i_new_display
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group Config -radix hexadecimal /tb_top/i_dut/i_decod_mode
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group Config -radix hexadecimal /tb_top/i_dut/i_intensity
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group Config -radix hexadecimal /tb_top/i_dut/i_scan_limit
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group Config -radix hexadecimal /tb_top/i_dut/i_shutdown
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group Config -radix hexadecimal /tb_top/i_dut/i_display_test
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Config -radix hexadecimal /tb_top/i_dut/i_decod_mode
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Config -radix hexadecimal /tb_top/i_dut/i_intensity
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Config -radix hexadecimal /tb_top/i_dut/i_scan_limit
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Config -radix hexadecimal /tb_top/i_dut/i_shutdown
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Config -radix hexadecimal /tb_top/i_dut/i_display_test
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/i_new_config_val
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_en_static
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_me_static
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_we_static
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_addr_static
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_wdata_static
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/o_rdata_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_en_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_me_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_we_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_addr_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/i_wdata_static
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {RAM STATIC I/F} -color {Medium Slate Blue} -radix hexadecimal /tb_top/i_dut/o_rdata_static
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {config Static} -radix hexadecimal /tb_top/i_dut/i_start_ptr_static
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {config Static} -radix hexadecimal /tb_top/i_dut/i_last_ptr_static
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {config Static} -radix hexadecimal /tb_top/i_dut/i_loop_static
@@ -25,10 +25,9 @@ add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM SCROLLER 
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM SCROLLER I/F} -color Orchid -radix hexadecimal /tb_top/i_dut/i_addr_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM SCROLLER I/F} -color Orchid -radix hexadecimal /tb_top/i_dut/i_wdata_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {RAM SCROLLER I/F} -color Orchid -radix hexadecimal /tb_top/i_dut/o_rdata_scroller
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_ram_start_ptr_scroller
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_msg_length_scroller
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_start_scroll
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_max_tempo_cnt_scroller
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_ram_start_ptr_scroller
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_msg_length_scroller
+add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group {Config Scroller} -radix hexadecimal /tb_top/i_dut/i_max_tempo_cnt_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Status -radix hexadecimal /tb_top/i_dut/o_ptr_equality_static
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Status -radix hexadecimal /tb_top/i_dut/o_scroller_busy
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -expand -group Status -radix hexadecimal /tb_top/i_dut/o_static_busy
@@ -43,7 +42,6 @@ add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /t
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_ram_start_ptr_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_msg_length_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_start_scroll
-add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_max_tempo_cnt_scroller
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_max7219_if_done_config
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_max7219_if_start_config
 add wave -noupdate -expand -group {DISPLAY CONTROLLER TOP} -radix hexadecimal /tb_top/i_dut/s_max7219_if_en_load_config
@@ -90,7 +88,7 @@ add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/o_msg_length
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_scroll
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/o_mux_sel
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/o_new_config_val
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/o_new_config_val
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_current_state
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_state
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_config_done
@@ -112,15 +110,15 @@ add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_last_ptr
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ram_start_ptr
 add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_msg_length
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_config
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_static
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_scroller
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_fifo_cnt
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr_up
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr_up
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality_r_edge
-add wave -noupdate -expand -group {Sequencer States} /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_config
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_static
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_scroller
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_fifo_cnt
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr_up
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr_up
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality_r_edge
+add wave -noupdate -expand -group {Sequencer States} -radix hexadecimal /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality
 add wave -noupdate -group {CONFIG I/F} -radix hexadecimal /tb_top/i_dut/max7219_config_if_inst_0/clk
 add wave -noupdate -group {CONFIG I/F} -radix hexadecimal /tb_top/i_dut/max7219_config_if_inst_0/rst_n
 add wave -noupdate -group {CONFIG I/F} -radix hexadecimal /tb_top/i_dut/max7219_config_if_inst_0/i_decod_mode
@@ -171,33 +169,33 @@ add wave -noupdate -expand -group {MUX SELECTOR} -radix hexadecimal /tb_top/i_du
 add wave -noupdate -expand -group {MUX SELECTOR} -radix hexadecimal /tb_top/i_dut/max7219_mux_sel_inst_0/s_max7219_if_start
 add wave -noupdate -expand -group {MUX SELECTOR} -radix hexadecimal /tb_top/i_dut/max7219_mux_sel_inst_0/s_max7219_if_en_load
 add wave -noupdate -expand -group {MUX SELECTOR} -radix hexadecimal /tb_top/i_dut/max7219_mux_sel_inst_0/s_max7219_if_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/clk
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/rst_n
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_start
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_en_load
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_load
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_clk
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_done
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_en_load
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_start
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_init_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_en_clk
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_data
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_p
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_f_edge
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_r_edge
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_load
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_start_r_edge
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_done
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_15
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_16
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_half_period
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_load_px
-add wave -noupdate -expand -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_end_frame
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/clk
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/rst_n
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_start
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_en_load
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/i_data
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_load
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_data
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_max7219_clk
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/o_done
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_data
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_en_load
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_start
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_init_data
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_en_clk
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_data
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_p
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_f_edge
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_clk_r_edge
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_max7219_load
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_start_r_edge
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_done
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_15
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_16
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_cnt_half_period
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_load_px
+add wave -noupdate -group {MAX7219 I/F} -radix hexadecimal /tb_top/i_dut/max7219_if_inst_0/s_end_frame
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/clk
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/rst_n
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/i_en
@@ -220,28 +218,83 @@ add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/s_addr_decod
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/s_wdata_decod
 add wave -noupdate -group {Cmd Decod - Static} -radix hexadecimal /tb_top/i_dut/max7219_cmd_decod_inst_0/s_rdata_decod
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/clk
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/rst_n
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_clk
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_din
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_load
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_display_reg_matrix_n
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_display_screen_matrix
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_max7219_din
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_max7219_dout
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_frame_received
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix_r_edge
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/line_char
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/line
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/k
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/l
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/m
-add wave -noupdate -expand -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/n
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/clk
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/rst_n
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_clk
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_din
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_max7219_load
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_display_reg_matrix_n
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/i_display_screen_matrix
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_max7219_din
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_max7219_dout
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_frame_received
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix_r_edge
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/line_char
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/line
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/k
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/l
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/m
+add wave -noupdate -group {MAX7219 Checker} /tb_top/i_max7219_checker_wrapper_0/n
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/clk
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/rst_n
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_me
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_we
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_addr
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_wdata
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/o_rdata
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_ram_start_ptr
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_msg_length
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_start_scroll
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_max_tempo_cnt
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/i_max7219_if_done
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/o_max7219_if_start
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/o_max7219_if_en_load
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/o_max7219_if_data
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/o_busy
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_me_b
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_we_b
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_addr_b
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_wdata_b
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_rdata_b
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_seg_data
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_seg_data_valid
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_scroller_if_busy
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_done
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_start
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_en_load
+add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_data
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/clk
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/rst_n
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data_valid
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max_tempo_cnt
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_busy
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max7219_if_done
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_start
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_en_load
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_data
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_array
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_shift_matrix
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_busy
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_cnt
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_cnt
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_cnt
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_addr
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_new_data_flag
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_start
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_en_load
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_data
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_r_edge
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_f_edge
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_updated_flag
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_start_tempo
+add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1940111073 ps} 0}
+WaveRestoreCursors {{Cursor 1} {879750000 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 263
+configure wave -namecolwidth 236
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -255,4 +308,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {1170046500 ps}
+WaveRestoreZoom {0 ps} {13633504500 ps}

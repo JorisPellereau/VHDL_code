@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-02-18
+-- Last update: 2021-02-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ entity max7219_display_controller is
     -- RAM Commands
     i_ram_start_ptr_scroller : in  std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
     i_msg_length_scroller    : in  std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
-    i_start_scroll           : in  std_logic;  -- Valid - Start Scroller
+    --i_start_scroll           : in  std_logic;  -- Valid - Start Scroller
     i_max_tempo_cnt_scroller : in  std_logic_vector(31 downto 0);  -- Scroller Tempo
     o_scroller_busy          : out std_logic;  -- SCROLLER BUSY
 
@@ -113,7 +113,6 @@ architecture behv of max7219_display_controller is
   signal s_ram_start_ptr_scroller : std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
   signal s_msg_length_scroller    : std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
   signal s_start_scroll           : std_logic;
-  signal s_max_tempo_cnt_scroller : std_logic_vector(31 downto 0);
 
   -- MAX7219 CONFIG signals
   signal s_max7219_if_done_config    : std_logic;
@@ -280,7 +279,7 @@ begin  -- architecture behv
       i_ram_start_ptr => s_ram_start_ptr_scroller,
       i_msg_length    => s_msg_length_scroller,
       i_start_scroll  => s_start_scroll,
-      i_max_tempo_cnt => s_max_tempo_cnt_scroller,
+      i_max_tempo_cnt => i_max_tempo_cnt_scroller,
 
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_scroller,

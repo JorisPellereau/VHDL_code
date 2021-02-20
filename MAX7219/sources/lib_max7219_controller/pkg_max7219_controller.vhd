@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-03
--- Last update: 2021-02-14
+-- Last update: 2021-02-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ package pkg_max7219_controller is
       -- RAM Commands
       i_ram_start_ptr_scroller : in  std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
       i_msg_length_scroller    : in  std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
-      i_start_scroll           : in  std_logic;  -- Valid - Start Scroller
+      --i_start_scroll           : in  std_logic;  -- Valid - Start Scroller
       i_max_tempo_cnt_scroller : in  std_logic_vector(31 downto 0);  -- Scroller Tempo
       o_scroller_busy          : out std_logic;  -- SCROLLER BUSY
 

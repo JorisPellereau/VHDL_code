@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-02-14
+-- Last update: 2021-02-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -90,8 +90,6 @@ architecture behv of max7219_display_sequencer is
   signal s_config_done        : std_logic;
   signal s_config_done_r_edge : std_logic;  -- rising Edge of Config. Done
 
-
-  signal s_next_display   : std_logic;  -- '0' - Static '1' - Scroller
   signal s_new_config_val : std_logic;
 
   -- Internal Writes and Read Ptrs
@@ -103,6 +101,11 @@ architecture behv of max7219_display_sequencer is
 
   signal s_static_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_static_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
+
+
+  signal s_scroller_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
+  signal s_scroller_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
+
 
   signal s_next_cmd_config   : std_logic;
   signal s_next_cmd_static   : std_logic;
@@ -133,23 +136,31 @@ architecture behv of max7219_display_sequencer is
   signal s_ptr_equality_r_edge : std_logic;
   signal s_ptr_equality        : std_logic;
 
+  signal s_busy_scroller        : std_logic;
+  signal s_busy_scroller_f_edge : std_logic;
+
 begin  -- architecture behv
 
 
   p_pipe_inputs : process (clk, rst_n) is
   begin  -- process p_pipe_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_config_done  <= '0';
-      s_ptr_equality <= '0';
+      s_config_done   <= '0';
+      s_ptr_equality  <= '0';
+      s_busy_scroller <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_config_done  <= i_config_done;
-      s_ptr_equality <= i_ptr_equality;
+      s_config_done   <= i_config_done;
+      s_ptr_equality  <= i_ptr_equality;
+      s_busy_scroller <= i_busy_scroller;
     end if;
   end process p_pipe_inputs;
 
   -- Rising Edge detection
   s_config_done_r_edge  <= i_config_done and not s_config_done;
   s_ptr_equality_r_edge <= i_ptr_equality and not s_ptr_equality;
+
+  -- Falling Edge detection
+  s_busy_scroller_f_edge <= not i_busy_scroller and s_busy_scroller;
 
   -- purpose: Current State management
   p_curr_state_mngt : process (clk, rst_n) is
@@ -161,7 +172,7 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge) is
+  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge, s_busy_scroller_f_edge) is
   begin  -- process p_next_state_mngt
 
     case s_current_state is
@@ -188,7 +199,9 @@ begin  -- architecture behv
         end if;
 
       when SCROLL =>
-
+        if(s_busy_scroller_f_edge = '1') then
+          s_next_state <= WAIT_CMD;
+        end if;
 
       when others => null;
 
@@ -267,7 +280,8 @@ begin  -- architecture behv
       s_next_cmd_scroller <= '0';
       s_cmd_rd_ptr_up     <= '0';
 
-      s_static_rd_ptr <= 0;
+      s_static_rd_ptr   <= 0;
+      s_scroller_rd_ptr <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_next_cmd_config   <= '0';       -- Pulse
@@ -286,7 +300,9 @@ begin  -- architecture behv
           elsif(s_cmd_array(s_cmd_rd_ptr) = "10") then
             s_next_cmd_scroller <= '1';
           else
-
+            s_next_cmd_config   <= '0';
+            s_next_cmd_static   <= '0';
+            s_next_cmd_scroller <= '0';
           end if;
         end if;
 
@@ -309,6 +325,14 @@ begin  -- architecture behv
           end if;
         end if;
 
+        if(s_next_cmd_scroller = '1') then
+          if(s_scroller_rd_ptr < G_FIFO_DEPTH - 1) then
+            s_scroller_rd_ptr <= s_scroller_rd_ptr + 1;
+          else
+            s_scroller_rd_ptr <= 0;
+          end if;
+        end if;
+
 
       end if;
 
@@ -321,15 +345,39 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_cmd_fifo_cnt <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- if(s_cmd_wr_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
+      --   end if;
+      -- elsif(s_cmd_rd_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt > 0) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
+      --   end if;
+      -- end if;
+
+      -- if(s_cmd_rd_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt > 0) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
+      --   end if;
+      -- elsif(s_cmd_wr_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
+      --   end if;
+      -- end if;
+
       if(s_cmd_wr_ptr_up = '1') then
         if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
           s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
         end if;
-      elsif(s_cmd_rd_ptr_up = '1') then
+      end if;
+
+      if(s_cmd_rd_ptr_up = '1') then
         if(s_cmd_fifo_cnt > 0) then
           s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
         end if;
       end if;
+
     end if;
   end process p_cmd_fifo_cnt;
 
@@ -374,7 +422,13 @@ begin  -- architecture behv
         if(s_cmd_val = '1' and s_cmd_type = "01") then
           s_start_ptr_static_array(s_static_wr_ptr) <= s_start_ptr;
           s_last_ptr_static_array(s_static_wr_ptr)  <= s_last_ptr;
-          s_static_wr_ptr                           <= s_static_wr_ptr + 1;  -- Inc Ptr       
+
+          if(s_static_wr_ptr < G_FIFO_DEPTH - 1) then
+            s_static_wr_ptr <= s_static_wr_ptr + 1;  -- Inc Ptr
+          else
+            s_static_wr_ptr <= 0;
+          end if;
+
         end if;
       end if;
 
@@ -386,8 +440,25 @@ begin  -- architecture behv
   p_fifo_data_scroller_write : process (clk, rst_n) is
   begin  -- process p_fifo_data_scroller_write
     if rst_n = '0' then                 -- asynchronous reset (active low)
-
+      s_ram_start_scroller_array  <= (others => (others => '0'));
+      s_msg_length_scroller_array <= (others => (others => '0'));
+      s_scroller_wr_ptr           <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
+
+      if(s_fifo_full = '0') then
+        if(s_cmd_val = '1' and s_cmd_type = "10") then
+          s_ram_start_scroller_array(s_scroller_wr_ptr)  <= s_ram_start_ptr;
+          s_msg_length_scroller_array(s_scroller_wr_ptr) <= s_msg_length;
+
+          if(s_scroller_wr_ptr < G_FIFO_DEPTH - 1) then
+            s_scroller_wr_ptr <= s_scroller_wr_ptr + 1;  -- Inc Ptr
+          else
+            s_scroller_wr_ptr <= 0;
+          end if;
+
+        end if;
+      end if;
+
 
     end if;
   end process p_fifo_data_scroller_write;
@@ -399,13 +470,22 @@ begin  -- architecture behv
   begin  -- process p_outputs_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_new_config_val <= '0';
+
+      o_static_val    <= '0';
+      o_start_ptr     <= (others => '0');
+      o_last_ptr      <= (others => '0');
+      o_start_scroll  <= '0';
+      o_ram_start_ptr <= (others => '0');
+      o_msg_length    <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
       s_new_config_val <= '0';
 
-      o_static_val <= '0';
-      o_start_ptr  <= (others => '0');
-      o_last_ptr   <= (others => '0');
-
+      o_static_val    <= '0';
+      o_start_ptr     <= (others => '0');
+      o_last_ptr      <= (others => '0');
+      o_start_scroll  <= '0';
+      o_ram_start_ptr <= (others => '0');
+      o_msg_length    <= (others => '0');
 
       case s_current_state is
         when IDLE =>
@@ -421,6 +501,9 @@ begin  -- architecture behv
             o_start_ptr  <= s_start_ptr_static_array(s_static_rd_ptr);
             o_last_ptr   <= s_last_ptr_static_array(s_static_rd_ptr);
           elsif(s_next_cmd_scroller = '1') then
+            o_start_scroll  <= '1';
+            o_ram_start_ptr <= s_ram_start_scroller_array(s_scroller_rd_ptr);
+            o_msg_length    <= s_msg_length_scroller_array(s_scroller_rd_ptr);
 
           end if;
 
