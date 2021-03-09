@@ -250,6 +250,8 @@ src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/clk_gen.sv
 # =================================
 
 # == TB TOP ==
+
+# TBD : different library
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.sv
 
 src_tb_v+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/tb_top.sv
@@ -312,6 +314,7 @@ run_tb_max7219_static :
 run_tb_max7219_scroller :
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_TOP).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_scroller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+
 
 run_tb_max7219_controller :
 	cd $(WORK_DIR); \

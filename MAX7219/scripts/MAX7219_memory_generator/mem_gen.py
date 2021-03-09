@@ -334,14 +334,25 @@ class window(QtWidgets.QDialog):
     def generer_cst(self):
         print("Generer Constant Def")
         data_array = []
+        data_array_int = []
+        tmp = 0
         self.get_checkbox_states()
         for i in range(8*self.matrix_nb):
             data_array.append("")
+            data_array_int.append("")
             data_array[i] = str(int(self.grid[0][i])) + str(int(self.grid[1][i])) + str(int(self.grid[2][i])) + str(int(self.grid[3][i]))            
             data_array[i] = data_array[i] + str(int(self.grid[4][i])) + str(int(self.grid[5][i])) + str(int(self.grid[6][i])) + str(int(self.grid[7][i]))
 
+            
+            tmp = (int(self.grid[0][i]) << 7) | (int(self.grid[1][i]) << 6) | (int(self.grid[2][i]) << 5) | (int(self.grid[3][i]) << 4) 
+            data_array_int[i] = hex(tmp | (int(self.grid[4][i]) << 3) | (int(self.grid[5][i]) << 2) | (int(self.grid[6][i]) << 1 ) | (int(self.grid[7][i])))
+            
+            #data_array_int[i] = data_array[i]
+            #int(data_array_int[i])
 
-                
+        print("data array int : %s \n" % (data_array_int) )
+        print(type(data_array_int[0]))
+        
         f = open("constant_gen.vhd", "w")
         f.writelines("type t_cst_array is array (0 to %d) of std_logic_vector(7 downto 0);\n" %(self.matrix_nb * 8 - 1))
         f.writelines("constant C_CST_0 : t_cst_array := (\n")

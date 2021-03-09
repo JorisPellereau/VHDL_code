@@ -275,7 +275,9 @@ module tb_top
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
                       `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD) 
+                      `C_TB_CLK_PERIOD,
+                      `C_CHECK_SIZE,
+                      `C_CHECK_WIDTH) 
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
