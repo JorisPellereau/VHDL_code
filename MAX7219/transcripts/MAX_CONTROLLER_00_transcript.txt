@@ -1,0 +1,570 @@
+# vsim -novopt -t ps lib_tb_top.tb_top -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/MAX_CONTROLLER_00_transcript.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/MAX_CONTROLLER_00_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../scenarios/scn_lib_max7219_controller/MAX_CONTROLLER_00.txt 
+# Start time: 22:44:53 on Feb 18,2021
+# Loading sv_std.std
+# Loading sv_std.mti_fli
+# Loading lib_tb_top.tb_top_sv_unit
+# Loading lib_tb_top.tb_top
+# Loading lib_tb_top.clk_gen
+# Loading lib_tb_top.wait_event_intf
+# Loading lib_tb_top.set_injector_intf
+# Loading lib_tb_top.wait_duration_intf
+# Loading lib_tb_top.check_level_intf
+# Loading lib_tb_top.wait_event_wrapper
+# Loading lib_tb_top.wait_event_tb
+# Loading lib_tb_top.set_injector_wrapper
+# Loading lib_tb_top.set_injector_tb
+# Loading lib_tb_top.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_top.max7219_checker_wrapper
+# Loading lib_tb_top.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(206): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv
+# Loading lib_tb_top.max7219_checker
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.numeric_std(body)
+# Loading ieee.math_real(body)
+# Loading lib_tb_top.pkg_max7219
+# Loading lib_tb_top.pkg_max7219_controller
+# Loading lib_tb_top.max7219_display_controller(behv)
+# Loading lib_tb_top.max7219_display_sequencer(behv)
+# Loading lib_tb_top.max7219_config_if(behv)
+# Loading lib_tb_top.max7219_cmd_decod(behv)
+# Loading lib_tb_top.tdpram_sclk(behv)
+# Loading lib_tb_top.max7219_ram_decod(behv)
+# Loading lib_tb_top.max7219_scroller_ctrl(behv)
+# Loading lib_tb_top.max7219_ram2scroller_if(behv)
+# Loading lib_tb_top.max7219_scroller_if(behv)
+# Loading lib_tb_top.max7219_mux_sel(behv)
+# Loading lib_tb_top.max7219_if(behv)
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/max7219_display_sequencer_inst_0/o_ram_start_ptr(7 downto 0) has no driver.
+# This port will contribute value (UUUUUUUU) to the signal network.
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/max7219_display_sequencer_inst_0/o_msg_length(7 downto 0) has no driver.
+# This port will contribute value (UUUUUUUU) to the signal network.
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_scroll has no driver.
+# This port will contribute value (U) to the signal network.
+# do /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/MAX_CONTROLLER_00_run.do
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 1 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 2 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 3 times, errno 11
+# ** Error: Cannot lock WLF file: "vsim.wlf"
+#           errno 11: Resource temporarily unavailable.
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: jorisp  Hostname: jorisp-VirtualBox  ProcessID: 4956
+#           Attempting to use alternate WLF file "./wlftgrNSJe".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlftgrNSJe
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Beginning of sequencer
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# SET I_ME_STATIC 1
+# 
+# 
+# SET I_WE_STATIC 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x001
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x002
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x003
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x004
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x005
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x006
+# 
+# 
+# SET I_WDATA_STATIC 0x0900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_STATIC 0x007
+# 
+# 
+# SET I_WDATA_STATIC 0x1900
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ME_STATIC 0
+# 
+# 
+# SET I_WE_STATIC 0
+# 
+# 
+# SET I_ME_SCROLLER 1
+# 
+# 
+# SET I_WE_SCROLLER 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0
+# 
+# 
+# SET I_WDATA_SCROLLER 0xAA
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x001
+# 
+# 
+# SET I_WDATA_SCROLLER 0xBB
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x002
+# 
+# 
+# SET I_WDATA_SCROLLER 0xCC
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x003
+# 
+# 
+# SET I_WDATA_SCROLLER 0xDD
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x004
+# 
+# 
+# SET I_WDATA_SCROLLER 0xEE
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x005
+# 
+# 
+# SET I_WDATA_SCROLLER 0xFF
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x006
+# 
+# 
+# SET I_WDATA_SCROLLER 0x11
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ADDR_SCROLLER 0x007
+# 
+# 
+# SET I_WDATA_SCROLLER 0x22
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_ME_SCROLLER 0
+# 
+# 
+# SET I_WE_SCROLLER 0
+# 
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         109470.00 ns
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         218870.00 ns
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         328270.00 ns
+# 
+# WAIT 100 us
+# 
+# WAIT duration :         100 us
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_CONFIG_VAL 0
+# 
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         537690.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         646970.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         756250.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         865530.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected         974810.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1084090.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1193370.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1302650.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1411930.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1521210.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1630490.00 ns
+# 
+# WTR O_CONFIG_DONE
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1739770.00 ns
+# 
+# WAIT 200 us
+# 
+# WAIT duration :         200 us
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_EN_STATIC 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_START_PTR_STATIC 0x000
+# 
+# 
+# SET I_LAST_PTR_STATIC  0x002
+# 
+# 
+# SET I_NEW_DISPLAY 1
+# 
+# 
+# WTFS CLK
+# 
+# Waiting for a falling edge ...
+# SET I_NEW_DISPLAY 0
+# 
+# 
+# WTR O_PTR_EQUALITY_STATIC
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected        1945730.00 ns
+# 
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(125)
+#    Time: 1945730 ns  Iteration: 4  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 125
+# End time: 22:46:06 on Feb 18,2021, Elapsed time: 0:01:13
+# Errors: 4, Warnings: 7

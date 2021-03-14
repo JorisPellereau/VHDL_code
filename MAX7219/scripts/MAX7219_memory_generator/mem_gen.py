@@ -359,7 +359,7 @@ class window(QtWidgets.QDialog):
             #print("tmp : %s \n\n" %(tmp) )
             tmp = 0
            
-        #print("data array int : %s \n" % (data_array_int) )
+        print("data array int for SCROLLER RAM: %s \n" % (data_array_int) )
         #print(type(data_array_int[0]))
 
         #print("data array : %s \n " %(data_array) )
@@ -504,7 +504,7 @@ class window(QtWidgets.QDialog):
             final_array[i + 7*self.matrix_nb] =  digit_7_matrix_n[i]
 
 
-        print("\n\nFinal array : %s\n" %(final_array))
+        print("\n\nFinal array for STATIC RAM : %s\n" %(final_array))
         #print(len(final_array))
             
         

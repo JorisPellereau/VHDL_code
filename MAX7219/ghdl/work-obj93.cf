@@ -1,0 +1,4 @@
+v 4
+file . "../sources/lib_max7219_controller/max7219_config_if.vhd" "ca32584d9bf7253a117b1418bf21e96875e1b057" "20210123175355.843":
+  entity max7219_config_if at 22( 915) + 0 on 13;
+  architecture behv of max7219_config_if at 50( 2003) + 0 on 14;
