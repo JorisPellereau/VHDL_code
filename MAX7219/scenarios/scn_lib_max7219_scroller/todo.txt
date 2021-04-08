@@ -1,0 +1,3 @@
+A tester :
+
+- Demarrage du scroller avec : i_ram_start_ptr = 0 - msg_length = 0 - tempo_cnt = 0

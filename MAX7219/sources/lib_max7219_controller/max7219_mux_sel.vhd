@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-02-14
--- Last update: 2021-04-05
+-- Last update: 2021-04-08
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       case i_mux_sel is
-        when "00" =>
+        when "11" =>
           s_max7219_if_start       <= i_max7219_if_start_config;
           s_max7219_if_en_load     <= i_max7219_if_en_load_config;
           s_max7219_if_data        <= i_max7219_if_data_config;

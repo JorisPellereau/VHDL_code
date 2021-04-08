@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-02-20
+-- Last update: 2021-04-08
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -90,7 +90,12 @@ architecture behv of max7219_display_sequencer is
   signal s_config_done        : std_logic;
   signal s_config_done_r_edge : std_logic;  -- rising Edge of Config. Done
 
-  signal s_new_config_val : std_logic;
+  signal s_new_config_val          : std_logic;  -- Pipe i_new_config_val
+  signal s_new_config_val_r_edge   : std_logic;  -- Rising edge of i_new_config_val
+  signal s_new_config_val_from_seq : std_logic;  -- New Config. Val from Sequencer
+
+  signal s_new_display        : std_logic;  -- New display pipe
+  signal s_new_display_r_edge : std_logic;  -- New Display rising edge
 
   -- Internal Writes and Read Ptrs
   signal s_cmd_wr_ptr    : integer range 0 to G_FIFO_DEPTH - 1;
@@ -124,6 +129,7 @@ architecture behv of max7219_display_sequencer is
 
   signal s_cmd_val  : std_logic;                     -- Command Val
   signal s_cmd_type : std_logic_vector(1 downto 0);  -- Command Type
+  signal s_mux_sel  : std_logic_vector(1 downto 0);  -- MUX Selection
 
   -- STATIC signals
   signal s_start_ptr : std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
@@ -145,19 +151,25 @@ begin  -- architecture behv
   p_pipe_inputs : process (clk, rst_n) is
   begin  -- process p_pipe_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_config_done   <= '0';
-      s_ptr_equality  <= '0';
-      s_busy_scroller <= '0';
+      s_config_done    <= '0';
+      s_ptr_equality   <= '0';
+      s_busy_scroller  <= '0';
+      s_new_display    <= '0';
+      s_new_config_val <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_config_done   <= i_config_done;
-      s_ptr_equality  <= i_ptr_equality;
-      s_busy_scroller <= i_busy_scroller;
+      s_config_done    <= i_config_done;
+      s_ptr_equality   <= i_ptr_equality;
+      s_busy_scroller  <= i_busy_scroller;
+      s_new_display    <= i_new_display;
+      s_new_config_val <= i_new_config_val;
     end if;
   end process p_pipe_inputs;
 
   -- Rising Edge detection
-  s_config_done_r_edge  <= i_config_done and not s_config_done;
-  s_ptr_equality_r_edge <= i_ptr_equality and not s_ptr_equality;
+  s_config_done_r_edge    <= i_config_done and not s_config_done;
+  s_ptr_equality_r_edge   <= i_ptr_equality and not s_ptr_equality;
+  s_new_display_r_edge    <= i_new_display and not s_new_display;
+  s_new_config_val_r_edge <= i_new_config_val and not s_new_config_val;
 
   -- Falling Edge detection
   s_busy_scroller_f_edge <= not i_busy_scroller and s_busy_scroller;
@@ -213,7 +225,7 @@ begin  -- architecture behv
   begin  -- process p_new_cmd_decod
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_cmd_val       <= '0';
-      s_cmd_type      <= (others => '0');
+      s_cmd_type      <= "11";          -- Config selected by default
       s_start_ptr     <= (others => '0');
       s_last_ptr      <= (others => '0');
       s_ram_start_ptr <= (others => '0');
@@ -221,10 +233,10 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_cmd_val <= '0';                 -- Pulse
-      if(i_new_config_val = '1') then
-        s_cmd_type <= (others => '0');
+      if(s_new_config_val_r_edge = '1') then
+        s_cmd_type <= "11";
         s_cmd_val  <= '1';
-      elsif(i_new_display = '1') then
+      elsif(s_new_display_r_edge = '1') then
         -- Static selected
         if(i_static_dyn = '0') then
           s_cmd_type  <= "01";
@@ -293,7 +305,7 @@ begin  -- architecture behv
 
 
         if(s_next_state = WAIT_CMD) then
-          if(s_cmd_array(s_cmd_rd_ptr) = "00") then
+          if(s_cmd_array(s_cmd_rd_ptr) = "11") then
             s_next_cmd_config <= '1';
           elsif(s_cmd_array(s_cmd_rd_ptr) = "01") then
             s_next_cmd_static <= '1';
@@ -346,15 +358,15 @@ begin  -- architecture behv
       s_cmd_fifo_cnt <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      -- if(s_cmd_wr_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
-      --   end if;
-      -- elsif(s_cmd_rd_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt > 0) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
-      --   end if;
-      -- end if;
+      if(s_cmd_wr_ptr_up = '1') then
+        if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+          s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
+        end if;
+      elsif(s_cmd_rd_ptr_up = '1') then
+        if(s_cmd_fifo_cnt > 0) then
+          s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
+        end if;
+      end if;
 
       -- if(s_cmd_rd_ptr_up = '1') then
       --   if(s_cmd_fifo_cnt > 0) then
@@ -366,17 +378,17 @@ begin  -- architecture behv
       --   end if;
       -- end if;
 
-      if(s_cmd_wr_ptr_up = '1') then
-        if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
-          s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
-        end if;
-      end if;
+      -- if(s_cmd_wr_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
+      --   end if;
+      -- end if;
 
-      if(s_cmd_rd_ptr_up = '1') then
-        if(s_cmd_fifo_cnt > 0) then
-          s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
-        end if;
-      end if;
+      -- if(s_cmd_rd_ptr_up = '1') then
+      --   if(s_cmd_fifo_cnt > 0) then
+      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
+      --   end if;
+      -- end if;
 
     end if;
   end process p_cmd_fifo_cnt;
@@ -469,7 +481,7 @@ begin  -- architecture behv
   p_outputs_mngt : process (clk, rst_n) is
   begin  -- process p_outputs_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_new_config_val <= '0';
+      s_new_config_val_from_seq <= '0';
 
       o_static_val    <= '0';
       o_start_ptr     <= (others => '0');
@@ -477,8 +489,10 @@ begin  -- architecture behv
       o_start_scroll  <= '0';
       o_ram_start_ptr <= (others => '0');
       o_msg_length    <= (others => '0');
+
+      s_mux_sel <= "11";                -- Config. selected by default
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_new_config_val <= '0';
+      s_new_config_val_from_seq <= '0';
 
       o_static_val    <= '0';
       o_start_ptr     <= (others => '0');
@@ -492,19 +506,22 @@ begin  -- architecture behv
 
 
         when CONFIG =>
+          --if(s_next_cmd_config = '1'
 
         when WAIT_CMD =>
           if(s_next_cmd_config = '1') then
-            s_new_config_val <= '1';
+            s_new_config_val_from_seq <= '1';
+            s_mux_sel                 <= "11";
           elsif(s_next_cmd_static = '1') then
             o_static_val <= '1';
             o_start_ptr  <= s_start_ptr_static_array(s_static_rd_ptr);
             o_last_ptr   <= s_last_ptr_static_array(s_static_rd_ptr);
+            s_mux_sel    <= "01";
           elsif(s_next_cmd_scroller = '1') then
             o_start_scroll  <= '1';
             o_ram_start_ptr <= s_ram_start_scroller_array(s_scroller_rd_ptr);
             o_msg_length    <= s_msg_length_scroller_array(s_scroller_rd_ptr);
-
+            s_mux_sel       <= "10";
           end if;
 
         when STATIC =>
@@ -521,8 +538,8 @@ begin  -- architecture behv
 
 
   -- Outputs affectation
-  o_mux_sel        <= s_cmd_type;
-  o_new_config_val <= s_new_config_val;
+  o_mux_sel        <= s_mux_sel;        --s_cmd_type;
+  o_new_config_val <= s_new_config_val_from_seq;
 
 
 end architecture behv;
