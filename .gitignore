@@ -87,3 +87,9 @@ Makefile/TOTO_WORK/lib_tb_top/_info
 Makefile/TOTO_WORK/lib_testbench/_info
 
 Makefile/TOTO_WORK/lib_testbench/_vmake
+
+MAX7219/transcripts/
+
+MAX7219/scripts/MAX7219_memory_generator/constant_gen.vhd
+
+MAX7219/MAX7219_WORK/

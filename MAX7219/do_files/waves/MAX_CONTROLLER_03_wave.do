@@ -264,35 +264,35 @@ add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_du
 add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_start
 add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_en_load
 add wave -noupdate -expand -group {SCROLLER TOP} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/s_data
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/clk
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/rst_n
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data_valid
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max_tempo_cnt
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_busy
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max7219_if_done
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_start
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_en_load
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_data
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_array
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_shift_matrix
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_busy
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_cnt
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_cnt
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_cnt
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_addr
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_new_data_flag
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_start
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_en_load
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_data
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_r_edge
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_f_edge
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_updated_flag
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_start_tempo
-add wave -noupdate -expand -group {scroll if} /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_done
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/clk
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/rst_n
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_seg_data_valid
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max_tempo_cnt
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_busy
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/i_max7219_if_done
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_start
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_en_load
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/o_max7219_if_data
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_array
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_shift_matrix
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_busy
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_cnt
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_cnt
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_cnt
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_segment_addr
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_new_data_flag
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_start
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_en_load
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_data
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_r_edge
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_max7219_if_done_f_edge
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_matrix_updated_flag
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_start_tempo
+add wave -noupdate -expand -group {scroll if} -radix hexadecimal /tb_top/i_dut/max7219_scroller_ctrl_inst_0/max7219_scroller_if_inst_0/s_tempo_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {879750000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {844019926 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 236
 configure wave -valuecolwidth 100
@@ -308,4 +308,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {13633504500 ps}
+WaveRestoreZoom {832399592 ps} {858652280 ps}
