@@ -93,3 +93,5 @@ MAX7219/transcripts/
 MAX7219/scripts/MAX7219_memory_generator/constant_gen.vhd
 
 MAX7219/MAX7219_WORK/
+
+*.pyc
