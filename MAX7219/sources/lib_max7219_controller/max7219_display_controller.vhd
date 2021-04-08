@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-02-20
+-- Last update: 2021-04-08
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,9 +23,17 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
-library lib_max7219;
-use lib_max7219.pkg_max7219.all;
-use lib_max7219.pkg_max7219_controller.all;
+library lib_max7219_interface;
+use lib_max7219_interface.pkg_max7219_interface.all;
+
+library lib_max7219_static;
+use lib_max7219_static.pkg_max7219_static.all;
+
+library lib_max7219_scroller;
+use lib_max7219_scroller.pkg_max7219_scroller.all;
+
+library lib_max7219_controller;
+use lib_max7219_controller.pkg_max7219_controller.all;
 
 entity max7219_display_controller is
   generic (

@@ -243,36 +243,39 @@ scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
 scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
 scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
 
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 2*64)
-scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 3*64/2)
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
-scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
-scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
 
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 3*64)
-scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 4*64/2)
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
-scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
-scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
-
-
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 2*64 + 32)
-scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 64)
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
-scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
-scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
-scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
-scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
-
-
-scn_max_controller_03.generic_tb_cmd.WAIT(100, "us")   
 scn_max_controller_03.END_TEST()
+
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 2*64)
+#scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 3*64/2)
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
+#scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+#scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
+
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 3*64)
+#scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 4*64/2)
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
+#scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+#scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
+
+
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 2*64 + 32)
+#scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 64)
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
+#scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+#scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
+#scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+#scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
+
+
+#scn_max_controller_03.generic_tb_cmd.WAIT(100, "us")   
+#scn_max_controller_03.END_TEST()
 
 

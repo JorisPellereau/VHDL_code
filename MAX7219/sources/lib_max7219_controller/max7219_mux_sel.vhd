@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-02-14
--- Last update: 2021-02-14
+-- Last update: 2021-04-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,8 +23,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
-library lib_max7219;
-use lib_max7219.pkg_max7219_controller.all;
+--library lib_max7219;
+--use lib_max7219.pkg_max7219_controller.all;
 
 
 entity max7219_mux_sel is

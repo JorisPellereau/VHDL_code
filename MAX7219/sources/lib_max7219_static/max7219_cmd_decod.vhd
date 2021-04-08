@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2020-12-25
+-- Last update: 2021-04-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,8 +23,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
-library lib_max7219;
-use lib_max7219.pkg_max7219.all;
+library lib_max7219_static;
+use lib_max7219_static.pkg_max7219_static.all;
 
 entity max7219_cmd_decod is
 
