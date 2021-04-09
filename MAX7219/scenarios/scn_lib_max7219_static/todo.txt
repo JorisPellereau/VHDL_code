@@ -1,0 +1,6 @@
+Corner test :
+
+Pointer = 0
+
+Max ptr etc
+

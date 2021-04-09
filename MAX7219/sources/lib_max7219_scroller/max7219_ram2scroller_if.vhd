@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2021-04-05
+-- Last update: 2021-04-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -85,6 +85,8 @@ architecture behv of max7219_ram2scroller_if is
   signal s_max_access : std_logic_vector(G_RAM_DATA_WIDTH downto 0);
   signal s_seg_data   : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
 
+  signal s_reject_scroll : std_logic;   -- Reject Scroll
+
 begin  -- architecture behv
 
   p_pipe_in : process (clk, rst_n) is
@@ -112,25 +114,36 @@ begin  -- architecture behv
   p_latch_in : process (clk, rst_n) is
   begin  -- process p_latch_in
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_msg_length <= (others => '0');
-      s_inputs_val <= '0';
-      s_max_access <= (others => '0');
+      s_msg_length    <= (others => '0');
+      s_inputs_val    <= '0';
+      s_max_access    <= (others => '0');
+      s_reject_scroll <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_start_r_edge = '1') then
 
         -- Only if not busy
         if(s_busy = '0') then
-          s_msg_length <= i_msg_length;
-          --if(i_msg_length /= x"FF") then
-          s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length);
-          --else
-          --s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length) - 1;
-          --end if;
-          s_inputs_val <= '1';
+
+          -- Filter size of message length
+          if(i_msg_length /= x"00") then
+            s_msg_length <= i_msg_length;
+            --if(i_msg_length /= x"FF") then
+            s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length);
+            --else
+            --s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length) - 1;
+            --end if;
+            s_inputs_val <= '1';
+
+          -- Case msg_length = x"00"
+          else
+            s_reject_scroll <= '1';
+            s_inputs_val    <= '0';
+          end if;
         end if;
       else
-        s_inputs_val <= '0';
+        s_inputs_val    <= '0';
+        s_reject_scroll <= '0';
       end if;
 
 
@@ -274,6 +287,10 @@ begin  -- architecture behv
       if(s_start_r_edge = '1') then
         s_busy <= '1';
       elsif(s_access_cnt_done = '1') then
+        s_busy <= '0';
+
+      -- Case scroll access is rejected
+      elsif(s_reject_scroll = '1') then
         s_busy <= '0';
       end if;
 
