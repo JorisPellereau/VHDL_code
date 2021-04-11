@@ -72,6 +72,12 @@ VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
 ifeq ($(COVER), ON)
 	VSIM_ARGS+=-coverage
 endif
+
+ifeq ($(GUI), OFF)
+	VSIM_ARGS=-c
+endif
+
+
 # ===============
 
 # == DESIGN LIBRARIES ==
@@ -107,6 +113,26 @@ LIB_LIST+=lib_max7219
 ## == TESTBENCH LIBRARY ==
 LIB_LIST+=$(LIB_TESTBENCH)
 ## =======================
+
+## == SCENARIOS LIST == ##
+STATIC_SCN_LIST+=MAX_STATIC_00
+STATIC_SCN_LIST+=MAX_STATIC_01
+STATIC_SCN_LIST+=MAX_STATIC_02
+STATIC_SCN_LIST+=MAX_STATIC_03
+STATIC_SCN_LIST+=MAX_STATIC_04
+STATIC_SCN_LIST+=MAX_STATIC_05
+
+SCROLLER_SCN_LIST+=MAX_SCROLLER_00
+SCROLLER_SCN_LIST+=MAX_SCROLLER_01
+SCROLLER_SCN_LIST+=MAX_SCROLLER_02
+SCROLLER_SCN_LIST+=MAX_SCROLLER_03
+SCROLLER_SCN_LIST+=MAX_SCROLLER_04
+
+CONTROLLER_SCN_LIST+=MAX_CONTROLLER_00
+CONTROLLER_SCN_LIST+=MAX_CONTROLLER_01
+CONTROLLER_SCN_LIST+=MAX_CONTROLLER_02
+CONTROLLER_SCN_LIST+=MAX_CONTROLLER_03
+## ==================== ##
 
 ## ============================== ##
 
@@ -149,6 +175,11 @@ all:
 	@echo ""
 	@echo "- Run test MAX7219_CONTROLLER :"
 	@echo "make run_tb_max7219_controller TEST=[TEST_NAME]"
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo "- Run ALL MAX7219_STATIC Tests"
+	@echo "make run_max7219_static_tests"
 	@echo "==============="
 	@echo ""
 	@echo "== RUN SYMBOLATOR =="
@@ -156,11 +187,16 @@ all:
 	@echo "make symbolator_generate_png"
 	@echo "==============="
 	@echo ""
-	@echo "LIB_LIST : $(LIB_LIST)"
-	@echo "VSIM_ARGS : $(VSIM_ARGS)"
-	@echo "VSIM_G_ARGS : $(VSIM_G_ARGS)"
-	@echo "GENERIC_TB_SRC_DIR : $(GENERIC_TB_SRC_DIR)"
+	@echo "LIB_LIST           : $(LIB_LIST)"
+	@echo "VSIM_ARGS          : $(VSIM_ARGS)"
+	@echo "VSIM_G_ARGS        : $(VSIM_G_ARGS)"
+	@echo ""
+	@echo "GENERIC_TB_SRC_DIR        : $(GENERIC_TB_SRC_DIR)"
 	@echo "SOURCE GENERIC TB V FILES : $(src_gen_tb_v)"
+	@echo ""
+	@echo "STATIC SCN LIST     : $(STATIC_SCN_LIST)"
+	@echo "SCROLLER SCN LIST   : $(SCROLLER_SCN_LIST)"
+	@echo "CONTROLLER SCN LIST : $(CONTROLLER_SCN_LIST)"
 
 
 
@@ -430,7 +466,7 @@ compile_tb_v_files :
 compile_testbench : compile_tb_vhd_files compile_generic_tb_v_files compile_tb_v_files
 # =======================
 
-## ======================= ##
+##======================= ##
 
 
 # == COMPILE ALL ==
@@ -454,11 +490,17 @@ run_tb_max7219_controller :
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_CONTROLLER).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_controller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 
-
-
 # ==============
 
+# == RUN ALL TEST ==
+run_max7219_static_tests :
+	$(foreach list, $(STATIC_SCN_LIST), make run_tb_max7219_static TEST=$(list);)
 
+run_max7219_scroller_tests :
+	$(foreach list, $(SCROLLER_SCN_LIST), make run_tb_max7219_scroller TEST=$(list);)
+
+run_max7219_controller_tests :
+	$(foreach list, $(CONTROLLER_SCN_LIST), make run_tb_max7219_controller TEST=$(list);)
 
 
 ##################################################

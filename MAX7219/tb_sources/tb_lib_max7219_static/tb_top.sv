@@ -62,6 +62,11 @@ module tb_top
    
 
    wire [7:0]  s_display_reg_matrix_n;
+   wire        s_sel;
+   wire        s_display_screen_matrix_tb;
+   wire        s_display_screen_matrix;
+   
+   
    
 
    // SET INJECTOR signals
@@ -138,6 +143,7 @@ module tb_top
    assign s_set_injector_if.set_alias[8]  = "EN";
    assign s_set_injector_if.set_alias[9]  = "DISPLAY_REG_MATRIX_N";
    assign s_set_injector_if.set_alias[10] = "DISPLAY_SCREEN_MATRIX";
+   assign s_set_injector_if.set_alias[11] = "SEL";
    
    // SET SET_INJECTOR SIGNALS
    assign s_me        = s_set_injector_if.set_signals_synch[0];
@@ -150,8 +156,10 @@ module tb_top
    assign s_loop      = s_set_injector_if.set_signals_synch[7];
    assign s_en        = s_set_injector_if.set_signals_synch[8];
    
-   assign s_display_reg_matrix_n  = s_set_injector_if.set_signals_synch[9];
-   assign s_display_screen_matrix = s_set_injector_if.set_signals_synch[10];
+   assign s_display_reg_matrix_n     = s_set_injector_if.set_signals_synch[9];
+   assign s_display_screen_matrix_tb = s_set_injector_if.set_signals_synch[10];
+   assign s_sel                      = s_set_injector_if.set_signals_synch[11];
+   
    
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
@@ -165,6 +173,7 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[8]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[9]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[10] = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[11] = 0;
    
    // INIT CHECK LEVEL ALIAS
    assign s_check_level_if.check_alias[0] = "TOTO0";
@@ -280,6 +289,8 @@ module tb_top
    // =========================
    
 
+   assign s_display_screen_matrix = (s_sel == 0) ? s_display_screen_matrix_tb : s_max7219_if_en_load; // Mux for selection
+   
 
 
    // == DUT INST ==
