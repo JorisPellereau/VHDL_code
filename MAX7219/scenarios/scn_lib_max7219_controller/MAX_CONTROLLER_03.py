@@ -46,7 +46,7 @@ scn_max_controller_03 = scn_class.scn_class("MAX_CONTROLLER_03.txt")
 
 # Start of SCN
 
-scn_max_controller_03.print_line("-- STEP 0\n")
+scn_max_controller_03.print_line("//-- STEP 0\n")
 scn_max_controller_03.print_line("\n")
 
 scn_max_controller_03.generic_tb_cmd.WTR("RST_N")
@@ -58,8 +58,8 @@ scn_max_controller_03.print_line("\n")
 #SET DISPLAY_SCREEN_SEL 1
 scn_max_controller_03.generic_tb_cmd.SET("DISPLAY_SCREEN_SEL", 0)
 
-scn_max_controller_03.print_line("-- STEP 1\n")
-scn_max_controller_03.print_line("-- Init RAMs with 0\n")
+scn_max_controller_03.print_line("//-- STEP 1\n")
+scn_max_controller_03.print_line("//-- Init RAMs with 0\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -67,8 +67,8 @@ scn_max_controller_03 = INIT_STATIC_RAM(scn_max_controller_03)
 scn_max_controller_03 = INIT_SCROLLER_RAM(scn_max_controller_03)
 
 
-scn_max_controller_03.print_line("-- STEP 2\n")
-scn_max_controller_03.print_line("-- LOAD Scroller Patterns\n")
+scn_max_controller_03.print_line("//-- STEP 2\n")
+scn_max_controller_03.print_line("//-- LOAD Scroller Patterns\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -88,8 +88,8 @@ start_addr = 64 + 64 + 64
 scn_max_controller_03 = LOAD_PATTERN_I_SCROLLER(scn_max_controller_03, pattern_3_scroller, start_addr)
 
 
-scn_max_controller_03.print_line("-- STEP 3\n")
-scn_max_controller_03.print_line("-- LOAD Static Patterns\n")
+scn_max_controller_03.print_line("//-- STEP 3\n")
+scn_max_controller_03.print_line("//-- LOAD Static Patterns\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -111,8 +111,8 @@ scn_max_controller_03.print_line("\n")
 
 
 
-scn_max_controller_03.print_line("-- STEP 4\n")
-scn_max_controller_03.print_line("-- Display Pattern STATIC\n")
+scn_max_controller_03.print_line("//-- STEP 4\n")
+scn_max_controller_03.print_line("//-- Display Pattern STATIC\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -160,8 +160,8 @@ scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
 
 
 
-scn_max_controller_03.print_line("-- STEP 5\n")
-scn_max_controller_03.print_line("-- Display Pattern SCROLLER\n")
+scn_max_controller_03.print_line("//-- STEP 5\n")
+scn_max_controller_03.print_line("//-- Display Pattern SCROLLER\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -218,8 +218,8 @@ scn_max_controller_03.generic_tb_cmd.WTF("O_SCROLLER_BUSY")
 
 
 
-scn_max_controller_03.print_line("-- STEP 6\n")
-scn_max_controller_03.print_line("-- Display Pattern STATIC - Part of pattern\n")
+scn_max_controller_03.print_line("//-- STEP 6\n")
+scn_max_controller_03.print_line("//-- Display Pattern STATIC - Part of pattern\n")
 scn_max_controller_03.print_line("\n")
 
 
@@ -230,9 +230,14 @@ scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
 scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
 scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
 scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+scn_max_controller_03.print_line("\n")
 scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
 
 
+
+scn_max_controller_03.print_line("//-- STEP 7\n")
+scn_max_controller_03.print_line("//-- Display Pattern STATIC - START_PTR = LAST_PTR\n")
+scn_max_controller_03.print_line("\n")
 
 scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
 scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 64)
@@ -240,8 +245,28 @@ scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 2*64/2)
 scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
 scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
 scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
-scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms") # TBD - Need a modif of STATIC
+scn_max_controller_03.generic_tb_cmd.WAIT(10, "us") 
+scn_max_controller_03.print_line("\n")
 scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
+
+
+
+
+scn_max_controller_03.print_line("//-- STEP 8\n")
+scn_max_controller_03.print_line("//-- Display a correct pattern\n")
+scn_max_controller_03.print_line("\n")
+
+scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+scn_max_controller_03.generic_tb_cmd.SET("I_START_PTR_STATIC", 0)
+scn_max_controller_03.generic_tb_cmd.SET("I_LAST_PTR_STATIC", 64)
+scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 1)
+scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
+scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
+scn_max_controller_03.generic_tb_cmd.WTR("O_PTR_EQUALITY_STATIC", 1, "ms")
+scn_max_controller_03.print_line("\n")
+scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
+
 
 
 scn_max_controller_03.END_TEST()

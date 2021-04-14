@@ -1,6 +1,5 @@
-Corner test :
+A modifier : 
 
-Pointer = 0
+- Cas START_PTR = LAST_PTR => Generer 1 pulse sur PTR_EQUALITY en guise d'acquitement
 
-Max ptr etc
 
