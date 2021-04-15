@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2021-04-04
+-- Last update: 2021-04-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -50,6 +50,7 @@ entity max7219_cmd_decod is
     i_ptr_val      : in  std_logic;     -- PTRS VALIDS
     i_loop         : in  std_logic;     -- LOOP CONFIG.
     o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
+    o_discard      : out std_logic;     -- Start of pattern discard
 
     -- MAX7219 I/F
     i_max7219_if_done    : in  std_logic;  -- MAX7219 IF Done
@@ -141,6 +142,7 @@ begin  -- architecture behv
       i_ptr_val      => i_ptr_val,
       i_loop         => i_loop,
       o_ptr_equality => o_ptr_equality,
+      o_discard      => o_discard,
 
       o_start   => o_max7219_if_start,
       o_en_load => o_max7219_if_en_load,

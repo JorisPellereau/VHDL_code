@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-04-08
+-- Last update: 2021-04-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -137,6 +137,8 @@ architecture behv of max7219_display_controller is
 
   -- MAX7219 STATIC Status signals
   signal s_ptr_equality_static : std_logic;
+  signal s_discard_static      : std_logic;
+  signal s_status_static       : std_logic;
 
   -- MAX7219 SCROLLER CTRL signals
   signal s_busy_scroller               : std_logic;
@@ -186,7 +188,7 @@ begin  -- architecture behv
       i_start_ptr => i_start_ptr_static,
       i_last_ptr  => i_last_ptr_static,
 
-      i_ptr_equality => s_ptr_equality_static,
+      i_ptr_equality => s_ptr_equality_static,  -- TBD a remplacer par s_status_static
       o_start_ptr    => s_start_ptr_static,
       o_last_ptr     => s_last_ptr_static,
       o_static_val   => s_ptr_val_static,
@@ -205,7 +207,8 @@ begin  -- architecture behv
 
       );
 
-
+  s_status_static <= s_ptr_equality_static or s_discard_static;  -- TBD -
+                                                                 -- Detection Pulse
 
   -- MAX7219 CONFIG INST
   max7219_config_if_inst_0 : max7219_config_if
@@ -257,6 +260,7 @@ begin  -- architecture behv
       i_ptr_val      => s_ptr_val_static,
       i_loop         => s_loop_static,
       o_ptr_equality => s_ptr_equality_static,
+      o_discard      => s_discard_static,
 
       -- MAX7219 I/F
       i_max7219_if_done    => s_max7219_if_done_static,
@@ -333,26 +337,7 @@ begin  -- architecture behv
       o_max7219_if_data    => s_max7219_if_data
 
       );
-  -- Priority on Config
-  -- !!! config ...
-  -- s_max7219_if_start <= s_max7219_if_start_config when s_config_done = '0' else
-  --                       s_max7219_if_start_static   when i_static_dyn = '0' and s_config_done = '1' else
-  --                       s_max7219_if_start_scroller when i_static_dyn = '1' and s_config_done = '1' else
-  --                       '0';
 
-  -- s_max7219_if_en_load <= s_max7219_if_en_load_config when s_config_done = '0' else
-  --                         s_max7219_if_en_load_static   when i_static_dyn = '0' and s_config_done = '1' else
-  --                         s_max7219_if_en_load_scroller when i_static_dyn = '1' and s_config_done = '1' else
-  --                         '0';
-
-  -- s_max7219_if_data <= s_max7219_if_data_config when s_config_done = '0' else
-  --                      s_max7219_if_data_static   when i_static_dyn = '0' and s_config_done = '1' else
-  --                      s_max7219_if_data_scroller when i_static_dyn = '1' and s_config_done = '1' else
-  --                      (others => '0');
-
-  -- s_max7219_if_done_config   <= s_max7219_if_done when s_config_done = '0'                        else '0';
-  -- s_max7219_if_done_static   <= s_max7219_if_done when i_static_dyn = '0' and s_config_done = '1' else '0';
-  -- s_max7219_if_done_scroller <= s_max7219_if_done when i_static_dyn = '1' and s_config_done = '1' else '0';
 
 
   -- MAX7219 I/F INST

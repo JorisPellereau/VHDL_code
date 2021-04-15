@@ -50,7 +50,8 @@ module tb_top
    wire      s_ptr_val;
    wire      s_loop;
    wire      s_ptr_equality;
-
+   wire      s_discard;   
+   
    wire      s_max7219_if_done;
    wire      s_max7219_if_start;
    wire      s_max7219_if_en_load;
@@ -121,14 +122,14 @@ module tb_top
    assign s_wait_event_if.wait_alias[0] = "RST_N";
    assign s_wait_event_if.wait_alias[1] = "CLK";
    assign s_wait_event_if.wait_alias[2] = "PTR_EQUALITY";
-   assign s_wait_event_if.wait_alias[3] = "O3";
+   assign s_wait_event_if.wait_alias[3] = "O_DISCARD";
    assign s_wait_event_if.wait_alias[4] = "O4";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
    assign s_wait_event_if.wait_signals[2] = s_ptr_equality;
-   assign s_wait_event_if.wait_signals[3] = 1'b0;
+   assign s_wait_event_if.wait_signals[3] = s_discard;
    assign s_wait_event_if.wait_signals[4] = 1'b0;
 
    // INIT SET ALIAS
@@ -315,6 +316,7 @@ module tb_top
 	  .i_ptr_val       (s_ptr_val),
 	  .i_loop          (s_loop),
 	  .o_ptr_equality  (s_ptr_equality),
+	  .o_discard       (s_discard),
 
 	  .i_max7219_if_done    (s_max7219_if_done),
 	  .o_max7219_if_start   (s_max7219_if_start),

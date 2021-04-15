@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2021-04-04
+-- Last update: 2021-04-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ entity max7219_ram_decod is
     i_ptr_val      : in  std_logic;     -- PTRS VALIDS
     i_loop         : in  std_logic;     -- LOOP CONFIG.
     o_ptr_equality : out std_logic;     -- ADDR = LAST PTR
+    o_discard      : out std_logic;     -- Start of pattern discard
 
     -- MAX7219 I/F
     o_start   : out std_logic;                      -- MAX7219 START
@@ -99,7 +100,7 @@ begin  -- architecture behv
       s_last_ptr   <= (others => '0');
       s_update_ptr <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      
+
       if(i_ptr_val = '1' and s_ptr_equality = '1') then
         s_last_ptr   <= i_last_ptr;
         s_start_ptr  <= i_start_ptr;
@@ -239,14 +240,23 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_addr     <= (others => '0');
       s_inc_done <= '0';
+      o_discard  <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- UPDATE START PTR when ENABLE disable
       if(s_update_ptr = '1') then
         s_addr <= s_start_ptr;
+
+        -- Case Start_PTR = Last_PTR
+        if(s_start_ptr = s_last_ptr) then
+          o_discard <= '1';
+        end if;
+
       -- UPDATE START PTR at then end of the CONFIG. done
       elsif(s_ptr_equality = '1' and i_loop = '1') then
         s_addr <= s_start_ptr;
+      else
+        o_discard <= '0';
       end if;
 
       s_inc_done <= '0';
