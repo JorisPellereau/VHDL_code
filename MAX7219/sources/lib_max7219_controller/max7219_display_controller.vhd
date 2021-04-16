@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-04-15
+-- Last update: 2021-04-16
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -136,9 +136,10 @@ architecture behv of max7219_display_controller is
   signal s_max7219_if_data_static    : std_logic_vector(15 downto 0);
 
   -- MAX7219 STATIC Status signals
-  signal s_ptr_equality_static : std_logic;
-  signal s_discard_static      : std_logic;
-  signal s_status_static       : std_logic;
+  signal s_ptr_equality_static    : std_logic;
+  signal s_ptr_equality_static_p1 : std_logic;
+  signal s_discard_static         : std_logic;
+  signal s_status_static          : std_logic;
 
   -- MAX7219 SCROLLER CTRL signals
   signal s_busy_scroller               : std_logic;
@@ -188,7 +189,7 @@ begin  -- architecture behv
       i_start_ptr => i_start_ptr_static,
       i_last_ptr  => i_last_ptr_static,
 
-      i_ptr_equality => s_ptr_equality_static,  -- TBD a remplacer par s_status_static
+      i_ptr_equality => s_status_static,  --s_ptr_equality_static,  -- TBD a remplacer par s_status_static
       o_start_ptr    => s_start_ptr_static,
       o_last_ptr     => s_last_ptr_static,
       o_static_val   => s_ptr_val_static,
@@ -207,8 +208,29 @@ begin  -- architecture behv
 
       );
 
-  s_status_static <= s_ptr_equality_static or s_discard_static;  -- TBD -
-                                                                 -- Detection Pulse
+  -- Static Status Management
+  p_static_status_mngt : process (clk, rst_n) is
+  begin  -- process p_static_status_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_status_static          <= '0';
+      s_ptr_equality_static_p1 <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      s_ptr_equality_static_p1 <= s_ptr_equality_static;
+
+      -- On Rising Edge of s_ptr_equality_static
+      if(s_ptr_equality_static = '1' and s_ptr_equality_static_p1 = '0') then
+        s_status_static <= '1';
+      elsif(s_discard_static = '1')then
+        s_status_static <= s_discard_static;
+      else
+        s_status_static <= '0';
+      end if;
+    end if;
+  end process p_static_status_mngt;
+
+  --s_status_static <= s_ptr_equality_static or s_discard_static;  -- TBD -
+  -- Detection Pulse
 
   -- MAX7219 CONFIG INST
   max7219_config_if_inst_0 : max7219_config_if

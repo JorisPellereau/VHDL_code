@@ -212,6 +212,7 @@ module tb_top
    assign s_wait_event_if.wait_alias[4] = "O_PTR_EQUALITY_STATIC";
    assign s_wait_event_if.wait_alias[5] = "O_STATIC_BUSY";
    assign s_wait_event_if.wait_alias[6] = "O_SCROLLER_BUSY";
+   assign s_wait_event_if.wait_alias[7] = "STATIC_DISCARD"; // Internal signal
    
 
    // SET WAIT EVENT SIGNALS
@@ -222,7 +223,7 @@ module tb_top
    assign s_wait_event_if.wait_signals[4] = s_ptr_equality_static;
    assign s_wait_event_if.wait_signals[5] = s_static_busy;
    assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
-   
+   assign s_wait_event_if.wait_signals[7] = i_dut.s_discard_static;
    
 
    // INIT SET ALIAS

@@ -6,7 +6,7 @@
 -- Author     :   Joris Pellereau
 -- Company    : 
 -- Created    : 2019-04-26
--- Last update: 2019-04-30
+-- Last update: 2021-04-16
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,8 +22,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library lib_rs232;
-use lib_rs232.pkg_rs232.all;
+library lib_uart;
+use lib_uart.pkg_uart.all;
 
 entity rx_uart is
 

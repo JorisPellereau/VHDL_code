@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2021-04-15
+-- Last update: 2021-04-16
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -99,14 +99,23 @@ begin  -- architecture behv
       s_start_ptr  <= (others => '0');
       s_last_ptr   <= (others => '0');
       s_update_ptr <= '0';
+      o_discard    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(i_ptr_val = '1' and s_ptr_equality = '1') then
-        s_last_ptr   <= i_last_ptr;
-        s_start_ptr  <= i_start_ptr;
-        s_update_ptr <= '1';
+
+        if(i_start_ptr = i_last_ptr) then
+          o_discard <= '1';
+
+        else
+          s_last_ptr   <= i_last_ptr;
+          s_start_ptr  <= i_start_ptr;
+          s_update_ptr <= '1';
+        end if;
+
       else
         s_update_ptr <= '0';
+        o_discard    <= '0';            -- Pulse
       end if;
     end if;
   end process p_last_ptr_update;
@@ -240,23 +249,25 @@ begin  -- architecture behv
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_addr     <= (others => '0');
       s_inc_done <= '0';
-      o_discard  <= '0';
+    --o_discard  <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- UPDATE START PTR when ENABLE disable
       if(s_update_ptr = '1') then
-        s_addr <= s_start_ptr;
 
         -- Case Start_PTR = Last_PTR
-        if(s_start_ptr = s_last_ptr) then
-          o_discard <= '1';
-        end if;
+        --if(s_start_ptr = s_last_ptr) then
+        --  o_discard <= '1';
+
+        --else
+        s_addr <= s_start_ptr;  -- Update only when Start_PTR /= LAST_PTR
+        --end if;
+
 
       -- UPDATE START PTR at then end of the CONFIG. done
       elsif(s_ptr_equality = '1' and i_loop = '1') then
         s_addr <= s_start_ptr;
-      else
-        o_discard <= '0';
+      
       end if;
 
       s_inc_done <= '0';

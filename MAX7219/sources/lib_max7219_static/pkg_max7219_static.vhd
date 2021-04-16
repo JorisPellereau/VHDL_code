@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-04-15
+-- Last update: 2021-04-16
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -90,6 +90,7 @@ package pkg_max7219_static is
       i_ptr_val      : in  std_logic;   -- PTRS VALIDS
       i_loop         : in  std_logic;   -- LOOP CONFIG.
       o_ptr_equality : out std_logic;   -- ADDR = LAST PTR
+      o_discard      : out std_logic;   -- Start of pattern discard
 
       --# {{MAX7219_if I/F}}
       i_max7219_if_done    : in  std_logic;  -- MAX7219 IF Done

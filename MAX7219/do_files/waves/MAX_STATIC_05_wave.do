@@ -13,6 +13,7 @@ add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_ptr_val
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_loop
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/o_ptr_equality
+add wave -noupdate -expand -group {MAX7219 CMD DECOD} /tb_top/i_dut/o_discard
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_max7219_if_done
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/o_max7219_if_start
 add wave -noupdate -expand -group {MAX7219 CMD DECOD} -radix hexadecimal /tb_top/i_dut/o_max7219_if_en_load
@@ -98,10 +99,10 @@ add wave -noupdate -expand -group {MAX7219 CHECKER Wrapper} -radix hexadecimal -
 add wave -noupdate -expand -group {MAX7219 CHECKER Wrapper} -radix hexadecimal /tb_top/i_max7219_checker_wrapper_0/s_max7219_din
 add wave -noupdate -expand -group {MAX7219 CHECKER Wrapper} -radix hexadecimal /tb_top/i_max7219_checker_wrapper_0/s_max7219_dout
 add wave -noupdate -expand -group {MAX7219 CHECKER Wrapper} -radix hexadecimal /tb_top/i_max7219_checker_wrapper_0/s_frame_received
-add wave -noupdate -childformat {{{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[7]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[6]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[5]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[4]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[3]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[2]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[1]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[0]} -radix hexadecimal}} -expand -subitemconfig {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[7]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[6]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[5]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[4]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[3]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[2]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[1]} {-radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[0]} {-radix hexadecimal}} /tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix
+add wave -noupdate -childformat {{{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[7]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[6]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[5]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[4]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[3]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[2]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[1]} -radix hexadecimal} {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[0]} -radix hexadecimal}} -expand -subitemconfig {{/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[7]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[6]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[5]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[4]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[3]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[2]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[1]} {-height 16 -radix hexadecimal} {/tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix[0]} {-height 16 -radix hexadecimal}} /tb_top/i_max7219_checker_wrapper_0/max7219_screen_matrix
 add wave -noupdate /tb_top/i_max7219_checker_wrapper_0/line
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1706811 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1495490715 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 258
 configure wave -valuecolwidth 100
@@ -117,4 +118,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {15382500 ps}
+WaveRestoreZoom {1493368463 ps} {1515054292 ps}

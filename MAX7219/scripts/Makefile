@@ -506,6 +506,12 @@ run_max7219_controller_tests :
 ##################################################
 
 
+# == Check Errors in transcripts ==
+check_transcripts_dir :
+	grep -r -i 'error' $(TRANSCRIPTS_DIR)/*
+# =================================
+
+
 ## Symbolator - Generate Symbole from Packages ##
 
 # Lib_max7219_interface

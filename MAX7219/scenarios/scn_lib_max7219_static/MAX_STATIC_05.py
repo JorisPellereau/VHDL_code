@@ -238,4 +238,98 @@ scn_max_static_05.print_line("\n")
 scn_max_static_05.generic_tb_cmd.WAIT(10, "us")
 scn_max_static_05.print_line("\n")
 
+
+
+scn_max_static_05.print_line("//-- STEP 6\n")
+scn_max_static_05.print_line("//-- Start a Transation with start ptr = Last_ptr = 0\n")
+scn_max_static_05.print_line("\n")
+
+
+scn_max_static_05.generic_tb_cmd.SET("START_PTR", 0)
+scn_max_static_05.generic_tb_cmd.SET("LAST_PTR", 0)
+scn_max_static_05.print_line("\n")
+
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 1)
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 0)
+scn_max_static_05.print_line("\n")
+
+scn_max_static_05.generic_tb_cmd.WTRS("O_DISCARD", 1, "ms")
+scn_max_static_05.print_line("\n")
+
+
+scn_max_static_05.generic_tb_cmd.WAIT(1, "us")
+
+
+
+
+scn_max_static_05.print_line("//-- STEP 7\n")
+scn_max_static_05.print_line("//-- Start a Transation with start ptr = Last_ptr = 255\n")
+scn_max_static_05.print_line("\n")
+
+
+scn_max_static_05.generic_tb_cmd.SET("START_PTR", 255)
+scn_max_static_05.generic_tb_cmd.SET("LAST_PTR", 255)
+scn_max_static_05.print_line("\n")
+
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 1)
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 0)
+scn_max_static_05.print_line("\n")
+
+scn_max_static_05.generic_tb_cmd.WTRS("O_DISCARD", 1, "ms")
+scn_max_static_05.print_line("\n")
+
+    
+scn_max_static_05.generic_tb_cmd.WAIT(1, "us")
+    
+    
+scn_max_static_05.print_line("//-- STEP 8\n")
+scn_max_static_05.print_line("//-- Start a Transation with start ptr = Last_ptr = 37\n")
+scn_max_static_05.print_line("\n")
+
+    
+scn_max_static_05.generic_tb_cmd.SET("START_PTR", 37)
+scn_max_static_05.generic_tb_cmd.SET("LAST_PTR", 37)
+scn_max_static_05.print_line("\n")
+    
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 1)
+scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 0)
+scn_max_static_05.print_line("\n")
+    
+scn_max_static_05.generic_tb_cmd.WTRS("O_DISCARD", 1, "ms")
+scn_max_static_05.print_line("\n")
+    
+    
+scn_max_static_05.generic_tb_cmd.WAIT(1, "us")
+    
+    
+scn_max_static_05.print_line("//-- STEP 9\n")
+scn_max_static_05.print_line("//-- Start a Transation with start ptr = Last_ptr = 0:255\n")
+scn_max_static_05.print_line("\n")
+    
+    
+for i in range(0, 256):
+    scn_max_static_05.generic_tb_cmd.SET("START_PTR", i)
+    scn_max_static_05.generic_tb_cmd.SET("LAST_PTR", i)
+    scn_max_static_05.print_line("\n")
+    
+    scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+    scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 1)
+    scn_max_static_05.generic_tb_cmd.WTFS("CLK")
+    scn_max_static_05.generic_tb_cmd.SET("PTR_VAL", 0)
+    scn_max_static_05.print_line("\n")
+    
+    scn_max_static_05.generic_tb_cmd.WTRS("O_DISCARD", 1, "ms")
+    scn_max_static_05.print_line("\n")
+    
+    
+    scn_max_static_05.generic_tb_cmd.WAIT(1, "us")
+    
+    
+    
 scn_max_static_05.END_TEST()
