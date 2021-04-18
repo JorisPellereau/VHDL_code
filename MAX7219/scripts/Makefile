@@ -259,7 +259,6 @@ create_libs:
 	$(vmap) $(LIB_MAX7219_CONTROLLER) $(LIB_MAX7219_CONTROLLER); \
 	$(vmap) $(LIB_TB_TOP) $(LIB_TB_TOP); \
 	@echo "VMAP LIB STATIC"; \
-	$(vmap) $(LIB_TB_STATIC) $(LIB_MAX7219_STATIC); \
 	$(vmap) $(LIB_TB_STATIC) $(LIB_TB_TOP); \
 	$(vmap) $(LIB_TB_STATIC) $(LIB_MAX7219_STATIC); \
 	$(vmap) $(LIB_TB_STATIC) $(LIB_MAX7219_INTERFACE); \

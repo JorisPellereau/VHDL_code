@@ -6,7 +6,7 @@
 -- Author     :  
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-06-06
+-- Last update: 2021-04-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,8 +22,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library lib_rs232;
-use lib_rs232.pkg_rs232.all;
+library lib_uart;
+use lib_uart.pkg_uart.all;
 
 entity tx_uart is
 
