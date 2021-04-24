@@ -35,3 +35,15 @@
 `define C_CHECK_ALIAS_NB 9
 `define C_CHECK_SIZE     9
 `define C_CHECK_WIDTH    32
+
+// UART TESTBENCH Configuration
+`define C_NB_UART_CHECKER        1
+`define C_UART_DATA_WIDTH        8
+`define C_UART_BUFFER_ADDR_WIDTH 8
+`define C_STOP_BIT_NUMBER        1
+`define C_POLARITY               4'd3
+`define C_PARITY                 0
+`define C_BAUDRATE               9
+`define C_FIRST_BIT              0
+`define C_CLOCK_FREQ             20000000
+

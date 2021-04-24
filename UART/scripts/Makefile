@@ -230,9 +230,9 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 # ======================
 
 # == TESTBENCH UART V FILES LIST ==
-src_tb_uart_vhd+=$(TB_UART_SRC_VHD_DIR)/pkg_uart.vhd
-src_tb_uart_vhd+=$(TB_UART_SRC_VHD_DIR)/tx_uart.vhd
-src_tb_uart_vhd+=$(TB_UART_SRC_VHD_DIR)/rx_uart.vhd
+src_tb_uart_vhd+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
+src_tb_uart_vhd+=$(SRC_DIR)/lib_uart/tx_uart.vhd
+src_tb_uart_vhd+=$(SRC_DIR)/lib_uart/rx_uart.vhd
 
 
 src_tb_uart_v+=$(TB_UART_SRC_V_DIR)/tb_uart_class.sv
@@ -267,6 +267,10 @@ compile_others:
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_OTHERS) $(list);) \
 
+compile_uart:
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_lib_uart), $(vcom) -work $(LIB_UART) $(list);) \
+
 
 compile_max7219_interface:
 	cd $(WORK_DIR); \
@@ -291,6 +295,11 @@ compile_design : compile_others compile_max7219_interface compile_max7219_static
 
 
 ## == COMPILE TESTBENCH == ##
+compile_uart_vhd_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_tb_uart_vhd), $(vcom) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+
+
 compile_generic_tb_v_files :
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
@@ -300,7 +309,7 @@ compile_generic_tb_v_files :
 compile_tb_v_files :
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-
+	$(foreach list, $(src_tb_lib_uart_display_ctrl_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
 
 # == COMPILE ALL TESTBENCH files ==
 compile_testbench : compile_generic_tb_v_files compile_tb_v_files
@@ -313,11 +322,21 @@ compile_all : clean libs compile_design compile_testbench
 ## ======================= ##
 
 
+# == GENERATE SCENARII ==
+
+SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.py
+
+generate_scn :
+	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
+	$(foreach list, $(SCN_LIST), python $(list);) \
+
+# =======================
+
 # == RUN TEST ==
 
 run_tb_uart_display_ctrl :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 
 #$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============

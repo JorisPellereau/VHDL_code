@@ -16,11 +16,12 @@
 `timescale 1ps/1ps
 
 
-`include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_controller/testbench_setup.sv"
+`include "/home/jorisp/GitHub/VHDL_code/UART/tb_sources/tb_lib_uart_display_ctrl/testbench_setup.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
+`include "/home/jorisp/GitHub/Verilog/lib_tb_uart/uart_checker_wrapper.sv"
 `include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
 
 
@@ -202,6 +203,16 @@ module tb_top
    
    // =====================================================
 
+
+   // Create UART checker Interface
+   uart_checker_intf #(
+		       .G_NB_UART_CHECKER    (`C_NB_UART_CHECKER),
+		       .G_DATA_WIDTH         (`C_UART_DATA_WIDTH),
+		       .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
+		       ) 
+   uart_checker_if();
+   
+
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
 
    // INIT WAIT EVENT ALIAS
@@ -359,17 +370,22 @@ module tb_top
 
 
    // == HDL SPEFICIC TESTBENCH MODULES ==
+
+   wire [`C_NB_UART_CHECKER - 1 : 0] s_rx_uart;
+   wire [`C_NB_UART_CHECKER - 1 : 0] s_tx_uart;
+   
+				     
    uart_checker_wrapper #(
 
 			      .G_NB_UART_CHECKER    (`C_NB_UART_CHECKER),
-			      .G_STOP_BIT_NUMBER    (1),
-			      .G_POLARITY           (4'd3),
-			      .G_PARITY             (0),
-			      .G_BAUDRATE           (9),
-			      .G_DATA_WIDTH         (8),
-			      .G_FIRST_BIT          (0),
-			      .G_CLOCK_FREQ         (20000000),
-			      .G_BUFFER_ADDR_WIDTH  (8)
+			      .G_STOP_BIT_NUMBER    (`C_STOP_BIT_NUMBER),
+			      .G_POLARITY           (`C_POLARITY),
+			      .G_PARITY             (`C_PARITY),
+			      .G_BAUDRATE           (`C_BAUDRATE),
+			      .G_DATA_WIDTH         (`C_UART_DATA_WIDTH),
+			      .G_FIRST_BIT          (`C_FIRST_BIT),
+			      .G_CLOCK_FREQ         (`C_CLOCK_FREQ),
+			      .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
    )
    i_uart_checker_wrapper (
 			   .clk    (clk),
@@ -410,7 +426,7 @@ module tb_top
    
    initial begin// : TB_SEQUENCER
 
-      tb_modules_custom_inst.init_uart_class(2,8,8,uart_checker_if);      
+      tb_modules_custom_inst.init_uart_class(`C_NB_UART_CHECKER, 8, 8,uart_checker_if);      
       tb_class_inst.tb_sequencer(SCN_FILE_PATH, tb_modules_custom_inst);
       
    end// : TB_SEQUENCER
