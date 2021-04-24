@@ -28,7 +28,7 @@
 
 ROOT=$(PWD)/..
 WORK_DIR_NAME=UART_WORK
-WORK_DIR=$(ROOT)/$(WORK_DIR_NAME)
+WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
 
 
 
@@ -100,7 +100,6 @@ VLOG1=vlog -nologo -work
 # == CREATE WORK DIR. ==
 create_dir:
 	cd $(ROOT); \
-	mkdir $(WORK_DIR_NAME); \
 	mkdir transcripts; \
 	mkdir do_files; \
 	mkdir WLF; \
@@ -110,6 +109,10 @@ create_dir:
 	cd ./do_files; \
 	mkdir run_files; \
 	mkdir waves; \
+
+create_work:
+	cd /home/jorisp/MODELSIM_WORKS/; \
+	mkdir $(WORK_DIR_NAME); \
 # ======================
 
 
@@ -188,7 +191,7 @@ src=    $(SRC_DIR)/pkg_rs232.vhd \
 compile_src : 
 	cd $(WORK_DIR); \
 	$(VCOM1) $(LIB_TB_TOP) $(src);
-	
+
 run_1 :
 	cd $(WORK_DIR); \
 	vsim  -novopt -t ps $(LIB_TB_TOP).test_tx_rs232  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
