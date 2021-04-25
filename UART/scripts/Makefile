@@ -77,8 +77,6 @@ endif
 LIB_UART=lib_uart
 LIB_UART_DISPLAY_CTRL=lib_uart_display_ctrl
 
-LIB_MAX7219=lib_max7219
-
 LIB_OTHERS=lib_others
 LIB_MAX7219_STATIC=lib_max7219_static
 LIB_MAX7219_SCROLLER=lib_max7219_scroller
@@ -98,7 +96,6 @@ LIB_TB_UART_DISPLAY_CTRL+=lib_tb_uart_display_ctrl
 # ==  LIB LIST ==
 LIB_LIST+=$(LIB_UART)
 LIB_LIST+=$(LIB_UART_DISPLAY_CTRL)
-LIB_LIST+=$(LIB_MAX7219)
 LIB_LIST+=$(LIB_OTHERS)
 LIB_LIST+=$(LIB_MAX7219_STATIC)
 LIB_LIST+=$(LIB_MAX7219_SCROLLER)
@@ -289,7 +286,7 @@ compile_max7219_controller:
 	$(foreach list, $(src_vhd_lib_max7219_controller), $(vcom) -work $(LIB_MAX7219_CONTROLLER) $(list);) \
 
 # Compile Design Library here
-compile_design : compile_others compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller
+compile_design : compile_others compile_uart compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller
 
 ## ==================== ##
 
@@ -312,7 +309,7 @@ compile_tb_v_files :
 	$(foreach list, $(src_tb_lib_uart_display_ctrl_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
 
 # == COMPILE ALL TESTBENCH files ==
-compile_testbench : compile_generic_tb_v_files compile_tb_v_files
+compile_testbench : compile_uart_vhd_files compile_generic_tb_v_files compile_tb_v_files
 # =======================
 
 # == COMPILE ALL ==
@@ -336,7 +333,7 @@ generate_scn :
 
 run_tb_uart_display_ctrl :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 
 #$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============
