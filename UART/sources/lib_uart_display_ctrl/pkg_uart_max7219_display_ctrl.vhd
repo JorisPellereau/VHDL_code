@@ -30,6 +30,8 @@ package pkg_uart_max7219_display_ctrl is
   constant C_CMD_LENGTH : integer              := 20;  -- Command Length
   constant C_DATA_WIDTH : integer range 5 to 9 := 8;   -- Data Width
 
+  constant C_RESP_LENGTH : integer := 20;  -- Length of a TX Response in byte
+  constant C_NB_RESP     : integer := 10;  -- Number of possible respons
 
   -- ASCII Character in hexdecimal
   constant A : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"41";
@@ -54,8 +56,13 @@ package pkg_uart_max7219_display_ctrl is
   constant UNDSCR : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"5F";
 
   -- == Types ==
+  -- RX
   type t_cmd_array is array (0 to C_CMD_LENGTH - 1) of std_logic_vector(C_DATA_WIDTH - 1 downto 0);
   type t_cmd_list_array is array (0 to C_NB_CMD - 1) of t_cmd_array;
+
+  -- TX
+  type t_resp_array is array(0 to C_RESP_LENGTH - 1) of std_logic_vector(C_DATA_WIDTH - 1 downto 0);
+  type t_resp_list_array is array(0 to C_NB_RESP - 1) of t_resp_array;
 
   -- == CONSTANTS COMMANDS ==
   -- INIT_RAM_STATIC : LOAD STATIC RAM With 0x00
@@ -250,10 +257,68 @@ package pkg_uart_max7219_display_ctrl is
     );
 
 
+  -- TX Response
+
+  -- RAM_STATIC_DONE
+  constant C_RESP_00 : t_resp_array := (0      => R,
+                                        1      => A,
+                                        2      => M,
+                                        3      => UNDSCR,
+                                        4      => S,
+                                        5      => T,
+                                        6      => A,
+                                        7      => T,
+                                        8      => I,
+                                        9      => C,
+                                        10     => UNDSCR,
+                                        11     => D,
+                                        12     => O,
+                                        13     => N,
+                                        14     => E,
+                                        others => x"00");
+
+  -- RAM_SCROLLER_DONE
+  constant C_RESP_01 : t_resp_array := (0      => R,
+                                        1      => A,
+                                        2      => M,
+                                        3      => UNDSCR,
+                                        4      => S,
+                                        5      => C,
+                                        6      => R,
+                                        7      => O,
+                                        8      => L,
+                                        9      => L,
+                                        10     => UNDSCR,
+                                        11     => D,
+                                        12     => O,
+                                        13     => N,
+                                        14     => E,
+                                        others => x"00");
+
+  -- CMD_DISCARD
+  constant C_RESP_02 : t_resp_array := (0      => C,
+                                        1      => M,
+                                        2      => D,
+                                        3      => UNDSCR,
+                                        4      => D,
+                                        5      => I,
+                                        6      => S,
+                                        7      => C,
+                                        8      => A,
+                                        9      => R,
+                                        10     => D,
+                                        others => x"00");
+
+  constant C_RESP_LIST : t_resp_list_array := (
+    0      => C_RESP_00,
+    1      => C_RESP_01,
+    2      => C_RESP_02,
+    others => (others => (others => '0'))
+    );
+
 
   -- component
   component uart_cmd_decod is
-
     generic (
       G_NB_CMD     : integer              := 4;   -- Command Number
       G_CMD_LENGTH : integer              := 10;  -- Command length
@@ -266,7 +331,61 @@ package pkg_uart_max7219_display_ctrl is
       i_data_valid : in  std_logic;     -- Data Valid
       o_commands   : out std_logic_vector(G_NB_CMD - 1 downto 0);  -- Output Commands pulses
       o_discard    : out std_logic);    -- Command discard
+  end component;
 
+
+
+  component sequencer_uart_cmd is
+    generic (
+      G_NB_CMD          : integer              := 4;  -- Command Number
+      G_UART_DATA_WIDTH : integer range 5 to 9 := 8);
+
+    port (
+      clk           : in std_logic;
+      rst_n         : in std_logic;
+      i_cmd_pulses  : in std_logic_vector(G_NB_CMD - 1 downto 0);
+      i_cmd_discard : in std_logic;
+
+      o_rx_data_sel : out std_logic;    --RX Data from UART RX Mux selector
+
+      -- INIT Static RAM
+      i_init_static_ram_done : in  std_logic;
+      o_init_static_ram      : out std_logic;  -- Init Static RAM Command
+
+      -- INIT Scroller RAM
+      i_init_scroller_ram_done : in  std_logic;
+      o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
+
+      -- TX Uart commands
+      i_tx_done       : in  std_logic;
+      o_tx_uart_start : out std_logic;
+      o_tx_data       : out std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0)
+
+      );
+  end component;
+
+
+  component static_ram_mngr is
+    generic (
+
+      G_RAM_ADDR_WIDTH_STATIC : integer := 8;    -- RAM STATIC ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC : integer := 16);  -- RAM STATIC DATA WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous clock
+
+      -- RAM STATIC I/F
+      i_rdata_static : in  std_logic_vector(G_RAM_DATA_WIDTH_STATIC - 1 downto 0);  -- RAM RDATA
+      o_me_static    : out std_logic;
+      o_we_static    : out std_logic;   -- W/R command
+      o_addr_static  : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- RAM ADDR
+      o_wdata_static : out std_logic_vector(G_RAM_DATA_WIDTH_STATIC - 1 downto 0);  -- RAM DATA
+
+      i_init_static_ram      : in  std_logic;
+      o_init_static_ram_done : out std_logic
+
+      );
   end component;
 
 end package pkg_uart_max7219_display_ctrl;

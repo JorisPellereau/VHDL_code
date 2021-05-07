@@ -135,11 +135,16 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_commands   : std_logic_vector(C_NB_CMD - 1 downto 0);
   signal s_discard    : std_logic;
 
-  signal s_rx_data_sel : std_logic := '0';  -- Selection of Data from RX UART
+  signal s_rx_data_sel : std_logic;     -- Selection of Data from RX UART
 
-
+  -- Rising Edge detection
   signal s_rx_done_p1     : std_logic;
   signal s_rx_done_r_edge : std_logic;
+
+  signal s_init_static_ram_done   : std_logic;
+  signal s_init_static_ram        : std_logic;
+  signal s_init_scroller_ram_done : std_logic;
+  signal s_init_scroller_ram      : std_logic;
 
 begin  -- architecture behv
 
@@ -229,10 +234,70 @@ begin  -- architecture behv
     end if;
   end process p_pipe_signals;
 
-  s_rx_done_r_edge <= s_rx_done and not s_rx_done_p1;
+  s_rx_done_r_edge <= s_rx_done and not s_rx_done_p1;  -- Rising Edge detection
 
+  -- Route Mux
   s_data_decod <= s_rx_data        when s_rx_data_sel = '0' else (others => '0');
   s_data_valid <= s_rx_done_r_edge when s_rx_data_sel = '0' else '0';
 
+
+
+  -- SEQUENCER INST
+  i_sequencer_uart_cmd_0 : sequencer_uart_cmd
+
+    generic map (
+      G_NB_CMD          => C_NB_CMD,
+      G_UART_DATA_WIDTH => G_UART_DATA_SIZE)
+
+    port map (
+      clk           => clk,
+      rst_n         => rst_n,
+      i_cmd_pulses  => s_commands,
+      i_cmd_discard => s_discard,
+
+      o_rx_data_sel => s_rx_data_sel,
+
+      -- INIT Static RAM
+      i_init_static_ram_done => s_init_static_ram_done,
+      o_init_static_ram      => s_init_static_ram,
+
+      -- INIT Scroller RAM
+      i_init_scroller_ram_done => s_init_scroller_ram_done,
+      o_init_scroller_ram      => s_init_scroller_ram,
+
+      -- TX Uart commands
+      i_tx_done       => s_tx_done,
+      o_tx_uart_start => s_start_tx,
+      o_tx_data       => s_tx_data
+
+      );
+
+
+  -- RAM STATIC MNGT
+  i_static_ram_mngr : static_ram_mngr
+    generic map (
+
+      G_RAM_ADDR_WIDTH_STATIC => G_RAM_ADDR_WIDTH_STATIC,
+      G_RAM_DATA_WIDTH_STATIC => G_RAM_DATA_WIDTH_STATIC)
+
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- RAM STATIC I/F
+      i_rdata_static => i_rdata_static,
+      o_me_static    => o_me_static,
+      o_we_static    => o_we_static,
+      o_addr_static  => o_addr_static,
+      o_wdata_static => o_wdata_static,
+
+      -- Command and status
+      i_init_static_ram      => s_init_static_ram,
+      o_init_static_ram_done => s_init_static_ram_done
+
+      );
+
+  -- Outputs Affectations
+  o_tx <= s_tx;
 
 end architecture behv;

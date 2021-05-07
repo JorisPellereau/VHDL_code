@@ -3,7 +3,10 @@
 WTR RST_N
 WAIT 100 ns
 
-UART[UART_RPi] TX_START(170)
-WAIT 100 ns
-UART[UART_RPi] RX_READ(53)
+//-- STEP 1
+//-- Injection of Correct command and then non correct command
+
+//-- Send : INIT_RAM_STATIC
+UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0)
+UART[UART_RPi] RX_WAIT_DATA(82 65 77 95 83 84 65 84 73 67 95 68 79 78 69 0 0 0 0 0)
 END_TEST

@@ -241,14 +241,14 @@ module tb_top
    
    assign s_set_injector_if.set_alias[3]   = "I_EN_STATIC";
    
-   assign s_set_injector_if.set_alias[4]   = "I_ME_STATIC";
+   /*assign s_set_injector_if.set_alias[4]   = "I_ME_STATIC";
    assign s_set_injector_if.set_alias[5]   = "I_WE_STATIC";
    assign s_set_injector_if.set_alias[6]   = "I_ADDR_STATIC";
    assign s_set_injector_if.set_alias[7]   = "I_WDATA_STATIC";
    assign s_set_injector_if.set_alias[8]   = "I_START_PTR_STATIC";
-   assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";
+   assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";*/
    //assign s_set_injector_if.set_alias[10]  = "TOTO";
-   assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
+   //assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
    
    assign s_set_injector_if.set_alias[12]  = "I_RAM_START_PTR_SCROLLER";
    assign s_set_injector_if.set_alias[13]  = "I_MSG_LENGTH_SCROLLER";
@@ -280,22 +280,22 @@ module tb_top
 
    
    // SET SET_INJECTOR SIGNALS
-   assign s_static_dyn                    = s_set_injector_if.set_signals_synch[0];
+   /*assign s_static_dyn                    = s_set_injector_if.set_signals_synch[0];
    assign s_new_display                   = s_set_injector_if.set_signals_synch[1];
    assign s_new_config_val                = s_set_injector_if.set_signals_synch[2];
-   assign s_static_en                     = s_set_injector_if.set_signals_synch[3];
-   assign s_me_static                     = s_set_injector_if.set_signals_synch[4];
+   assign s_static_en                     = s_set_injector_if.set_signals_synch[3];*/
+   /*assign s_me_static                     = s_set_injector_if.set_signals_synch[4];
    assign s_we_static                     = s_set_injector_if.set_signals_synch[5];
    assign s_addr_static                   = s_set_injector_if.set_signals_synch[6];
    assign s_wdata_static                  = s_set_injector_if.set_signals_synch[7];   
    assign s_start_ptr_static              = s_set_injector_if.set_signals_synch[8];
-   assign s_last_ptr_static               = s_set_injector_if.set_signals_synch[9];
+   assign s_last_ptr_static               = s_set_injector_if.set_signals_synch[9];*/
    //assign s_ptr_val_static                = s_set_injector_if.set_signals_synch[10];
-   assign s_loop_static                   = s_set_injector_if.set_signals_synch[11];
-   assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[12];
-   assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[13];
+   //assign s_loop_static                   = s_set_injector_if.set_signals_synch[11];
+   //assign s_ram_start_ptr_scroller        = s_set_injector_if.set_signals_synch[12];
+   //assign s_msg_length_scroller           = s_set_injector_if.set_signals_synch[13];
    //assign s_start_scroll                  = s_set_injector_if.set_signals_synch[14];
-   assign s_max_tempo_cnt_scroller        = s_set_injector_if.set_signals_synch[15];
+   /*assign s_max_tempo_cnt_scroller        = s_set_injector_if.set_signals_synch[15];
    assign s_me_scroller                   = s_set_injector_if.set_signals_synch[16];
    assign s_we_scroller                   = s_set_injector_if.set_signals_synch[17];
    assign s_addr_scroller                 = s_set_injector_if.set_signals_synch[18];
@@ -304,13 +304,13 @@ module tb_top
    assign s_decod_mode                    = s_set_injector_if.set_signals_synch[21];
    assign s_intensity                     = s_set_injector_if.set_signals_synch[22];
    assign s_scan_limit                    = s_set_injector_if.set_signals_synch[23];
-   assign s_shutdown                      = s_set_injector_if.set_signals_synch[24];   
+   assign s_shutdown                      = s_set_injector_if.set_signals_synch[24];   */
    assign s_display_screen_sel            = s_set_injector_if.set_signals_synch[25];
    assign s_display_screen_matrix         = s_set_injector_if.set_signals_synch[26];
    assign s_display_reg_matrix_n          = s_set_injector_if.set_signals_synch[27];
  
    // SET SET_INJECTOR INITIAL VALUES
-   assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
+   /*assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
@@ -334,7 +334,7 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[21]  = 8'hAA;
    assign s_set_injector_if.set_signals_asynch_init_value[22]  = 8'hBB;
    assign s_set_injector_if.set_signals_asynch_init_value[23]  = 8'hCC;
-   assign s_set_injector_if.set_signals_asynch_init_value[24]  = 8'hDD;
+   assign s_set_injector_if.set_signals_asynch_init_value[24]  = 8'hDD;*/
    assign s_set_injector_if.set_signals_asynch_init_value[25]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[26]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[27]  = 0;

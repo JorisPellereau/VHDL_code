@@ -45,92 +45,97 @@ scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_STATIC\n")
 data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_STATIC")
 scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
 
-scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_STATI\n")
-data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_STATI")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_SCROLLER\n")
-data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_SCROLLER")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_SCROLL\n")
-data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_SCROLL")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+data_to_read = str_cmd_2_hex_data_cmd("RAM_STATIC_DONE")
+scn_uart_display_ctrl_00.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 
 
-data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFIG")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+def tmp():
 
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFI")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("LOAD")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-
-data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_SCROLL")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_SCR")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-
-data_to_send = str_cmd_2_hex_data_cmd("RUN_PATTERN_STATIC")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("TOTO")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-
-data_to_send = str_cmd_2_hex_data_cmd("RUN_PATTERN_SCROLLER")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-data_to_send = str_cmd_2_hex_data_cmd("TOT")
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-
-scn_uart_display_ctrl_00.print_line("//-- STEP 2\n")
-scn_uart_display_ctrl_00.print_line("//-- Injection of Correct command one by one\n")
-scn_uart_display_ctrl_00.print_line("\n")
-
-for i in range(0, 8):
-    data_to_send = str_cmd_2_hex_data_cmd(uart_cmd_list[i])
+    scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_STATI\n")
+    data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_STATI")
     scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
+    
+    scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_SCROLLER\n")
+    data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_SCROLLER")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
     scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
-
-
-scn_uart_display_ctrl_00.print_line("//-- STEP 3\n")
-scn_uart_display_ctrl_00.print_line("//-- TBD\n")
-scn_uart_display_ctrl_00.print_line("\n")
-
+    
+    scn_uart_display_ctrl_00.print_line("//-- Send : INIT_RAM_SCROLL\n")
+    data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_SCROLL")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    
+    data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFIG")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFI")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("LOAD")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    
+    data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_SCROLL")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_SCR")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    
+    data_to_send = str_cmd_2_hex_data_cmd("RUN_PATTERN_STATIC")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("TOTO")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    
+    data_to_send = str_cmd_2_hex_data_cmd("RUN_PATTERN_SCROLLER")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    data_to_send = str_cmd_2_hex_data_cmd("TOT")
+    scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+    
+    scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+    
+    
+    scn_uart_display_ctrl_00.print_line("//-- STEP 2\n")
+    scn_uart_display_ctrl_00.print_line("//-- Injection of Correct command one by one\n")
+    scn_uart_display_ctrl_00.print_line("\n")
+    
+    for i in range(0, 8):
+        data_to_send = str_cmd_2_hex_data_cmd(uart_cmd_list[i])
+        scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+        
+        scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
+        
+        
+        scn_uart_display_ctrl_00.print_line("//-- STEP 3\n")
+        scn_uart_display_ctrl_00.print_line("//-- TBD\n")
+        scn_uart_display_ctrl_00.print_line("\n")
+        
 #data_to_read = [0x35]
 #scn_uart_display_ctrl_00.generic_tb_uart_cmd.RX_READ("UART_RPi", data_to_read)
 

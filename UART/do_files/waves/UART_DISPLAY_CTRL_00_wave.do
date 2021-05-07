@@ -41,38 +41,85 @@ add wave -noupdate -expand -group {TOP DUT} -group {Internal Signals} -radix hex
 add wave -noupdate -expand -group {TOP DUT} -group {Internal Signals} -radix hexadecimal /tb_top/i_dut/s_tx_data
 add wave -noupdate -expand -group {TOP DUT} -group {Internal Signals} -radix hexadecimal /tb_top/i_dut/s_tx
 add wave -noupdate -expand -group {TOP DUT} -group {Internal Signals} -radix hexadecimal /tb_top/i_dut/s_tx_done
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/reset_n
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/clock
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_data
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_done
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_stop_bit
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_data
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_bit
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_half_bit
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_done_s
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/parity_rcvd_s
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_data_s
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/tick_data
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_cnt
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_rx_re
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_rx_fe
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_old
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_fsm
-add wave -noupdate -expand -group {TOP DUT} -expand -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/parity_rcvd
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/reset_n
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/clock
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_data
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_done
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_stop_bit
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_data
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_bit
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/cnt_half_bit
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_done_s
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/parity_rcvd_s
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_data_s
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/tick_data
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_cnt
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_rx_re
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/start_rx_fe
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_old
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/rx_fsm
+add wave -noupdate -expand -group {TOP DUT} -group RX_UART -radix hexadecimal /tb_top/i_dut/i_rx_uart_0/parity_rcvd
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/clk
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/rst_n
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/i_data
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/i_data_valid
-add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal -childformat {{/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(3) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(2) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(1) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(0) -radix hexadecimal}} -expand -subitemconfig {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(3) {-radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(2) {-radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(1) {-radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(0) {-radix hexadecimal}} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands
+add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal -childformat {{/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(7) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(6) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(5) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(4) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(3) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(2) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(1) -radix hexadecimal} {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(0) -radix hexadecimal}} -expand -subitemconfig {/tb_top/i_dut/i_uart_cmd_decod_0/o_commands(7) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(6) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(5) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(4) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(3) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(2) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(1) {-height 16 -radix hexadecimal} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands(0) {-height 16 -radix hexadecimal}} /tb_top/i_dut/i_uart_cmd_decod_0/o_commands
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/o_discard
-add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal -childformat {{/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(0) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(1) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(2) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(3) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(4) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(5) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(6) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(7) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(8) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(9) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(10) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(11) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(12) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(13) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(14) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(15) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(16) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(17) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(18) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(19) -radix ascii}} -expand -subitemconfig {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(0) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(1) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(2) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(3) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(4) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(5) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(6) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(7) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(8) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(9) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(10) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(11) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(12) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(13) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(14) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(15) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(16) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(17) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(18) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(19) {-color Cyan -height 16 -radix ascii -radixshowbase 0}} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store
+add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal -childformat {{/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(0) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(1) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(2) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(3) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(4) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(5) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(6) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(7) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(8) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(9) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(10) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(11) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(12) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(13) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(14) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(15) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(16) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(17) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(18) -radix ascii} {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(19) -radix ascii}} -subitemconfig {/tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(0) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(1) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(2) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(3) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(4) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(5) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(6) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(7) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(8) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(9) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(10) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(11) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(12) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(13) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(14) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(15) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(16) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(17) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(18) {-color Cyan -height 16 -radix ascii -radixshowbase 0} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store(19) {-color Cyan -height 16 -radix ascii -radixshowbase 0}} /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_2_store
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_cnt_data
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_cnt_data_done
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_commands
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_discard
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_cmd_check
 add wave -noupdate -expand -group {TOP DUT} -expand -group {UART CMD DECOD} -radix hexadecimal /tb_top/i_dut/i_uart_cmd_decod_0/s_raz_cnt
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/clk
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/rst_n
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/i_cmd_pulses
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/o_rx_data_sel
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/i_init_static_ram_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/i_init_scroller_ram_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/o_init_static_ram
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/o_init_scroller_ram
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/i_tx_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/o_tx_uart_start
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/o_tx_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_init_static_ram
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_init_scroller_ram
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_tx_uart_start
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_tx_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_resp_i_ongoing
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_cnt_tx_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_resp_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group SEQUENCER -radix hexadecimal /tb_top/i_dut/i_sequencer_uart_cmd_0/s_rx_data_sel
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/clk
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/rst_n
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/i_rdata_static
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/o_me_static
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/o_we_static
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/o_addr_static
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/o_wdata_static
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/i_init_static_ram
+add wave -noupdate -expand -group {TOP DUT} -expand -group {Static Ram MNGT} -radix hexadecimal /tb_top/i_dut/i_static_ram_mngr/o_init_static_ram_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/reset_n
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/clock
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/start_tx
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_done
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_fsm
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/latch_done_s
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/start_tx_s
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/start_tx_r_edge
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_data_s
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_s
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/cnt_bit_duration
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tick_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/cnt_data
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/cnt_bit
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/cnt_stop_bit
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/tx_done_s
+add wave -noupdate -expand -group {TOP DUT} -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_tx_uart_0/parity_value
 add wave -noupdate -divider <NULL>
 add wave -noupdate -group {UART Checker} /tb_top/i_uart_checker_wrapper/s_rx_done_r_edge
 add wave -noupdate -group {UART Checker} /tb_top/i_uart_checker_wrapper/o_tx
@@ -148,9 +195,9 @@ add wave -noupdate -group {MAX7219 DISPLAY CTRL TOP} -radix hexadecimal /tb_top/
 add wave -noupdate -group {MAX7219 DISPLAY CTRL TOP} -radix hexadecimal /tb_top/i_max7219_display_controller/rst_n
 add wave -noupdate -group {MAX7219 DISPLAY CTRL TOP} -radix hexadecimal /tb_top/i_max7219_display_controller/clk
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1676598471 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1739923346 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 216
+configure wave -namecolwidth 232
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -164,4 +211,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {1729179156 ps} {1744096430 ps}
+WaveRestoreZoom {1739388073 ps} {1740288527 ps}
