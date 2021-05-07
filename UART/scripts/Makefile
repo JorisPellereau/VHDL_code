@@ -189,6 +189,9 @@ src_lib_uart+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/rx_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/tx_uart.vhd
 
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/pkg_uart_max7219_display_ctrl.vhd
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_cmd_decod.vhd
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/sequencer_uart_cmd.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
 
 src_vhd_lib_others+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
@@ -338,7 +341,7 @@ generate_scn :
 
 run_tb_uart_display_ctrl :
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 
 #$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============

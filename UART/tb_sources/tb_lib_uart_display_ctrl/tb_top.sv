@@ -473,7 +473,15 @@ module tb_top
 			       .G_RAM_ADDR_WIDTH_STATIC    (8), 
 			       .G_RAM_DATA_WIDTH_STATIC    (16),
 			       .G_RAM_ADDR_WIDTH_SCROLLER  (8),
-			       .G_RAM_DATA_WIDTH_SCROLLER  (8)
+			       .G_RAM_DATA_WIDTH_SCROLLER  (8),
+			       
+			       .G_STOP_BIT_NUMBER (`C_STOP_BIT_NUMBER),
+			       .G_PARITY          (`C_PARITY),
+			       .G_BAUDRATE        (`C_BAUDRATE),
+			       .G_UART_DATA_SIZE  (`C_UART_DATA_WIDTH),
+			       .G_POLARITY        (`C_POLARITY),
+			       .G_FIRST_BIT       (`C_FIRST_BIT ),
+			       .G_CLOCK_FREQUENCY (`C_CLOCK_FREQ)  
 			       )
    
    i_dut (
@@ -481,48 +489,48 @@ module tb_top
 	  .rst_n  (rst_n),
 
     
-	  .i_rx(),
-	  .o_tx(),
+	  .i_rx(s_tx_uart),
+	  .o_tx(s_rx_uart),
 
    
-	  .o_static_dyn  (),
-	  .o_new_display  (),
+	  .o_static_dyn  (s_static_dyn),
+	  .o_new_display  (s_new_display),
 	  
 	  
-	  .i_config_done    (),
-	  .o_display_test   (),
-	  .o_decod_mode     (),
-	  .o_intensity      (),
-	  .o_scan_limit     (),
-	  .o_shutdown       (),
-	  .o_new_config_val (),
+	  .i_config_done    (s_config_done),
+	  .o_display_test   (s_display_test),
+	  .o_decod_mode     (s_decod_mode),
+	  .o_intensity      (s_intensity),
+	  .o_scan_limit     (s_scan_limit),
+	  .o_shutdown       (s_shutdown),
+	  .o_new_config_val (s_new_config_val),
 
     
-	  .o_en_static (),
+	  .o_en_static (s_static_en),
   
-	  .i_rdata_static (),
-	  .o_me_static    (),
-	  .o_we_static    (),
-	  .o_addr_static  (),
-	  .o_wdata_static (),
+	  .i_rdata_static (s_rdata_static),
+	  .o_me_static    (s_me_static),
+	  .o_we_static    (s_we_static),
+	  .o_addr_static  (s_addr_static),
+	  .o_wdata_static (s_wdata_static),
    
-	  .o_start_ptr_static (),
-	  .o_last_ptr_static  (),
+	  .o_start_ptr_static (s_start_ptr_static),
+	  .o_last_ptr_static  (s_last_ptr_static),
 	  
-	  .i_ptr_equality_static (),
-	  .i_static_busy         (),
+	  .i_ptr_equality_static (s_ptr_equality_static),
+	  .i_static_busy         (s_static_busy),
 	  
 	  
-	  .i_scroller_busy          (),
-	  .o_ram_start_ptr_scroller (),
-	  .o_msg_length_scroller    (),
-	  .o_max_tempo_cnt_scroller (),
+	  .i_scroller_busy          (s_scroller_busy),
+	  .o_ram_start_ptr_scroller (s_ram_start_ptr_scroller),
+	  .o_msg_length_scroller    (s_msg_length_scroller),
+	  .o_max_tempo_cnt_scroller (s_max_tempo_cnt_scroller),
 	      
-	  .i_rdata_scroller (),
-	  .o_me_scroller    (),
-	  .o_we_scroller    (),
-	  .o_addr_scroller  (),
-	  .o_wdata_scroller ()
+	  .i_rdata_scroller (s_rdata_scroller),
+	  .o_me_scroller    (s_me_scroller),
+	  .o_we_scroller    (s_we_scroller),
+	  .o_addr_scroller  (s_addr_scroller),
+	  .o_wdata_scroller (s_wdata_scroller)
 
     );
 

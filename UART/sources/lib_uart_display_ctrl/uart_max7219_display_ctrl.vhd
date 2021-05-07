@@ -26,6 +26,10 @@ use ieee.std_logic_arith.all;
 library lib_uart;
 use lib_uart.pkg_uart.all;
 
+library lib_uart_display_ctrl;
+use lib_uart_display_ctrl.pkg_uart_max7219_display_ctrl.all;
+
+
 entity uart_max7219_display_ctrl is
 
   generic (
@@ -36,7 +40,7 @@ entity uart_max7219_display_ctrl is
     G_UART_DATA_SIZE  : integer range 5 to 9 := 8;  -- Size of the data to transmit
     G_POLARITY        : std_logic            := '1';  -- Polarity in idle state
     G_FIRST_BIT       : t_first_bit          := lsb_first;  -- LSB or MSB first
-    G_CLOCK_FREQUENCY : integer              := 20000000;  -- Clock frequency [Hz]
+    G_CLOCK_FREQUENCY : integer              := 50000000;  -- Clock frequency [Hz]
 
     -- I/F Generics
     G_MATRIX_NB               : integer range 2 to 8 := 8;  -- Matrix Number
@@ -109,6 +113,9 @@ architecture behv of uart_max7219_display_ctrl is
 
   -- INTERNAL SIGNALS
 
+  signal s_rx_meta   : std_logic;
+  signal s_rx_stable : std_logic;
+
   -- RX UART
   signal s_rx          : std_logic;
   signal s_rx_data     : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
@@ -121,7 +128,34 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_tx       : std_logic;
   signal s_tx_done  : std_logic;
 
+
+  -- UART Command decod Signals
+  signal s_data_decod : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
+  signal s_data_valid : std_logic;
+  signal s_commands   : std_logic_vector(C_NB_CMD - 1 downto 0);
+  signal s_discard    : std_logic;
+
+  signal s_rx_data_sel : std_logic := '0';  -- Selection of Data from RX UART
+
+
+  signal s_rx_done_p1     : std_logic;
+  signal s_rx_done_r_edge : std_logic;
+
 begin  -- architecture behv
+
+  -- Resynch
+  p_rx_resynch : process (clk, rst_n) is
+  begin  -- process p_rx_resynch
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_rx_meta   <= '0';
+      s_rx_stable <= '0';
+      s_rx        <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_rx_meta   <= i_rx;
+      s_rx_stable <= s_rx_meta;
+      s_rx        <= s_rx_stable;
+    end if;
+  end process p_rx_resynch;
 
 
   -- UART RX INST
@@ -166,6 +200,39 @@ begin  -- architecture behv
       tx_done  => s_tx_done
       );
 
+
+
+  -- UART Command decoder INST
+  i_uart_cmd_decod_0 : uart_cmd_decod
+
+    generic map (
+      G_NB_CMD     => C_NB_CMD,
+      G_CMD_LENGTH => C_CMD_LENGTH,
+      G_DATA_WIDTH => G_UART_DATA_SIZE)
+
+    port map(
+      clk          => clk,
+      rst_n        => rst_n,
+      i_data       => s_data_decod,
+      i_data_valid => s_data_valid,
+      o_commands   => s_commands,
+      o_discard    => s_discard
+      );
+
+
+  p_pipe_signals : process (clk, rst_n) is
+  begin  -- process p_pipe_signals
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_rx_done_p1 <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_rx_done_p1 <= s_rx_done;
+    end if;
+  end process p_pipe_signals;
+
+  s_rx_done_r_edge <= s_rx_done and not s_rx_done_p1;
+
+  s_data_decod <= s_rx_data        when s_rx_data_sel = '0' else (others => '0');
+  s_data_valid <= s_rx_done_r_edge when s_rx_data_sel = '0' else '0';
 
 
 end architecture behv;
