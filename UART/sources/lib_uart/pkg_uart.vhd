@@ -6,7 +6,7 @@
 -- Author     :   
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2019-05-27
+-- Last update: 2021-05-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ use ieee.numeric_std.all;
 package pkg_uart is
 
   -- NEW TYPES
-  type t_rs232_tx_fsm is (IDLE, LATCH_INPUTS, START_BIT_GEN, DATA_GEN, PARITY_GEN, STOP_BIT_GEN, STOP);  -- State of the TX FSM
+  type t_rs232_tx_fsm is (IDLE, START_BIT_GEN, DATA_GEN, PARITY_GEN, STOP_BIT_GEN, STOP);  -- State of the TX FSM
   type t_rx_fsm is(IDLE, WAIT_START, READ_START, READ_DATA, READ_PARITY, READ_STOP_BIT, STOP);  -- States of the RX FSM
   type t_baudrate is (
     b110,
@@ -107,6 +107,26 @@ package pkg_uart is
       rx_done     : out std_logic;      -- Flag for a received data
       parity_rcvd : out std_logic);     -- Parity received
   end component rx_uart;
+
+
+  component tx_uart is
+    generic (
+      stop_bit_number : integer range 1 to 2 := 1;  -- Number of stop bit
+      parity          : t_parity             := even;  -- Type of the parity
+      baudrate        : t_baudrate           := b115200;    -- Baudrate
+      data_size       : integer range 5 to 9 := 8;  -- Size of the data to transmit
+      polarity        : std_logic            := '1';  -- Polarity in idle state
+      first_bit       : t_first_bit          := lsb_first;  -- LSB or MSB first
+      clock_frequency : integer              := 20000000);  -- Clock frequency [Hz]
+
+    port (
+      reset_n  : in  std_logic;         -- Asynchronous reset
+      clock    : in  std_logic;         -- Clock
+      start_tx : in  std_logic;         -- start a TX transaction
+      tx_data  : in  std_logic_vector(data_size - 1 downto 0);  -- Data to transmit
+      tx       : out std_logic;         -- Serial output transmission
+      tx_done  : out std_logic);        -- Transaction done
+  end component;
 
 end package pkg_uart;
 

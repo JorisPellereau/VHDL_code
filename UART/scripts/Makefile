@@ -189,6 +189,8 @@ src_lib_uart+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/rx_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/tx_uart.vhd
 
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
+
 src_vhd_lib_others+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/pkg_max7219_static.vhd
@@ -268,6 +270,9 @@ compile_uart:
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_lib_uart), $(vcom) -work $(LIB_UART) $(list);) \
 
+compile_uart_display_ctrl:
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_vhd_lib_uart_display_ctrl), $(vcom) -work $(LIB_UART_DISPLAY_CTRL) $(list);) \
 
 compile_max7219_interface:
 	cd $(WORK_DIR); \
@@ -286,7 +291,7 @@ compile_max7219_controller:
 	$(foreach list, $(src_vhd_lib_max7219_controller), $(vcom) -work $(LIB_MAX7219_CONTROLLER) $(list);) \
 
 # Compile Design Library here
-compile_design : compile_others compile_uart compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller
+compile_design : compile_others compile_uart compile_uart_display_ctrl compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller
 
 ## ==================== ##
 

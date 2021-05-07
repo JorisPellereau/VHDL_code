@@ -6,7 +6,7 @@
 -- Author     :  
 -- Company    : 
 -- Created    : 2019-04-24
--- Last update: 2021-04-18
+-- Last update: 2021-05-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -83,15 +83,11 @@ begin  -- architecture arch
     elsif clock'event and clock = '1' then  -- rising clock edge
       case tx_fsm is
         when IDLE =>
-          if(start_tx_r_edge = '1') then    --start_tx_s = '1') then
-            tx_fsm <= LATCH_INPUTS;
-          end if;
-        when LATCH_INPUTS =>
 
           if(latch_done_s = '1') then
             tx_fsm <= START_BIT_GEN;
           end if;
-
+          
         when START_BIT_GEN =>
           if(tick_data = '1') then
             tx_fsm <= DATA_GEN;
@@ -128,14 +124,7 @@ begin  -- architecture arch
       start_tx_s      <= '0';               -- INIT to '0'
       start_tx_r_edge <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-
-      -- if(start_tx = '1' and tx_fsm = IDLE) then
-      --   start_tx_s <= '1';
-      -- else
-      --   start_tx_s <= '0';
-      -- end if;
-
-      start_tx_s      <= start_tx;
+     start_tx_s      <= start_tx;
       start_tx_r_edge <= start_tx and not start_tx_s;
     end if;
   end process p_start_tx_re_gen;
@@ -149,12 +138,12 @@ begin  -- architecture arch
       tx_data_s    <= (others => '0');
       latch_done_s <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if(tx_fsm = LATCH_INPUTS) then
-        tx_data_s    <= tx_data;
-        latch_done_s <= '1';
-      else
-        latch_done_s <= '0';
-      end if;
+      if(start_tx_r_edge = '1') then
+          tx_data_s    <= tx_data;
+          latch_done_s <= '1';
+        else
+          latch_done_s <= '0';
+        end if;
     end if;
   end process p_latch_data;
 
@@ -166,7 +155,7 @@ begin  -- architecture arch
       cnt_bit_duration <= 0;
       tick_data        <= '0';
     elsif clock'event and clock = '1' then  -- rising clock edge
-      if (tx_fsm /= idle and tx_fsm /= LATCH_INPUTS and tx_fsm /= stop) then
+      if (tx_fsm /= idle  and tx_fsm /= stop) then
         if(cnt_bit_duration < bit_duration - 1) then
           cnt_bit_duration <= cnt_bit_duration + 1;
           tick_data        <= '0';
@@ -217,10 +206,9 @@ begin  -- architecture arch
       if(tx_fsm = idle) then
         tx_s      <= polarity;
         tx_done_s <= '1';
-      elsif(tx_fsm = LATCH_INPUTS) then
-        tx_done_s <= '0';
       elsif(tx_fsm = START_BIT_GEN) then
-        tx_s <= '0';
+        tx_done_s <= '0';
+        tx_s      <= '0';
       elsif(tx_fsm = DATA_GEN) then
         if(cnt_data < data_size) then
           if(first_bit = lsb_first) then

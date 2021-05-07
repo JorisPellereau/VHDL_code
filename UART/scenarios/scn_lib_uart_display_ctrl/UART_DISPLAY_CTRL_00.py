@@ -29,14 +29,14 @@ scn_uart_display_ctrl_00.generic_tb_cmd.WTR("RST_N")
 scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
 scn_uart_display_ctrl_00.print_line("\n")
 
-data_to_send = [0x30]
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_0", data_to_send)
+data_to_send = [0xAA]
+scn_uart_display_ctrl_00.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
 scn_uart_display_ctrl_00.generic_tb_cmd.WAIT(100, "ns")
 
 
 data_to_read = [0x35]
-scn_uart_display_ctrl_00.generic_tb_uart_cmd.RX_READ("UART_0", data_to_read)
+scn_uart_display_ctrl_00.generic_tb_uart_cmd.RX_READ("UART_RPi", data_to_read)
 
 
 scn_uart_display_ctrl_00.END_TEST()

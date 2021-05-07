@@ -19,8 +19,6 @@
 `define C_WAIT_RST           100000  // 100000 ps = 100 ns before release Reset
 `define C_TB_CLK_PERIOD      20000   // 200000 ps = 20 ns
 
-// TESTBENCH SEQUENCER Configuration
-`define C_CMD_ARGS_NB 5
 
 // SET ALIAS Configuration
 `define C_SET_ALIAS_NB 28
@@ -41,9 +39,9 @@
 `define C_UART_DATA_WIDTH        8
 `define C_UART_BUFFER_ADDR_WIDTH 8
 `define C_STOP_BIT_NUMBER        1
-`define C_POLARITY               4'd3
-`define C_PARITY                 0
-`define C_BAUDRATE               9
+`define C_POLARITY               4'd3      // '1' value
+`define C_PARITY                 2         // No Parity
+`define C_BAUDRATE               9         // Baudrate : 155200
 `define C_FIRST_BIT              0
-`define C_CLOCK_FREQ             20000000
+`define C_CLOCK_FREQ             50000000  // 50 Mhz
 

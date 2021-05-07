@@ -9,7 +9,7 @@
 // Status          : V1.0
 
 /*
- *  Testbench TOP for test of MAX7219 SCROLLER Block
+ *  Testbench TOP for test of UART DISPLAY CTRL block - interfaced with MAX_7219_CONTROLLER
  * 
  */ 
 
@@ -179,9 +179,7 @@ module tb_top
     // == HDL GENERIC TESTBENCH MODULES ==
 
     // WAIT EVENT TB WRAPPER INST
-    wait_event_wrapper #(
-			.ARGS_NB    (`C_CMD_ARGS_NB),
-			.CLK_PERIOD (`C_TB_CLK_PERIOD)
+    wait_event_wrapper #(.CLK_PERIOD (`C_TB_CLK_PERIOD)
     )
     i_wait_event_wrapper (
        .clk            (clk),
@@ -191,9 +189,7 @@ module tb_top
 
 
     // SET INJECTOR TB WRAPPER INST
-    set_injector_wrapper #(
-			  .ARGS_NB(`C_CMD_ARGS_NB) 
-    )
+    set_injector_wrapper #()
     i_set_injector_wrapper (
        .clk              (clk),
        .rst_n            (rst_n),
@@ -234,7 +230,7 @@ module tb_top
    assign s_wait_event_if.wait_signals[4] = s_ptr_equality_static;
    assign s_wait_event_if.wait_signals[5] = s_static_busy;
    assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
-   assign s_wait_event_if.wait_signals[7] = i_dut.s_discard_static;
+   assign s_wait_event_if.wait_signals[7] = i_max7219_display_controller.s_discard_static;
    
 
    // INIT SET ALIAS
@@ -397,37 +393,44 @@ module tb_top
 			   .uart_checker_if (uart_checker_if)
     
     );
-   assign uart_checker_if.clk = clk;
-   // ====================================
 
- 
+   // =============================
+   
 
    // == TESTBENCH Configuration ==
 
-   // Declare TB Module class type
-   tb_modules_custom_class tb_modules_custom_inst = new(1'b1);
+   // Declare UART TB Modules Class 
+   tb_modules_custom_uart #(
+			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
+			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
+			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
+			    ) tb_modules_custom_class_inst = new(uart_checker_if);
+
    
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_CMD_ARGS_NB, 
-                      `C_SET_SIZE, 
+   static tb_class #( `C_SET_SIZE, 
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
                       `C_WAIT_WIDTH, 
                       `C_TB_CLK_PERIOD,
                       `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH) 
-   tb_class_inst = new (s_wait_event_if, 
-                        s_set_injector_if, 
-                        s_wait_duration_if,
-                        s_check_level_if,
-			tb_modules_custom_inst
-			);
+                      `C_CHECK_WIDTH
+		      )
    
+   tb_class_inst= new (s_wait_event_if, 
+                       s_set_injector_if, 
+                       s_wait_duration_if,
+                       s_check_level_if,
+		       tb_modules_custom_class_inst);
    
    initial begin// : TB_SEQUENCER
 
-      tb_modules_custom_inst.init_uart_class(`C_NB_UART_CHECKER, 8, 8,uart_checker_if);      
-      tb_class_inst.tb_sequencer(SCN_FILE_PATH, tb_modules_custom_inst);
+
+      // Add Alias of Custom TB Modules
+      tb_modules_custom_class_inst.ADD_TB_CUSTOM_MODULES_ALIAS("UART_RPi", 0);
+      
+      // RUN Testbench Sequencer
+      tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
    end// : TB_SEQUENCER
    
@@ -462,6 +465,69 @@ module tb_top
    
 
    // == DUT INST ==
+
+
+
+   uart_max7219_display_ctrl #(
+			       .G_MATRIX_NB                (8),
+			       .G_RAM_ADDR_WIDTH_STATIC    (8), 
+			       .G_RAM_DATA_WIDTH_STATIC    (16),
+			       .G_RAM_ADDR_WIDTH_SCROLLER  (8),
+			       .G_RAM_DATA_WIDTH_SCROLLER  (8)
+			       )
+   
+   i_dut (
+	  .clk    (clk),
+	  .rst_n  (rst_n),
+
+    
+	  .i_rx(),
+	  .o_tx(),
+
+   
+	  .o_static_dyn  (),
+	  .o_new_display  (),
+	  
+	  
+	  .i_config_done    (),
+	  .o_display_test   (),
+	  .o_decod_mode     (),
+	  .o_intensity      (),
+	  .o_scan_limit     (),
+	  .o_shutdown       (),
+	  .o_new_config_val (),
+
+    
+	  .o_en_static (),
+  
+	  .i_rdata_static (),
+	  .o_me_static    (),
+	  .o_we_static    (),
+	  .o_addr_static  (),
+	  .o_wdata_static (),
+   
+	  .o_start_ptr_static (),
+	  .o_last_ptr_static  (),
+	  
+	  .i_ptr_equality_static (),
+	  .i_static_busy         (),
+	  
+	  
+	  .i_scroller_busy          (),
+	  .o_ram_start_ptr_scroller (),
+	  .o_msg_length_scroller    (),
+	  .o_max_tempo_cnt_scroller (),
+	      
+	  .i_rdata_scroller (),
+	  .o_me_scroller    (),
+	  .o_we_scroller    (),
+	  .o_addr_scroller  (),
+	  .o_wdata_scroller ()
+
+    );
+
+
+   
    // ==============
 
 
@@ -479,7 +545,7 @@ module tb_top
     .G_RAM_ADDR_WIDTH_SCROLLER (8),
     .G_RAM_DATA_WIDTH_SCROLLER (8)
   )
- i_dut (
+ i_max7219_display_controller (
     .clk   (clk),
     .rst_n (rst_n),
    
