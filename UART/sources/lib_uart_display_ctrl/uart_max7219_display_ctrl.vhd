@@ -141,6 +141,14 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_data_static      : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
   signal s_data_static_done : std_logic;
 
+  -- RAM DYN MNGT SIGNALS
+  signal s_data_dyn      : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
+  signal s_data_dyn_done : std_logic;
+
+  -- CONFIG MATRIX MNGT SIGNALS
+  signal s_data_config      : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
+  signal s_data_config_done : std_logic;
+
   -- Rising Edge detection
   signal s_rx_done_p1     : std_logic;
   signal s_rx_done_r_edge : std_logic;
@@ -155,6 +163,11 @@ architecture behv of uart_max7219_display_ctrl is
 
   signal s_load_pattern_scroller      : std_logic;
   signal s_load_pattern_scroller_done : std_logic;
+
+  signal s_load_config        : std_logic;
+  signal s_load_config_done   : std_logic;
+  signal s_update_config      : std_logic;
+  signal s_update_config_done : std_logic;
 
 begin  -- architecture behv
 
@@ -286,6 +299,15 @@ begin  -- architecture behv
       o_load_pattern_scroller      => s_load_pattern_scroller,
       i_load_pattern_scroller_done => s_load_pattern_scroller_done,
 
+      -- LOAD_CONFIG
+      o_load_config      => s_load_config,
+      i_load_config_done => s_load_config_done,
+
+      -- UPDATE_CONFIG
+      o_update_config      => s_update_config,
+      i_update_config_done => s_update_config_done,
+
+
       -- TX Uart commands
       i_tx_done       => s_tx_done,
       o_tx_uart_start => s_start_tx,
@@ -350,16 +372,36 @@ begin  -- architecture behv
       i_load_dyn_ram      => s_load_pattern_scroller,
       o_load_dyn_ram_done => s_load_pattern_scroller_done,
 
-      i_rx_data => s_data_static,
-      i_rx_done => s_data_static_done
+      i_rx_data => s_data_static,       -- TBD
+      i_rx_done => s_data_static_done   -- TBD
 
       );
 
 
   -- Config. MNGT
+  i_matrix_config_mngr_0 : matrix_config_mngr
+
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      i_load_config      => s_load_config,
+      o_load_config_done => s_load_config_done,
+
+      i_update_config      => s_update_config,
+      o_update_config_done => s_update_config_done,
+
+      o_display_test => o_display_test,
+      o_decod_mode   => o_decod_mode,
+      o_intensity    => o_intensity,
+      o_scan_limit   => o_scan_limit,
+      o_shutdown     => o_shutdown,
+
+      i_rx_data => s_data_static,       -- TBD
+      i_rx_done => s_data_static_done   -- TBD
+      );
 
 
-  
   -- Outputs Affectations
   o_tx <= s_tx;
 

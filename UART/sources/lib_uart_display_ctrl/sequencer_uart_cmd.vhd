@@ -56,6 +56,14 @@ entity sequencer_uart_cmd is
     o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
     i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
 
+    -- LOAD_CONFIG
+    o_load_config      : out std_logic;  -- Command Load Matrix Config
+    i_load_config_done : in  std_logic;  -- Command done
+
+    -- UPDATE_CONFIG
+    o_update_config      : out std_logic;  -- Command Update config
+    i_update_config_done : in  std_logic;  -- Command done
+
     -- TX Uart commands
     i_tx_done       : in  std_logic;
     o_tx_uart_start : out std_logic;
@@ -94,6 +102,9 @@ architecture behv of sequencer_uart_cmd is
 
   signal s_index_resp : integer;
 
+  signal s_load_matrix   : std_logic;
+  signal s_update_matrix : std_logic;
+
   --
 
 begin  -- architecture behv
@@ -119,6 +130,8 @@ begin  -- architecture behv
       s_load_pattern_static   <= '0';
       s_rx_data_sel           <= '0';
       s_load_pattern_scroller <= '0';
+      s_load_matrix           <= '0';
+      s_update_matrix         <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
@@ -150,15 +163,29 @@ begin  -- architecture behv
       elsif(i_load_pattern_scroller_done = '1') then
         s_rx_data_sel <= '0';  -- Change mux selector - Back on initial
 
+      -- LOAD_MATRIX_CONFIG
+      elsif(i_cmd_pulses = conv_std_logic_vector(8, i_cmd_pulses'length)) then
+        s_load_matrix <= '1';
+        s_rx_data_sel <= '1';           -- Change mux selector
+
+      -- UPDATE_MATRIX_CONFIG
+      elsif(i_cmd_pulses = conv_std_logic_vector(4, i_cmd_pulses'length)) then
+        s_update_matrix <= '1';
+        s_rx_data_sel   <= '0';         -- Change mux selector
+
+      elsif(i_load_config_done = '1') then
+        s_rx_data_sel <= '0';           -- Change mux selector
+
       else
         s_init_static_ram       <= '0';
         s_init_scroller_ram     <= '0';
         s_load_pattern_static   <= '0';
         s_load_pattern_scroller <= '0';
+        s_load_matrix           <= '0';
+        s_update_matrix         <= '0';
       end if;
 
 
-      -- RAZ s_rx_data_sel
 
     end if;
   end process p_pulses_decoder;
@@ -212,7 +239,23 @@ begin  -- architecture behv
           s_resp_ongoing <= '1';
           s_index_resp   <= 8;
 
+        -- Resp : LOAD_MATRIX_RDY
+        elsif(s_load_matrix = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 9;
+
+        -- Resp : LOAD_MATRIX_DONE
+        elsif(i_load_config_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 10;
+
+        -- Resp : UPDATE_MATRIX_DONE
+        elsif(i_update_config_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 11;
+
         end if;
+
 
       end if;
 
@@ -264,13 +307,14 @@ begin  -- architecture behv
 
 
   -- Outputs affectations
-  o_init_static_ram     <= s_init_static_ram;
-  o_init_scroller_ram   <= s_init_scroller_ram;
-  o_load_pattern_static <= s_load_pattern_static;  -- TBD Ajouter filtre si ongoing
-  o_tx_data             <= s_tx_data;
-  o_tx_uart_start       <= s_tx_uart_start;
-  o_rx_data_sel         <= s_rx_data_sel;
-
+  o_init_static_ram       <= s_init_static_ram;
+  o_init_scroller_ram     <= s_init_scroller_ram;
+  o_load_pattern_static   <= s_load_pattern_static;  -- TBD Ajouter filtre si ongoing
+  o_tx_data               <= s_tx_data;
+  o_tx_uart_start         <= s_tx_uart_start;
+  o_rx_data_sel           <= s_rx_data_sel;
   o_load_pattern_scroller <= s_load_pattern_scroller;
+  o_load_config           <= s_load_matrix;
+  o_update_config         <= s_update_matrix;
 
 end architecture behv;

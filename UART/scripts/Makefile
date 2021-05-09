@@ -195,6 +195,7 @@ src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_cmd_decod.v
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/sequencer_uart_cmd.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/static_ram_mngr.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/dyn_ram_mngr.vhd
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/matrix_config_mngr.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
 
 src_vhd_lib_others+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd

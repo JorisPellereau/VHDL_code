@@ -31,7 +31,7 @@ package pkg_uart_max7219_display_ctrl is
   constant C_DATA_WIDTH : integer range 5 to 9 := 8;   -- Data Width
 
   constant C_RESP_LENGTH : integer := 20;  -- Length of a TX Response in byte
-  constant C_NB_RESP     : integer := 10;  -- Number of possible respons
+  constant C_NB_RESP     : integer := 15;  -- Number of possible respons
 
   -- ASCII Character in hexdecimal
   constant A : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"41";
@@ -435,6 +435,66 @@ package pkg_uart_max7219_display_ctrl is
                                         others => x"00");
 
 
+  -- LOAD_MATRIX_RDY
+  constant C_RESP_09 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => M,
+                                        6      => A,
+                                        7      => T,
+                                        8      => R,
+                                        9      => I,
+                                        10     => X,
+                                        11     => UNDSCR,
+                                        12     => R,
+                                        13     => D,
+                                        14     => Y,
+                                        others => x"00");
+
+
+  -- LOAD_MATRIX_DONE
+  constant C_RESP_10 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => M,
+                                        6      => A,
+                                        7      => T,
+                                        8      => R,
+                                        9      => I,
+                                        10     => X,
+                                        11     => UNDSCR,
+                                        12     => D,
+                                        13     => O,
+                                        14     => N,
+                                        15     => E,
+                                        others => x"00");
+
+  -- UPDATE_MATRIX_DONE
+  constant C_RESP_11 : t_resp_array := (0      => U,
+                                        1      => P,
+                                        2      => D,
+                                        3      => A,
+                                        4      => T,
+                                        5      => E,
+                                        6      => UNDSCR,
+                                        7      => M,
+                                        8      => A,
+                                        9      => T,
+                                        10     => R,
+                                        11     => I,
+                                        12     => X,
+                                        13     => UNDSCR,
+                                        14     => D,
+                                        15     => O,
+                                        16     => N,
+                                        17     => E,
+                                        others => x"00");
+
+
 
 
 
@@ -450,6 +510,9 @@ package pkg_uart_max7219_display_ctrl is
     6      => C_RESP_06,
     7      => C_RESP_07,
     8      => C_RESP_08,
+    9      => C_RESP_09,
+    10     => C_RESP_10,
+    11     => C_RESP_11,
     others => (others => (others => '0'))
     );
 
@@ -499,6 +562,13 @@ package pkg_uart_max7219_display_ctrl is
       -- LOAD Scroller RAM
       o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
       i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
+
+      -- LOAD_CONFIG
+      o_load_config      : out std_logic;  -- Command Load Matrix Config
+      i_load_config_done : in  std_logic;  -- Command done
+
+      o_update_config      : out std_logic;  -- Command Update config
+      i_update_config_done : in  std_logic;  -- Command done
 
       -- TX Uart commands
       i_tx_done       : in  std_logic;
@@ -576,6 +646,34 @@ package pkg_uart_max7219_display_ctrl is
       i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
       i_rx_done : in std_logic
 
+      );
+
+  end component;
+
+
+  component matrix_config_mngr is
+    generic (
+      G_UART_DATA_WIDTH : integer range 5 to 9 := 8  -- UART RAM Data WIDTH
+      );
+    port (
+      clk   : in std_logic;                          -- Clock
+      rst_n : in std_logic;                          -- Asunchronous Reset
+
+      i_load_config      : in  std_logic;  -- Load Config. Command
+      o_load_config_done : out std_logic;  --Load Config. Command done
+
+      i_update_config      : in  std_logic;  -- New config Command    
+      o_update_config_done : out std_logic;  -- Config. Done
+
+      o_display_test : out std_logic;   -- Display test config.
+      o_decod_mode   : out std_logic_vector(7 downto 0);
+      o_intensity    : out std_logic_vector(7 downto 0);
+      o_scan_limit   : out std_logic_vector(7 downto 0);
+      o_shutdown     : out std_logic_vector(7 downto 0);
+
+      -- RX UART I/F
+      i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
+      i_rx_done : in std_logic
       );
 
   end component;
