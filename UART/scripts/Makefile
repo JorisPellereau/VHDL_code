@@ -189,6 +189,7 @@ src_lib_uart+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/rx_uart.vhd
 src_lib_uart+=$(SRC_DIR)/lib_uart/tx_uart.vhd
 
+
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/pkg_uart_max7219_display_ctrl.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_cmd_decod.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/sequencer_uart_cmd.vhd
@@ -285,10 +286,12 @@ compile_max7219_interface:
 compile_max7219_static:
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_max7219_static), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
+	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
 
 compile_max7219_scroller:
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_max7219_scroller), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
+	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
 
 compile_max7219_controller:
 	cd $(WORK_DIR); \
@@ -341,6 +344,8 @@ generate_scn :
 # == RUN TEST ==
 
 run_tb_uart_display_ctrl :
+	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
+	python $(TEST).py; \
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-07
+-- Last update: 2021-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -137,6 +137,10 @@ architecture behv of uart_max7219_display_ctrl is
 
   signal s_rx_data_sel : std_logic;     -- Selection of Data from RX UART
 
+  -- RAM STATIC MNGT signals
+  signal s_data_static      : std_logic_vector(G_UART_DATA_SIZE - 1 downto 0);
+  signal s_data_static_done : std_logic;
+
   -- Rising Edge detection
   signal s_rx_done_p1     : std_logic;
   signal s_rx_done_r_edge : std_logic;
@@ -145,6 +149,9 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_init_static_ram        : std_logic;
   signal s_init_scroller_ram_done : std_logic;
   signal s_init_scroller_ram      : std_logic;
+
+  signal s_load_pattern_static      : std_logic;
+  signal s_load_pattern_static_done : std_logic;
 
 begin  -- architecture behv
 
@@ -236,11 +243,14 @@ begin  -- architecture behv
 
   s_rx_done_r_edge <= s_rx_done and not s_rx_done_p1;  -- Rising Edge detection
 
-  -- Route Mux
+  -- Route Mux to Decod mngr
   s_data_decod <= s_rx_data        when s_rx_data_sel = '0' else (others => '0');
   s_data_valid <= s_rx_done_r_edge when s_rx_data_sel = '0' else '0';
 
 
+  -- Route To STATIC RAM Mngt
+  s_data_static      <= s_rx_data        when s_rx_data_sel = '1' else (others => '0');
+  s_data_static_done <= s_rx_done_r_edge when s_rx_data_sel = '1' else '0';
 
   -- SEQUENCER INST
   i_sequencer_uart_cmd_0 : sequencer_uart_cmd
@@ -260,6 +270,9 @@ begin  -- architecture behv
       -- INIT Static RAM
       i_init_static_ram_done => s_init_static_ram_done,
       o_init_static_ram      => s_init_static_ram,
+
+      o_load_pattern_static      => s_load_pattern_static,
+      i_load_pattern_static_done => s_load_pattern_static_done,
 
       -- INIT Scroller RAM
       i_init_scroller_ram_done => s_init_scroller_ram_done,
@@ -293,7 +306,13 @@ begin  -- architecture behv
 
       -- Command and status
       i_init_static_ram      => s_init_static_ram,
-      o_init_static_ram_done => s_init_static_ram_done
+      o_init_static_ram_done => s_init_static_ram_done,
+
+      i_load_static_ram      => s_load_pattern_static,
+      o_load_static_ram_done => s_load_pattern_static_done,
+
+      i_rx_data => s_data_static,
+      i_rx_done => s_data_static_done
 
       );
 

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-07
+-- Last update: 2021-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ package pkg_uart_max7219_display_ctrl is
   constant T : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"54";
   constant U : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"55";
   constant X : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"58";
+  constant Y : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"59";
 
 
   constant UNDSCR : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"5F";
@@ -309,10 +310,123 @@ package pkg_uart_max7219_display_ctrl is
                                         10     => D,
                                         others => x"00");
 
+
+  -- LOAD_STATIC_RDY
+  constant C_RESP_03 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => T,
+                                        7      => A,
+                                        8      => T,
+                                        9      => I,
+                                        10     => C,
+                                        11     => UNDSCR,
+                                        12     => R,
+                                        13     => D,
+                                        14     => Y,
+                                        others => x"00");
+
+
+  -- LOAD_STATIC_NOT_RDY
+  constant C_RESP_04 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => T,
+                                        7      => A,
+                                        8      => T,
+                                        9      => I,
+                                        10     => C,
+                                        11     => UNDSCR,
+                                        12     => N,
+                                        13     => O,
+                                        14     => T,
+                                        15     => UNDSCR,
+                                        16     => R,
+                                        17     => D,
+                                        18     => y,
+                                        others => x"00");
+  -- LOAD_STATIC_DONE
+  constant C_RESP_05 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => T,
+                                        7      => A,
+                                        8      => T,
+                                        9      => I,
+                                        10     => C,
+                                        11     => UNDSCR,
+                                        12     => D,
+                                        13     => O,
+                                        14     => N,
+                                        15     => E,
+                                        others => x"00");
+
+
+  -- LOAD_SCROLL_RDY
+  constant C_RESP_06 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => C,
+                                        7      => R,
+                                        8      => O,
+                                        9      => L,
+                                        10     => L,
+                                        11     => UNDSCR,
+                                        12     => R,
+                                        13     => D,
+                                        14     => Y,
+                                        others => x"00");
+
+
+  -- LOAD_SCROLL_NOT_RDY
+  constant C_RESP_07 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => C,
+                                        7      => R,
+                                        8      => O,
+                                        9      => L,
+                                        10     => L,
+                                        11     => UNDSCR,
+                                        12     => N,
+                                        13     => O,
+                                        14     => T,
+                                        15     => UNDSCR,
+                                        16     => R,
+                                        17     => D,
+                                        18     => Y,
+                                        others => x"00");
+
+
+
+
+
+
+
   constant C_RESP_LIST : t_resp_list_array := (
     0      => C_RESP_00,
     1      => C_RESP_01,
     2      => C_RESP_02,
+    3      => C_RESP_03,
+    4      => C_RESP_04,
+    5      => C_RESP_05,
+    6      => C_RESP_06,
+    7      => C_RESP_07,
     others => (others => (others => '0'))
     );
 
@@ -352,6 +466,9 @@ package pkg_uart_max7219_display_ctrl is
       i_init_static_ram_done : in  std_logic;
       o_init_static_ram      : out std_logic;  -- Init Static RAM Command
 
+      o_load_pattern_static      : out std_logic;  -- Command Load Pattern Static
+      i_load_pattern_static_done : in  std_logic;  -- Load Pattern Static Done
+
       -- INIT Scroller RAM
       i_init_scroller_ram_done : in  std_logic;
       o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
@@ -368,8 +485,11 @@ package pkg_uart_max7219_display_ctrl is
   component static_ram_mngr is
     generic (
 
-      G_RAM_ADDR_WIDTH_STATIC : integer := 8;    -- RAM STATIC ADDR WIDTH
-      G_RAM_DATA_WIDTH_STATIC : integer := 16);  -- RAM STATIC DATA WIDTH
+      G_RAM_ADDR_WIDTH_STATIC : integer              := 8;  -- RAM STATIC ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC : integer              := 16;  -- RAM STATIC DATA WIDTH
+      G_UART_DATA_WIDTH       : integer range 5 to 9 := 8  -- UART RAM Data WIDTH
+      );
+
 
     port (
       clk   : in std_logic;             -- Clock
@@ -382,8 +502,16 @@ package pkg_uart_max7219_display_ctrl is
       o_addr_static  : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- RAM ADDR
       o_wdata_static : out std_logic_vector(G_RAM_DATA_WIDTH_STATIC - 1 downto 0);  -- RAM DATA
 
+      -- INIT Static Ram
       i_init_static_ram      : in  std_logic;
-      o_init_static_ram_done : out std_logic
+      o_init_static_ram_done : out std_logic;
+
+      -- Load Static Ram
+      i_load_static_ram      : in  std_logic;
+      o_load_static_ram_done : out std_logic;
+
+      i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
+      i_rx_done : in std_logic
 
       );
   end component;

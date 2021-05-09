@@ -63,7 +63,9 @@ def ascii_str_2_hex(ascii_str):
     elif(ascii_str == "U"):
         data_hex = 0x55
     elif(ascii_str == "X"):
-        data_hex = 0x58   
+        data_hex = 0x58
+    elif(ascii_str == "Y"):
+        data_hex = 0x59
 
     # Special Char
     elif(ascii_str == "_"):

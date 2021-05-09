@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-07
+-- Last update: 2021-05-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -44,6 +44,10 @@ entity sequencer_uart_cmd is
     i_init_static_ram_done : in  std_logic;
     o_init_static_ram      : out std_logic;  -- Init Static RAM Command
 
+    o_load_pattern_static      : out std_logic;  -- Command Load Pattern Static
+    i_load_pattern_static_done : in  std_logic;  -- Load Pattern Static Done
+
+
     -- INIT Scroller RAM
     i_init_scroller_ram_done : in  std_logic;
     o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
@@ -62,8 +66,10 @@ architecture behv of sequencer_uart_cmd is
 
 
   -- INTERNAL Signals
-  signal s_init_static_ram   : std_logic;
-  signal s_init_scroller_ram : std_logic;
+  -- Commands
+  signal s_init_static_ram     : std_logic;
+  signal s_init_scroller_ram   : std_logic;
+  signal s_load_pattern_static : std_logic;
 
   signal s_tx_uart_start : std_logic;
   signal s_tx_data       : std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
@@ -81,6 +87,8 @@ architecture behv of sequencer_uart_cmd is
   signal s_first_access : std_logic;
 
   signal s_index_resp : integer;
+
+  --
 
 begin  -- architecture behv
 
@@ -100,22 +108,38 @@ begin  -- architecture behv
   p_pulses_decoder : process (clk, rst_n) is
   begin  -- process p_pulses_decoder
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_init_static_ram   <= '0';
-      s_init_scroller_ram <= '0';
-      s_rx_data_sel       <= '0';
+      s_init_static_ram     <= '0';
+      s_init_scroller_ram   <= '0';
+      s_load_pattern_static <= '0';
+      s_rx_data_sel         <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
+      -- INIT_RAM_STATIC command
       if(i_cmd_pulses = conv_std_logic_vector(1, i_cmd_pulses'length)) then
         s_init_static_ram <= '1';
         s_rx_data_sel     <= '0';
-      elsif(i_cmd_pulses = conv_std_logic_vector(1, i_cmd_pulses'length)) then
+
+      -- INIT_RAM_SCROLLER command
+      elsif(i_cmd_pulses = conv_std_logic_vector(2, i_cmd_pulses'length)) then
         s_init_scroller_ram <= '1';
         s_rx_data_sel       <= '0';
+
+      -- LOAD_PATTERN_STATIC command
+      elsif(i_cmd_pulses = conv_std_logic_vector(16, i_cmd_pulses'length)) then
+        s_load_pattern_static <= '1';
+        s_rx_data_sel         <= '1';   -- Change mux selector
+
+      elsif(i_load_pattern_static_done = '1') then
+        s_rx_data_sel <= '0';           -- Change mux selector - Back on initial
       else
-        s_init_static_ram   <= '0';
-        s_init_scroller_ram <= '0';
+        s_init_static_ram     <= '0';
+        s_init_scroller_ram   <= '0';
+        s_load_pattern_static <= '0';
       end if;
+
+
+      -- RAZ s_rx_data_sel
 
     end if;
   end process p_pulses_decoder;
@@ -146,6 +170,16 @@ begin  -- architecture behv
         elsif(i_cmd_discard = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 2;
+
+        elsif(s_load_pattern_static = '1') then  -- TBD AJOUTER PATTERN LU EN COURS
+                                                 -- !!!!
+
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 3;
+
+        elsif(i_load_pattern_static_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 5;
         end if;
 
       end if;
@@ -175,6 +209,7 @@ begin  -- architecture behv
           end if;
 
         else
+          s_tx_uart_start <= '0';
           if(s_tx_done_r_edge = '1') then
             s_first_access <= '0';
             s_resp_done    <= '1';
@@ -192,10 +227,15 @@ begin  -- architecture behv
 
 
 
+  -- Memory of Last command ongoing
+
+
 
   -- Outputs affectations
   o_init_static_ram   <= s_init_static_ram;
   o_init_scroller_ram <= s_init_scroller_ram;
+
+  o_load_pattern_static <= s_load_pattern_static;  -- TBD Ajouter filtre si ongoing
 
   o_tx_data       <= s_tx_data;
   o_tx_uart_start <= s_tx_uart_start;

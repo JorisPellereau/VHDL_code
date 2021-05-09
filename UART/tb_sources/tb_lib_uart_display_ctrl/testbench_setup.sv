@@ -41,7 +41,7 @@
 `define C_STOP_BIT_NUMBER        1
 `define C_POLARITY               4'd3      // '1' value
 `define C_PARITY                 2         // No Parity
-`define C_BAUDRATE               9         // Baudrate : 155200
+`define C_BAUDRATE               10         // Baudrate 9 : 155200 - 10 : 230400 - 11 : 460800
 `define C_FIRST_BIT              0
 `define C_CLOCK_FREQ             50000000  // 50 Mhz
 
