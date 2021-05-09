@@ -44,13 +44,17 @@ entity sequencer_uart_cmd is
     i_init_static_ram_done : in  std_logic;
     o_init_static_ram      : out std_logic;  -- Init Static RAM Command
 
+    -- LOAD Static RAM
     o_load_pattern_static      : out std_logic;  -- Command Load Pattern Static
     i_load_pattern_static_done : in  std_logic;  -- Load Pattern Static Done
-
 
     -- INIT Scroller RAM
     i_init_scroller_ram_done : in  std_logic;
     o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
+
+    -- LOAD Scroller RAM
+    o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
+    i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
 
     -- TX Uart commands
     i_tx_done       : in  std_logic;
@@ -70,6 +74,8 @@ architecture behv of sequencer_uart_cmd is
   signal s_init_static_ram     : std_logic;
   signal s_init_scroller_ram   : std_logic;
   signal s_load_pattern_static : std_logic;
+
+  signal s_load_pattern_scroller : std_logic;
 
   signal s_tx_uart_start : std_logic;
   signal s_tx_data       : std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
@@ -108,10 +114,11 @@ begin  -- architecture behv
   p_pulses_decoder : process (clk, rst_n) is
   begin  -- process p_pulses_decoder
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_init_static_ram     <= '0';
-      s_init_scroller_ram   <= '0';
-      s_load_pattern_static <= '0';
-      s_rx_data_sel         <= '0';
+      s_init_static_ram       <= '0';
+      s_init_scroller_ram     <= '0';
+      s_load_pattern_static   <= '0';
+      s_rx_data_sel           <= '0';
+      s_load_pattern_scroller <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
@@ -130,12 +137,24 @@ begin  -- architecture behv
         s_load_pattern_static <= '1';
         s_rx_data_sel         <= '1';   -- Change mux selector
 
+
+      -- LOAD_PATTERN_SCROLL
+      elsif(i_cmd_pulses = conv_std_logic_vector(32, i_cmd_pulses'length)) then
+        s_load_pattern_scroller <= '1';
+        s_rx_data_sel           <= '1';  -- Change mux selector
+
+      -- LOAD PATTER Static Done
       elsif(i_load_pattern_static_done = '1') then
-        s_rx_data_sel <= '0';           -- Change mux selector - Back on initial
+        s_rx_data_sel <= '0';  -- Change mux selector - Back on initial
+
+      elsif(i_load_pattern_scroller_done = '1') then
+        s_rx_data_sel <= '0';  -- Change mux selector - Back on initial
+
       else
-        s_init_static_ram     <= '0';
-        s_init_scroller_ram   <= '0';
-        s_load_pattern_static <= '0';
+        s_init_static_ram       <= '0';
+        s_init_scroller_ram     <= '0';
+        s_load_pattern_static   <= '0';
+        s_load_pattern_scroller <= '0';
       end if;
 
 
@@ -164,22 +183,35 @@ begin  -- architecture behv
         if(i_init_static_ram_done = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 0;
+
         elsif(i_init_scroller_ram_done = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 1;
+
         elsif(i_cmd_discard = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 2;
 
+        -- Resp : LOAD_STATIC_RDY
         elsif(s_load_pattern_static = '1') then  -- TBD AJOUTER PATTERN LU EN COURS
-                                                 -- !!!!
-
           s_resp_ongoing <= '1';
           s_index_resp   <= 3;
 
+        -- Resp : LOAD_STATIC_DONE
         elsif(i_load_pattern_static_done = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 5;
+
+        -- Resp : LOAD_SCROLL_RDY
+        elsif(s_load_pattern_scroller = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 6;
+
+        -- Rest : LOAD_SCROLL_DONE
+        elsif(i_load_pattern_scroller_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 8;
+
         end if;
 
       end if;
@@ -232,14 +264,13 @@ begin  -- architecture behv
 
 
   -- Outputs affectations
-  o_init_static_ram   <= s_init_static_ram;
-  o_init_scroller_ram <= s_init_scroller_ram;
-
+  o_init_static_ram     <= s_init_static_ram;
+  o_init_scroller_ram   <= s_init_scroller_ram;
   o_load_pattern_static <= s_load_pattern_static;  -- TBD Ajouter filtre si ongoing
+  o_tx_data             <= s_tx_data;
+  o_tx_uart_start       <= s_tx_uart_start;
+  o_rx_data_sel         <= s_rx_data_sel;
 
-  o_tx_data       <= s_tx_data;
-  o_tx_uart_start <= s_tx_uart_start;
-
-  o_rx_data_sel <= s_rx_data_sel;
+  o_load_pattern_scroller <= s_load_pattern_scroller;
 
 end architecture behv;

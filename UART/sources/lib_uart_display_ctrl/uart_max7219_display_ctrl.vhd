@@ -153,6 +153,9 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_load_pattern_static      : std_logic;
   signal s_load_pattern_static_done : std_logic;
 
+  signal s_load_pattern_scroller      : std_logic;
+  signal s_load_pattern_scroller_done : std_logic;
+
 begin  -- architecture behv
 
   -- Resynch
@@ -271,12 +274,17 @@ begin  -- architecture behv
       i_init_static_ram_done => s_init_static_ram_done,
       o_init_static_ram      => s_init_static_ram,
 
+      -- LOAD Static RAM
       o_load_pattern_static      => s_load_pattern_static,
       i_load_pattern_static_done => s_load_pattern_static_done,
 
       -- INIT Scroller RAM
       i_init_scroller_ram_done => s_init_scroller_ram_done,
       o_init_scroller_ram      => s_init_scroller_ram,
+
+      -- LOAD Scroller RAM
+      o_load_pattern_scroller      => s_load_pattern_scroller,
+      i_load_pattern_scroller_done => s_load_pattern_scroller_done,
 
       -- TX Uart commands
       i_tx_done       => s_tx_done,
@@ -304,7 +312,7 @@ begin  -- architecture behv
       o_addr_static  => o_addr_static,
       o_wdata_static => o_wdata_static,
 
-      -- Command and status
+      -- STATIC RAM Command and status
       i_init_static_ram      => s_init_static_ram,
       o_init_static_ram_done => s_init_static_ram_done,
 
@@ -316,6 +324,42 @@ begin  -- architecture behv
 
       );
 
+
+  -- RAM DYN MNGT
+  i_dyn_ram_mngr_0 : dyn_ram_mngr
+    generic map (
+
+      G_RAM_ADDR_WIDTH_DYN => G_RAM_ADDR_WIDTH_SCROLLER,
+      G_RAM_DATA_WIDTH_DYN => G_RAM_DATA_WIDTH_SCROLLER)
+
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- RAM DYN I/F
+      i_rdata_dyn => i_rdata_scroller,
+      o_me_dyn    => o_me_scroller,
+      o_we_dyn    => o_we_scroller,
+      o_addr_dyn  => o_addr_scroller,
+      o_wdata_dyn => o_wdata_scroller,
+
+      -- Command and status
+      i_init_dyn_ram      => s_init_scroller_ram,
+      o_init_dyn_ram_done => s_init_scroller_ram_done,
+
+      i_load_dyn_ram      => s_load_pattern_scroller,
+      o_load_dyn_ram_done => s_load_pattern_scroller_done,
+
+      i_rx_data => s_data_static,
+      i_rx_done => s_data_static_done
+
+      );
+
+
+  -- Config. MNGT
+
+
+  
   -- Outputs Affectations
   o_tx <= s_tx;
 

@@ -75,3 +75,6 @@ def ascii_str_2_hex(ascii_str):
         print("data_hex error")
         
     return data_hex
+
+
+

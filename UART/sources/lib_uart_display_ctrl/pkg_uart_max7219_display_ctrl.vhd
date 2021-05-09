@@ -289,11 +289,13 @@ package pkg_uart_max7219_display_ctrl is
                                         7      => O,
                                         8      => L,
                                         9      => L,
-                                        10     => UNDSCR,
-                                        11     => D,
-                                        12     => O,
-                                        13     => N,
-                                        14     => E,
+                                        10     => E,
+                                        11     => R,
+                                        12     => UNDSCR,
+                                        13     => D,
+                                        14     => O,
+                                        15     => N,
+                                        16     => E,
                                         others => x"00");
 
   -- CMD_DISCARD
@@ -413,6 +415,26 @@ package pkg_uart_max7219_display_ctrl is
                                         others => x"00");
 
 
+  -- LOAD_SCROLL_DONE
+  constant C_RESP_08 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => S,
+                                        6      => C,
+                                        7      => R,
+                                        8      => O,
+                                        9      => L,
+                                        10     => L,
+                                        11     => UNDSCR,
+                                        12     => D,
+                                        13     => O,
+                                        14     => N,
+                                        15     => E,
+                                        others => x"00");
+
+
 
 
 
@@ -427,6 +449,7 @@ package pkg_uart_max7219_display_ctrl is
     5      => C_RESP_05,
     6      => C_RESP_06,
     7      => C_RESP_07,
+    8      => C_RESP_08,
     others => (others => (others => '0'))
     );
 
@@ -473,6 +496,10 @@ package pkg_uart_max7219_display_ctrl is
       i_init_scroller_ram_done : in  std_logic;
       o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
 
+      -- LOAD Scroller RAM
+      o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
+      i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
+
       -- TX Uart commands
       i_tx_done       : in  std_logic;
       o_tx_uart_start : out std_logic;
@@ -514,6 +541,43 @@ package pkg_uart_max7219_display_ctrl is
       i_rx_done : in std_logic
 
       );
+  end component;
+
+
+  component dyn_ram_mngr is
+
+    generic (
+
+      G_RAM_ADDR_WIDTH_DYN : integer              := 8;  -- RAM DYN ADDR WIDTH
+      G_RAM_DATA_WIDTH_DYN : integer              := 8;  -- RAM DYN DATA WIDTH
+      G_UART_DATA_WIDTH    : integer range 5 to 9 := 8   -- UART RAM Data WIDTH
+      );
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous clock
+
+      -- RAM STATIC I/F
+      i_rdata_dyn : in  std_logic_vector(G_RAM_DATA_WIDTH_DYN - 1 downto 0);  -- RAM RDATA
+      o_me_dyn    : out std_logic;
+      o_we_dyn    : out std_logic;      -- W/R command
+      o_addr_dyn  : out std_logic_vector(G_RAM_ADDR_WIDTH_DYN - 1 downto 0);  -- RAM ADDR
+      o_wdata_dyn : out std_logic_vector(G_RAM_DATA_WIDTH_DYN - 1 downto 0);  -- RAM DATA
+
+      -- INIT Dyn Ram
+      i_init_dyn_ram      : in  std_logic;
+      o_init_dyn_ram_done : out std_logic;
+
+      -- Load Dyn Ram
+      i_load_dyn_ram      : in  std_logic;
+      o_load_dyn_ram_done : out std_logic;
+
+
+      i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
+      i_rx_done : in std_logic
+
+      );
+
   end component;
 
 end package pkg_uart_max7219_display_ctrl;
