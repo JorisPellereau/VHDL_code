@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-09
+-- Last update: 2021-05-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -658,6 +658,8 @@ package pkg_uart_max7219_display_ctrl is
     port (
       clk   : in std_logic;                          -- Clock
       rst_n : in std_logic;                          -- Asunchronous Reset
+
+      i_config_done : in std_logic; -- Config. Done from MAX7219 - TBD
 
       i_load_config      : in  std_logic;  -- Load Config. Command
       o_load_config_done : out std_logic;  --Load Config. Command done

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-09
+-- Last update: 2021-05-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -385,6 +385,8 @@ begin  -- architecture behv
       clk   => clk,
       rst_n => rst_n,
 
+      i_config_done => i_config_done,
+
       i_load_config      => s_load_config,
       o_load_config_done => s_load_config_done,
 
@@ -403,6 +405,7 @@ begin  -- architecture behv
 
 
   -- Outputs Affectations
-  o_tx <= s_tx;
+  o_tx             <= s_tx;
+  o_new_config_val <= s_update_config_done;
 
 end architecture behv;
