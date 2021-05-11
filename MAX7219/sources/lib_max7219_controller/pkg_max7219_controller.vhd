@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-03
--- Last update: 2021-02-20
+-- Last update: 2021-05-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,15 +80,17 @@ package pkg_max7219_controller is
       rst_n : in std_logic;                       -- Asynchronous clock
 
       -- SELECTION
-      i_static_dyn : in std_logic;      -- STATIC or DYNNAMIC Display sel
+      i_static_dyn  : in std_logic;     -- STATIC or DYNNAMIC Display sel
+      i_new_display : in std_logic;     -- New display
 
       -- MATRIX CONFIG.
+      i_display_test   : in  std_logic;  -- DISPLAY TEST Config
       i_decod_mode     : in  std_logic_vector(7 downto 0);  -- DECOD MODE
       i_intensity      : in  std_logic_vector(7 downto 0);  -- INTENSITY
       i_scan_limit     : in  std_logic_vector(7 downto 0);  -- SCAN LIMIT
       i_shutdown       : in  std_logic_vector(7 downto 0);  -- SHUTDOWN MODE
-      i_new_config_val : in  std_logic;                     -- CONFIG. VALID
-      o_config_done    : out std_logic;                     -- CONFIG. DONE
+      i_new_config_val : in  std_logic;  -- CONFIG. VALID
+      o_config_done    : out std_logic;  -- CONFIG. DONE
 
       -- STATIC DISPLAY I/O    
       i_en_static : in std_logic;

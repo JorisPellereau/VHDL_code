@@ -1,0 +1,59 @@
+# vsim -novopt -t ps lib_tb_uart_display_ctrl.tb_top -L lib_max7219_controller -l /home/jorisp/GitHub/VHDL_code/UART/scripts/../transcripts/UART_DISPLAY_CTRL_00_transcript.txt -do "/home/jorisp/GitHub/VHDL_code/UART/scripts/../do_files/run_files/UART_DISPLAY_CTRL_00_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/UART/scripts/../scenarios/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.txt 
+# Start time: 10:07:30 on Apr 25,2021
+# Loading sv_std.std
+# Loading sv_std.mti_fli
+# Loading lib_tb_uart_display_ctrl.tb_top_sv_unit
+# Loading lib_tb_uart_display_ctrl.tb_top
+# Loading lib_tb_uart_display_ctrl.clk_gen
+# Loading lib_tb_uart_display_ctrl.wait_event_intf
+# Loading lib_tb_uart_display_ctrl.set_injector_intf
+# Loading lib_tb_uart_display_ctrl.wait_duration_intf
+# Loading lib_tb_uart_display_ctrl.check_level_intf
+# Loading lib_tb_uart_display_ctrl.wait_event_wrapper
+# Loading lib_tb_uart_display_ctrl.wait_event_tb
+# Loading lib_tb_uart_display_ctrl.set_injector_wrapper
+# Loading lib_tb_uart_display_ctrl.set_injector_tb
+# Loading lib_tb_uart_display_ctrl.uart_checker_intf
+# Loading lib_tb_uart_display_ctrl.uart_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(255): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Loading lib_tb_uart_display_ctrl.max7219_checker
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading lib_uart.pkg_uart(body)
+# Loading lib_tb_uart_display_ctrl.tx_uart(arch)
+# Loading lib_tb_uart_display_ctrl.rx_uart(arch)
+# Loading ieee.std_logic_arith(body)
+# Loading lib_max7219_interface.pkg_max7219_interface
+# Loading lib_max7219_static.pkg_max7219_static
+# Loading lib_max7219_scroller.pkg_max7219_scroller
+# Loading lib_max7219_controller.pkg_max7219_controller
+# Loading lib_max7219_controller.max7219_display_controller(behv)
+# Loading lib_max7219_controller.max7219_display_sequencer(behv)
+# Loading lib_max7219_controller.max7219_config_if(behv)
+# Loading lib_max7219_static.max7219_cmd_decod(behv)
+# ** Warning: (vsim-3473) Component instance "tdpram_inst_0 : tdpram_sclk" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_dut/max7219_cmd_decod_inst_0 File: /home/jorisp/GitHub/VHDL_code/MAX7219/sources/lib_max7219_static/max7219_cmd_decod.vhd
+# Loading lib_max7219_static.max7219_ram_decod(behv)
+# Loading lib_max7219_scroller.max7219_scroller_ctrl(behv)
+# Loading lib_max7219_scroller.max7219_ram2scroller_if(behv)
+# Loading lib_max7219_scroller.max7219_scroller_if(behv)
+# ** Warning: (vsim-3473) Component instance "tdpram_inst_0 : tdpram_sclk" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_dut/max7219_scroller_ctrl_inst_0 File: /home/jorisp/GitHub/VHDL_code/MAX7219/sources/lib_max7219_scroller/max7219_scroller_ctrl.vhd
+# Loading lib_max7219_controller.max7219_mux_sel(behv)
+# ** Warning: (vsim-3473) Component instance "max7219_if_inst_0 : max7219_if" is not bound.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_top/i_dut File: /home/jorisp/GitHub/VHDL_code/MAX7219/sources/lib_max7219_controller/max7219_display_controller.vhd
+# ** Error: (vsim-8754) /home/jorisp/GitHub/Verilog/lib_testbench/tb_modules_custom_class.sv(39): Actual input arg. of type 'virtual uart_checker_intf' for formal 'uart_checker_nif' of 'new' is not compatible with the formal's type 'virtual uart_checker_intf #(2, 8, 8)'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# ** Error: (vsim-8754) /home/jorisp/GitHub/Verilog/lib_testbench/tb_modules_custom_class.sv(39): Actual input arg. of type 'virtual uart_checker_intf' for formal 'uart_checker_nif' of 'new' is not compatible with the formal's type 'virtual uart_checker_intf #(2, 8, 8)'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# ** Error: (vsim-13216) /home/jorisp/GitHub/Verilog/lib_testbench/tb_modules_custom_class.sv(39): Illegal assignment to type 'virtual uart_checker_intf #(2, 8, 8)' from type 'virtual uart_checker_intf': Vir. 'uart_checker_intf' interface must be assigned a matching interface or virtual interface.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Error loading design
+# End time: 10:07:30 on Apr 25,2021, Elapsed time: 0:00:00
+# Errors: 3, Warnings: 4

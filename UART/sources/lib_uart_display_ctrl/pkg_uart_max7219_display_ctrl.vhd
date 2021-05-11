@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-10
+-- Last update: 2021-05-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,6 +22,9 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+
+library lib_uart;
+use lib_uart.pkg_uart.all;
 
 package pkg_uart_max7219_display_ctrl is
 
@@ -659,7 +662,7 @@ package pkg_uart_max7219_display_ctrl is
       clk   : in std_logic;                          -- Clock
       rst_n : in std_logic;                          -- Asunchronous Reset
 
-      i_config_done : in std_logic; -- Config. Done from MAX7219 - TBD
+      i_config_done : in std_logic;     -- Config. Done from MAX7219 - TBD
 
       i_load_config      : in  std_logic;  -- Load Config. Command
       o_load_config_done : out std_logic;  --Load Config. Command done
@@ -678,6 +681,129 @@ package pkg_uart_max7219_display_ctrl is
       i_rx_done : in std_logic
       );
 
+  end component;
+
+  component uart_max7219_display_ctrl is
+
+    generic (
+      -- UART I/F Config.
+      G_STOP_BIT_NUMBER : integer range 1 to 2 := 1;  -- Number of stop bit
+      G_PARITY          : t_parity             := even;  -- Type of the parity
+      G_BAUDRATE        : t_baudrate           := b115200;   -- Baudrate
+      G_UART_DATA_SIZE  : integer range 5 to 9 := 8;  -- Size of the data to transmit
+      G_POLARITY        : std_logic            := '1';  -- Polarity in idle state
+      G_FIRST_BIT       : t_first_bit          := lsb_first;  -- LSB or MSB first
+      G_CLOCK_FREQUENCY : integer              := 50000000;  -- Clock frequency [Hz]
+
+      -- I/F Generics
+      G_MATRIX_NB               : integer range 2 to 8 := 8;  -- Matrix Number
+      G_RAM_ADDR_WIDTH_STATIC   : integer              := 8;  -- RAM STATIC ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC   : integer              := 16;  -- RAM STATIC DATA WIDTH
+      G_RAM_ADDR_WIDTH_SCROLLER : integer              := 8;  -- RAM SCROLLER ADDR WIDTH
+      G_RAM_DATA_WIDTH_SCROLLER : integer              := 8);  -- RAM SCROLLER DATA WIDTH
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous clock
+
+      -- UART I/F
+      i_rx : in  std_logic;             -- RX UART IN
+      o_tx : out std_logic;             -- TX UART OUT
+
+      -- Display Ctrl commands
+      o_static_dyn  : out std_logic;    -- Statuc-Dyn selection
+      o_new_display : out std_logic;    -- New Display
+
+      -- Matrix Configuration
+      i_config_done    : in  std_logic;
+      o_display_test   : out std_logic;
+      o_decod_mode     : out std_logic_vector(7 downto 0);
+      o_intensity      : out std_logic_vector(7 downto 0);
+      o_scan_limit     : out std_logic_vector(7 downto 0);
+      o_shutdown       : out std_logic_vector(7 downto 0);
+      o_new_config_val : out std_logic;
+
+
+      -- STATIC I/O
+      o_en_static : out std_logic;
+
+      -- RAM STATIC I/F
+      i_rdata_static : in  std_logic_vector(G_RAM_DATA_WIDTH_STATIC - 1 downto 0);  -- RAM RDATA
+      o_me_static    : out std_logic;
+      o_we_static    : out std_logic;   -- W/R command
+      o_addr_static  : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- RAM ADDR
+      o_wdata_static : out std_logic_vector(G_RAM_DATA_WIDTH_STATIC - 1 downto 0);  -- RAM DATA
+
+
+      -- RAM INFO.
+      o_start_ptr_static : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- ST PTR
+      o_last_ptr_static  : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);  -- LAST ADDR
+
+      i_ptr_equality_static : in std_logic;  -- ADDR = LAST PTR
+      i_static_busy         : in std_logic;  -- STATIC BUSY
+
+
+      -- SCROLLER I/O
+      -- RAM Commands
+      i_scroller_busy          : in  std_logic;  -- SCROLLER BUSY
+      o_ram_start_ptr_scroller : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
+      o_msg_length_scroller    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
+      o_max_tempo_cnt_scroller : out std_logic_vector(31 downto 0);  -- Scroller Tempo
+
+
+      -- RAM SCROLLER I/F
+      i_rdata_scroller : in  std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- RAM RDATA
+      o_me_scroller    : out std_logic;  -- Memory Enable
+      o_we_scroller    : out std_logic;  -- W/R command
+      o_addr_scroller  : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM ADDR
+      o_wdata_scroller : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0)  -- RAM DATA
+
+      );
+  end component;
+
+
+  component uart_max7219_display_ctrl_wrapper is
+
+    generic (
+      -- UART I/F Config.
+      G_STOP_BIT_NUMBER : integer range 1 to 2 := 1;  -- Number of stop bit
+      G_PARITY          : t_parity             := even;  -- Type of the parity
+      G_BAUDRATE        : t_baudrate           := b115200;   -- Baudrate
+      G_UART_DATA_SIZE  : integer range 5 to 9 := 8;  -- Size of the data to transmit
+      G_POLARITY        : std_logic            := '1';  -- Polarity in idle state
+      G_FIRST_BIT       : t_first_bit          := lsb_first;  -- LSB or MSB first
+      G_CLOCK_FREQUENCY : integer              := 50000000;  -- Clock frequency [Hz]
+
+      -- I/F Generics
+      G_MATRIX_NB               : integer range 2 to 8 := 8;  -- Matrix Number
+      G_RAM_ADDR_WIDTH_STATIC   : integer              := 8;  -- RAM STATIC ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC   : integer              := 16;  -- RAM STATIC DATA WIDTH
+      G_RAM_ADDR_WIDTH_SCROLLER : integer              := 8;  -- RAM SCROLLER ADDR WIDTH
+      G_RAM_DATA_WIDTH_SCROLLER : integer              := 8;  -- RAM SCROLLER DATA WIDTH
+
+      -- MAX7219 I/F GENERICS
+      G_MAX_HALF_PERIOD : integer := 4;  -- 4 => 6.25MHz with 50MHz input
+      G_LOAD_DURATION   : integer := 4;  -- LOAD DURATION in clk_in period
+
+      -- MAX7219 STATIC CTRL GENERICS
+      G_DECOD_MAX_CNT_32B : std_logic_vector(31 downto 0) := x"02FAF080"
+
+      );
+    port (
+
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous clock
+
+      -- UART I/F
+      i_rx : in  std_logic;             -- RX UART IN
+      o_tx : out std_logic;             -- TX UART OUT
+
+      -- MAX7219 I/F
+      o_max7219_load : out std_logic;   -- MAX7219 Load
+      o_max7219_data : out std_logic;   -- MAX7219 Data
+      o_max7219_clk  : out std_logic    -- MAX7219 Clock
+
+      );
   end component;
 
 end package pkg_uart_max7219_display_ctrl;
