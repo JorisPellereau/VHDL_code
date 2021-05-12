@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-11
+-- Last update: 2021-05-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -495,6 +495,47 @@ package pkg_uart_max7219_display_ctrl is
                                         15     => O,
                                         16     => N,
                                         17     => E,
+                                        others => x"00");
+
+
+  -- STATIC_PTRN_RDY
+  constant C_RESP_14 : t_resp_array := (0      => S,
+                                        1      => T,
+                                        2      => A,
+                                        3      => T,
+                                        4      => I,
+                                        5      => C,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => R,
+                                        13     => D,
+                                        14     => Y,
+                                        others => x"00");
+
+  -- STATIC_PTRN_NOT_RDY
+  constant C_RESP_13 : t_resp_array := (0      => S,
+                                        1      => T,
+                                        2      => A,
+                                        3      => T,
+                                        4      => I,
+                                        5      => C,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => N,
+                                        13     => O,
+                                        14     => T,
+                                        15     => UNDSCR,
+                                        16     => R,
+                                        17     => D,
+                                        18     => Y,
                                         others => x"00");
 
 

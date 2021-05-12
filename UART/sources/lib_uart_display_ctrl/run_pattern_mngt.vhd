@@ -38,6 +38,17 @@ entity run_pattern_mngt is
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous Reset
 
+    -- Commands from Sequencer
+    i_update_static_pattern      : in  std_logic;
+    o_update_static_pattern_done : out std_logic;
+    o_update_static_discard      : out std_logic;
+
+    i_update_scroller_pattern      : in  std_logic;
+    o_update_scroller_pattern_done : out std_logic;
+    o_update_scroller_discard      : out std_logic;
+
+
+
     o_static_dyn  : out std_logic;      -- Static or Dynamic Pattern selection
     o_new_display : out std_logic;      -- Valid
 
@@ -61,6 +72,10 @@ end entity run_pattern_mngt;
 architecture behv of run_pattern_mngt is
 
 begin  -- architecture behv
+
+
+  -- Outputs Affectation
+  o_en_static <= '1';                   -- enable by default
 
 
 
