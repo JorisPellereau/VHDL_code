@@ -230,7 +230,7 @@ module tb_top
    assign s_wait_event_if.wait_signals[4] = s_ptr_equality_static;
    assign s_wait_event_if.wait_signals[5] = s_static_busy;
    assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
-   assign s_wait_event_if.wait_signals[7] = i_max7219_display_controller.s_discard_static;
+   assign s_wait_event_if.wait_signals[7] = 0; //i_max7219_display_controller_wrapper.s_discard_static;
    
 
    // INIT SET ALIAS
@@ -468,7 +468,7 @@ module tb_top
 
 
 
-   uart_max7219_display_ctrl #(
+   /*uart_max7219_display_ctrl #(
 			       .G_MATRIX_NB                (8),
 			       .G_RAM_ADDR_WIDTH_STATIC    (8), 
 			       .G_RAM_DATA_WIDTH_STATIC    (16),
@@ -532,7 +532,7 @@ module tb_top
 	  .o_addr_scroller  (s_addr_scroller),
 	  .o_wdata_scroller (s_wdata_scroller)
 
-    );
+    );*/
 
 
    
@@ -540,7 +540,7 @@ module tb_top
 
 
    
-    max7219_display_controller #(
+    /*max7219_display_controller #(
     .G_MATRIX_NB (8), 
    
     .G_MAX_HALF_PERIOD (4),
@@ -597,8 +597,46 @@ module tb_top
     .o_max7219_data (s_max7219_data),
     .o_max7219_clk  (s_max7219_clk)
 
-    );
+    );*/
    // ==============
+
+
+   // == DUT FINAL ==
+   uart_max7219_display_ctrl_wrapper #(
+				      
+				       .G_STOP_BIT_NUMBER (`C_STOP_BIT_NUMBER),
+				       .G_PARITY          (`C_PARITY),
+				       .G_BAUDRATE        (`C_BAUDRATE),
+				       .G_UART_DATA_SIZE  (`C_UART_DATA_WIDTH),
+				       .G_POLARITY        (`C_POLARITY),
+				       .G_FIRST_BIT       (`C_FIRST_BIT ),
+				       .G_CLOCK_FREQUENCY (`C_CLOCK_FREQ),
+				       
+				       .G_MATRIX_NB                (8),
+				       .G_RAM_ADDR_WIDTH_STATIC    (8), 
+				       .G_RAM_DATA_WIDTH_STATIC    (16),
+				       .G_RAM_ADDR_WIDTH_SCROLLER  (8),
+				       .G_RAM_DATA_WIDTH_SCROLLER  (8),
+
+				       .G_MAX_HALF_PERIOD  (4),
+				       .G_LOAD_DURATION    (4),
+
+				       .G_DECOD_MAX_CNT_32B  (32'h02FAF080)
+				       )
+   
+   i_dut (
+	  .clk    (clk),
+	  .rst_n  (rst_n),
+	  	  
+	  .i_rx(s_tx_uart),
+	  .o_tx(s_rx_uart),
+	  
+	  .o_max7219_load (s_max7219_load),
+	  .o_max7219_data (s_max7219_data),
+	  .o_max7219_clk  (s_max7219_clk)
+	  );
+   
+   // ===============
 
    
 endmodule // tb_top

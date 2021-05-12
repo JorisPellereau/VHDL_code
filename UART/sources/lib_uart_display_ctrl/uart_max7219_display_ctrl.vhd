@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-10
+-- Last update: 2021-05-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -403,9 +403,12 @@ begin  -- architecture behv
       i_rx_done => s_data_static_done   -- TBD
       );
 
+  -- Start STATIC & SCROLL MNGT
+
 
   -- Outputs Affectations
   o_tx             <= s_tx;
   o_new_config_val <= s_update_config_done;
+  o_en_static      <= '1';              -- Always enable
 
 end architecture behv;

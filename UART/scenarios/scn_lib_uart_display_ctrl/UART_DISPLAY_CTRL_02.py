@@ -60,10 +60,27 @@ data_to_send = [0x01, 0x02, 0x03, 0x04, 0x05]
 scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
 
-data_to_read = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_DONE")
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_MATRIX_DONE")
 scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 
 scn.generic_tb_cmd.WAIT(10, "us")
 
+
+
+
+scn.print_line("//-- STEP 2\n")
+scn.print_line("//-- Injection of Correct command\n")
+scn.print_line("\n")
+
+
+scn.print_line("//-- Send : UPDATE_MATRIX_CONFIG\n")
+data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFIG")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+scn.generic_tb_cmd.WAIT(10, "us")
 
 scn.END_TEST()

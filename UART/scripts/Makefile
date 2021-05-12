@@ -140,6 +140,9 @@ all:
 	@echo "make run_tb_uart_display_ctrl TEST=[TEST_NB]"
 	@echo "==============="
 	@echo ""
+	@echo "== SCENARII LIST =="
+	@echo "$(SCN_LIST)"
+
 
 
 # == CREATE WORK DIR. ==
@@ -196,6 +199,7 @@ src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/sequencer_uart_c
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/static_ram_mngr.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/dyn_ram_mngr.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/matrix_config_mngr.vhd
+src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/run_pattern_mngt.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl_wrapper.vhd
 
@@ -284,7 +288,9 @@ compile_uart_display_ctrl:
 
 compile_max7219_interface:
 	cd $(WORK_DIR); \
-	$(vcom) -work $(LIB_MAX7219_INTERFACE) $(SRC_MAX7219_DIR)/lib_max7219_interface/pkg_max7219_interface.vhd; \
+	$(foreach list, $(src_vhd_lib_max7219_interface), $(vcom) -work $(LIB_MAX7219_INTERFACE) $(list);) \
+
+#	$(vcom) -work $(LIB_MAX7219_INTERFACE) $(SRC_MAX7219_DIR)/lib_max7219_interface/pkg_max7219_interface.vhd; \
 
 compile_max7219_static:
 	cd $(WORK_DIR); \
@@ -299,6 +305,7 @@ compile_max7219_scroller:
 compile_max7219_controller:
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_vhd_lib_max7219_controller), $(vcom) -work $(LIB_MAX7219_CONTROLLER) $(list);) \
+
 
 # Compile Design Library here
 compile_design : compile_others compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller compile_uart compile_uart_display_ctrl

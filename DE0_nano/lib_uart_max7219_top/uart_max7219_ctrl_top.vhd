@@ -40,7 +40,9 @@ entity uart_max7219_ctrl_top is
 
     o_max7219_load : out std_logic;
     o_max7219_data : out std_logic;
-    o_max7219_clk  : out std_logic
+    o_max7219_clk  : out std_logic;
+
+    o_leds : out std_logic_vector(7 downto 0)
     );
 
 end entity uart_max7219_ctrl_top;
@@ -93,6 +95,9 @@ architecture behv of uart_max7219_ctrl_top is
       );
   end component;
 
+  -- INTERNAL SIGNALS
+  signal s_tx : std_logic;
+
 
 begin  -- architecture behv
 
@@ -130,7 +135,7 @@ begin  -- architecture behv
 
       -- UART I/F
       i_rx => i_rx,
-      o_tx => o_tx,
+      o_tx => s_tx,
 
       -- MAX7219 I/F
       o_max7219_load => o_max7219_load,
@@ -139,5 +144,15 @@ begin  -- architecture behv
 
       );
 
+
+  -- OUTPUTS Affectations
+
+  o_tx <= s_tx;
+
+
+  -- Alive RX/TX Leds
+  o_leds(0)          <= i_rx;
+  o_leds(1)          <= s_tx;
+  o_leds(7 downto 2) <= (others => '0');
 
 end architecture behv;

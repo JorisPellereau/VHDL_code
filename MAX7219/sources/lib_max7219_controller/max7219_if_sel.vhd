@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-04
--- Last update: 2020-10-04
+-- Last update: 2021-05-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ entity max7219_if_sel is
     i_max7219_if_done    : in  std_logic;
     o_max7219_if_start   : out std_logic;
     o_max7219_if_en_load : out std_logic;
-    o_max7219_if_data    : out std_logic_vector(15 downto 0);
+    o_max7219_if_data    : out std_logic_vector(15 downto 0)
 
 
     );
@@ -143,10 +143,10 @@ begin  -- architecture behv
         end if;
 
       -- Start STATIC
-      elsif(i_start_static = '1' ans s_start_static = '0') then
+      elsif(i_start_static = '1' and s_start_static = '0') then
         if(i_static_busy = '0' and i_scroller_busy = '0' and i_config_done = '1') then
-          
-          end if;
+
+        end if;
       end if;
 
       if(s_config_sel = '1' and s_new_config = '1') then
