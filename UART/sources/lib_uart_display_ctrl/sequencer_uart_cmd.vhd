@@ -126,7 +126,9 @@ architecture behv of sequencer_uart_cmd is
   signal s_load_matrix   : std_logic;
   signal s_update_matrix : std_logic;
 
-  signal s_run_pattern_static : std_logic;
+  signal s_run_pattern_static   : std_logic;
+  signal s_run_pattern_scroller : std_logic;
+
 
   --signal s_load_pattern_static_rdy : std_logic;
 
@@ -156,6 +158,7 @@ begin  -- architecture behv
       s_load_matrix           <= '0';
       s_update_matrix         <= '0';
       s_run_pattern_static    <= '0';
+      s_run_pattern_scroller  <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
@@ -214,6 +217,16 @@ begin  -- architecture behv
       elsif(i_run_pattern_static_done = '1') then
         s_rx_data_sel <= '0';           -- Change mux selector
 
+      elsif(i_cmd_pulses = conv_std_logic_vector(128, i_cmd_pulses'length)) then
+        s_run_pattern_scroller <= '1';
+        s_rx_data_sel          <= '0';  -- Change mux selector
+
+      elsif(i_run_pattern_scroller_rdy = '1') then
+        s_rx_data_sel <= '1';           -- Change mux selector
+
+      elsif(i_run_pattern_scroller_done = '1') then
+        s_rx_data_sel <= '0';           -- Change mux selector
+
         -- LOAD_PATTERN_STATIC RDY
         --elsif(i_load_pattern_static_rdy = '1') then
         --s_load_pattern_static_rdy <= '1';
@@ -240,6 +253,7 @@ begin  -- architecture behv
         s_load_matrix           <= '0';
         s_update_matrix         <= '0';
         s_run_pattern_static    <= '0';
+        s_run_pattern_scroller  <= '0';
       end if;
 
 
@@ -329,15 +343,23 @@ begin  -- architecture behv
         elsif(i_run_pattern_static_done = '1') then
           s_resp_ongoing <= '1';
           s_index_resp   <= 14;
-          -- Resp : SCROLL_PTRN_RDY
-          --elsif(i_load_pattern_scroller_rdy = '1') then
-          --  s_resp_ongoing <= '1';
-          --  s_index_resp   <= 15;
+
+        -- Resp : SCROLL_PTRN_RDY
+        elsif(i_run_pattern_scroller_rdy = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 15;
 
         -- Resp : SCROLL_PTRN_NOT_RDY
-        --elsif(i_load_pattern_scroller_discard = '1') then
-        --  s_resp_ongoing <= '1';
-        -- s_index_resp   <= 16;
+        elsif(i_run_pattern_scroller_discard = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 16;
+
+        -- Resp : SCROLL_PTRN_DONE
+        elsif(i_run_pattern_scroller_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 17;
+
+
         end if;
 
 
@@ -401,5 +423,6 @@ begin  -- architecture behv
   o_load_config           <= s_load_matrix;
   o_update_config         <= s_update_matrix;
   o_run_pattern_static    <= s_run_pattern_static;
+  o_run_pattern_scroller  <= s_run_pattern_scroller;
 
 end architecture behv;

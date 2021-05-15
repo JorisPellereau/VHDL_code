@@ -102,7 +102,7 @@ begin  -- architecture behv
       s_run_static_pattern_rdy   <= '0';
       s_run_scroller_pattern_rdy <= '0';
       o_run_static_discard       <= '0';
-      o_run_scroller_pattern_rdy <= '0';
+      --o_run_scroller_pattern_rdy <= '0';
       o_run_scroller_discard     <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
@@ -146,17 +146,21 @@ begin  -- architecture behv
       o_static_dyn              <= '0';
       o_new_display             <= '0';
 
+      s_run_scroller_ongoing   <= '0';
       s_ram_start_ptr_scroller <= (others => '0');
       s_msg_length             <= (others => '0');
       s_max_tempo_cnt_scroller <= (others => '0');
-      
+
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      s_max_tempo_cnt_scroller <= x"00000002"; -- TBD ajout command changement
-                                               -- tempo
+      s_max_tempo_cnt_scroller <= x"00000002";  -- TBD ajout command changement
+                                                -- tempo
 
       if(s_run_static_pattern_rdy = '1') then
         s_run_static_ongoing <= '1';
+
+      elsif(s_run_scroller_pattern_rdy = '1') then
+        s_run_scroller_ongoing <= '1';
       end if;
 
 

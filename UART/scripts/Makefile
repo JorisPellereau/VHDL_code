@@ -347,6 +347,7 @@ SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_01.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_02.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
+SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_04.py
 
 generate_scn :
 	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
