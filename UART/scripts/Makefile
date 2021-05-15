@@ -346,6 +346,7 @@ compile_all : clean libs compile_design compile_testbench
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_01.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_02.py
+SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
 
 generate_scn :
 	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \

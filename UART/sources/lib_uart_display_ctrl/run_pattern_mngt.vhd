@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-12
--- Last update: 2021-05-12
+-- Last update: 2021-05-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,21 +32,27 @@ entity run_pattern_mngt is
     G_RAM_DATA_WIDTH_STATIC   : integer := 16;
     G_RAM_ADDR_WIDTH_STATIC   : integer := 8;
     G_RAM_DATA_WIDTH_SCROLLER : integer := 8;
-    G_RAM_ADDR_WIDTH_SCROLLER : integer := 8
+    G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;
+    G_UART_DATA_WIDTH         : integer range 5 to 9
     );
   port (
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous Reset
 
     -- Commands from Sequencer
-    i_update_static_pattern      : in  std_logic;
-    o_update_static_pattern_done : out std_logic;
-    o_update_static_discard      : out std_logic;
+    i_run_static_pattern      : in  std_logic;  -- RUN STATIC PATTERN
+    o_run_static_pattern_done : out std_logic;
+    o_run_static_pattern_rdy  : out std_logic;
+    o_run_static_discard      : out std_logic;
 
-    i_update_scroller_pattern      : in  std_logic;
-    o_update_scroller_pattern_done : out std_logic;
-    o_update_scroller_discard      : out std_logic;
+    i_run_scroller_pattern      : in  std_logic;
+    o_run_scroller_pattern_done : out std_logic;
+    o_run_scroller_pattern_rdy  : out std_logic;
+    o_run_scroller_discard      : out std_logic;
 
+    -- RX UART I/F
+    i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
+    i_rx_done : in std_logic;
 
 
     o_static_dyn  : out std_logic;      -- Static or Dynamic Pattern selection
@@ -71,12 +77,153 @@ end entity run_pattern_mngt;
 
 architecture behv of run_pattern_mngt is
 
+  -- INTERNAL SIGNALS
+  signal s_run_static_pattern_rdy : std_logic;
+  signal s_run_static_ongoing     : std_logic;
+
+  signal s_run_scroller_pattern_rdy : std_logic;
+  signal s_run_scroller_ongoing     : std_logic;
+
+
+  signal s_start_ptr_static : std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+  signal s_last_ptr_static  : std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+  signal s_cnt_1            : integer range 0 to 1;
+
+  signal s_ram_start_ptr_scroller : std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);
+  signal s_msg_length             : std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
+  signal s_max_tempo_cnt_scroller : std_logic_vector(31 downto 0);
+
 begin  -- architecture behv
 
 
+  p_pulse_cmd_mngt : process (clk, rst_n) is
+  begin  -- process p_pulse_cmd_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_run_static_pattern_rdy   <= '0';
+      s_run_scroller_pattern_rdy <= '0';
+      o_run_static_discard       <= '0';
+      o_run_scroller_pattern_rdy <= '0';
+      o_run_scroller_discard     <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      if(i_run_static_pattern = '1') then
+
+        if(i_static_busy = '0') then
+          s_run_static_pattern_rdy <= '1';
+        else
+          o_run_static_discard <= '1';
+        end if;
+
+      elsif(i_run_scroller_pattern = '1') then
+
+        if(i_scroller_busy = '0') then
+          s_run_scroller_pattern_rdy <= '1';
+        else
+          o_run_scroller_discard <= '1';
+
+        end if;
+
+      else
+        s_run_static_pattern_rdy   <= '0';
+        o_run_static_discard       <= '0';
+        s_run_scroller_pattern_rdy <= '0';
+        o_run_scroller_discard     <= '0';
+      end if;
+
+    end if;
+  end process p_pulse_cmd_mngt;
+
+
+  p_rx_data_mngt : process (clk, rst_n) is
+  begin  -- process p_rx_data_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+
+      s_run_static_ongoing      <= '0';
+      s_start_ptr_static        <= (others => '0');
+      s_last_ptr_static         <= (others => '0');
+      s_cnt_1                   <= 0;
+      o_run_static_pattern_done <= '0';
+      o_static_dyn              <= '0';
+      o_new_display             <= '0';
+
+      s_ram_start_ptr_scroller <= (others => '0');
+      s_msg_length             <= (others => '0');
+      s_max_tempo_cnt_scroller <= (others => '0');
+      
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      s_max_tempo_cnt_scroller <= x"00000002"; -- TBD ajout command changement
+                                               -- tempo
+
+      if(s_run_static_pattern_rdy = '1') then
+        s_run_static_ongoing <= '1';
+      end if;
+
+
+      if(s_run_static_ongoing = '1') then
+
+        if(i_rx_done = '1') then
+          if(s_cnt_1 = 0) then
+            s_start_ptr_static <= i_rx_data;
+            s_cnt_1            <= s_cnt_1 + 1;
+          elsif(s_cnt_1 = 1) then
+            s_last_ptr_static         <= i_rx_data;
+            o_static_dyn              <= '0';
+            o_new_display             <= '1';
+            o_run_static_pattern_done <= '1';
+            s_run_static_ongoing      <= '0';
+          end if;
+        else
+          --s_cnt_1                   <= 0;
+          o_run_static_pattern_done <= '0';
+          o_static_dyn              <= '0';
+          o_new_display             <= '0';
+        end if;
+
+      elsif(s_run_scroller_ongoing = '1') then
+
+        if(i_rx_done = '1') then
+
+          if(s_cnt_1 = 0) then
+            s_ram_start_ptr_scroller <= i_rx_data;
+            s_cnt_1                  <= s_cnt_1 + 1;
+          elsif(s_cnt_1 = 1) then
+            s_msg_length                <= i_rx_data;
+            o_static_dyn                <= '1';
+            o_new_display               <= '1';
+            o_run_scroller_pattern_done <= '1';
+            s_run_scroller_ongoing      <= '0';
+          end if;
+
+        else
+          o_static_dyn                <= '0';
+          o_new_display               <= '0';
+          o_run_scroller_pattern_done <= '0';
+        end if;
+
+      else
+        s_cnt_1                     <= 0;
+        o_new_display               <= '0';
+        o_run_static_pattern_done   <= '0';
+        o_static_dyn                <= '0';
+        o_run_scroller_pattern_done <= '0';
+
+      end if;
+    end if;
+  end process p_rx_data_mngt;
+
+
+
   -- Outputs Affectation
-  o_en_static <= '1';                   -- enable by default
+  o_en_static              <= '1';      -- enable by default
+  o_run_static_pattern_rdy <= s_run_static_pattern_rdy;
+  o_start_ptr_static       <= s_start_ptr_static;
+  o_last_ptr_static        <= s_last_ptr_static;
 
+  o_run_scroller_pattern_rdy <= s_run_scroller_pattern_rdy;
 
+  o_ram_start_ptr_scroller <= s_ram_start_ptr_scroller;
+  o_msg_length_scroller    <= s_msg_length;
+  o_max_tempo_cnt_scroller <= s_max_tempo_cnt_scroller;
 
 end architecture behv;

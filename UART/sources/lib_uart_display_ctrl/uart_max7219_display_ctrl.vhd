@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-12
+-- Last update: 2021-05-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -169,6 +169,25 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_update_config      : std_logic;
   signal s_update_config_done : std_logic;
 
+
+  signal s_run_pattern_static              : std_logic;
+  signal s_update_pattern_static_done      : std_logic;
+  signal s_update_pattern_static_discard   : std_logic;
+  signal s_run_pattern_scroller            : std_logic;
+  signal s_update_pattern_scroller_done    : std_logic;
+  signal s_update_pattern_scroller_discard : std_logic;
+
+
+  signal s_run_static_pattern_rdy   : std_logic;
+  signal s_run_scroller_pattern_rdy : std_logic;
+
+  signal s_run_pattern_static_done   : std_logic;
+  signal s_run_pattern_scroller_done : std_logic;
+
+  signal s_run_pattern_static_discard   : std_logic;
+  signal s_run_pattern_scroller_discard : std_logic;
+
+
 begin  -- architecture behv
 
   -- Resynch
@@ -289,6 +308,8 @@ begin  -- architecture behv
 
       -- LOAD Static RAM
       o_load_pattern_static      => s_load_pattern_static,
+      --i_load_pattern_static_rdy     => s_update_static_pattern_rdy,
+      --i_load_pattern_static_discard => s_update_pattern_static_discard,
       i_load_pattern_static_done => s_load_pattern_static_done,
 
       -- INIT Scroller RAM
@@ -297,6 +318,8 @@ begin  -- architecture behv
 
       -- LOAD Scroller RAM
       o_load_pattern_scroller      => s_load_pattern_scroller,
+      --i_load_pattern_scroller_rdy     => s_update_scroller_pattern_rdy,
+      --i_load_pattern_scroller_discard => s_update_pattern_scroller_discard,
       i_load_pattern_scroller_done => s_load_pattern_scroller_done,
 
       -- LOAD_CONFIG
@@ -306,6 +329,18 @@ begin  -- architecture behv
       -- UPDATE_CONFIG
       o_update_config      => s_update_config,
       i_update_config_done => s_update_config_done,
+
+      -- RUN_PATTERN_STATIC
+      o_run_pattern_static         => s_run_pattern_static,
+      i_run_pattern_static_rdy     => s_run_static_pattern_rdy,
+      i_run_pattern_static_done    => s_run_pattern_static_done,
+      i_run_pattern_static_discard => s_run_pattern_static_discard,
+
+      -- RUN_PATTERN_SCROLLEr
+      o_run_pattern_scroller         => s_run_pattern_scroller,
+      i_run_pattern_scroller_rdy     => s_run_scroller_pattern_rdy,
+      i_run_pattern_scroller_done    => s_run_pattern_scroller_done,
+      i_run_pattern_scroller_discard => s_run_pattern_scroller_discard,
 
 
       -- TX Uart commands
@@ -404,11 +439,54 @@ begin  -- architecture behv
       );
 
   -- Start STATIC & SCROLL MNGT
+  i_run_pattern_mngt_0 : run_pattern_mngt
+
+    generic map (
+      G_RAM_DATA_WIDTH_STATIC   => G_RAM_DATA_WIDTH_STATIC,
+      G_RAM_ADDR_WIDTH_STATIC   => G_RAM_ADDR_WIDTH_STATIC,
+      G_RAM_DATA_WIDTH_SCROLLER => G_RAM_DATA_WIDTH_SCROLLER,
+      G_RAM_ADDR_WIDTH_SCROLLER => G_RAM_ADDR_WIDTH_SCROLLER,
+      G_UART_DATA_WIDTH         => G_UART_DATA_SIZE
+      )
+    port map(
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- Commands from Sequencer
+      i_run_static_pattern      => s_run_pattern_static,
+      o_run_static_pattern_done => s_run_pattern_static_done,  -- TBD
+      o_run_static_pattern_rdy  => s_run_static_pattern_rdy,
+      o_run_static_discard      => s_run_pattern_static_discard,
+
+      i_run_scroller_pattern      => s_run_pattern_scroller,
+      o_run_scroller_pattern_done => s_run_pattern_scroller_done,
+      o_run_scroller_pattern_rdy  => s_run_scroller_pattern_rdy,
+      o_run_scroller_discard      => s_run_pattern_scroller_discard,
+
+      i_rx_data => s_data_static,       -- TBD
+      i_rx_done => s_data_static_done,  -- TBD
+
+      o_static_dyn  => o_static_dyn,
+      o_new_display => o_new_display,
+
+      -- STATIC MNGT
+      o_en_static           => o_en_static,
+      i_ptr_equality_static => i_ptr_equality_static,
+      o_start_ptr_static    => o_start_ptr_static,
+      o_last_ptr_static     => o_last_ptr_static,
+      i_static_busy         => i_static_busy,
+
+      -- SCROLLER MNGT
+      i_scroller_busy          => i_scroller_busy,
+      o_ram_start_ptr_scroller => o_ram_start_ptr_scroller,
+      o_msg_length_scroller    => o_msg_length_scroller,
+      o_max_tempo_cnt_scroller => o_max_tempo_cnt_scroller
+      );
 
 
   -- Outputs Affectations
   o_tx             <= s_tx;
   o_new_config_val <= s_update_config_done;
-  o_en_static      <= '1';              -- Always enable
+
 
 end architecture behv;

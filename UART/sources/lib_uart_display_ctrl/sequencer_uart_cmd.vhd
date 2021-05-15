@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-09
+-- Last update: 2021-05-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -45,16 +45,24 @@ entity sequencer_uart_cmd is
     o_init_static_ram      : out std_logic;  -- Init Static RAM Command
 
     -- LOAD Static RAM
-    o_load_pattern_static      : out std_logic;  -- Command Load Pattern Static
-    i_load_pattern_static_done : in  std_logic;  -- Load Pattern Static Done
+    o_load_pattern_static : out std_logic;  -- Command Load Pattern Static
+
+
+    --i_load_pattern_static_rdy     : in  std_logic;  -- Load Pattern Static READY
+    --i_load_pattern_static_discard : in  std_logic;  --Load Pattern Static Rejected
+    i_load_pattern_static_done : in std_logic;  -- Load Pattern Static Done
 
     -- INIT Scroller RAM
     i_init_scroller_ram_done : in  std_logic;
     o_init_scroller_ram      : out std_logic;  -- Init Scroller RAM Command
 
     -- LOAD Scroller RAM
-    o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
-    i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
+    o_load_pattern_scroller : out std_logic;  -- Command Load Pattern Scroller
+
+
+    --i_load_pattern_scroller_rdy     : in  std_logic;  --Load Pattern Scroller READY
+    --i_load_pattern_scroller_discard : in  std_logic;  -- Load Pattern Scroller Rejected
+    i_load_pattern_scroller_done : in std_logic;  -- Commands LOAD Scroller done
 
     -- LOAD_CONFIG
     o_load_config      : out std_logic;  -- Command Load Matrix Config
@@ -63,6 +71,19 @@ entity sequencer_uart_cmd is
     -- UPDATE_CONFIG
     o_update_config      : out std_logic;  -- Command Update config
     i_update_config_done : in  std_logic;  -- Command done
+
+    -- RUN_PATTERN_STATIC
+    o_run_pattern_static         : out std_logic;
+    i_run_pattern_static_rdy     : in  std_logic;
+    i_run_pattern_static_done    : in  std_logic;
+    i_run_pattern_static_discard : in  std_logic;
+
+    -- RUN_PATTERN_SCROLLER
+    o_run_pattern_scroller         : out std_logic;
+    i_run_pattern_scroller_rdy     : in  std_logic;
+    i_run_pattern_scroller_done    : in  std_logic;
+    i_run_pattern_scroller_discard : in  std_logic;
+
 
     -- TX Uart commands
     i_tx_done       : in  std_logic;
@@ -105,7 +126,9 @@ architecture behv of sequencer_uart_cmd is
   signal s_load_matrix   : std_logic;
   signal s_update_matrix : std_logic;
 
-  --
+  signal s_run_pattern_static : std_logic;
+
+  --signal s_load_pattern_static_rdy : std_logic;
 
 begin  -- architecture behv
 
@@ -132,6 +155,7 @@ begin  -- architecture behv
       s_load_pattern_scroller <= '0';
       s_load_matrix           <= '0';
       s_update_matrix         <= '0';
+      s_run_pattern_static    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
@@ -173,8 +197,40 @@ begin  -- architecture behv
         s_update_matrix <= '1';
         s_rx_data_sel   <= '0';         -- Change mux selector
 
+      -- LOAD_MATRIX_CONFIG done
       elsif(i_load_config_done = '1') then
         s_rx_data_sel <= '0';           -- Change mux selector
+
+      -- RUN_PATTERN_STATIC
+      elsif(i_cmd_pulses = conv_std_logic_vector(64, i_cmd_pulses'length)) then
+        s_run_pattern_static <= '1';
+        s_rx_data_sel        <= '0';    -- Change mux selector
+
+      -- RUN_PATTERN_STATIC RDY
+      elsif(i_run_pattern_static_rdy = '1') then
+        s_rx_data_sel <= '1';           -- Change mux selector
+
+
+      elsif(i_run_pattern_static_done = '1') then
+        s_rx_data_sel <= '0';           -- Change mux selector
+
+        -- LOAD_PATTERN_STATIC RDY
+        --elsif(i_load_pattern_static_rdy = '1') then
+        --s_load_pattern_static_rdy <= '1';
+        --  s_rx_data_sel <= '1';           -- Change mux selector
+
+        -- LOAD_PATTERN_STATIC NOT RDY
+        --elsif(i_load_pattern_static_discard = '1') then
+        --s_load_pattern_static_discard <= '1';
+        --  s_rx_data_sel <= '0';           -- Change mux selector
+
+        -- LOAD_PATTERN_SCROLL RDY
+        --elsif(i_load_pattern_scroller_rdy = '1') then
+        --  s_rx_data_sel <= '1';           -- Change mux selector
+
+        -- LOAD_PATTERN_SCROLL NOT RDY  
+        --elsif(i_load_pattern_scroller_discard = '1') then
+        --  s_rx_data_sel <= '0';           -- Change mux selector
 
       else
         s_init_static_ram       <= '0';
@@ -183,6 +239,7 @@ begin  -- architecture behv
         s_load_pattern_scroller <= '0';
         s_load_matrix           <= '0';
         s_update_matrix         <= '0';
+        s_run_pattern_static    <= '0';
       end if;
 
 
@@ -219,6 +276,7 @@ begin  -- architecture behv
           s_resp_ongoing <= '1';
           s_index_resp   <= 2;
 
+        -- TBD a RM ????
         -- Resp : LOAD_STATIC_RDY
         elsif(s_load_pattern_static = '1') then  -- TBD AJOUTER PATTERN LU EN COURS
           s_resp_ongoing <= '1';
@@ -229,6 +287,7 @@ begin  -- architecture behv
           s_resp_ongoing <= '1';
           s_index_resp   <= 5;
 
+        -- TBD A RM ??????
         -- Resp : LOAD_SCROLL_RDY
         elsif(s_load_pattern_scroller = '1') then
           s_resp_ongoing <= '1';
@@ -254,6 +313,31 @@ begin  -- architecture behv
           s_resp_ongoing <= '1';
           s_index_resp   <= 11;
 
+
+
+        -- Resp : STATIC_PTRN_RDY
+        elsif(i_run_pattern_static_rdy = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 12;
+
+        -- Resp : STATIC_PTRN_NOT_RDY
+        elsif(i_run_pattern_static_discard = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 13;
+
+
+        elsif(i_run_pattern_static_done = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 14;
+          -- Resp : SCROLL_PTRN_RDY
+          --elsif(i_load_pattern_scroller_rdy = '1') then
+          --  s_resp_ongoing <= '1';
+          --  s_index_resp   <= 15;
+
+        -- Resp : SCROLL_PTRN_NOT_RDY
+        --elsif(i_load_pattern_scroller_discard = '1') then
+        --  s_resp_ongoing <= '1';
+        -- s_index_resp   <= 16;
         end if;
 
 
@@ -316,5 +400,6 @@ begin  -- architecture behv
   o_load_pattern_scroller <= s_load_pattern_scroller;
   o_load_config           <= s_load_matrix;
   o_update_config         <= s_update_matrix;
+  o_run_pattern_static    <= s_run_pattern_static;
 
 end architecture behv;

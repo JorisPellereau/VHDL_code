@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-12
+-- Last update: 2021-05-15
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ package pkg_uart_max7219_display_ctrl is
   constant C_DATA_WIDTH : integer range 5 to 9 := 8;   -- Data Width
 
   constant C_RESP_LENGTH : integer := 20;  -- Length of a TX Response in byte
-  constant C_NB_RESP     : integer := 15;  -- Number of possible respons
+  constant C_NB_RESP     : integer := 20;  -- Number of possible respons
 
   -- ASCII Character in hexdecimal
   constant A : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"41";
@@ -499,7 +499,7 @@ package pkg_uart_max7219_display_ctrl is
 
 
   -- STATIC_PTRN_RDY
-  constant C_RESP_14 : t_resp_array := (0      => S,
+  constant C_RESP_12 : t_resp_array := (0      => S,
                                         1      => T,
                                         2      => A,
                                         3      => T,
@@ -539,6 +539,87 @@ package pkg_uart_max7219_display_ctrl is
                                         others => x"00");
 
 
+  -- STATIC_PTRN_DONE
+  constant C_RESP_14 : t_resp_array := (0      => S,
+                                        1      => T,
+                                        2      => A,
+                                        3      => T,
+                                        4      => I,
+                                        5      => C,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => D,
+                                        13     => O,
+                                        14     => N,
+                                        15     => E,
+                                        others => x"00");
+
+
+  -- SCROLL_PTRN_RDY
+  constant C_RESP_15 : t_resp_array := (0      => S,
+                                        1      => C,
+                                        2      => R,
+                                        3      => O,
+                                        4      => L,
+                                        5      => L,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => R,
+                                        13     => D,
+                                        14     => Y,
+                                        others => x"00");
+
+  -- SCROLL_PTRN_NOT_RDY
+  constant C_RESP_16 : t_resp_array := (0      => S,
+                                        1      => C,
+                                        2      => R,
+                                        3      => O,
+                                        4      => L,
+                                        5      => L,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => N,
+                                        13     => O,
+                                        14     => T,
+                                        15     => UNDSCR,
+                                        16     => R,
+                                        17     => D,
+                                        18     => Y,
+                                        others => x"00");
+
+
+  -- SCROLL_PTRN_DONE
+  constant C_RESP_17 : t_resp_array := (0      => S,
+                                        1      => C,
+                                        2      => R,
+                                        3      => O,
+                                        4      => L,
+                                        5      => L,
+                                        6      => UNDSCR,
+                                        7      => P,
+                                        8      => T,
+                                        9      => R,
+                                        10     => N,
+                                        11     => UNDSCR,
+                                        12     => D,
+                                        13     => O,
+                                        14     => N,
+                                        15     => E,
+                                        others => x"00");
+
+
 
 
 
@@ -557,6 +638,12 @@ package pkg_uart_max7219_display_ctrl is
     9      => C_RESP_09,
     10     => C_RESP_10,
     11     => C_RESP_11,
+    12     => C_RESP_12,
+    13     => C_RESP_13,
+    14     => C_RESP_14,
+    15     => C_RESP_15,
+    16     => C_RESP_16,
+    17     => C_RESP_17,
     others => (others => (others => '0'))
     );
 
@@ -597,6 +684,8 @@ package pkg_uart_max7219_display_ctrl is
       o_init_static_ram      : out std_logic;  -- Init Static RAM Command
 
       o_load_pattern_static      : out std_logic;  -- Command Load Pattern Static
+      --i_load_pattern_static_rdy     : in  std_logic;
+      --i_load_pattern_static_discard : in  std_logic;  --Load Pattern Static Rejected
       i_load_pattern_static_done : in  std_logic;  -- Load Pattern Static Done
 
       -- INIT Scroller RAM
@@ -605,6 +694,8 @@ package pkg_uart_max7219_display_ctrl is
 
       -- LOAD Scroller RAM
       o_load_pattern_scroller      : out std_logic;  -- Command Load Pattern Scroller
+      --i_load_pattern_scroller_rdy     : in  std_logic;
+      --i_load_pattern_scroller_discard : in  std_logic;  -- Load Pattern Scroller Rejected
       i_load_pattern_scroller_done : in  std_logic;  -- Commands LOAD Scroller done
 
       -- LOAD_CONFIG
@@ -613,6 +704,20 @@ package pkg_uart_max7219_display_ctrl is
 
       o_update_config      : out std_logic;  -- Command Update config
       i_update_config_done : in  std_logic;  -- Command done
+
+
+      -- RUN_PATTERN_STATIC
+      o_run_pattern_static         : out std_logic;
+      i_run_pattern_static_rdy     : in  std_logic;
+      i_run_pattern_static_done    : in  std_logic;
+      i_run_pattern_static_discard : in  std_logic;
+
+      -- RUN_PATTERN_SCROLLEr
+      o_run_pattern_scroller         : out std_logic;
+      i_run_pattern_scroller_rdy     : in  std_logic;
+      i_run_pattern_scroller_done    : in  std_logic;
+      i_run_pattern_scroller_discard : in  std_logic;
+
 
       -- TX Uart commands
       i_tx_done       : in  std_logic;
@@ -721,6 +826,55 @@ package pkg_uart_max7219_display_ctrl is
       i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
       i_rx_done : in std_logic
       );
+
+  end component;
+
+
+  component run_pattern_mngt is
+
+    generic (
+      G_RAM_DATA_WIDTH_STATIC   : integer := 16;
+      G_RAM_ADDR_WIDTH_STATIC   : integer := 8;
+      G_RAM_DATA_WIDTH_SCROLLER : integer := 8;
+      G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;
+      G_UART_DATA_WIDTH         : integer range 5 to 9
+      );
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      -- Commands from Sequencer
+      i_run_static_pattern      : in  std_logic;
+      o_run_static_pattern_done : out std_logic;
+      o_run_static_pattern_rdy  : out std_logic;
+      o_run_static_discard      : out std_logic;
+
+      i_run_scroller_pattern      : in  std_logic;
+      o_run_scroller_pattern_done : out std_logic;
+      o_run_scroller_pattern_rdy  : out std_logic;
+      o_run_scroller_discard      : out std_logic;
+
+-- RX UART I/F
+      i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
+      i_rx_done : in std_logic;
+
+      o_static_dyn  : out std_logic;    -- Static or Dynamic Pattern selection
+      o_new_display : out std_logic;    -- Valid
+
+      -- STATIC MNGT
+      o_en_static           : out std_logic;  -- Enable Static Block
+      i_ptr_equality_static : in  std_logic;  -- Static Ptr equality
+      o_start_ptr_static    : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+      o_last_ptr_static     : out std_logic_vector(G_RAM_ADDR_WIDTH_STATIC - 1 downto 0);
+      i_static_busy         : in  std_logic;
+
+      -- SCROLLER MNGT
+      i_scroller_busy          : in  std_logic;
+      o_ram_start_ptr_scroller : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
+      o_msg_length_scroller    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
+      o_max_tempo_cnt_scroller : out std_logic_vector(31 downto 0)  -- Scroller Tempo
+      );
+
 
   end component;
 
