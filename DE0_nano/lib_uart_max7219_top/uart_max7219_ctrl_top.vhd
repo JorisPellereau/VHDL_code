@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-11
--- Last update: 2021-05-11
+-- Last update: 2021-05-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -98,8 +98,23 @@ architecture behv of uart_max7219_ctrl_top is
   -- INTERNAL SIGNALS
   signal s_tx : std_logic;
 
+  signal s_rx_p1 : std_logic;
+  signal s_rx_p2 : std_logic;
+
 
 begin  -- architecture behv
+
+  -- Resynch I_RX
+  p_resynch_i_rx : process (clk, rst_n) is
+  begin  -- process p_resynch_i_rx
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_rx_p1 <= '0';
+      s_rx_p2 <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_rx_p1 <= i_rx;
+      s_rx_p2 <= s_rx_p1;
+    end if;
+  end process p_resynch_i_rx;
 
 
 
@@ -107,8 +122,8 @@ begin  -- architecture behv
     generic map (
       -- UART I/F Config.
       G_STOP_BIT_NUMBER => 1,           -- Number of stop bit
-      G_PARITY          => even,        -- Type of the parity
-      G_BAUDRATE        => b115200,     -- Baudrate
+      G_PARITY          => none,        -- Type of the parity
+      G_BAUDRATE        => b230400,     -- Baudrate
       G_UART_DATA_SIZE  => 8,           -- Size of the data to transmit
       G_POLARITY        => '1',         -- Polarity in idle state
       G_FIRST_BIT       => lsb_first,   -- LSB or MSB first
@@ -134,7 +149,7 @@ begin  -- architecture behv
       rst_n => rst_n,
 
       -- UART I/F
-      i_rx => i_rx,
+      i_rx => s_rx_p2,
       o_tx => s_tx,
 
       -- MAX7219 I/F
@@ -151,7 +166,7 @@ begin  -- architecture behv
 
 
   -- Alive RX/TX Leds
-  o_leds(0)          <= i_rx;
+  o_leds(0)          <= s_rx_p2;
   o_leds(1)          <= s_tx;
   o_leds(7 downto 2) <= (others => '0');
 
