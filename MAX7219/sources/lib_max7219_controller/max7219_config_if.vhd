@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-02-14
+-- Last update: 2021-05-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -63,9 +63,10 @@ architecture behv of max7219_config_if is
   signal s_cnt_config      : std_logic_vector(2 downto 0);  -- Counter to 5
   signal s_cnt_config_done : std_logic;  -- Coutner to 5 reach
 
-  signal s_cnt_matrix      : std_logic_vector(3 downto 0);
-  signal s_cnt_matrix_up   : std_logic;
-  signal s_cnt_matrix_done : std_logic;
+  signal s_cnt_matrix         : std_logic_vector(3 downto 0);
+  signal s_cnt_matrix_up      : std_logic;
+  signal s_cnt_matrix_done    : std_logic;
+  signal s_cnt_matrix_done_p1 : std_logic;  -- Pipe 1 time s_cnt_matrix_done
 
   signal s_max7219_if_start       : std_logic;
   signal s_max7219_if_en_load     : std_logic;
@@ -106,8 +107,9 @@ begin  -- architecture behv
 
       if(s_max7219_if_done_r_edge = '1') then
         if(unsigned(s_cnt_matrix) < G_MATRIX_NB - 1) then
-          s_cnt_matrix    <= unsigned(s_cnt_matrix) + 1;
-          s_cnt_matrix_up <= '1';
+          s_cnt_matrix      <= unsigned(s_cnt_matrix) + 1;
+          s_cnt_matrix_up   <= '1';
+          s_cnt_matrix_done <= '0';
         else
           s_cnt_matrix_done <= '1';
           s_cnt_matrix      <= (others => '0');
@@ -164,7 +166,11 @@ begin  -- architecture behv
       s_max7219_if_start   <= '0';
       s_max7219_if_en_load <= '0';
       s_max7219_if_data    <= (others => '0');
+      s_cnt_matrix_done_p1 <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
+
+
+      s_cnt_matrix_done_p1 <= s_cnt_matrix_done;
 
       -- 1st Start after reset
       if(s_init_config_p = '1' and s_init_config_p2 = '0') then
@@ -177,7 +183,7 @@ begin  -- architecture behv
       -- Start auto
       elsif(s_cnt_matrix_up = '1') then
         s_max7219_if_start <= '1';
-      elsif(s_cnt_matrix_done = '1' and s_cnt_config < "100") then
+      elsif(s_cnt_matrix_done_p1 = '1' and s_cnt_config < "101") then
         s_max7219_if_start <= '1';
       else
         s_max7219_if_start <= '0';

@@ -242,9 +242,7 @@ module tb_top
    // == HDL GENERIC TESTBENCH MODULES ==
 
    // WAIT EVENT TB WRAPPER INST
-   wait_event_wrapper #(
-			.ARGS_NB    (`C_CMD_ARGS_NB),
-			.CLK_PERIOD (`C_TB_CLK_PERIOD)
+   wait_event_wrapper #(.CLK_PERIOD (`C_TB_CLK_PERIOD)
    )
    i_wait_event_wrapper (
        .clk            (clk),
@@ -254,9 +252,7 @@ module tb_top
 
 
    // SET INJECTOR TB WRAPPER INST
-   set_injector_wrapper #(
-			  .ARGS_NB(`C_CMD_ARGS_NB) 
-   )
+   set_injector_wrapper #()
    i_set_injector_wrapper (
        .clk              (clk),
        .rst_n            (rst_n),
@@ -268,10 +264,10 @@ module tb_top
 
 
    // == TESTBENCH SEQUENCER ==
+   tb_modules_custom_class tb_modules_custom_class_inst = new();
    
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_CMD_ARGS_NB, 
-                      `C_SET_SIZE, 
+   static tb_class #( `C_SET_SIZE, 
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
                       `C_WAIT_WIDTH, 
@@ -281,7 +277,9 @@ module tb_top
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if);
+                        s_check_level_if,
+			tb_modules_custom_class_inst
+			);
    
    
    initial begin// : TB_SEQUENCER

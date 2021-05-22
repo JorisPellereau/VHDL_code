@@ -1,8 +1,0 @@
-# ERROR: No extended dataflow license exists
-# vsim -novopt -t ps lib_tb_top.tb_lib_max7219_scroller.tb_top -l /home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../transcripts/MAX_SCROLLER_00_transcript.txt -do "/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../do_files/run_files/MAX_SCROLLER_00_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/MAX7219/scripts/../scenarios/scn_lib_max7219_scroller/MAX_SCROLLER_00.txt 
-# Start time: 18:33:14 on Mar 07,2021
-# ** Error (suppressible): (vsim-19) Failed to access library 'lib_tb_top.tb_lib_max7219_scroller' at "lib_tb_top.tb_lib_max7219_scroller".
-# No such file or directory. (errno = ENOENT)
-# Error loading design
-# End time: 18:33:14 on Mar 07,2021, Elapsed time: 0:00:00
-# Errors: 1, Warnings: 0
