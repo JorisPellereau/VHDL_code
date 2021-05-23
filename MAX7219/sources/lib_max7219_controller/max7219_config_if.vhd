@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-05-22
+-- Last update: 2021-05-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ begin  -- architecture behv
       -- Start auto
       elsif(s_cnt_matrix_up = '1') then
         s_max7219_if_start <= '1';
-      elsif(s_cnt_matrix_done_p1 = '1' and s_cnt_config < "101") then
+      elsif(s_cnt_matrix_done_p1 = '1' and s_cnt_config < "101" and s_cnt_config_done = '0') then
         s_max7219_if_start <= '1';
       else
         s_max7219_if_start <= '0';

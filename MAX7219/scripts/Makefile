@@ -486,8 +486,10 @@ run_tb_max7219_scroller :
 
 
 run_tb_max7219_controller :
+	make rm_transcript
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_CONTROLLER).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_max7219_controller/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	make check_transcript
 
 # ==============
 
@@ -504,10 +506,17 @@ run_max7219_controller_tests :
 
 ##################################################
 
+# == UTILS ==
+rm_transcript:
+	rm $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+# ===========
 
 # == Check Errors in transcripts ==
+check_transcript:
+	grep -i -n "error" $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+
 check_transcripts_dir :
-	grep -r -i 'error' $(TRANSCRIPTS_DIR)/*
+	grep -i -n "error" $(TRANSCRIPTS_DIR)/*.txt
 # =================================
 
 
