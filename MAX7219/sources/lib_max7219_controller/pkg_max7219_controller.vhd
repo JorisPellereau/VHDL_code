@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-10-03
--- Last update: 2021-05-11
+-- Last update: 2021-05-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -24,6 +24,9 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
 package pkg_max7219_controller is
+
+  -- CONSTANTS
+  constant C_USE_ALTERA : std_logic := '1';  -- '0' - NEXT state of FSM in a combinatiry process, '1' - NEXT state of FSM in a clocked process
 
   -- MAX7219 Config Interface
   -- Set Config for MAX7219
@@ -139,14 +142,15 @@ package pkg_max7219_controller is
   component max7219_display_sequencer is
 
     generic (
-      G_FIFO_DEPTH              : integer := 10;  -- Fifo DEPTH
-      G_RAM_ADDR_WIDTH_STATIC   : integer := 8;   -- RAM ADDR WIDTH
-      G_RAM_DATA_WIDTH_STATIC   : integer := 16;  -- RAM DATA WIDTH
-      G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;   -- RAM ADDR WITH
-      G_RAM_DATA_WIDTH_SCROLLER : integer := 8);  -- RAM DATA WIDTH
+      G_FIFO_DEPTH              : integer   := 10;    -- Fifo DEPTH
+      G_RAM_ADDR_WIDTH_STATIC   : integer   := 8;     -- RAM ADDR WIDTH
+      G_RAM_DATA_WIDTH_STATIC   : integer   := 16;    -- RAM DATA WIDTH
+      G_RAM_ADDR_WIDTH_SCROLLER : integer   := 8;     -- RAM ADDR WITH
+      G_RAM_DATA_WIDTH_SCROLLER : integer   := 8;     -- RAM DATA WIDTH
+      G_USE_ALTERA              : std_logic := '0');  -- USE Altera Techno
     port (
-      clk   : in std_logic;                       -- Clock
-      rst_n : in std_logic;                       -- Asynchronos reset
+      clk   : in std_logic;                           -- Clock
+      rst_n : in std_logic;                           -- Asynchronos reset
 
       i_static_dyn  : in std_logic;     -- Static or Dynamic selection
       i_new_display : in std_logic;     -- Display Static or Dyn Valid

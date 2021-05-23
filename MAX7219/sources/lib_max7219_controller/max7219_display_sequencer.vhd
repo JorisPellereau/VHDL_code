@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-04-08
+-- Last update: 2021-05-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,14 +25,15 @@ use ieee.std_logic_1164.all;
 entity max7219_display_sequencer is
 
   generic (
-    G_FIFO_DEPTH              : integer := 10;  -- Fifo DEPTH
-    G_RAM_ADDR_WIDTH_STATIC   : integer := 8;   -- RAM ADDR WIDTH
-    G_RAM_DATA_WIDTH_STATIC   : integer := 16;  -- RAM DATA WIDTH
-    G_RAM_ADDR_WIDTH_SCROLLER : integer := 8;   -- RAM ADDR WITH
-    G_RAM_DATA_WIDTH_SCROLLER : integer := 8);  -- RAM DATA WIDTH
+    G_FIFO_DEPTH              : integer   := 10;    -- Fifo DEPTH
+    G_RAM_ADDR_WIDTH_STATIC   : integer   := 8;     -- RAM ADDR WIDTH
+    G_RAM_DATA_WIDTH_STATIC   : integer   := 16;    -- RAM DATA WIDTH
+    G_RAM_ADDR_WIDTH_SCROLLER : integer   := 8;     -- RAM ADDR WITH
+    G_RAM_DATA_WIDTH_SCROLLER : integer   := 8;     -- RAM DATA WIDTH
+    G_USE_ALTERA              : std_logic := '0');  -- USE Altera Techno
   port (
-    clk   : in std_logic;                       -- Clock
-    rst_n : in std_logic;                       -- Asynchronos reset
+    clk   : in std_logic;                           -- Clock
+    rst_n : in std_logic;                           -- Asynchronos reset
 
     i_static_dyn  : in std_logic;       -- Static or Dynamic selection
     i_new_display : in std_logic;       -- Display Static or Dyn Valid
@@ -174,6 +175,8 @@ begin  -- architecture behv
   -- Falling Edge detection
   s_busy_scroller_f_edge <= not i_busy_scroller and s_busy_scroller;
 
+
+
   -- purpose: Current State management
   p_curr_state_mngt : process (clk, rst_n) is
   begin  -- process p_curr_state_mngt
@@ -184,41 +187,95 @@ begin  -- architecture behv
     end if;
   end process p_curr_state_mngt;
 
-  p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge, s_busy_scroller_f_edge) is
-  begin  -- process p_next_state_mngt
+  -- Generation of FSM with calculation of next state in a combinatory process
+  g_fsm_gen_no_altera : if G_USE_ALTERA = '0' generate
 
-    case s_current_state is
-      when IDLE =>
-        s_next_state <= CONFIG;
 
-      when CONFIG =>
-        if(s_config_done_r_edge = '1') then
-          s_next_state <= WAIT_CMD;
-        end if;
+    p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge, s_busy_scroller_f_edge) is
+    begin  -- process p_next_state_mngt
 
-      when WAIT_CMD =>
-        if(s_next_cmd_config = '1') then
+      case s_current_state is
+        when IDLE =>
           s_next_state <= CONFIG;
-        elsif(s_next_cmd_static = '1') then
-          s_next_state <= STATIC;
-        elsif(s_next_cmd_scroller = '1') then
-          s_next_state <= SCROLL;
-        end if;
 
-      when STATIC =>
-        if(s_ptr_equality_r_edge = '1') then
-          s_next_state <= WAIT_CMD;
-        end if;
+        when CONFIG =>
+          if(s_config_done_r_edge = '1') then
+            s_next_state <= WAIT_CMD;
+          end if;
 
-      when SCROLL =>
-        if(s_busy_scroller_f_edge = '1') then
-          s_next_state <= WAIT_CMD;
-        end if;
+        when WAIT_CMD =>
+          if(s_next_cmd_config = '1') then
+            s_next_state <= CONFIG;
+          elsif(s_next_cmd_static = '1') then
+            s_next_state <= STATIC;
+          elsif(s_next_cmd_scroller = '1') then
+            s_next_state <= SCROLL;
+          end if;
 
-      when others => null;
+        when STATIC =>
+          if(s_ptr_equality_r_edge = '1') then
+            s_next_state <= WAIT_CMD;
+          end if;
 
-    end case;
-  end process p_next_state_mngt;
+        when SCROLL =>
+          if(s_busy_scroller_f_edge = '1') then
+            s_next_state <= WAIT_CMD;
+          end if;
+
+        when others => null;
+
+      end case;
+    end process p_next_state_mngt;
+
+  end generate g_fsm_gen_no_altera;
+
+
+  g_fsm_gen_altera : if G_USE_ALTERA = '1' generate
+
+    p_next_state_mngt : process (clk, rst_n) is
+    begin  -- process p_next_state_mngt
+      if rst_n = '0' then                 -- asynchronous reset (active low)
+        s_next_state <= IDLE;
+      elsif clk'event and clk = '1' then  -- rising clock edge
+
+        case s_current_state is
+          when IDLE =>
+            s_next_state <= CONFIG;
+
+          when CONFIG =>
+            if(s_config_done_r_edge = '1') then
+              s_next_state <= WAIT_CMD;
+            end if;
+
+          when WAIT_CMD =>
+            if(s_next_cmd_config = '1') then
+              s_next_state <= CONFIG;
+            elsif(s_next_cmd_static = '1') then
+              s_next_state <= STATIC;
+            elsif(s_next_cmd_scroller = '1') then
+              s_next_state <= SCROLL;
+            end if;
+
+          when STATIC =>
+            if(s_ptr_equality_r_edge = '1') then
+              s_next_state <= WAIT_CMD;
+            end if;
+
+          when SCROLL =>
+            if(s_busy_scroller_f_edge = '1') then
+              s_next_state <= WAIT_CMD;
+            end if;
+
+          when others => null;
+
+        end case;
+
+      end if;
+    end process p_next_state_mngt;
+
+  end generate g_fsm_gen_altera;
+
+
 
 
   p_new_cmd_decod : process (clk, rst_n) is
@@ -304,7 +361,8 @@ begin  -- architecture behv
       if(s_fifo_empty = '0') then
 
 
-        if(s_next_state = WAIT_CMD) then
+--        if(s_next_state = WAIT_CMD) then
+        if(s_current_state = WAIT_CMD) then
           if(s_cmd_array(s_cmd_rd_ptr) = "11") then
             s_next_cmd_config <= '1';
           elsif(s_cmd_array(s_cmd_rd_ptr) = "01") then

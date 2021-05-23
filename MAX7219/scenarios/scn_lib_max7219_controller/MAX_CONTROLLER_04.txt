@@ -1,0 +1,6 @@
+//-- STEP 0
+
+WTR RST_N
+WAIT 100 ns
+
+END_TEST

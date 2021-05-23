@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-04-16
+-- Last update: 2021-05-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -171,7 +171,8 @@ begin  -- architecture behv
       G_RAM_ADDR_WIDTH_STATIC   => 8,
       G_RAM_DATA_WIDTH_STATIC   => 16,
       G_RAM_ADDR_WIDTH_SCROLLER => 8,
-      G_RAM_DATA_WIDTH_SCROLLER => 8)
+      G_RAM_DATA_WIDTH_SCROLLER => 8,
+      G_USE_ALTERA              => C_USE_ALTERA)
     port map (
       clk   => clk,
       rst_n => rst_n,
