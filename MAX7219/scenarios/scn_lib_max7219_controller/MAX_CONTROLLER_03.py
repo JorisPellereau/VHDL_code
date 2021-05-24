@@ -159,7 +159,6 @@ scn_max_controller_03 = DISPLAY_MATRIX(scn_max_controller_03)
 
 
 
-
 scn_max_controller_03.print_line("//-- STEP 5\n")
 scn_max_controller_03.print_line("//-- Display Pattern SCROLLER\n")
 scn_max_controller_03.print_line("\n")
@@ -180,8 +179,8 @@ scn_max_controller_03.generic_tb_cmd.SET("I_STATIC_DYN", 0)
 scn_max_controller_03.generic_tb_cmd.WTF("O_SCROLLER_BUSY")
 
 
-
-
+    
+    
 scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
 scn_max_controller_03.generic_tb_cmd.SET("I_RAM_START_PTR_SCROLLER", 64)
 scn_max_controller_03.generic_tb_cmd.SET("I_MSG_LENGTH_SCROLLER", 64)
@@ -191,7 +190,7 @@ scn_max_controller_03.generic_tb_cmd.WTFS("CLK")
 scn_max_controller_03.generic_tb_cmd.SET("I_NEW_DISPLAY", 0)
 scn_max_controller_03.generic_tb_cmd.SET("I_STATIC_DYN", 0)
 scn_max_controller_03.generic_tb_cmd.WTF("O_SCROLLER_BUSY")
-
+    
 
 
 scn_max_controller_03.generic_tb_cmd.WTFS("CLK")

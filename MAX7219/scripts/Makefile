@@ -508,7 +508,7 @@ run_max7219_controller_tests :
 
 # == UTILS ==
 rm_transcript:
-	rm $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+	rm -rf $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
 # ===========
 
 # == Check Errors in transcripts ==

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-05-23
+-- Last update: 2021-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -361,8 +361,8 @@ begin  -- architecture behv
       if(s_fifo_empty = '0') then
 
 
---        if(s_next_state = WAIT_CMD) then
-        if(s_current_state = WAIT_CMD) then
+        if(s_next_state = WAIT_CMD) then
+          --if(s_current_state = WAIT_CMD) then
           if(s_cmd_array(s_cmd_rd_ptr) = "11") then
             s_next_cmd_config <= '1';
           elsif(s_cmd_array(s_cmd_rd_ptr) = "01") then
@@ -374,36 +374,36 @@ begin  -- architecture behv
             s_next_cmd_static   <= '0';
             s_next_cmd_scroller <= '0';
           end if;
-        end if;
+          --end if;
 
-        -- READ PTR MNGT
-        if(s_next_cmd_config = '1' or s_next_cmd_static = '1' or s_next_cmd_scroller = '1') then
-          if(s_cmd_rd_ptr < G_FIFO_DEPTH - 1) then
-            s_cmd_rd_ptr    <= s_cmd_rd_ptr + 1;
-            s_cmd_rd_ptr_up <= '1';
-          else
-            s_cmd_rd_ptr <= 0;
+          -- READ PTR MNGT -- TBD :!\
+          if(s_next_cmd_config = '1' or s_next_cmd_static = '1' or s_next_cmd_scroller = '1') then
+            if(s_cmd_rd_ptr < G_FIFO_DEPTH - 1) then
+              s_cmd_rd_ptr    <= s_cmd_rd_ptr + 1;
+              s_cmd_rd_ptr_up <= '1';
+            else
+              s_cmd_rd_ptr <= 0;
+            end if;
           end if;
-        end if;
 
 
-        if(s_next_cmd_static = '1') then
-          if(s_static_rd_ptr < G_FIFO_DEPTH - 1) then
-            s_static_rd_ptr <= s_static_rd_ptr + 1;
-          else
-            s_static_rd_ptr <= 0;
+          if(s_next_cmd_static = '1') then
+            if(s_static_rd_ptr < G_FIFO_DEPTH - 1) then
+              s_static_rd_ptr <= s_static_rd_ptr + 1;
+            else
+              s_static_rd_ptr <= 0;
+            end if;
           end if;
-        end if;
 
-        if(s_next_cmd_scroller = '1') then
-          if(s_scroller_rd_ptr < G_FIFO_DEPTH - 1) then
-            s_scroller_rd_ptr <= s_scroller_rd_ptr + 1;
-          else
-            s_scroller_rd_ptr <= 0;
+          if(s_next_cmd_scroller = '1') then
+            if(s_scroller_rd_ptr < G_FIFO_DEPTH - 1) then
+              s_scroller_rd_ptr <= s_scroller_rd_ptr + 1;
+            else
+              s_scroller_rd_ptr <= 0;
+            end if;
           end if;
+
         end if;
-
-
       end if;
 
     end if;

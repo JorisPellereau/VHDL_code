@@ -146,6 +146,10 @@ SET I_NEW_CONFIG_VAL 0
 WTR O_CONFIG_DONE 2 ms
 
 
+
+
+
+
 //-- STEP3
 //-- Wait and Fill the Fifo with CONFIG Command
 
@@ -261,11 +265,13 @@ WTR O_CONFIG_DONE 2 ms
 WTR O_CONFIG_DONE 2 ms
 WTR O_CONFIG_DONE 2 ms
 WTR O_CONFIG_DONE 2 ms
-WTR O_CONFIG_DONE 2 ms
-WTR O_CONFIG_DONE 2 ms
+--WTR O_CONFIG_DONE 2 ms
+--WTR O_CONFIG_DONE 2 ms
 
 
 WAIT 400 us
+
+
 
 //-- STEP 4
 //-- Set a new STATIC display

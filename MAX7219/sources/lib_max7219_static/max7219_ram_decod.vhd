@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2021-04-16
+-- Last update: 2021-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -81,6 +81,10 @@ architecture behv of max7219_ram_decod is
   signal s_ptr_equality     : std_logic;  -- ADDR = LAST_PTR
   signal s_update_ptr       : std_logic;  -- UPDATE PTR
 
+  signal s_ptr_val        : std_logic;  -- i_ptr_val latch
+  signal s_ptr_val_r_edge : std_logic;  -- Rising Edge of i_ptr_val
+
+
   signal s_data        : std_logic_vector(15 downto 0);  -- DATA to MAX7219
   signal s_addr        : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
   signal s_rdata       : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RDATA
@@ -92,6 +96,18 @@ architecture behv of max7219_ram_decod is
 
 begin  -- architecture behv
 
+
+  p_pipe_ptr_val : process (clk, rst_n) is
+  begin  -- process p_pipe_ptr_val
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_ptr_val <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_ptr_val <= i_ptr_val;
+    end if;
+  end process p_pipe_ptr_val;
+
+  s_ptr_val_r_edge <= i_ptr_val and not s_ptr_val;
+
   -- purpose: Last PTR Update
   p_last_ptr_update : process (clk, rst_n) is
   begin  -- process p_last_ptr_update
@@ -102,7 +118,7 @@ begin  -- architecture behv
       o_discard    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(i_ptr_val = '1' and s_ptr_equality = '1') then
+      if(s_ptr_val_r_edge = '1' and s_ptr_equality = '1') then
 
         if(i_start_ptr = i_last_ptr) then
           o_discard <= '1';
@@ -267,7 +283,7 @@ begin  -- architecture behv
       -- UPDATE START PTR at then end of the CONFIG. done
       elsif(s_ptr_equality = '1' and i_loop = '1') then
         s_addr <= s_start_ptr;
-      
+
       end if;
 
       s_inc_done <= '0';
