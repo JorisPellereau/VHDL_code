@@ -166,8 +166,8 @@ begin  -- architecture behv
 
 
   -- Alive RX/TX Leds
-  o_leds(0)          <= s_rx_p2;
-  o_leds(1)          <= s_tx;
+  o_leds(0)          <= not s_rx_p2;
+  o_leds(1)          <= not s_tx;
   o_leds(7 downto 2) <= (others => '0');
 
 end architecture behv;
