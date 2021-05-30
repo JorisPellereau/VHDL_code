@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-11
--- Last update: 2021-05-22
+-- Last update: 2021-05-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -101,6 +101,10 @@ architecture behv of uart_max7219_ctrl_top is
   signal s_rx_p1 : std_logic;
   signal s_rx_p2 : std_logic;
 
+  signal s_max7219_load : std_logic;
+  signal s_max7219_data : std_logic;
+  signal s_max7219_clk  : std_logic;
+
 
 begin  -- architecture behv
 
@@ -137,8 +141,8 @@ begin  -- architecture behv
       G_RAM_DATA_WIDTH_SCROLLER => 8,
 
       -- MAX7219 I/F GENERICS
-      G_MAX_HALF_PERIOD => 4,
-      G_LOAD_DURATION   => 4,
+      G_MAX_HALF_PERIOD => 2*25,        --4,
+      G_LOAD_DURATION   => 4,           --4,
 
       -- MAX7219 STATIC CTRL GENERICS
       G_DECOD_MAX_CNT_32B => x"02FAF080"
@@ -153,9 +157,9 @@ begin  -- architecture behv
       o_tx => s_tx,
 
       -- MAX7219 I/F
-      o_max7219_load => o_max7219_load,
-      o_max7219_data => o_max7219_data,
-      o_max7219_clk  => o_max7219_clk
+      o_max7219_load => s_max7219_load,
+      o_max7219_data => s_max7219_data,
+      o_max7219_clk  => s_max7219_clk
 
       );
 
@@ -164,10 +168,17 @@ begin  -- architecture behv
 
   o_tx <= s_tx;
 
+  o_max7219_clk  <= s_max7219_clk;
+  o_max7219_data <= s_max7219_data;
+  o_max7219_load <= s_max7219_load;
+
 
   -- Alive RX/TX Leds
   o_leds(0)          <= not s_rx_p2;
   o_leds(1)          <= not s_tx;
-  o_leds(7 downto 2) <= (others => '0');
+  o_leds(2)          <= s_max7219_clk;
+  o_leds(3)          <= s_max7219_data;
+  o_leds(4)          <= s_max7219_load;
+  o_leds(7 downto 5) <= (others => '0');
 
 end architecture behv;
