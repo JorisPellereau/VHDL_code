@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-12
--- Last update: 2021-05-15
+-- Last update: 2021-05-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -153,7 +153,8 @@ begin  -- architecture behv
 
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      s_max_tempo_cnt_scroller <= x"00000002";  -- TBD ajout command changement
+      s_max_tempo_cnt_scroller <= x"017D7840"; -- 0.5 sec of wait
+--      s_max_tempo_cnt_scroller <= x"00000002";  -- TBD ajout command changement
                                                 -- tempo
 
       if(s_run_static_pattern_rdy = '1') then
