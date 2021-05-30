@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-09
--- Last update: 2021-05-10
+-- Last update: 2021-05-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -113,8 +113,8 @@ begin  -- architecture behv
       s_display_test     <= '0';
       s_decod_mode       <= (others => '0');
       s_intensity        <= (others => '0');
-      s_scan_limit       <= (others => '0');
-      s_shutdown         <= (others => '0');
+      s_scan_limit       <= x"07";--(others => '0');
+      s_shutdown         <= x"01";--(others => '0');
       s_load_config_done <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
