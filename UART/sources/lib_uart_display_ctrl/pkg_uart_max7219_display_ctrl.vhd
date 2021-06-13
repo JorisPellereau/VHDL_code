@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-15
+-- Last update: 2021-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,12 +29,12 @@ use lib_uart.pkg_uart.all;
 package pkg_uart_max7219_display_ctrl is
 
   -- == CONSTANTS ==
-  constant C_NB_CMD     : integer              := 8;   -- Command Number
+  constant C_NB_CMD     : integer              := 9;   -- Command Number
   constant C_CMD_LENGTH : integer              := 20;  -- Command Length
   constant C_DATA_WIDTH : integer range 5 to 9 := 8;   -- Data Width
 
   constant C_RESP_LENGTH : integer := 20;  -- Length of a TX Response in byte
-  constant C_NB_RESP     : integer := 20;  -- Number of possible respons
+  constant C_NB_RESP     : integer := 21;  -- Number of possible respons
 
   -- ASCII Character in hexdecimal
   constant A : std_logic_vector(C_DATA_WIDTH - 1 downto 0) := x"41";
@@ -243,6 +243,27 @@ package pkg_uart_max7219_display_ctrl is
                                       18     => E,
                                       19     => R,
                                       others => x"00");
+  -- LOAD_SCROLLER_TEMPO
+  constant C_CMD_08 : t_cmd_array := (0      => L,
+                                      1      => O,
+                                      2      => A,
+                                      3      => D,
+                                      4      => UNDSCR,
+                                      5      => S,
+                                      6      => C,
+                                      7      => R,
+                                      8      => O,
+                                      9      => L,
+                                      10     => L,
+                                      11     => E,
+                                      12     => R,
+                                      13     => UNDSCR,
+                                      14     => T,
+                                      15     => E,
+                                      16     => M,
+                                      17     => P,
+                                      18     => O,
+                                      others => x"00");
 
 
 
@@ -256,8 +277,8 @@ package pkg_uart_max7219_display_ctrl is
     4 => C_CMD_04,
     5 => C_CMD_05,
     6 => C_CMD_06,
-    7 => C_CMD_07
-
+    7 => C_CMD_07,
+    8 => C_CMD_08
     );
 
 
@@ -619,6 +640,62 @@ package pkg_uart_max7219_display_ctrl is
                                         15     => E,
                                         others => x"00");
 
+  -- LOAD_TEMPO_RDY
+  constant C_RESP_18 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => T,
+                                        6      => E,
+                                        7      => M,
+                                        8      => P,
+                                        9      => O,
+                                        10     => UNDSCR,
+                                        11     => R,
+                                        12     => D,
+                                        13     => Y,
+                                        others => x"00");
+
+  -- LOAD_TEMPO_NOT_RDY
+  constant C_RESP_19 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => T,
+                                        6      => E,
+                                        7      => M,
+                                        8      => P,
+                                        9      => O,
+                                        10     => UNDSCR,
+                                        11     => N,
+                                        12     => O,
+                                        13     => T,
+                                        14     => UNDSCR,
+                                        15     => R,
+                                        16     => D,
+                                        17     => Y,
+                                        others => x"00");
+
+  -- LOAD_TEMPO_DONE
+  constant C_RESP_20 : t_resp_array := (0      => L,
+                                        1      => O,
+                                        2      => A,
+                                        3      => D,
+                                        4      => UNDSCR,
+                                        5      => T,
+                                        6      => E,
+                                        7      => M,
+                                        8      => P,
+                                        9      => O,
+                                        10     => UNDSCR,
+                                        11     => D,
+                                        12     => O,
+                                        13     => N,
+                                        14     => E,
+                                        others => x"00");
+
 
 
 
@@ -644,6 +721,9 @@ package pkg_uart_max7219_display_ctrl is
     15     => C_RESP_15,
     16     => C_RESP_16,
     17     => C_RESP_17,
+    18     => C_RESP_18,
+    19     => C_RESP_19,
+    20     => C_RESP_20,
     others => (others => (others => '0'))
     );
 
@@ -718,6 +798,9 @@ package pkg_uart_max7219_display_ctrl is
       i_run_pattern_scroller_done    : in  std_logic;
       i_run_pattern_scroller_discard : in  std_logic;
 
+
+      i_load_tempo_scroller_done : in  std_logic;  -- Load Tempo done
+      o_load_tempo_scroller      : out std_logic;  -- Load Tempo Scroller command
 
       -- TX Uart commands
       i_tx_done       : in  std_logic;
@@ -869,10 +952,12 @@ package pkg_uart_max7219_display_ctrl is
       i_static_busy         : in  std_logic;
 
       -- SCROLLER MNGT
-      i_scroller_busy          : in  std_logic;
-      o_ram_start_ptr_scroller : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
-      o_msg_length_scroller    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
-      o_max_tempo_cnt_scroller : out std_logic_vector(31 downto 0)  -- Scroller Tempo
+      i_scroller_busy            : in  std_logic;
+      o_ram_start_ptr_scroller   : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
+      o_msg_length_scroller      : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
+      i_load_tempo_scroller      : in  std_logic;
+      o_load_tempo_scroller_done : out std_logic;
+      o_max_tempo_cnt_scroller   : out std_logic_vector(31 downto 0)  -- Scroller Tempo
       );
 
 

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-12
--- Last update: 2021-05-30
+-- Last update: 2021-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -69,7 +69,10 @@ entity run_pattern_mngt is
     i_scroller_busy          : in  std_logic;
     o_ram_start_ptr_scroller : out std_logic_vector(G_RAM_ADDR_WIDTH_SCROLLER - 1 downto 0);  -- RAM START PTR
     o_msg_length_scroller    : out std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);  -- Message Length
-    o_max_tempo_cnt_scroller : out std_logic_vector(31 downto 0)  -- Scroller Tempo
+
+    i_load_tempo_scroller      : in  std_logic;
+    o_load_tempo_scroller_done : out std_logic;
+    o_max_tempo_cnt_scroller   : out std_logic_vector(31 downto 0)  -- Scroller Tempo
     );
 
 
@@ -93,6 +96,10 @@ architecture behv of run_pattern_mngt is
   signal s_msg_length             : std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
   signal s_max_tempo_cnt_scroller : std_logic_vector(31 downto 0);
 
+  signal s_load_tempo_scroller_rdy     : std_logic;
+  signal s_load_tempo_scroller_ongoing : std_logic;
+  signal s_cnt_3                       : integer range 0 to 4;
+
 begin  -- architecture behv
 
 
@@ -102,8 +109,9 @@ begin  -- architecture behv
       s_run_static_pattern_rdy   <= '0';
       s_run_scroller_pattern_rdy <= '0';
       o_run_static_discard       <= '0';
-      --o_run_scroller_pattern_rdy <= '0';
       o_run_scroller_discard     <= '0';
+      s_load_tempo_scroller_rdy  <= '0';
+
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(i_run_static_pattern = '1') then
@@ -120,14 +128,17 @@ begin  -- architecture behv
           s_run_scroller_pattern_rdy <= '1';
         else
           o_run_scroller_discard <= '1';
-
         end if;
+
+      elsif(i_load_tempo_scroller = '1') then
+        s_load_tempo_scroller_rdy <= '1';
 
       else
         s_run_static_pattern_rdy   <= '0';
         o_run_static_discard       <= '0';
         s_run_scroller_pattern_rdy <= '0';
         o_run_scroller_discard     <= '0';
+        s_load_tempo_scroller_rdy  <= '0';
       end if;
 
     end if;
@@ -151,17 +162,23 @@ begin  -- architecture behv
       s_msg_length             <= (others => '0');
       s_max_tempo_cnt_scroller <= (others => '0');
 
+      s_load_tempo_scroller_ongoing <= '0';
+      s_cnt_3                       <= 0;
+      o_load_tempo_scroller_done    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      s_max_tempo_cnt_scroller <= x"017D7840"; -- 0.5 sec of wait
+      --s_max_tempo_cnt_scroller <= x"017D7840";  -- 0.5 sec of wait
 --      s_max_tempo_cnt_scroller <= x"00000002";  -- TBD ajout command changement
-                                                -- tempo
+      -- tempo
 
       if(s_run_static_pattern_rdy = '1') then
         s_run_static_ongoing <= '1';
 
       elsif(s_run_scroller_pattern_rdy = '1') then
         s_run_scroller_ongoing <= '1';
+
+      elsif(s_load_tempo_scroller_rdy = '1') then
+        s_load_tempo_scroller_ongoing <= '1';
       end if;
 
 
@@ -206,13 +223,35 @@ begin  -- architecture behv
           o_run_scroller_pattern_done <= '0';
         end if;
 
+      -- Load Tempo Scroller Mngt
+      elsif(s_load_tempo_scroller_ongoing = '1') then
+
+        if(i_rx_done = '1') then
+          if(s_cnt_3 < 4) then
+
+            -- First Byte received == MSB - Last byte == LSB
+            s_max_tempo_cnt_scroller(7 downto 0)  <= i_rx_data;
+            s_max_tempo_cnt_scroller(31 downto 8) <= s_max_tempo_cnt_scroller(23 downto 0);
+            s_cnt_3                               <= s_cnt_3 + 1;  --Inc cnt
+          else
+            s_load_tempo_scroller_ongoing <= '0';
+            o_load_tempo_scroller_done    <= '1';
+          end if;
+
+        elsif(s_cnt_3 = 4) then
+          s_load_tempo_scroller_ongoing <= '0';
+          o_load_tempo_scroller_done    <= '1';
+        end if;
+
+      -- No Command ongoing
       else
         s_cnt_1                     <= 0;
         o_new_display               <= '0';
         o_run_static_pattern_done   <= '0';
         o_static_dyn                <= '0';
         o_run_scroller_pattern_done <= '0';
-
+        s_cnt_3                     <= 0;
+        o_load_tempo_scroller_done  <= '0';
       end if;
     end if;
   end process p_rx_data_mngt;

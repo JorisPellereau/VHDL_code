@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-15
+-- Last update: 2021-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -84,6 +84,9 @@ entity sequencer_uart_cmd is
     i_run_pattern_scroller_done    : in  std_logic;
     i_run_pattern_scroller_discard : in  std_logic;
 
+    i_load_tempo_scroller_done : in  std_logic;  -- Load Tempo done
+    o_load_tempo_scroller      : out std_logic;  -- Load Tempo Scroller command
+
 
     -- TX Uart commands
     i_tx_done       : in  std_logic;
@@ -129,6 +132,7 @@ architecture behv of sequencer_uart_cmd is
   signal s_run_pattern_static   : std_logic;
   signal s_run_pattern_scroller : std_logic;
 
+  signal s_load_tempo_scroller : std_logic;
 
   --signal s_load_pattern_static_rdy : std_logic;
 
@@ -159,6 +163,7 @@ begin  -- architecture behv
       s_update_matrix         <= '0';
       s_run_pattern_static    <= '0';
       s_run_pattern_scroller  <= '0';
+      s_load_tempo_scroller   <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Wait for Pulses
@@ -227,23 +232,15 @@ begin  -- architecture behv
       elsif(i_run_pattern_scroller_done = '1') then
         s_rx_data_sel <= '0';           -- Change mux selector
 
-        -- LOAD_PATTERN_STATIC RDY
-        --elsif(i_load_pattern_static_rdy = '1') then
-        --s_load_pattern_static_rdy <= '1';
-        --  s_rx_data_sel <= '1';           -- Change mux selector
 
-        -- LOAD_PATTERN_STATIC NOT RDY
-        --elsif(i_load_pattern_static_discard = '1') then
-        --s_load_pattern_static_discard <= '1';
-        --  s_rx_data_sel <= '0';           -- Change mux selector
+      -- LOAD_SCROLLER_TEMPO
+      elsif(i_cmd_pulses = conv_std_logic_vector(256, i_cmd_pulses'length)) then
+        s_load_tempo_scroller <= '1';
+        s_rx_data_sel         <= '1';   -- Change mux selector
 
-        -- LOAD_PATTERN_SCROLL RDY
-        --elsif(i_load_pattern_scroller_rdy = '1') then
-        --  s_rx_data_sel <= '1';           -- Change mux selector
 
-        -- LOAD_PATTERN_SCROLL NOT RDY  
-        --elsif(i_load_pattern_scroller_discard = '1') then
-        --  s_rx_data_sel <= '0';           -- Change mux selector
+      elsif(i_load_tempo_scroller_done = '1') then
+        s_rx_data_sel <= '0';           -- Change mux selector
 
       else
         s_init_static_ram       <= '0';
@@ -254,6 +251,7 @@ begin  -- architecture behv
         s_update_matrix         <= '0';
         s_run_pattern_static    <= '0';
         s_run_pattern_scroller  <= '0';
+        s_load_tempo_scroller   <= '0';
       end if;
 
 
@@ -360,6 +358,15 @@ begin  -- architecture behv
           s_index_resp   <= 17;
 
 
+        -- LOAD_TEMPO_RDY
+        elsif(s_load_tempo_scroller = '1') then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 18;
+
+        -- LOAD_TEMPO_DONE
+        elsif(i_load_tempo_scroller_done = '1')then
+          s_resp_ongoing <= '1';
+          s_index_resp   <= 20;
         end if;
 
 
@@ -424,5 +431,6 @@ begin  -- architecture behv
   o_update_config         <= s_update_matrix;
   o_run_pattern_static    <= s_run_pattern_static;
   o_run_pattern_scroller  <= s_run_pattern_scroller;
+  o_load_tempo_scroller   <= s_load_tempo_scroller;
 
 end architecture behv;

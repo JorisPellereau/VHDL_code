@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-15
+-- Last update: 2021-06-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -187,6 +187,9 @@ architecture behv of uart_max7219_display_ctrl is
   signal s_run_pattern_static_discard   : std_logic;
   signal s_run_pattern_scroller_discard : std_logic;
 
+  signal s_load_tempo_scroller_done : std_logic;
+  signal s_load_tempo_scroller      : std_logic;
+
 
 begin  -- architecture behv
 
@@ -342,6 +345,9 @@ begin  -- architecture behv
       i_run_pattern_scroller_done    => s_run_pattern_scroller_done,
       i_run_pattern_scroller_discard => s_run_pattern_scroller_discard,
 
+      i_load_tempo_scroller_done => s_load_tempo_scroller_done,
+      o_load_tempo_scroller      => s_load_tempo_scroller,
+
 
       -- TX Uart commands
       i_tx_done       => s_tx_done,
@@ -480,7 +486,10 @@ begin  -- architecture behv
       i_scroller_busy          => i_scroller_busy,
       o_ram_start_ptr_scroller => o_ram_start_ptr_scroller,
       o_msg_length_scroller    => o_msg_length_scroller,
-      o_max_tempo_cnt_scroller => o_max_tempo_cnt_scroller
+
+      i_load_tempo_scroller      => s_load_tempo_scroller,
+      o_load_tempo_scroller_done => s_load_tempo_scroller_done,
+      o_max_tempo_cnt_scroller   => o_max_tempo_cnt_scroller
       );
 
 

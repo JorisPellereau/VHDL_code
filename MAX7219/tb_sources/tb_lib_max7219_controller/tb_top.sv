@@ -462,8 +462,8 @@ module tb_top
     max7219_display_controller #(
     .G_MATRIX_NB (8), 
    
-    .G_MAX_HALF_PERIOD (4),
-    .G_LOAD_DURATION   (4),
+    .G_MAX_HALF_PERIOD (2*25),//4),
+    .G_LOAD_DURATION   (4), //4),
 
     .G_RAM_ADDR_WIDTH_STATIC  (8),
     .G_RAM_DATA_WIDTH_STATIC  (16),
