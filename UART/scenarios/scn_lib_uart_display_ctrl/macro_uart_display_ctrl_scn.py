@@ -1,4 +1,12 @@
 
+import generic_tb_cmd_class
+import tb_uart_cmd_class
+import scn_class
+
+import numpy as np
+
+
+
 
 uart_cmd_list = dict()
 uart_cmd_list[0] = "INIT_RAM_STATIC"
@@ -78,3 +86,44 @@ def ascii_str_2_hex(ascii_str):
 
 
 
+# Check SPI Generation After Reset
+def check_spi_config_after_reset(scn, decode_mode, intensity, scan_limit, shutdown, display_test):
+
+    data_list = [(0x09 << 8) |decode_mode, (0x0A << 8) | intensity, (0x0B << 8) | scan_limit, (0x0C << 8) | shutdown, (0x0F << 8) | display_test]
+
+    for nb_config in range(0, 5):
+        for nb_matrix in range(0, 8):
+            scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
+            scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED",data_list[nb_config], 'OK')
+
+
+
+
+
+# Check SPI transaction during a Scroller Pattern
+# SPI transaction number :
+# 8*8*(64 + pattern_length)
+# Digit 0 updated 1st
+# Digit 7 updated in last position
+def check_spi_scroller(scn, data_to_check):
+
+    data_matrix = np.zeros([8, 8], int)
+
+    loop_nb = 64 + len(data_to_check)
+
+    data = [0] * 64 # Init data
+    data[0] = data_to_check[0]
+
+    for loop_nb_i in range(0, loop_nb):
+        for digit_i in range(0, 8):
+            for matrix_i in range(0, 8):
+              scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
+              scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED",( (digit_i + 1) << 8) | data[matrix_i + digit_i*8], 'OK')
+
+
+        # Shift data
+        for i in range(0, 64):
+            if(i < loop_nb_i):
+                data[i] = data_to_check[loop_nb_i]
+    
+    

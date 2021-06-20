@@ -136,6 +136,12 @@ module tb_top
    wire        s_display_screen_sel;  
 
    wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
+
+   // == MAX7219 SPI CHECKER ==
+   wire        s_spi_frame_received;
+   wire        s_spi_load_received;
+   wire [15:0] s_spi_data_received;
+   
     
    
    
@@ -220,6 +226,10 @@ module tb_top
    assign s_wait_event_if.wait_alias[5] = "O_STATIC_BUSY";
    assign s_wait_event_if.wait_alias[6] = "O_SCROLLER_BUSY";
    assign s_wait_event_if.wait_alias[7] = "STATIC_DISCARD"; // Internal signal
+   assign s_wait_event_if.wait_alias[8] = "SPI_FRAME_RECEIVED";
+   assign s_wait_event_if.wait_alias[9] = "SPI_LOAD_RECEIVED";
+
+   
    
 
    // SET WAIT EVENT SIGNALS
@@ -231,6 +241,9 @@ module tb_top
    assign s_wait_event_if.wait_signals[5] = s_static_busy;
    assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
    assign s_wait_event_if.wait_signals[7] = 0; //i_max7219_display_controller_wrapper.s_discard_static;
+   assign s_wait_event_if.wait_signals[8] = s_spi_frame_received;   
+   assign s_wait_event_if.wait_signals[9] = s_spi_load_received;
+   
    
 
    // INIT SET ALIAS
@@ -351,6 +364,8 @@ module tb_top
    assign s_check_level_if.check_alias[6] = "O_MAX7219_LOAD";
    assign s_check_level_if.check_alias[7] = "O_MAX7219_DATA";
    assign s_check_level_if.check_alias[8] = "O_MAX7219_CLK";
+   assign s_check_level_if.check_alias[9] = "O_SPI_DATA_RECEIVED";
+   
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_config_done;
@@ -361,6 +376,8 @@ module tb_top
    assign s_check_level_if.check_signals[6] =  s_max7219_load;
    assign s_check_level_if.check_signals[7] =  s_max7219_data;
    assign s_check_level_if.check_signals[8] =  s_max7219_clk;
+   assign s_check_level_if.check_signals[9] =  s_spi_data_received;
+   
    
    // =====================================================
 
@@ -638,5 +655,22 @@ module tb_top
    
    // ===============
 
+
+
+   // == MAX7219_SPI_CHECKER
+
+   max7219_spi_checker i_max7219_spi_checker_0 (
+						.clk    (clk),
+						.rst_n  (rst_n),
+
+						.i_max7219_clk   (s_max7219_clk),
+						.i_max7219_din   (s_max7219_data),
+						.i_max7219_load  (s_max7219_load),
+
+						.o_frame_received  (s_spi_frame_received),
+						.o_load_received   (s_spi_load_received),
+						.o_data_received   (s_spi_data_received)
+						
+						);
    
 endmodule // tb_top
