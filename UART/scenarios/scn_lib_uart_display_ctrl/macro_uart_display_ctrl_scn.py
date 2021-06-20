@@ -107,23 +107,57 @@ def check_spi_config_after_reset(scn, decode_mode, intensity, scan_limit, shutdo
 # Digit 7 updated in last position
 def check_spi_scroller(scn, data_to_check):
 
-    data_matrix = np.zeros([8, 8], int)
-
+    # data[0] == Value of Digit 0 - Matrix 7
+    # data[1] == Value of digit 0 - Marix 6
+    data    = np.zeros([64], int)
     loop_nb = 64 + len(data_to_check)
-
-    data = [0] * 64 # Init data
-    data[0] = data_to_check[0]
-
+    
     for loop_nb_i in range(0, loop_nb):
+
+        # Update until it remains data in the list
+        if(loop_nb_i < len(data_to_check) ):
+            data[0] = data_to_check[loop_nb_i]
+            
+        # Else Add 0
+        else:
+            data[0] = 0
+
+        # Select 1 digit at a time    
         for digit_i in range(0, 8):
+
+            # Update the Same digit for all MATRIX
             for matrix_i in range(0, 8):
-              scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
-              scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED",( (digit_i + 1) << 8) | data[matrix_i + digit_i*8], 'OK')
+
+                scn.print_line("//-- loop_nb_i : %d - frame_nb : %d\n" %(loop_nb_i, matrix_i + digit_i*8))
+                scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
+                data_tmp = ( (digit_i + 1) << 8) | data[matrix_i + digit_i*8]
+                scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED", int(data_tmp), 'OK')
 
 
         # Shift data
-        for i in range(0, 64):
-            if(i < loop_nb_i):
-                data[i] = data_to_check[loop_nb_i]
+        for matrix_i in range(0, 8):
+
+            for digit_i in range(0, 8):
+                # Update D0 => D6
+                #if(digit_i < 7):
+                data[8*matrix_i + digit_i] = data[8*matrix_i + digit_i]
+
+                # Update D7 => D0
+                #elif(digit_i == 7):
+                #    data[]
+
+
+        # Update until it remains data in the list
+        #if(loop_nb_i < len(data_to_check)):
+        #    data[0] = data_to_check[loop_nb_i + 1]
+            
+        # Else Add 0
+        #else:
+        #    data[0] = 0
+        
+        #data[0] = data_to_check[loop_nb_i]
+        #for i in range(0, 64):
+        #    if(i < loop_nb_i):
+        #        data[i] = data_to_check[loop_nb_i]
     
     

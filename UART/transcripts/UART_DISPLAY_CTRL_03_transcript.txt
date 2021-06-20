@@ -1,0 +1,2859 @@
+# ERROR: No extended dataflow license exists
+# vsim -novopt -t ps lib_tb_uart_display_ctrl.tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l /home/jorisp/GitHub/VHDL_code/UART/scripts/../transcripts/UART_DISPLAY_CTRL_03_transcript.txt -do "/home/jorisp/GitHub/VHDL_code/UART/scripts/../do_files/run_files/UART_DISPLAY_CTRL_03_run.do" -G/tb_top/SCN_FILE_PATH=/home/jorisp/GitHub/VHDL_code/UART/scripts/../scenarios/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.txt 
+# Start time: 14:35:06 on May 15,2021
+# Loading sv_std.std
+# Loading sv_std.mti_fli
+# Loading lib_tb_uart_display_ctrl.tb_top_sv_unit
+# Loading lib_tb_uart_display_ctrl.tb_top
+# Loading lib_tb_uart_display_ctrl.clk_gen
+# Loading lib_tb_uart_display_ctrl.wait_event_intf
+# Loading lib_tb_uart_display_ctrl.set_injector_intf
+# Loading lib_tb_uart_display_ctrl.wait_duration_intf
+# Loading lib_tb_uart_display_ctrl.check_level_intf
+# Loading lib_tb_uart_display_ctrl.wait_event_wrapper
+# Loading lib_tb_uart_display_ctrl.wait_event_tb
+# Loading lib_tb_uart_display_ctrl.set_injector_wrapper
+# Loading lib_tb_uart_display_ctrl.set_injector_tb
+# Loading lib_tb_uart_display_ctrl.uart_checker_intf
+# Loading lib_tb_uart_display_ctrl.uart_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Loading lib_tb_uart_display_ctrl.max7219_checker
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading lib_uart.pkg_uart(body)
+# Loading lib_tb_uart_display_ctrl.tx_uart(arch)
+# Loading lib_tb_uart_display_ctrl.rx_uart(arch)
+# Loading ieee.std_logic_arith(body)
+# Loading lib_uart_display_ctrl.pkg_uart_max7219_display_ctrl
+# Loading lib_max7219_controller.pkg_max7219_controller
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl_wrapper(behv)
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl(behv)
+# Loading lib_uart.rx_uart(arch)
+# Loading lib_uart.tx_uart(arch)
+# Loading lib_uart_display_ctrl.uart_cmd_decod(behv)
+# Loading lib_uart_display_ctrl.sequencer_uart_cmd(behv)
+# Loading lib_uart_display_ctrl.static_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.dyn_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.matrix_config_mngr(behv)
+# Loading lib_uart_display_ctrl.run_pattern_mngt(behv)
+# Loading lib_max7219_interface.pkg_max7219_interface
+# Loading lib_max7219_static.pkg_max7219_static
+# Loading lib_max7219_scroller.pkg_max7219_scroller
+# Loading lib_max7219_controller.max7219_display_controller(behv)
+# Loading lib_max7219_controller.max7219_display_sequencer(behv)
+# Loading lib_max7219_controller.max7219_config_if(behv)
+# Loading lib_max7219_static.max7219_cmd_decod(behv)
+# Loading lib_max7219_static.tdpram_sclk(behv)
+# Loading lib_max7219_static.max7219_ram_decod(behv)
+# Loading lib_max7219_scroller.max7219_scroller_ctrl(behv)
+# Loading lib_max7219_scroller.max7219_ram2scroller_if(behv)
+# Loading lib_max7219_scroller.max7219_scroller_if(behv)
+# Loading lib_max7219_scroller.tdpram_sclk(behv)
+# Loading lib_max7219_controller.max7219_mux_sel(behv)
+# Loading lib_max7219_interface.max7219_if(behv)
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# do /home/jorisp/GitHub/VHDL_code/UART/scripts/../do_files/run_files/UART_DISPLAY_CTRL_03_run.do
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0")
+# 
+# Error: Command MODELSIM_CMD("force not recognized
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 52 => ERROR -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 44 => ERROR -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 59 => ERROR -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 00 => ERROR -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 00 => ERROR -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 00 => ERROR -       16992170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 00 => ERROR -       17035690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       17079210.00 ns
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(154)
+#    Time: 17079210 ns  Iteration: 3  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 154
+.main clear
+restart -f ; run -all
+# Loading lib_tb_uart_display_ctrl.tb_top_sv_unit
+# Loading lib_tb_uart_display_ctrl.tb_top
+# Loading lib_tb_uart_display_ctrl.clk_gen
+# Loading lib_tb_uart_display_ctrl.wait_event_intf
+# Loading lib_tb_uart_display_ctrl.set_injector_intf
+# Loading lib_tb_uart_display_ctrl.wait_duration_intf
+# Loading lib_tb_uart_display_ctrl.check_level_intf
+# Loading lib_tb_uart_display_ctrl.wait_event_wrapper
+# Loading lib_tb_uart_display_ctrl.wait_event_tb
+# Loading lib_tb_uart_display_ctrl.set_injector_wrapper
+# Loading lib_tb_uart_display_ctrl.set_injector_tb
+# Loading lib_tb_uart_display_ctrl.uart_checker_intf
+# Loading lib_tb_uart_display_ctrl.uart_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Loading lib_tb_uart_display_ctrl.max7219_checker
+# Loading lib_uart.pkg_uart(body)
+# Loading lib_tb_uart_display_ctrl.tx_uart(arch)
+# Loading lib_tb_uart_display_ctrl.rx_uart(arch)
+# Loading lib_uart_display_ctrl.pkg_uart_max7219_display_ctrl
+# Loading lib_max7219_controller.pkg_max7219_controller
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl_wrapper(behv)
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl(behv)
+# Loading lib_uart.rx_uart(arch)
+# Loading lib_uart.tx_uart(arch)
+# Loading lib_uart_display_ctrl.uart_cmd_decod(behv)
+# Loading lib_uart_display_ctrl.sequencer_uart_cmd(behv)
+# Loading lib_uart_display_ctrl.static_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.dyn_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.matrix_config_mngr(behv)
+# Loading lib_uart_display_ctrl.run_pattern_mngt(behv)
+# Loading lib_max7219_interface.pkg_max7219_interface
+# Loading lib_max7219_static.pkg_max7219_static
+# Loading lib_max7219_scroller.pkg_max7219_scroller
+# Loading lib_max7219_controller.max7219_display_controller(behv)
+# Loading lib_max7219_controller.max7219_display_sequencer(behv)
+# Loading lib_max7219_controller.max7219_config_if(behv)
+# Loading lib_max7219_static.max7219_cmd_decod(behv)
+# Loading lib_max7219_static.tdpram_sclk(behv)
+# Loading lib_max7219_static.max7219_ram_decod(behv)
+# Loading lib_max7219_scroller.max7219_scroller_ctrl(behv)
+# Loading lib_max7219_scroller.max7219_ram2scroller_if(behv)
+# Loading lib_max7219_scroller.max7219_scroller_if(behv)
+# Loading lib_max7219_scroller.tdpram_sclk(behv)
+# Loading lib_max7219_controller.max7219_mux_sel(behv)
+# Loading lib_max7219_interface.max7219_if(behv)
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0
+# 
+# Error: Command force not recognized
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 52 => ERROR -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 44 => ERROR -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 59 => ERROR -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 00 => ERROR -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 00 => ERROR -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# Break key hit
+# Break in Module wait_event_tb at /home/jorisp/GitHub/Verilog/lib_testbench/wait_event_tb.sv line 50
+.main clear
+restart -f ; run -all
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0")
+# 
+# Error: Command MODELSIM_CMD("force not recognized
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 52 => ERROR -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 44 => ERROR -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 59 => ERROR -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 00 => ERROR -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 00 => ERROR -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 00 => ERROR -       16992170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 00 => ERROR -       17035690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       17079210.00 ns
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(154)
+#    Time: 17079210 ns  Iteration: 3  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 154
+.main clear
+restart -f ; run -all
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# MODELSIM_CMD ("force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0")
+# 
+# Line in double quote : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0"
+# string
+# Modelsim Command Exec : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0"
+# ** Warning: (vsim-8780) Forcing /tb_top/i_dut/s_static_busy as root of /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy specified in the force.
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 52 => ERROR -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 44 => ERROR -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 59 => ERROR -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 00 => ERROR -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 00 => ERROR -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 00 => ERROR -       16992170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 00 => ERROR -       17035690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       17079210.00 ns
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(154)
+#    Time: 17079210 ns  Iteration: 3  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 154
+.main clear
+restart -f ; run -all
+# Loading lib_tb_uart_display_ctrl.tb_top_sv_unit
+# Loading lib_tb_uart_display_ctrl.tb_top
+# Loading lib_tb_uart_display_ctrl.clk_gen
+# Loading lib_tb_uart_display_ctrl.wait_event_intf
+# Loading lib_tb_uart_display_ctrl.set_injector_intf
+# Loading lib_tb_uart_display_ctrl.wait_duration_intf
+# Loading lib_tb_uart_display_ctrl.check_level_intf
+# Loading lib_tb_uart_display_ctrl.wait_event_wrapper
+# Loading lib_tb_uart_display_ctrl.wait_event_tb
+# Loading lib_tb_uart_display_ctrl.set_injector_wrapper
+# Loading lib_tb_uart_display_ctrl.set_injector_tb
+# Loading lib_tb_uart_display_ctrl.uart_checker_intf
+# Loading lib_tb_uart_display_ctrl.uart_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Loading lib_tb_uart_display_ctrl.max7219_checker
+# Loading lib_uart.pkg_uart(body)
+# Loading lib_tb_uart_display_ctrl.tx_uart(arch)
+# Loading lib_tb_uart_display_ctrl.rx_uart(arch)
+# Loading lib_uart_display_ctrl.pkg_uart_max7219_display_ctrl
+# Loading lib_max7219_controller.pkg_max7219_controller
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl_wrapper(behv)
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl(behv)
+# Loading lib_uart.rx_uart(arch)
+# Loading lib_uart.tx_uart(arch)
+# Loading lib_uart_display_ctrl.uart_cmd_decod(behv)
+# Loading lib_uart_display_ctrl.sequencer_uart_cmd(behv)
+# Loading lib_uart_display_ctrl.static_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.dyn_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.matrix_config_mngr(behv)
+# Loading lib_uart_display_ctrl.run_pattern_mngt(behv)
+# Loading lib_max7219_interface.pkg_max7219_interface
+# Loading lib_max7219_static.pkg_max7219_static
+# Loading lib_max7219_scroller.pkg_max7219_scroller
+# Loading lib_max7219_controller.max7219_display_controller(behv)
+# Loading lib_max7219_controller.max7219_display_sequencer(behv)
+# Loading lib_max7219_controller.max7219_config_if(behv)
+# Loading lib_max7219_static.max7219_cmd_decod(behv)
+# Loading lib_max7219_static.tdpram_sclk(behv)
+# Loading lib_max7219_static.max7219_ram_decod(behv)
+# Loading lib_max7219_scroller.max7219_scroller_ctrl(behv)
+# Loading lib_max7219_scroller.max7219_ram2scroller_if(behv)
+# Loading lib_max7219_scroller.max7219_scroller_if(behv)
+# Loading lib_max7219_scroller.tdpram_sclk(behv)
+# Loading lib_max7219_controller.max7219_mux_sel(behv)
+# Loading lib_max7219_interface.max7219_if(behv)
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# MODELSIM_CMD ("force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0")
+# 
+# Line in double quote : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0
+# string
+# Modelsim Command Exec : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0
+# ** Warning: (vsim-8780) Forcing /tb_top/i_dut/s_static_busy as root of /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy specified in the force.
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       16992170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       17035690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       17079210.00 ns
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(154)
+#    Time: 17079210 ns  Iteration: 3  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 154
+noforce sim:/tb_top/i_dut/i_max7219_display_controller_0/o_static_busy
+restart -f ; run -all
+# Loading lib_tb_uart_display_ctrl.tb_top_sv_unit
+# Loading lib_tb_uart_display_ctrl.tb_top
+# Loading lib_tb_uart_display_ctrl.clk_gen
+# Loading lib_tb_uart_display_ctrl.wait_event_intf
+# Loading lib_tb_uart_display_ctrl.set_injector_intf
+# Loading lib_tb_uart_display_ctrl.wait_duration_intf
+# Loading lib_tb_uart_display_ctrl.check_level_intf
+# Loading lib_tb_uart_display_ctrl.wait_event_wrapper
+# Loading lib_tb_uart_display_ctrl.wait_event_tb
+# Loading lib_tb_uart_display_ctrl.set_injector_wrapper
+# Loading lib_tb_uart_display_ctrl.set_injector_tb
+# Loading lib_tb_uart_display_ctrl.uart_checker_intf
+# Loading lib_tb_uart_display_ctrl.uart_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper_sv_unit
+# Loading lib_tb_uart_display_ctrl.max7219_checker_wrapper
+# Loading lib_tb_uart_display_ctrl.max7219_checker_sv_unit
+# ** Warning: (vsim-PLI-3691) /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(238): Expected a system task, not a system function '$sscanf'.
+#    Time: 0 ps  Iteration: 0  Region: /tb_top_sv_unit::tb_class::tb_class__1::cmd_decoder File: /home/jorisp/GitHub/Verilog/lib_tb_uart/tb_uart_class.sv
+# Loading lib_tb_uart_display_ctrl.max7219_checker
+# Loading lib_uart.pkg_uart(body)
+# Loading lib_tb_uart_display_ctrl.tx_uart(arch)
+# Loading lib_tb_uart_display_ctrl.rx_uart(arch)
+# Loading lib_uart_display_ctrl.pkg_uart_max7219_display_ctrl
+# Loading lib_max7219_controller.pkg_max7219_controller
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl_wrapper(behv)
+# Loading lib_uart_display_ctrl.uart_max7219_display_ctrl(behv)
+# Loading lib_uart.rx_uart(arch)
+# Loading lib_uart.tx_uart(arch)
+# Loading lib_uart_display_ctrl.uart_cmd_decod(behv)
+# Loading lib_uart_display_ctrl.sequencer_uart_cmd(behv)
+# Loading lib_uart_display_ctrl.static_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.dyn_ram_mngr(behv)
+# Loading lib_uart_display_ctrl.matrix_config_mngr(behv)
+# Loading lib_uart_display_ctrl.run_pattern_mngt(behv)
+# Loading lib_max7219_interface.pkg_max7219_interface
+# Loading lib_max7219_static.pkg_max7219_static
+# Loading lib_max7219_scroller.pkg_max7219_scroller
+# Loading lib_max7219_controller.max7219_display_controller(behv)
+# Loading lib_max7219_controller.max7219_display_sequencer(behv)
+# Loading lib_max7219_controller.max7219_config_if(behv)
+# Loading lib_max7219_static.max7219_cmd_decod(behv)
+# Loading lib_max7219_static.tdpram_sclk(behv)
+# Loading lib_max7219_static.max7219_ram_decod(behv)
+# Loading lib_max7219_scroller.max7219_scroller_ctrl(behv)
+# Loading lib_max7219_scroller.max7219_ram2scroller_if(behv)
+# Loading lib_max7219_scroller.max7219_scroller_if(behv)
+# Loading lib_max7219_scroller.tdpram_sclk(behv)
+# Loading lib_max7219_controller.max7219_mux_sel(behv)
+# Loading lib_max7219_interface.max7219_if(behv)
+# ** Warning: (vsim-8683) Uninitialized out port /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_sequencer_uart_cmd_0/o_run_pattern_scroller has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# Initialization of UART Testbench Module Done.
+# Beginning of sequencer
+# //-- STEP 0
+# 
+# WTR RST_N
+# 
+# Waiting for a rising edge ...
+# Wait_event : No timeout
+# WTR detected            210.00 ns
+# 
+# WAIT 100 ns
+# 
+# WAIT duration :         100 ns
+# 
+# //-- STEP 1
+# 
+# //-- Init RAM STATIC
+# 
+# //-- Send : INIT_RAM_STATIC
+# 
+# Run UART[UART_RPi] TX_START(73 78 73 84 95 82 65 77 95 83 84 65 84 73 67 0 0 0 0 0) ... -            330.00 ns
+# UART TX DONE -         870730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -         915710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -         959230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004d) - Expected 4d => OK -        1002750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1046270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        1089790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1133310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        1176830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        1220350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        1263870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        1307390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        1350910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        1394430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        1437950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        1481470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        1524990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1568510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1612030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1655550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1699070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        1742590.00 ns
+# //-- STEP 2
+# 
+# //-- LOAD RAM STATIC @0 => @63
+# 
+# Run UART[UART_RPi] TX_START(76 79 65 68 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0) ... -        1742590.00 ns
+# UART TX DONE -        2612990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        2652810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        2696330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2739850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        2783370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        2826890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        2870410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        2913930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        2957450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        3000970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        3044490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        3088010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        3131530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -        3175050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        3218570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -        3262090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3305610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3349130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3392650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3436170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        3479690.00 ns
+# Run UART[UART_RPi] TX_START(0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1) ... -        3479690.00 ns
+# UART TX DONE -        9093770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004c) - Expected 4c => OK -        9133570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9177090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9220610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9264130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9307650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -        9351170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9394690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -        9438210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -        9481730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -        9525250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -        9568770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -        9612290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -        9655810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -        9699330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -        9742850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -        9786370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9829890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9873410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9916930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -        9960450.00 ns
+# //-- STEP 3
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -        9960450.00 ns
+# UART TX DONE -       10830850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       10870690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       10914210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       10957730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11001250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11044770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       11088290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11131810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       11175330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11218850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11262370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       11305890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       11349410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       11392930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       11436450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       11479970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11523490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11567010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11610530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11654050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       11697570.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       11697570.00 ns
+# UART TX DONE -       11784610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       11824390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11867910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       11911430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       11954950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       11998470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       12041990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12085510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       12129030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       12172550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       12216070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12259590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       12303110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       12346630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       12390150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       12433670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       12477190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12520710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12564230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12607750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       12651270.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       12651270.00 ns
+# UART TX DONE -       13521670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       13561510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13605030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       13648550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13692070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       13735590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       13779110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       13822630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       13866150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       13909670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       13953190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       13996710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14040230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14083750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       14127270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       14170790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14214310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14257830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14301350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14344870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       14388390.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       14388390.00 ns
+# UART TX DONE -       14475430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       14515210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14558730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       14602250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14645770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       14689290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       14732810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14776330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       14819850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       14863370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       14906890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       14950410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       14993930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       15037450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       15080970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       15124490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       15168010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15211530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15255050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15298570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       15342090.00 ns
+# //-- STEP 4
+# 
+# //-- RUN PATTERN STATIC - Pattern NOT RDY
+# 
+# MODELSIM_CMD ("force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0")
+# 
+# Line in double quote : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0
+# string
+# Modelsim Command Exec : force -freeze sim:/tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy 1 0
+# ** Warning: (vsim-8780) Forcing /tb_top/i_dut/s_static_busy as root of /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy specified in the force.
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       15342090.00 ns
+# UART TX DONE -       16212490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       16252330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16295850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       16339370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16382890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       16426410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       16469930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16513450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       16556970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16600490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16644010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16687530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16731050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       16774570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       16818090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       16861610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       16905130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       16948650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       16992170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       17035690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       17079210.00 ns
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       17079210.00 ns
+# UART TX DONE -       17949610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       17989450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       18032970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       18076490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       18120010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       18163530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       18207050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       18250570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       18294090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       18337610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       18381130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       18424650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       18468170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       18511690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       18555210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       18598730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       18642250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       18685770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       18729290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       18772810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       18816330.00 ns
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       18816330.00 ns
+# UART TX DONE -       19686730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       19726570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       19770090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       19813610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       19857130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       19900650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       19944170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       19987690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       20031210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       20074730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       20118250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       20161770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       20205290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       20248810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       20292330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       20335850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       20379370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       20422890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       20466410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       20509930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       20553450.00 ns
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       20553450.00 ns
+# UART TX DONE -       21423850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       21463690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       21507210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       21550730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       21594250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       21637770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       21681290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       21724810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       21768330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       21811850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       21855370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       21898890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       21942410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       21985930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       22029450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       22072970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       22116490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       22160010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       22203530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       22247050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       22290570.00 ns
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       22290570.00 ns
+# UART TX DONE -       23160970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       23200810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       23244330.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       23287850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       23331370.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       23374890.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       23418410.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       23461930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       23505450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       23548970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       23592490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       23636010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       23679530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       23723050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       23766570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       23810090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       23853610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       23897130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       23940650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       23984170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       24027690.00 ns
+# //-- STEP 5
+# 
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# MODELSIM_CMD ("noforce sim:/tb_top/i_dut/i_max7219_display_controller_0/o_static_busy")
+# 
+# Line in double quote : noforce sim:/tb_top/i_dut/i_max7219_display_controller_0/o_static_busy
+# string
+# Modelsim Command Exec : noforce sim:/tb_top/i_dut/i_max7219_display_controller_0/o_static_busy
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       24027690.00 ns
+# UART TX DONE -       24898090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       24937930.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       24981450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       25024970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       25068490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       25112010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       25155530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       25199050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       25242570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       25286090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       25329610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       25373130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       25416650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       25460170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       25503690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       25547210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       25590730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       25634250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       25677770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       25721290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       25764810.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       25764810.00 ns
+# UART TX DONE -       25851850.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       25891630.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       25935150.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       25978670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       26022190.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       26065710.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       26109230.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       26152750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       26196270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       26239790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       26283310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       26326830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       26370350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       26413870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       26457390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       26500910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       26544430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       26587950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       26631470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       26674990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       26718510.00 ns
+# //-- RUN PATTERN STATIC - Pattern RDY
+# 
+# Run UART[UART_RPi] TX_START(82 85 78 95 80 65 84 84 69 82 78 95 83 84 65 84 73 67 0 0) ... -       26718510.00 ns
+# UART TX DONE -       27588910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       27628750.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       27672270.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       27715790.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       27759310.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       27802830.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       27846350.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       27889870.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       27933390.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       27976910.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       28020430.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       28063950.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       28107470.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       28150990.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       28194510.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000059) - Expected 59 => OK -       28238030.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       28281550.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       28325070.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       28368590.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       28412110.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       28455630.00 ns
+# Run UART[UART_RPi] TX_START(0 64) ... -       28455630.00 ns
+# UART TX DONE -       28542670.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000053) - Expected 53 => OK -       28582450.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       28625970.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000041) - Expected 41 => OK -       28669490.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       28713010.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000049) - Expected 49 => OK -       28756530.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000043) - Expected 43 => OK -       28800050.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       28843570.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000050) - Expected 50 => OK -       28887090.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000054) - Expected 54 => OK -       28930610.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000052) - Expected 52 => OK -       28974130.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       29017650.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000005f) - Expected 5f => OK -       29061170.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000044) - Expected 44 => OK -       29104690.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004f) - Expected 4f => OK -       29148210.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(0000004e) - Expected 4e => OK -       29191730.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000045) - Expected 45 => OK -       29235250.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       29278770.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       29322290.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       29365810.00 ns
+# Waiting for Rising Edge of rx_done
+# UART RX_WAIT_DATA(00000000) - Expected 00 => OK -       29409330.00 ns
+# End of test
+# ** Note: $finish    : /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv(154)
+#    Time: 29409330 ns  Iteration: 3  Instance: /tb_top
+# 1
+# Break in Task tb_top_sv_unit/tb_class::tb_sequencer at /home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv line 154
+# End time: 14:52:16 on May 15,2021, Elapsed time: 0:17:10
+# Errors: 0, Warnings: 21

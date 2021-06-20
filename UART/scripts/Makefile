@@ -63,7 +63,7 @@ SRC_MAX7219_DIR=/home/jorisp/GitHub/VHDL_code/MAX7219/sources
 # =======================
 
 # == VSIM ARGS ==
-VSIM_ARGS+=-novopt -t ps
+VSIM_ARGS+=-novopt -t ps -default_radix hexadecimal -fsmdebug
 VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
 
 ifeq ($(GUI), OFF)
@@ -362,6 +362,8 @@ generate_scn :
 run_tb_uart_display_ctrl :
 	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
 	python $(TEST).py; \
+	cd $(TRANSCRIPTS_DIR); \
+	rm $(TEST)_transcript.txt; \
 	cd $(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 

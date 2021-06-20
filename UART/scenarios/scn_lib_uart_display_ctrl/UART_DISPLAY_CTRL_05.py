@@ -86,9 +86,13 @@ data_to_send.append(stop_addr) # Message length
 
 data_to_check = []
 for i in range(start_addr, stop_addr+1):
-    data_to_send.append(i)
-    data_to_check.append(i)
-    
+    if(i == 0):
+        data_to_send.append(1)
+        data_to_check.append(1)
+    else:
+        data_to_send.append(0)
+        data_to_check.append(0)
+        
 scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
 data_to_read = str_cmd_2_hex_data_cmd("LOAD_SCROLL_DONE")
@@ -107,15 +111,16 @@ data_to_send.append(start_addr) # Start PTR
 data_to_send.append(stop_addr) # Message length
 scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
-data_to_read = str_cmd_2_hex_data_cmd("SCROLL_PTRN_DONE")
-scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+# Scroll En cours 
+#data_to_read = str_cmd_2_hex_data_cmd("SCROLL_PTRN_DONE")
+#scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 
 
 #scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
 #scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED", 0x0000, 'OK')
 
 #data_to_check = 
-#check_spi_scroller(scn, data_to_check)
+check_spi_scroller(scn, data_to_check)
 
 def toto(self):
     scn.print_line("//-- STEP 2\n")
