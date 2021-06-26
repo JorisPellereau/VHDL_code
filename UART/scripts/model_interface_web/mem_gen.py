@@ -159,17 +159,19 @@ class window(QtWidgets.QDialog):
         matrix_out = np.zeros([64], int)
 
         list_out = []
-        for nb_col_i in range(0, 8*self.matrix_nb):
+        line_tmp = []
 
-            digit_tmp = 0
-            for nb_line in range(0, 8):
-
+        for nb_line in range(0, 8):
+            
+            line_tmp = []
+            for nb_col_i in range(0, 8*self.matrix_nb):
                 if(self.grid[nb_line][nb_col_i] == True):
-                    digit_tmp = (1 << nb_line) | digit_tmp
+                    line_tmp.append(1)
                 else:
-                    digit_tmp = (0 << nb_line) | digit_tmp
+                    line_tmp.append(0)
+            list_out.append(line_tmp)
 
-            list_out.append(digit_tmp)
+           
 
         print(list_out)
     # Generation of Memory file Function
