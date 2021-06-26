@@ -53,7 +53,7 @@ scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 scn.generic_tb_cmd.WAIT(10, "us")
 
 # Tempo value : 0x000000FF
-data_to_send = [0x00, 0x00, 0x00, 0xFF]
+data_to_send = [0x00, 0x01, 0xFF, 0xFF]
 scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 
 data_to_read = str_cmd_2_hex_data_cmd("LOAD_TEMPO_DONE")
@@ -87,11 +87,11 @@ data_to_send.append(stop_addr) # Message length
 data_to_check = []
 for i in range(start_addr, stop_addr+1):
     if(i == 0):
-        data_to_send.append(1)
-        data_to_check.append(1)
+        data_to_send.append(0xFF)
+        data_to_check.append(0xFF)
     else:
-        data_to_send.append(0)
-        data_to_check.append(0)
+        data_to_send.append(0xFF)
+        data_to_check.append(0xFF)
         
 scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 

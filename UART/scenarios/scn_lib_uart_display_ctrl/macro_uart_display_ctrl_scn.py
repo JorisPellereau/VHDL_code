@@ -109,8 +109,13 @@ def check_spi_scroller(scn, data_to_check):
 
     # data[0] == Value of Digit 0 - Matrix 7
     # data[1] == Value of digit 0 - Marix 6
-    data    = np.zeros([64], int)
+    data      = np.zeros([64], int)
+    data_next = np.zeros([64], int)
     loop_nb = 64 + len(data_to_check)
+
+    print("data_to_check : %s" %(data_to_check) )
+
+    data[0] = data_to_check[0] # Init
     
     for loop_nb_i in range(0, loop_nb):
 
@@ -129,35 +134,44 @@ def check_spi_scroller(scn, data_to_check):
             for matrix_i in range(0, 8):
 
                 scn.print_line("//-- loop_nb_i : %d - frame_nb : %d\n" %(loop_nb_i, matrix_i + digit_i*8))
-                scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED", 1, "ms")
+                scn.generic_tb_cmd.WTR("SPI_FRAME_RECEIVED")#, 1, "ms")
                 data_tmp = ( (digit_i + 1) << 8) | data[matrix_i + digit_i*8]
                 scn.generic_tb_cmd.CHK("O_SPI_DATA_RECEIVED", int(data_tmp), 'OK')
 
 
+
+       
+        data_next = np.zeros([64], int)
         # Shift data
-        for matrix_i in range(0, 8):
+        # Update D0 => D7
+        for matrix_i in range(0, 8-1):
 
-            for digit_i in range(0, 8):
-                # Update D0 => D6
-                #if(digit_i < 7):
-                data[8*matrix_i + digit_i] = data[8*matrix_i + digit_i]
+            data_next[8 + matrix_i*8 + 0] = data[0 + matrix_i*8] # M7
+            data_next[8 + matrix_i*8 + 1] = data[1 + matrix_i*8] # M6
+            data_next[8 + matrix_i*8 + 2] = data[2 + matrix_i*8] # M5
+            data_next[8 + matrix_i*8 + 3] = data[3 + matrix_i*8] # M4
+            data_next[8 + matrix_i*8 + 4] = data[4 + matrix_i*8] # M3
+            data_next[8 + matrix_i*8 + 5] = data[5 + matrix_i*8] # M2
+            data_next[8 + matrix_i*8 + 6] = data[6 + matrix_i*8] # M1
+            data_next[8 + matrix_i*8 + 7] = data[7 + matrix_i*8] # M0
 
-                # Update D7 => D0
-                #elif(digit_i == 7):
-                #    data[]
+        # Update D7 => D0 - D0(M7) updated at the beginning
+        data_next[1] = data[56] # D0(M6) <= D7(M7)
+        data_next[2] = data[57] # D0(M5) <= D7(M6)
+        data_next[3] = data[58] # D0(M4) <= D7(M5)
+        data_next[4] = data[59] # D0(M3) <= D7(M4)
+        data_next[5] = data[60] # D0(M2) <= D7(M3)
+        data_next[6] = data[61] # D0(M1) <= D7(M2)
+        data_next[7] = data[62] # D0(M0) <= D7(M1)
+
+        data = data_next
 
 
-        # Update until it remains data in the list
-        #if(loop_nb_i < len(data_to_check)):
-        #    data[0] = data_to_check[loop_nb_i + 1]
+        print("loop_nb_i : %d" %(loop_nb_i) )
+        print("data : %s" %(data) )
+        print("data_next : %s \n" %(data_next) )
             
-        # Else Add 0
-        #else:
-        #    data[0] = 0
-        
-        #data[0] = data_to_check[loop_nb_i]
-        #for i in range(0, 64):
-        #    if(i < loop_nb_i):
-        #        data[i] = data_to_check[loop_nb_i]
+           
+
     
     
