@@ -1,6 +1,6 @@
 ############################################
 #
-#	Makefile for VHDL I2C tests
+#	Makefile for VHDL blocks tests
 #
 ############################################
 # Repository Organization
@@ -26,7 +26,7 @@
 #
 
 ROOT=$(PWD)/..
-WORK_DIR_NAME=I2C_WORK  # To Remane for the Project
+WORK_DIR_NAME=BLOCK_WORK  # To Remane for the Project
 WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
 
 
