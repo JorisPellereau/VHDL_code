@@ -1,0 +1,39 @@
+//                              -*- Mode: Verilog -*-
+// Filename        : testbench_setup.sv
+// Description     : Testbench Constant Setup
+// Author          : JorisP
+// Created On      : Wed Oct 21 19:51:54 2020
+// Last Modified By: JorisP
+// Last Modified On: Wed Oct 21 19:51:54 2020
+// Update Count    : 0
+// Status          : V1.0
+
+/*
+ *  Testbench Setup for test of MAX7219 STATIC Block
+ * 
+ */
+`timescale 1ps/1ps
+
+// Clock and Reset Configuration
+`define C_TB_CLK_HALF_PERIOD 10000   // 10000 ps = 10 ns
+`define C_WAIT_RST           100000  // 100000 ps = 100 ns before release Reset
+`define C_TB_CLK_PERIOD      20000   // 200000 ps = 20 ns
+
+
+// SET ALIAS Configuration
+`define C_SET_ALIAS_NB 5
+`define C_SET_SIZE     5
+`define C_SET_WIDTH    32
+
+// WAIT EVENT Configuration
+`define C_WAIT_ALIAS_NB 5
+`define C_WAIT_WIDTH    1
+
+// CHECK LEVEL Configuration
+`define C_CHECK_ALIAS_NB 2
+`define C_CHECK_SIZE     2
+`define C_CHECK_WIDTH    32
+
+// I2C TESTBENCH Configuration
+`define SCL_FREQ 1           // f400k selected
+`define CLOCK_FREQ 50000000  // 50 MHz

@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-06-27
--- Last update: 2021-06-27
+-- Last update: 2021-07-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,10 +32,10 @@ entity i2c_master is
     G_SCL_FREQ   : t_i2c_frequency := f400k;      -- Frequency of SCL Clock
     G_CLOCK_FREQ : integer         := 50000000);  -- Input Clock Frequency
 
-  port (
-    rst_n : in std_logic;               -- Asynchronous Reset
+  port (    
     clk   : in std_logic;               -- Clock
-
+    rst_n : in std_logic;               -- Asynchronous Reset
+  
     -- Control Signals
     i_start     : in std_logic;         -- Start I2C Transaction
     i_rw        : in std_logic;         -- R/W acces
@@ -99,11 +99,20 @@ begin  -- architecture behv
   s_start_r_edge <= i_start and not s_start;
 
 
+  p_curr_state_mngt: process (clk, rst_n) is
+  begin  -- process p_curr_state_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_current_state <= IDLE;
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_current_state <= s_next_state;
+    end if;
+  end process p_curr_state_mngt;
+
+
   p_next_state_mngt : process (clk, rst_n) is
   begin  -- process p_next_state_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_next_state    <= IDLE;
-      s_current_state <= IDLE;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       case s_current_state is
@@ -120,7 +129,6 @@ begin  -- architecture behv
         when others => null;
       end case;
 
-      s_current_state <= s_next_state;  -- Update Current state
     end if;
   end process p_next_state_mngt;
 
@@ -134,7 +142,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Enable SCL Counter 
-      if(s_current_state == IDLE) then
+      if(s_current_state = IDLE) then
         if(s_start_r_edge = '1') then
           s_scl_cnt_en <= '1';
         end if;

@@ -74,6 +74,7 @@ endif
 
 # == DESIGN LIBRARIES ==
 
+LIB_I2C=lib_i2c
 # LIB_UART=lib_uart
 # LIB_UART_DISPLAY_CTRL=lib_uart_display_ctrl
 
@@ -88,23 +89,13 @@ endif
 
 
 # == TESTBENCH LIBRARIES ==
-
-# LIB_TB_UART_DISPLAY_CTRL+=lib_tb_uart_display_ctrl
-
+LIB_TB_I2C_MASTER+=lib_tb_i2c_master
 # =========================
 
 
 # ==  LIB LIST ==
-
-LIB_LIST+=$(LIB_UART)
-# LIB_LIST+=$(LIB_UART_DISPLAY_CTRL)
-# LIB_LIST+=$(LIB_OTHERS)
-# LIB_LIST+=$(LIB_MAX7219_STATIC)
-# LIB_LIST+=$(LIB_MAX7219_SCROLLER)
-# LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
-# LIB_LIST+=$(LIB_MAX7219_INTERFACE)
-# LIB_LIST+=$(LIB_TB_UART_DISPLAY_CTRL)
-
+LIB_LIST+=$(LIB_I2C)
+LIB_LIST+=$(LIB_TB_I2C_MASTER)
 # ================
 
 
@@ -140,7 +131,7 @@ all:
 	@echo ""
 	@echo "== RUN TESTS =="
 	@echo "- Run Test of UART display controller"
-	@echo "make run_tb_uart_display_ctrl TEST=[TEST_NB]"
+	@echo "make run_i2c_master_test TEST=[TEST_NB]"
 	@echo "==============="
 	@echo ""
 	@echo "== SCENARII LIST =="
@@ -191,41 +182,8 @@ libs:  prepare_libs create_libs
 
 
 # == DESIGN VHD FILE LIST ==
-
-# src_lib_uart+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
-# src_lib_uart+=$(SRC_DIR)/lib_uart/rx_uart.vhd
-# src_lib_uart+=$(SRC_DIR)/lib_uart/tx_uart.vhd
-
-
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/pkg_uart_max7219_display_ctrl.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_cmd_decod.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/sequencer_uart_cmd.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/static_ram_mngr.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/dyn_ram_mngr.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/matrix_config_mngr.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/run_pattern_mngt.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
-# src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl_wrapper.vhd
-
-# src_vhd_lib_others+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
-
-# src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/pkg_max7219_static.vhd
-# src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/max7219_ram_decod.vhd
-# src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
-
-# src_vhd_lib_max7219_scroller+=$(SRC_MAX7219_DIR)/lib_max7219_scroller/pkg_max7219_scroller.vhd
-# src_vhd_lib_max7219_scroller+=$(SRC_MAX7219_DIR)/lib_max7219_scroller/max7219_ram2scroller_if.vhd
-# src_vhd_lib_max7219_scroller+=$(SRC_MAX7219_DIR)/lib_max7219_scroller/max7219_scroller_if.vhd
-# src_vhd_lib_max7219_scroller+=$(SRC_MAX7219_DIR)/lib_max7219_scroller/max7219_scroller_ctrl.vhd
-
-# src_vhd_lib_max7219_controller+=$(SRC_MAX7219_DIR)/lib_max7219_controller/pkg_max7219_controller.vhd
-# src_vhd_lib_max7219_controller+=$(SRC_MAX7219_DIR)/lib_max7219_controller/max7219_mux_sel.vhd
-# src_vhd_lib_max7219_controller+=$(SRC_MAX7219_DIR)/lib_max7219_controller/max7219_display_sequencer.vhd
-# src_vhd_lib_max7219_controller+=$(SRC_MAX7219_DIR)/lib_max7219_controller/max7219_config_if.vhd
-# src_vhd_lib_max7219_controller+=$(SRC_MAX7219_DIR)/lib_max7219_controller/max7219_display_controller.vhd
-
-# src_vhd_lib_max7219_interface+=$(SRC_MAX7219_DIR)/lib_max7219_interface/pkg_max7219_interface.vhd
-# src_vhd_lib_max7219_interface+=$(SRC_MAX7219_DIR)/lib_max7219_interface/max7219_if.vhd
+src_vhd_lib_i2c+=$(SRC_DIR)/lib_i2c/pkg_i2c.vhd
+src_vhd_lib_i2c+=$(SRC_DIR)/lib_i2c/i2c_master.vhd
 
 # ==========================
 
@@ -265,12 +223,9 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 
 
 # == Specific Testbench File List ==
-
-# src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/testbench_setup.sv
-# src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/clk_gen.sv
-# src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.sv
-
-
+src_tb_lib_i2c_master_v+=$(TB_SRC_DIR)/tb_lib_i2c_master/testbench_setup.sv
+src_tb_lib_i2c_master_v+=$(TB_SRC_DIR)/tb_lib_i2c_master/clk_gen.sv
+src_tb_lib_i2c_master_v+=$(TB_SRC_DIR)/tb_lib_i2c_master/tb_top.sv
 # ==================================
 
 
@@ -280,6 +235,11 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 
 
 ## == COMPILE DESIGN == ##
+
+compile_i2c_master:
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_vhd_lib_i2c), $(vcom) -work $(LIB_I2C) $(list);) \
+
 
 # compile_others:
 # 	cd $(WORK_DIR); \
@@ -314,33 +274,25 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 
 
 # Compile Design Library here
-compile_design : compile_others compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller compile_uart compile_uart_display_ctrl
+compile_design : compile_i2c_master
 
 ## ==================== ##
 
 
 ## == COMPILE TESTBENCH == ##
 
-# compile_uart_vhd_files :
-# 	cd $(WORK_DIR); \
-# 	$(foreach list, $(src_tb_uart_vhd), $(vcom) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
 
+compile_generic_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_I2C_MASTER) $(list);) \
 
-# compile_generic_tb_v_files :
-# 	cd $(WORK_DIR); \
-# 	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-# 	$(foreach list, $(src_tb_uart_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-
-
-# compile_tb_v_files :
-# 	cd $(WORK_DIR); \
-# 	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-# 	$(foreach list, $(src_tb_lib_uart_display_ctrl_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-
+compile_tb_v_files :
+	cd $(WORK_DIR); \
+	$(foreach list, $(src_tb_lib_i2c_master_v), $(vlog) -work $(LIB_TB_I2C_MASTER) $(list);) \
 
 # == COMPILE ALL TESTBENCH files ==
 
-compile_testbench : compile_uart_vhd_files compile_generic_tb_v_files compile_tb_v_files
+compile_testbench : compile_generic_tb_v_files compile_tb_v_files
 
 # =======================
 
@@ -353,7 +305,7 @@ compile_all : clean libs compile_design compile_testbench
 
 # == GENERATE SCENARII ==
 
-# SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.py
+SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/I2C_MASTER_00.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_01.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_02.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
@@ -367,16 +319,13 @@ generate_scn :
 # =======================
 
 # == RUN TEST ==
-
-run_tb_uart_display_ctrl :
-	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
+run_i2c_master_test :
+	cd $(SCN_DIR)/scn_lib_i2c_master; \
 	python $(TEST).py; \
 	cd $(TRANSCRIPTS_DIR); \
 	rm $(TEST)_transcript.txt; \
 	cd $(WORK_DIR); \
-	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
-
-#$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
+	$(vsim) $(VSIM_ARGS) $(LIB_TB_I2C_MASTER).tb_top -L lib_i2c -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_i2c_master/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============
 
 
