@@ -34,6 +34,7 @@ WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
 GENERIC_TB_SRC_DIR=~/GitHub/Verilog/lib_testbench
 #TB_UART_SRC_V_DIR=~/GitHub/Verilog/lib_tb_uart # A specific directory
+TB_I2C_V_DIR=~/GitHub/Verilog/TB_modules/I2C_checker
 # =========================================
 
 # == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
@@ -209,7 +210,7 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 # src_tb_uart_vhd+=$(SRC_DIR)/lib_uart/rx_uart.vhd
 
 
-# src_tb_uart_v+=$(TB_UART_SRC_V_DIR)/tb_uart_class.sv
+src_tb_i2c_v+=$(TB_I2C_V_DIR)/i2c_slave_checker.sv
 # src_tb_uart_v+=$(TB_UART_SRC_V_DIR)/uart_checker_wrapper.sv
 
 # src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/MAX7219_checker/max7219_checker_pkg.sv
@@ -285,6 +286,7 @@ compile_design : compile_i2c_master
 compile_generic_tb_v_files :
 	cd $(WORK_DIR); \
 	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_I2C_MASTER) $(list);) \
+	$(vlog) -work $(LIB_TB_I2C_MASTER) $(src_tb_i2c_v)
 
 compile_tb_v_files :
 	cd $(WORK_DIR); \

@@ -51,6 +51,15 @@ module tb_top
 
    wire       s_scl;
    wire       s_sda;
+
+   wire [6:0] s_chip_addr_slave_0;
+   wire [7:0] s_wdata_slave_0;
+   wire       s_wdata_valid_slave_0;
+
+   wire [7:0] s_rdata_slave_0;
+   wire       s_rdata_valid_slave_0;
+   wire       s_chip_addr_ok_slave_0;
+   
    
 
    
@@ -122,6 +131,8 @@ module tb_top
    assign s_wait_event_if.wait_alias[2] = "S_RDATA_VALID";
    assign s_wait_event_if.wait_alias[3] = "S_NEXT_WDATA_RDY";
    assign s_wait_event_if.wait_alias[4] = "S_SACK_ERROR";
+   assign s_wait_event_if.wait_alias[5] = "WDATA_VALID_SLAVE_0";
+   assign s_wait_event_if.wait_alias[6] = "RDATA_VALID_SLAVE_0";
    
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
@@ -129,6 +140,8 @@ module tb_top
    assign s_wait_event_if.wait_signals[2] = s_rdata_valid;
    assign s_wait_event_if.wait_signals[3] = s_next_wdata_rdy;
    assign s_wait_event_if.wait_signals[4] = s_sack_error;
+   assign s_wait_event_if.wait_signals[5] = s_wdata_valid_slave_0;
+   assign s_wait_event_if.wait_signals[6] = s_rdata_valid_slave_0;
 
    
 
@@ -138,13 +151,17 @@ module tb_top
    assign s_set_injector_if.set_alias[2]   = "I_CHIP_ADDR";
    assign s_set_injector_if.set_alias[3]   = "I_NB_DATA";
    assign s_set_injector_if.set_alias[4]   = "I_WDATA";
+   assign s_set_injector_if.set_alias[5]   = "CHIP_ADDR_SLAVE_0";
+   assign s_set_injector_if.set_alias[6]   = "WDATA_SLAVE_0";
    
    // SET SET_INJECTOR SIGNALS
-   assign s_start     = s_set_injector_if.set_signals_synch[0];
-   assign s_rw        = s_set_injector_if.set_signals_synch[1];
-   assign s_chip_addr = s_set_injector_if.set_signals_synch[2];
-   assign s_nb_data   = s_set_injector_if.set_signals_synch[3];
-   assign s_wdata     = s_set_injector_if.set_signals_synch[4];
+   assign s_start             = s_set_injector_if.set_signals_synch[0];
+   assign s_rw                = s_set_injector_if.set_signals_synch[1];
+   assign s_chip_addr         = s_set_injector_if.set_signals_synch[2];
+   assign s_nb_data           = s_set_injector_if.set_signals_synch[3];
+   assign s_wdata             = s_set_injector_if.set_signals_synch[4];
+   assign s_chip_addr_slave_0 = s_set_injector_if.set_signals_synch[5];
+   assign s_wdata_slave_0     = s_set_injector_if.set_signals_synch[6];
  
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
@@ -152,6 +169,8 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[4]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[5]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[6]  = 0;
 
    
    
@@ -207,6 +226,10 @@ module tb_top
 
 
 
+   // I2C Pull Up
+   pullup(s_scl);
+   pullup(s_sda);
+   
 
    
 
@@ -236,5 +259,24 @@ module tb_top
 	  );   
    // ===============
 
+
+   // I2C SLAVE CHECKER
+   i2c_slave_checker i_i2c_slave_checker_0 (
+					    .clk    (clk),
+					    .rst_n  (rst_n),
+
+					    .i_chip_addr    (s_chip_addr_slave_0),
+					    .i_wdata        (s_wdata_slave_0),
+					    .o_wdata_valid  (s_wdata_valid_slave_0),
+
+					    .o_rdata        (s_rdata_slave_0),
+					    .o_rdata_valid  (s_rdata_valid_slave_0),
+
+					    .o_chip_addr_ok  (s_chip_addr_ok_slave_0),
+
+					    .scl  (s_scl),
+					    .sda  (s_sda)
+					    );
+   
 
 endmodule // tb_top
