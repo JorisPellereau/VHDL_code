@@ -50,6 +50,34 @@ scn.generic_tb_cmd.SET("I_START", 0)
 
 scn.generic_tb_cmd.WAIT("100", "us")
 
+scn.print_line("//-- STEP 2 - Start WR Transaction for 1 Data\n")
+scn.print_line("\n")
+
+scn.generic_tb_cmd.SET("I_WDATA", 0xFF)
+
+scn.generic_tb_cmd.WTFS("CLK")
+scn.generic_tb_cmd.SET("I_START", 1)
+scn.generic_tb_cmd.WTFS("CLK")
+scn.generic_tb_cmd.SET("I_START", 0)
+
+
+scn.generic_tb_cmd.WAIT("100", "us")
+
+
+scn.print_line("//-- STEP 3 - Start WR Transaction for 2 Data\n")
+scn.print_line("\n")
+
+scn.generic_tb_cmd.SET("I_WDATA", 0xFF)
+scn.generic_tb_cmd.SET("I_NB_DATA", 2)
+
+scn.generic_tb_cmd.WTFS("CLK")
+scn.generic_tb_cmd.SET("I_START", 1)
+scn.generic_tb_cmd.WTFS("CLK")
+scn.generic_tb_cmd.SET("I_START", 0)
+
+
+scn.generic_tb_cmd.WAIT("100", "us")
+
 
 
 scn.END_TEST()

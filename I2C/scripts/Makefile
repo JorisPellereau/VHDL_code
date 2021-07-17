@@ -307,7 +307,7 @@ compile_all : clean libs compile_design compile_testbench
 
 # == GENERATE SCENARII ==
 
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/I2C_MASTER_00.py
+SCN_LIST+=$(SCN_DIR)/scn_lib_i2c_master/I2C_MASTER_00.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_01.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_02.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
@@ -315,7 +315,7 @@ SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/I2C_MASTER_00.py
 # SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_05.py
 
 generate_scn :
-	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
+	cd $(SCN_DIR)/scn_lib_i2c_master/; \
 	$(foreach list, $(SCN_LIST), python $(list);) \
 
 # =======================

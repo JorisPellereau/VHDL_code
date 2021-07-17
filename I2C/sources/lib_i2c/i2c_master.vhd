@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-06-27
--- Last update: 2021-07-11
+-- Last update: 2021-07-17
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -97,6 +97,15 @@ architecture behv of i2c_master is
   signal s_stop_gen_cnt_done : std_logic;
   signal s_stop_gen_cnt_en   : std_logic;
 
+  signal s_wdata          : std_logic_vector(7 downto 0);
+  signal s_wdata_shift    : std_logic_vector(7 downto 0);
+  signal s_next_wdata_rdy : std_logic;  -- Next WDATA RDY
+  signal s_wdata_done     : std_logic;
+
+  signal s_nb_data          : std_logic_vector(7 downto 0);
+  signal s_cnt_nb_data      : std_logic_vector(7 downto 0);
+  signal s_cnt_nb_data_done : std_logic;
+
   -- SDA/SCL I/O management
   signal s_scl_in  : std_logic;
   signal s_sda_in  : std_logic;
@@ -166,11 +175,17 @@ begin  -- architecture behv
             -- Slave Ack OK
             if(sda = '0') then
 
-              -- Write Case
-              if(s_ctrl_byte(7) = '0') then
-                s_next_state <= WR_DATA;
+              if(s_cnt_nb_data_done = '0') then
+
+                -- Write Case
+                if(s_ctrl_byte(7) = '0') then
+                  s_next_state <= WR_DATA;
+                else
+                  s_next_state <= RD_DATA;
+                end if;
+
               else
-                s_next_state <= RD_DATA;
+                s_next_state <= STOP_GEN;
               end if;
 
             -- SACK ERROR
@@ -178,6 +193,11 @@ begin  -- architecture behv
               s_next_state <= STOP_GEN;
 
             end if;
+          end if;
+
+        when WR_DATA =>
+          if(s_cnt_9 = conv_std_logic_vector(9*2 - 2, s_cnt_9'length)) then
+            s_next_state <= SACK_CHIP;
           end if;
 
         when STOP_GEN =>
@@ -357,6 +377,7 @@ begin  -- architecture behv
       s_start_gen_done  <= '0';
       s_ctrl_byte       <= (others => '0');
       s_stop_gen_cnt_en <= '0';
+      s_wdata_shift     <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_current_state = IDLE) then
@@ -369,6 +390,19 @@ begin  -- architecture behv
         s_en_sda         <= '1';
         s_start_gen_done <= '1';
 
+      elsif(s_current_state = SACK_CHIP) then
+
+        if(s_sampling_cnt_done = '1') then
+
+          -- Slave Ack OK
+          if(sda = '0') then
+            -- Write Access
+            if(s_ctrl_byte(7) = '0') then
+              s_wdata_shift <= s_wdata;  -- Load Next WDATA
+            end if;
+          end if;
+        end if;
+
 
       elsif(s_current_state = WR_CHIP) then
         s_sda_out <= '0';
@@ -379,7 +413,16 @@ begin  -- architecture behv
           s_ctrl_byte(7 downto 1) <= s_ctrl_byte(6 downto 0);
         end if;
 
+      elsif(s_current_state = WR_DATA) then
+
+        if(s_scl_in_f_edge = '1') then
+          s_en_sda                  <= not s_wdata_shift(7);
+          s_wdata_shift(7 downto 1) <= s_wdata_shift(6 downto 0);
+        end if;
+
       elsif(s_current_state = STOP_GEN) then
+        s_wdata_shift <= (others => '0');
+
         if(s_scl_in_f_edge = '1') then
           s_en_sda          <= '1';
           s_sda_out         <= '0';
@@ -399,7 +442,55 @@ begin  -- architecture behv
     end if;
   end process p_sda_mngt;
 
-  -- Outputs Affectation
+
+  p_wdata_mngt : process (clk, rst_n) is
+  begin  -- process p_wdata_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_wdata            <= (others => '0');
+      s_wdata_done       <= '0';
+      s_nb_data          <= (others => '0');
+      s_cnt_nb_data      <= (others => '0');
+      s_cnt_nb_data_done <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      if(s_current_state = IDLE) then
+        if(s_start_r_edge = '1') then
+          s_wdata   <= i_wdata;
+          s_nb_data <= i_nb_data;  -- Latch NB data to Read or Write          
+        end if;
+
+      elsif(s_current_state = WR_DATA) then
+
+        if(s_next_wdata_rdy = '1') then
+          s_wdata <= i_wdata;
+        end if;
+
+        if(s_cnt_9 = conv_std_logic_vector(9*2 - 2, s_cnt_9'length)) then
+          s_wdata_done <= '1';
+          -- Inc. Counter
+          if(unsigned(s_cnt_nb_data) < unsigned(s_nb_data)) then
+            s_cnt_nb_data <= unsigned(s_cnt_nb_data) + 1;  -- Inc cnt
+          else
+            s_cnt_nb_data_done <= '1';
+          end if;
+        else
+          s_wdata_done <= '0';
+        end if;
+
+      -- RAZ Counters etc.
+      elsif(s_current_state = STOP_GEN) then
+        s_wdata            <= (others => '0');
+        s_wdata_done       <= '0';
+        s_nb_data          <= (others => '0');
+        s_cnt_nb_data      <= (others => '0');
+        s_cnt_nb_data_done <= '0';
+      end if;
+
+    end if;
+  end process p_wdata_mngt;
+
+
+-- Outputs Affectation
   scl <= s_scl_out when s_en_scl = '1' else 'Z';  -- Write on SCL output
   sda <= s_sda_out when s_en_sda = '1' else 'Z';  -- Write on SDA output
 

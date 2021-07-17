@@ -265,6 +265,7 @@ module tb_top
 					    .clk    (clk),
 					    .rst_n  (rst_n),
 
+					    .i_nb_data      (s_nb_data),
 					    .i_chip_addr    (s_chip_addr_slave_0),
 					    .i_wdata        (s_wdata_slave_0),
 					    .o_wdata_valid  (s_wdata_valid_slave_0),
