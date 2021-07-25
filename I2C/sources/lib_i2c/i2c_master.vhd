@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-06-27
--- Last update: 2021-07-17
+-- Last update: 2021-07-18
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ begin  -- architecture behv
             s_cnt_9 <= unsigned(s_cnt_9) + 1;
           else
             s_cnt_9_done <= '1';
-            s_cnt_9      <= (others => '0');
+            s_cnt_9      <= "000001";   --(others => '0');
           end if;
         end if;
       else
@@ -465,16 +465,20 @@ begin  -- architecture behv
           s_wdata <= i_wdata;
         end if;
 
-        if(s_cnt_9 = conv_std_logic_vector(9*2 - 2, s_cnt_9'length)) then
+        if(s_cnt_9 = conv_std_logic_vector(9*2 - 2, s_cnt_9'length) and s_wdata_done = '0') then
           s_wdata_done <= '1';
           -- Inc. Counter
           if(unsigned(s_cnt_nb_data) < unsigned(s_nb_data)) then
             s_cnt_nb_data <= unsigned(s_cnt_nb_data) + 1;  -- Inc cnt
           else
-            s_cnt_nb_data_done <= '1';
+          --s_cnt_nb_data_done <= '1';
           end if;
         else
           s_wdata_done <= '0';
+        end if;
+
+        if(unsigned(s_cnt_nb_data) = unsigned(s_nb_data)) then
+          s_cnt_nb_data_done <= '1';
         end if;
 
       -- RAZ Counters etc.

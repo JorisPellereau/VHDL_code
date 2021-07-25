@@ -51,6 +51,8 @@ add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_wdata_shift
 add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_next_wdata_rdy
 add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_en_scl
 add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_cnt_nb_data_done
+add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_wdata_done
+add wave -noupdate -expand -group {MASTER 2C TOP} /tb_top/i_dut/s_cnt_nb_data
 add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/clk
 add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/rst_n
 add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/i_nb_data
@@ -91,7 +93,7 @@ add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/s_
 add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/s_rdata_valid_p
 add wave -noupdate -expand -group {I2C Checker} /tb_top/i_i2c_slave_checker_0/s_rdata_valid_r_edge
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {22970000 ps} 1} {{Cursor 2} {25490000 ps} 1} {{Cursor 3} {43130000 ps} 1} {{Cursor 4} {47478835 ps} 0}
+WaveRestoreCursors {{Cursor 1} {22970000 ps} 1} {{Cursor 2} {25490000 ps} 1} {{Cursor 3} {43130000 ps} 1} {{Cursor 4} {243355457 ps} 0}
 quietly wave cursor active 4
 configure wave -namecolwidth 282
 configure wave -valuecolwidth 100
@@ -107,4 +109,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {62101098 ps}
+WaveRestoreZoom {241111382 ps} {251277398 ps}
