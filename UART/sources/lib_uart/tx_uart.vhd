@@ -109,7 +109,7 @@ begin  -- architecture arch
             tx_fsm <= stop;
           end if;
         when stop =>
-          tx_fsm <= idle;
+          tx_fsm <= IDLE;
         when others => null;
       end case;
 

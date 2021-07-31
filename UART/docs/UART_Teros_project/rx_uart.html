@@ -1,0 +1,373 @@
+
+  <style>
+    #teroshdl h1,#teroshdl h2,#teroshdl h3,#teroshdl table, #teroshdl svg {margin-left:2.5%;width:60%}
+    code {color:#545253;}
+    #teroshdl {color:black;}
+    div.templateTerosHDL { background-color: white;position:absolute; }
+    #teroshdl td,#teroshdl th,#teroshdl h1,#teroshdl h2,#teroshdl h3 {color: black;}
+    #teroshdl h1,#teroshdl h2 {font-weight:bold}
+    #teroshdl tr:hover {background-color: #ddd;}
+    #teroshdl td, #teroshdl th {
+      border: 1px solid grey;
+    }
+    #teroshdl p {color:black;}
+    #teroshdl p {margin-left:2.5%;}
+    #teroshdl th { background-color: #ffd78c;}
+    #teroshdl tr:nth-child(even){background-color: #f2f2f2;}
+  </style>
+  <div id="teroshdl" class='templateTerosHDL' style="overflow-y:auto;height:100%;width:100%">
+<p>&nbsp;&nbsp;</p><h1 id="entity-rx_uart">Entity: rx_uart</h1><h2 id="diagram">Diagram</h2><p><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" viewBox="0 0 901.6666666666666 230"><svg id="SvgjsSvg1002" width="2" height="0" focusable="false" style="overflow:hidden;top:-100%;left:-100%;position:absolute;opacity:0"><polyline id="SvgjsPolyline1003" points="165,0 180,0"></polyline><path id="SvgjsPath1004" d="M0 0 "></path></svg><rect id="SvgjsRect1006" width="276.66666666666663" height="150" fill="black" x="180" y="0"></rect><rect id="SvgjsRect1007" width="272.66666666666663" height="145" fill="#bdecb6" x="182" y="2"></rect><text id="SvgjsText1008" font-family="Helvetica" x="160" y="-5.698437500000001" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1009" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   integer range 1 to 2 </tspan></text><text id="SvgjsText1010" font-family="Helvetica" x="195" y="-5.698437500000001" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1011" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   stop_bit_number </tspan></text><line id="SvgjsLine1012" x1="165" y1="15" x2="180" y2="15" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1013" font-family="Helvetica" x="160" y="14.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1014" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   t_parity </tspan></text><text id="SvgjsText1015" font-family="Helvetica" x="195" y="14.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1016" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   parity </tspan></text><line id="SvgjsLine1017" x1="165" y1="35" x2="180" y2="35" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1018" font-family="Helvetica" x="160" y="34.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1019" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   t_baudrate </tspan></text><text id="SvgjsText1020" font-family="Helvetica" x="195" y="34.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1021" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   baudrate </tspan></text><line id="SvgjsLine1022" x1="165" y1="55" x2="180" y2="55" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1023" font-family="Helvetica" x="160" y="54.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1024" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   integer range 5 to 9 </tspan></text><text id="SvgjsText1025" font-family="Helvetica" x="195" y="54.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1026" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   data_size </tspan></text><line id="SvgjsLine1027" x1="165" y1="75" x2="180" y2="75" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1028" font-family="Helvetica" x="160" y="74.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1029" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1030" font-family="Helvetica" x="195" y="74.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1031" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   polarity </tspan></text><line id="SvgjsLine1032" x1="165" y1="95" x2="180" y2="95" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1033" font-family="Helvetica" x="160" y="94.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1034" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   t_first_bit </tspan></text><text id="SvgjsText1035" font-family="Helvetica" x="195" y="94.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1036" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   first_bit </tspan></text><line id="SvgjsLine1037" x1="165" y1="115" x2="180" y2="115" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1038" font-family="Helvetica" x="160" y="114.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1039" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   integer </tspan></text><text id="SvgjsText1040" font-family="Helvetica" x="195" y="114.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1041" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   clock_frequency </tspan></text><line id="SvgjsLine1042" x1="165" y1="135" x2="180" y2="135" stroke-linecap="rec" stroke="black" stroke-width="5"></line><rect id="SvgjsRect1043" width="276.66666666666663" height="70" fill="black" x="180" y="155"></rect><rect id="SvgjsRect1044" width="272.66666666666663" height="65" fill="#fdfd96" x="182" y="157"></rect><text id="SvgjsText1045" font-family="Helvetica" x="160" y="149.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1046" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1047" font-family="Helvetica" x="195" y="149.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1048" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   reset_n </tspan></text><line id="SvgjsLine1049" x1="165" y1="170" x2="180" y2="170" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1050" font-family="Helvetica" x="160" y="169.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1051" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1052" font-family="Helvetica" x="195" y="169.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1053" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   clock </tspan></text><line id="SvgjsLine1054" x1="165" y1="190" x2="180" y2="190" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1055" font-family="Helvetica" x="160" y="189.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1056" dy="26" x="160" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1057" font-family="Helvetica" x="195" y="189.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1058" dy="26" x="195" svgjs:data="{&quot;newLined&quot;:true}">   rx </tspan></text><line id="SvgjsLine1059" x1="165" y1="210" x2="180" y2="210" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1060" font-family="Helvetica" x="476.66666666666663" y="149.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1061" dy="26" x="476.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   std_logic_vector(data_size - 1 downto 0) </tspan></text><text id="SvgjsText1062" font-family="Helvetica" x="441.66666666666663" y="149.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1063" dy="26" x="441.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   rx_data </tspan></text><line id="SvgjsLine1064" x1="456.66666666666663" y1="170" x2="471.66666666666663" y2="170" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1065" font-family="Helvetica" x="476.66666666666663" y="169.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1066" dy="26" x="476.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1067" font-family="Helvetica" x="441.66666666666663" y="169.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1068" dy="26" x="441.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   rx_done </tspan></text><line id="SvgjsLine1069" x1="456.66666666666663" y1="190" x2="471.66666666666663" y2="190" stroke-linecap="rec" stroke="black" stroke-width="5"></line><text id="SvgjsText1070" font-family="Helvetica" x="476.66666666666663" y="189.3015625" font-size="20" text-anchor="start" family="Helvetica" size="20" anchor="start" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1071" dy="26" x="476.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   std_logic </tspan></text><text id="SvgjsText1072" font-family="Helvetica" x="441.66666666666663" y="189.3015625" font-size="20" text-anchor="end" family="Helvetica" size="20" anchor="end" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan id="SvgjsTspan1073" dy="26" x="441.66666666666663" svgjs:data="{&quot;newLined&quot;:true}">   parity_rcvd </tspan></text><line id="SvgjsLine1074" x1="456.66666666666663" y1="210" x2="471.66666666666663" y2="210" stroke-linecap="rec" stroke="black" stroke-width="5"></line></svg></p><h2 id="description">Description</h2><h2 id="generics-and-ports">Generics and ports</h2>
+<h3 id="table-11-generics">Table 1.1 Generics</h3>
+<table>
+<thead>
+<tr>
+<th id="generic_name">Generic name</th>
+<th id="type">Type</th>
+<th id="value">Value</th>
+<th id="description">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stop_bit_number</td>
+<td>integer range 1 to 2</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>parity</td>
+<td>t_parity</td>
+<td>even</td>
+<td></td>
+</tr>
+<tr>
+<td>baudrate</td>
+<td>t_baudrate</td>
+<td>b9600</td>
+<td></td>
+</tr>
+<tr>
+<td>data_size</td>
+<td>integer range 5 to 9</td>
+<td>8</td>
+<td></td>
+</tr>
+<tr>
+<td>polarity</td>
+<td>std_logic</td>
+<td>'1'</td>
+<td></td>
+</tr>
+<tr>
+<td>first_bit</td>
+<td>t_first_bit</td>
+<td>lsb_first</td>
+<td></td>
+</tr>
+<tr>
+<td>clock_frequency</td>
+<td>integer</td>
+<td>20000000</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="table-12-ports">Table 1.2 Ports</h3>
+<table>
+<thead>
+<tr>
+<th id="port_name">Port name</th>
+<th id="direction">Direction</th>
+<th id="type">Type</th>
+<th id="description">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reset_n</td>
+<td>in</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>clock</td>
+<td>in</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>rx</td>
+<td>in</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>rx_data</td>
+<td>out</td>
+<td>std_logic_vector(data_size - 1 downto 0)</td>
+<td></td>
+</tr>
+<tr>
+<td>rx_done</td>
+<td>out</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>parity_rcvd</td>
+<td>out</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+</tbody>
+</table><h2 id="signals-constants-and-types">Signals, constants and types</h2>
+<h3 id="signals">Signals</h3>
+<table>
+<thead>
+<tr>
+<th id="name">Name</th>
+<th id="type">Type</th>
+<th id="description">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rx_fsm</td>
+<td>t_rx_fsm</td>
+<td></td>
+</tr>
+<tr>
+<td>rx_old</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>start_rx_fe</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>start_rx_re</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>start_cnt</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>tick_data</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>rx_data_s</td>
+<td>std_logic_vector(data_size - 1 downto 0)</td>
+<td></td>
+</tr>
+<tr>
+<td>parity_rcvd_s</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>rx_done_s</td>
+<td>std_logic</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_half_bit</td>
+<td>integer range 0 to half_bit_duration</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_bit</td>
+<td>integer range 0 to bit_duration</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_data</td>
+<td>integer range 0 to data_size</td>
+<td></td>
+</tr>
+<tr>
+<td>cnt_stop_bit</td>
+<td>integer range 0 to stop_bit_number</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="constants">Constants</h3>
+<table>
+<thead>
+<tr>
+<th id="name">Name</th>
+<th id="type">Type</th>
+<th id="value">Value</th>
+<th id="description">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bit_duration</td>
+<td>integer</td>
+<td>compute_bit_duration(clock_frequency, baudrate)</td>
+<td></td>
+</tr>
+<tr>
+<td>half_bit_duration</td>
+<td>integer</td>
+<td>bit_duration / 2</td>
+<td></td>
+</tr>
+<tr>
+<td>number_of_bits</td>
+<td>integer</td>
+<td>number_of_bit_computation(stop_bit_number, parity, data_size)</td>
+<td></td>
+</tr>
+</tbody>
+</table><h2 id="processes">Processes</h2>
+<ul>
+<li><p><strong>p_rx_fsm_mng</strong>: <strong><em>( clock, reset_n )</em></strong></p></li>
+<li><p><strong>p_start_detect</strong>: <strong><em>( clock, reset_n )</em></strong></p></li>
+<li><p><strong>p_tick_read_data</strong>: <strong><em>( clock, reset_n )</em></strong></p></li>
+<li><p><strong>p_data_cnt</strong>: <strong><em>( clock, reset_n )</em></strong></p></li>
+<li><p><strong>p_rx_mng</strong>: <strong><em>( clock, reset_n )</em></strong></p></li>
+</ul><h2 id="state-machines">State machines</h2><div><div id="state_machine"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ -->
+<!-- Title: state transitions Pages: 1 -->
+<svg width="413pt" height="622pt"
+ viewBox="0.00 0.00 413.00 622.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 618)">
+<title>state transitions</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-618 409,-618 409,4 -4,4"/>
+<g id="clust1" class="cluster">
+<title>cluster_rx_fsm</title>
+<path fill="none" stroke="#000000" stroke-width="2" d="M20,-8C20,-8 385,-8 385,-8 391,-8 397,-14 397,-20 397,-20 397,-594 397,-594 397,-600 391,-606 385,-606 385,-606 20,-606 20,-606 14,-606 8,-600 8,-594 8,-594 8,-20 8,-20 8,-14 14,-8 20,-8"/>
+<text text-anchor="start" x="185.0024" y="-587.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">rx_fsm</text>
+</g>
+<!-- rx_fsm -->
+<!-- IDLE -->
+<g id="node2" class="node">
+<title>IDLE</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="314,-568 258,-568 258,-532 314,-532 314,-568"/>
+<text text-anchor="start" x="272.6644" y="-546.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">IDLE</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M270.3333,-533C270.3333,-533 301.6667,-533 301.6667,-533 307.3333,-533 313,-538.6667 313,-544.3333 313,-544.3333 313,-555.6667 313,-555.6667 313,-561.3333 307.3333,-567 301.6667,-567 301.6667,-567 270.3333,-567 270.3333,-567 264.6667,-567 259,-561.3333 259,-555.6667 259,-555.6667 259,-544.3333 259,-544.3333 259,-538.6667 264.6667,-533 270.3333,-533"/>
+</g>
+<!-- WAIT_START -->
+<g id="node3" class="node">
+<title>WAIT_START</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="334.5,-486 237.5,-486 237.5,-450 334.5,-450 334.5,-486"/>
+<text text-anchor="start" x="248.502" y="-464.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">WAIT_START</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M249.8333,-451C249.8333,-451 322.1667,-451 322.1667,-451 327.8333,-451 333.5,-456.6667 333.5,-462.3333 333.5,-462.3333 333.5,-473.6667 333.5,-473.6667 333.5,-479.3333 327.8333,-485 322.1667,-485 322.1667,-485 249.8333,-485 249.8333,-485 244.1667,-485 238.5,-479.3333 238.5,-473.6667 238.5,-473.6667 238.5,-462.3333 238.5,-462.3333 238.5,-456.6667 244.1667,-451 249.8333,-451"/>
+</g>
+<!-- IDLE&#45;&gt;WAIT_START -->
+<g id="edge1" class="edge">
+<title>IDLE&#45;&gt;WAIT_START</title>
+<path fill="none" stroke="#000000" d="M286,-531.8015C286,-521.3976 286,-508.1215 286,-496.3768"/>
+<polygon fill="#000000" stroke="#000000" points="289.5001,-496.1476 286,-486.1476 282.5001,-496.1476 289.5001,-496.1476"/>
+<text text-anchor="middle" x="287.3895" y="-506" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000"> </text>
+</g>
+<!-- READ_START -->
+<g id="node4" class="node">
+<title>READ_START</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="263.5,-392 162.5,-392 162.5,-356 263.5,-356 263.5,-392"/>
+<text text-anchor="start" x="173.834" y="-370.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">READ_START</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M174.8333,-357C174.8333,-357 251.1667,-357 251.1667,-357 256.8333,-357 262.5,-362.6667 262.5,-368.3333 262.5,-368.3333 262.5,-379.6667 262.5,-379.6667 262.5,-385.3333 256.8333,-391 251.1667,-391 251.1667,-391 174.8333,-391 174.8333,-391 169.1667,-391 163.5,-385.3333 163.5,-379.6667 163.5,-379.6667 163.5,-368.3333 163.5,-368.3333 163.5,-362.6667 169.1667,-357 174.8333,-357"/>
+</g>
+<!-- WAIT_START&#45;&gt;READ_START -->
+<g id="edge2" class="edge">
+<title>WAIT_START&#45;&gt;READ_START</title>
+<path fill="none" stroke="#000000" d="M237.3724,-457.4023C213.7469,-451.1675 188.9739,-442.6263 182.058,-433 174.6905,-422.7452 179.2339,-410.5069 186.8693,-399.8418"/>
+<polygon fill="#000000" stroke="#000000" points="189.6014,-402.0294 193.1647,-392.0517 184.157,-397.6296 189.6014,-402.0294"/>
+<text text-anchor="start" x="182" y="-424" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">start_rx_fe = &#39;1&#39; &#160;&#160;</text>
+<text text-anchor="start" x="182" y="-412" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">polarity = &#39;1&#39; &#160;&#160;</text>
+</g>
+<!-- WAIT_START&#45;&gt;READ_START -->
+<g id="edge3" class="edge">
+<title>WAIT_START&#45;&gt;READ_START</title>
+<path fill="none" stroke="#000000" d="M280.7482,-449.9179C276.529,-437.516 269.6972,-421.1675 260,-409 257.1407,-405.4123 253.8304,-402.0026 250.3168,-398.8194"/>
+<polygon fill="#000000" stroke="#000000" points="252.3224,-395.9352 242.3959,-392.2317 247.8463,-401.3171 252.3224,-395.9352"/>
+<text text-anchor="start" x="273" y="-424" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">start_rx_re = &#39;1&#39; &#160;&#160;</text>
+<text text-anchor="start" x="273" y="-412" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">polarity = &#39;0&#39; &#160;&#160;</text>
+</g>
+<!-- READ_DATA -->
+<g id="node5" class="node">
+<title>READ_DATA</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="260,-310 166,-310 166,-274 260,-274 260,-310"/>
+<text text-anchor="start" x="176.9994" y="-288.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">READ_DATA</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M178.3333,-275C178.3333,-275 247.6667,-275 247.6667,-275 253.3333,-275 259,-280.6667 259,-286.3333 259,-286.3333 259,-297.6667 259,-297.6667 259,-303.3333 253.3333,-309 247.6667,-309 247.6667,-309 178.3333,-309 178.3333,-309 172.6667,-309 167,-303.3333 167,-297.6667 167,-297.6667 167,-286.3333 167,-286.3333 167,-280.6667 172.6667,-275 178.3333,-275"/>
+</g>
+<!-- READ_START&#45;&gt;READ_DATA -->
+<g id="edge4" class="edge">
+<title>READ_START&#45;&gt;READ_DATA</title>
+<path fill="none" stroke="#000000" d="M213,-355.8015C213,-345.3976 213,-332.1215 213,-320.3768"/>
+<polygon fill="#000000" stroke="#000000" points="216.5001,-320.1476 213,-310.1476 209.5001,-320.1476 216.5001,-320.1476"/>
+<text text-anchor="start" x="213" y="-330" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">tick_data = &#39;1&#39; &#160;&#160;</text>
+</g>
+<!-- READ_PARITY -->
+<g id="node6" class="node">
+<title>READ_PARITY</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="121.5,-216 16.5,-216 16.5,-180 121.5,-180 121.5,-216"/>
+<text text-anchor="start" x="27.8306" y="-194.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">READ_PARITY</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M28.8333,-181C28.8333,-181 109.1667,-181 109.1667,-181 114.8333,-181 120.5,-186.6667 120.5,-192.3333 120.5,-192.3333 120.5,-203.6667 120.5,-203.6667 120.5,-209.3333 114.8333,-215 109.1667,-215 109.1667,-215 28.8333,-215 28.8333,-215 23.1667,-215 17.5,-209.3333 17.5,-203.6667 17.5,-203.6667 17.5,-192.3333 17.5,-192.3333 17.5,-186.6667 23.1667,-181 28.8333,-181"/>
+</g>
+<!-- READ_DATA&#45;&gt;READ_PARITY -->
+<g id="edge5" class="edge">
+<title>READ_DATA&#45;&gt;READ_PARITY</title>
+<path fill="none" stroke="#000000" d="M165.8035,-287.9714C124.4176,-283.3443 68.7653,-274.0847 55.052,-257 47.8669,-248.0485 49.3346,-236.0168 53.3869,-225.1536"/>
+<polygon fill="#000000" stroke="#000000" points="56.586,-226.5734 57.4608,-216.0147 50.1925,-223.7232 56.586,-226.5734"/>
+<text text-anchor="start" x="55" y="-248" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">parity /= none &#160;&#160;</text>
+<text text-anchor="start" x="55" y="-236" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">tick_data = &#39;1&#39; and cnt_data = data_size &#45; 1 &#160;&#160;</text>
+</g>
+<!-- READ_STOP_BIT -->
+<g id="node7" class="node">
+<title>READ_STOP_BIT</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="179,-134 59,-134 59,-98 179,-98 179,-134"/>
+<text text-anchor="start" x="69.9938" y="-112.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">READ_STOP_BIT</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M71.3333,-99C71.3333,-99 166.6667,-99 166.6667,-99 172.3333,-99 178,-104.6667 178,-110.3333 178,-110.3333 178,-121.6667 178,-121.6667 178,-127.3333 172.3333,-133 166.6667,-133 166.6667,-133 71.3333,-133 71.3333,-133 65.6667,-133 60,-127.3333 60,-121.6667 60,-121.6667 60,-110.3333 60,-110.3333 60,-104.6667 65.6667,-99 71.3333,-99"/>
+</g>
+<!-- READ_DATA&#45;&gt;READ_STOP_BIT -->
+<g id="edge6" class="edge">
+<title>READ_DATA&#45;&gt;READ_STOP_BIT</title>
+<path fill="none" stroke="#000000" d="M241.9833,-273.7274C247.2546,-268.9686 252.0208,-263.3607 255,-257 259.5243,-247.3404 261.6187,-241.3648 255,-233 234.6119,-207.2331 207.3632,-238.1037 183.052,-216 160.4805,-195.478 178.2645,-176.1508 161,-151 158.5828,-147.4786 155.7176,-144.1137 152.6366,-140.9591"/>
+<polygon fill="#000000" stroke="#000000" points="154.87,-138.2564 145.1653,-134.0054 150.1009,-143.3805 154.87,-138.2564"/>
+<text text-anchor="start" x="183" y="-201" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">tick_data = &#39;1&#39; and cnt_data = data_size &#45; 1 &#160;&#160;</text>
+<text text-anchor="start" x="183" y="-189" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">not (parity /= none) &#160;&#160;</text>
+</g>
+<!-- READ_PARITY&#45;&gt;READ_STOP_BIT -->
+<g id="edge7" class="edge">
+<title>READ_PARITY&#45;&gt;READ_STOP_BIT</title>
+<path fill="none" stroke="#000000" d="M76.0179,-179.5768C79.7401,-170.6633 84.6963,-159.9762 90.276,-151 92.1162,-148.0396 94.1807,-145.0546 96.3367,-142.1424"/>
+<polygon fill="#000000" stroke="#000000" points="99.1386,-144.2412 102.5443,-134.2087 93.6255,-139.9276 99.1386,-144.2412"/>
+<text text-anchor="start" x="90" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">tick_data = &#39;1&#39; &#160;&#160;</text>
+</g>
+<!-- STOP -->
+<g id="node8" class="node">
+<title>STOP</title>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="268,-52 212,-52 212,-16 268,-16 268,-52"/>
+<text text-anchor="start" x="223.6644" y="-30.2" font-family="Helvetica,sans-Serif" font-size="12.00" fill="#000000">STOP</text>
+<path fill="none" stroke="#000000" stroke-width="2" d="M224.3333,-17C224.3333,-17 255.6667,-17 255.6667,-17 261.3333,-17 267,-22.6667 267,-28.3333 267,-28.3333 267,-39.6667 267,-39.6667 267,-45.3333 261.3333,-51 255.6667,-51 255.6667,-51 224.3333,-51 224.3333,-51 218.6667,-51 213,-45.3333 213,-39.6667 213,-39.6667 213,-28.3333 213,-28.3333 213,-22.6667 218.6667,-17 224.3333,-17"/>
+</g>
+<!-- READ_STOP_BIT&#45;&gt;STOP -->
+<g id="edge8" class="edge">
+<title>READ_STOP_BIT&#45;&gt;STOP</title>
+<path fill="none" stroke="#000000" d="M121.5763,-97.864C123.8282,-88.1507 128.0252,-76.6456 135.822,-69 153.4628,-51.7015 179.9124,-42.948 201.7457,-38.5209"/>
+<polygon fill="#000000" stroke="#000000" points="202.4963,-41.9421 211.7183,-36.7263 201.2565,-35.0528 202.4963,-41.9421"/>
+<text text-anchor="start" x="135" y="-72" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">tick_data = &#39;1&#39; and cnt_stop_bit = stop_bit_number &#45; 1 &#160;&#160;</text>
+</g>
+<!-- STOP&#45;&gt;WAIT_START -->
+<g id="edge9" class="edge">
+<title>STOP&#45;&gt;WAIT_START</title>
+<path fill="none" stroke="#000000" d="M268.186,-36.0524C311.1269,-39.965 388,-50.4042 388,-75 388,-171.5 388,-171.5 388,-171.5 388,-213.2872 386,-223.7128 386,-265.5 386,-421 386,-421 386,-421 386,-431.9523 366.1044,-442.4851 344.0618,-450.7936"/>
+<polygon fill="#000000" stroke="#000000" points="342.765,-447.5404 334.5353,-454.213 345.1298,-454.1289 342.765,-447.5404"/>
+<text text-anchor="middle" x="387.3895" y="-242" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000"> </text>
+</g>
+</g>
+</svg>
+</div></div><br><br><br><br><br><br>
