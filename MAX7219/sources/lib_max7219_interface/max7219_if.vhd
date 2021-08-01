@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-05
--- Last update: 2021-04-04
+-- Last update: 2021-08-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ begin  -- architecture behv
   -- OUTPUTS AFFECTATIONS
   o_max7219_data <= s_max7219_data;
   o_max7219_clk  <= s_max7219_clk;
-  o_max7219_load <= '1' when s_load_px /= "0000" else '0';
+  o_max7219_load <= '1' when s_load_px /= conv_std_logic_vector(0, s_load_px'length) else '0';
   o_done         <= s_done;
 
 end architecture behv;
