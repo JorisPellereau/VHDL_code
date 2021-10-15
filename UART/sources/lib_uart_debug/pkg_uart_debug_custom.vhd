@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-08-19
--- Last update: 2021-08-20
+-- Last update: 2021-08-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -60,6 +60,13 @@ package pkg_uart_debug_custom is
     bus : std_logic_vector(C_ARRAY_RECORD_OUT(1).out_length - 1 downto 0);
   end record t_record_out_1;
 
+  type t_record_in_0 is record
+    bus : std_logic_vector(C_ARRAY_RECORD_IN(0).in_length - 1 downto 0);
+  end record t_record_in_0;
+
+  type t_record_in_1 is record
+    bus : std_logic_vector(C_ARRAY_RECORD_IN(1).in_length - 1 downto 0);
+  end record t_record_in_1;
 
   -- Record for Bus creation - Output Bus
   type t_record_bus_out is record
@@ -67,5 +74,10 @@ package pkg_uart_debug_custom is
     bus_1 : t_record_out_1;
   end record t_record_bus_out;
 
+  -- Record for Bus creation - Input Bus
+  type t_record_bus_in is record
+    bus_0 : t_record_in_0;
+    bus_1 : t_record_in_1;
+  end record t_record_bus_in;
 
 end package pkg_uart_debug_custom;
