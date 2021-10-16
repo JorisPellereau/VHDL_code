@@ -190,7 +190,7 @@ begin  -- architecture behv
   -- Generation of FSM with calculation of next state in a combinatory process
   g_fsm_gen_no_altera : if G_USE_ALTERA = '0' generate
 
-
+    --! fsm_extract
     p_next_state_mngt : process (s_current_state, s_config_done_r_edge, s_next_cmd_config, s_next_cmd_static, s_next_cmd_scroller, s_ptr_equality_r_edge, s_busy_scroller_f_edge) is
     begin  -- process p_next_state_mngt
 
@@ -231,7 +231,7 @@ begin  -- architecture behv
 
 
   g_fsm_gen_altera : if G_USE_ALTERA = '1' generate
-
+    --! fsm_extract
     p_next_state_mngt : process (clk, rst_n) is
     begin  -- process p_next_state_mngt
       if rst_n = '0' then                 -- asynchronous reset (active low)

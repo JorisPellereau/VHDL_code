@@ -635,8 +635,8 @@ module tb_top
 				       .G_RAM_ADDR_WIDTH_SCROLLER  (8),
 				       .G_RAM_DATA_WIDTH_SCROLLER  (8),
 
-				       .G_MAX_HALF_PERIOD  (4),
-				       .G_LOAD_DURATION    (4),
+				       .G_MAX_HALF_PERIOD  (4), // old : 4
+				       .G_LOAD_DURATION    (200),    // old : 4
 
 				       .G_DECOD_MAX_CNT_32B  (32'h02FAF080)
 				       )
