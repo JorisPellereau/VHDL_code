@@ -1,0 +1,194 @@
+# == MODELSIM ALIAS ==
+# Virtual Machines PATH
+# vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
+# vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
+# vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
+# vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
+# vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
+
+# Linux Path
+vsim=/opt/Modelsim/modelsim_ase/bin/vsim
+vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
+vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
+vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
+vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
+# ====================
+
+# == GENERIC TESTBENCH SOURCES DIRECTORY ==
+GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+# =========================================
+
+# == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
+TB_SRC_DIR=$(ROOT)/tb_sources
+# ==========================================
+
+# == PROJECT DIRECTORIES ==
+SCRIPTS_DIR=$(ROOT)/scripts
+RUN_DO_DIR=$(ROOT)/do_files/run_files
+SCN_DIR=$(ROOT)/scenarios
+
+TRANSCRIPTS_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts
+WLF_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF
+# =========================
+
+# == Config. ARGS by DEFAULT ==
+VSIM_ARGS+=-novopt -t ps -default_radix hexadecimal -fsmdebug
+VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/$(SCN_LIB_DIR)/$(TEST).txt
+TB_LIB_TOP+=$(LIB_TB_TOP).tb_top
+# =============================
+
+# == Config Selection ==
+ifeq ($(GUI), OFF)
+	VSIM_ARGS=-c
+endif
+
+# Enable Transcript
+ifeq ($(TRANSCRIPT_EN), ON)
+  TRANSCRIPT_ARG+= -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+endif
+
+# Enable Do File
+ifeq ($(DO_FILES_EN), ON)
+  RUN_ARGS+= -d $(RUN_DO_DIR)/$(TEST)_run.do
+endif
+# ======================
+
+print_generic_rules:
+	@echo "== GenericMakefile rules =="
+	@echo ""
+	@echo "- Create HDL Temporary Directories :"
+	@echo "make create_project_dir"
+	@echo ""
+	@echo "- Clean WORK directory :"
+	@echo "make clean_work"
+	@echo ""
+	@echo "- Clean Transcripts :"
+	@echo "make clean_transcripts"
+	@echo ""
+	@echo "- Clean WLFs :"
+	@echo "make clean_wlf"
+	@echo ""
+	@echo "- Clean ALL directories in PROJECT_DIR :"
+	@echo "make clean_all"
+	@echo ""
+	@echo "- Create Modelsim Libs :"
+	@echo "make libs"
+
+
+# Generic Commands
+
+# Create Temporary Directory (WORKS - Transcripts - WLFs)
+
+# Path of HDL Simulation
+HDL_SIMU_PATH=~/SIMULATION_VHDL
+
+# == CREATE DIRECTORY for A NEW PROJECT ==
+create_dir:
+	cd $(ROOT); \
+	mkdir do_files; \
+	mkdir sources; \
+	mkdir tb_sources; \
+	mkdir scenarios; \
+	cd ./do_files; \
+	mkdir run_files; \
+	mkdir waves; \
+
+# ========================================
+
+# == CREATE TEMPORARY WORK DIR. ==
+create_temp_project:
+	cd $(HDL_SIMU_PATH); \
+	if [ ! -d $(PROJECT_NAME) ]; then \
+	  mkdir $(PROJECT_NAME); \
+	fi
+
+create_temp_dir:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d transcripts ]; then \
+	  mkdir transcripts; \
+	fi
+
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d WLF ]; then \
+	  mkdir WLF; \
+	fi
+
+create_work:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d $(WORK_DIR) ]; then \
+	  mkdir $(WORK_DIR); \
+	fi
+
+create_project_dir: create_temp_project create_temp_dir create_work
+# ======================
+
+# == REMOVE TEMP. DIR ==
+
+clean_work:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	rm -rRf *;
+
+clean_transcripts:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts; \
+	   rm -rRf *;
+
+clean_wlf:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF; \
+	   rm -rRf *;
+
+clean_all:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	rm -rRf *;
+# ======================
+
+
+# == PREPARE MODELSIM LIBRARY ==
+prepare_libs:
+	if [ -d $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR) ]; then \
+	  cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	  $(foreach list, $(LIB_LIST), $(vlib) ./$(list);) \
+	fi
+
+create_libs:
+	if [ -d $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR) ]; then \
+	  cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	  $(foreach list, $(LIB_LIST), $(vmap) $(list) $(list);) \
+	fi
+
+
+libs:  prepare_libs create_libs
+# ===========================================
+
+# == COMPILE VHD-V Files ==
+compile_tb_vhd_files:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(foreach list, $(SRC_TB_VHD), $(vcom) -work $(TB_LIB_TOP) $(list);)
+
+compile_tb_v_files:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(foreach list, $(SRC_TB_V), $(vlog) -work $(TB_LIB_TOP) $(list);)
+
+compile_design_vhd_files:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(foreach list, $(SRC_VHD), $(vcom) -work $(VHD_DESIGN_LIB) $(list);)
+
+compile_design_v_files:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(foreach list, $(SRC_V), $(vlog) -work $(V_DESIGN_LIB) $(list);)
+# =============
+
+# == RUN VSIM TEST ==
+# $(vsim) : Run Modelsim
+# $(VSIM_ARGS) VSIM argument by default - Args can be added
+# $(TB_LIB_TOP) Testbench Library to run with tb_top module
+# $(LIB_ARGS) -L commandes with library to add. It must be configured in current Makefile
+# $(TRANSCRIPT_ARGS) Transcript arguement if enabled
+# $(VSIM_G_ARGS) Testbench Generic Arg. changed (Scenario)
+# $(RUN_ARGS) add do file to run here
+
+run_test:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(vsim) $(VSIM_ARGS) $(TB_LIB_TOP) $(LIB_ARGS) $(TRANSCRIPT_ARGS) $(VSIM_G_ARGS) $(RUN_ARGS)
+
+# ===================

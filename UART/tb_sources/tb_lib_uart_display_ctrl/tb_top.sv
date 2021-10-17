@@ -16,13 +16,13 @@
 `timescale 1ps/1ps
 
 
-`include "/home/jorisp/GitHub/VHDL_code/UART/tb_sources/tb_lib_uart_display_ctrl/testbench_setup.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_tb_uart/uart_checker_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/VHDL_code/UART/tb_sources/tb_lib_uart_display_ctrl/testbench_setup.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_tb_uart/uart_checker_wrapper.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/tb_tasks.sv"
 
 
 // TB TOP

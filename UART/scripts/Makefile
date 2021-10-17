@@ -28,13 +28,14 @@
 
 ROOT=$(PWD)/..
 WORK_DIR_NAME=UART_WORK
-WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
+#WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
+WORK_DIR=~/SIMULATION_VHDL/UART/$(WORK_DIR_NAME)
 
 
 
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
-GENERIC_TB_SRC_DIR=~/GitHub/Verilog/lib_testbench
-TB_UART_SRC_V_DIR=~/GitHub/Verilog/lib_tb_uart
+GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
 # =========================================
 
 # == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
@@ -50,16 +51,22 @@ SCN_DIR=$(ROOT)/scenarios
 # =========================
 
 # == MODELSIM ALIAS ==
-vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
-vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
-vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
-vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
-vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
+# vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
+# vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
+# vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
+# vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
+# vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
+
+vsim=/opt/Modelsim/modelsim_ase/bin/vsim
+vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
+vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
+vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
+vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
 # ====================
 
 # == SOURCES DIRECTORY ==
 SRC_DIR=$(ROOT)/sources
-SRC_MAX7219_DIR=/home/jorisp/GitHub/VHDL_code/MAX7219/sources
+SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
 # =======================
 
 # == VSIM ARGS ==
@@ -159,7 +166,7 @@ create_dir:
 	mkdir waves; \
 
 create_work:
-	cd /home/jorisp/MODELSIM_WORKS/; \
+	cd ~/MODELSIM_WORKS/; \
 	mkdir $(WORK_DIR_NAME); \
 
 # ======================
@@ -203,7 +210,7 @@ src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/run_pattern_mngt
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl.vhd
 src_vhd_lib_uart_display_ctrl+=$(SRC_DIR)/lib_uart_display_ctrl/uart_max7219_display_ctrl_wrapper.vhd
 
-src_vhd_lib_others+=~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
+src_vhd_lib_others+=~/Documents/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/pkg_max7219_static.vhd
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/max7219_ram_decod.vhd
@@ -351,7 +358,7 @@ SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_04.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_05.py
 
-generate_scn :
+vsimgenerate_scn :
 	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
 	$(foreach list, $(SCN_LIST), python $(list);) \
 
