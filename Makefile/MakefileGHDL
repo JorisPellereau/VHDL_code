@@ -1,1 +1,51 @@
 # TBD Makefile for GHDL compilation
+
+
+
+
+# == GHDL Tests ==
+GHDL_WORK_DIR=/home/jorisp/GHDL_UART_COMPILATION
+
+ghdl_import_vhd_src:
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works ~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_interface $(SRC_MAX7219_DIR)/lib_max7219_interface/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_static $(SRC_MAX7219_DIR)/lib_max7219_static/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_scroller $(SRC_MAX7219_DIR)/lib_max7219_scroller/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_controller $(SRC_MAX7219_DIR)/lib_max7219_controller/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_uart $(SRC_DIR)/lib_uart/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_uart_display_ctrl $(SRC_DIR)/lib_uart_display_ctrl/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
+
+ghdl_import_vhd_src_2:
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works ~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_interface/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_static/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_scroller/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_controller/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_DIR)/lib_uart/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works /home/jorisp/GitHub/VHDL_code/DE0_nano/lib_uart_max7219_top/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_DIR)/lib_uart_display_ctrl/*.vhd
+	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
+
+
+lib_misc=-P~/GitHub/VHDL_code/RAM/TDPRAM/
+lib_uart_path=-P$(SRC_DIR)/lib_uart/
+lib_max7219_interface_path=-P$(SRC_MAX7219_DIR)/lib_max7219_interface/
+lib_max7219_static_path=-P$(SRC_MAX7219_DIR)/lib_max7219_static/
+lib_max7219_scroller_path=-P$(SRC_MAX7219_DIR)/lib_max7219_scroller/
+tb_lib_uart_display_ctrl_path=-P$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/
+lib_uart_max7219_top_path=-P/home/jorisp/GitHub/VHDL_code/DE0_nano/lib_uart_max7219_top/
+
+ghdl_analyse_src_vhd:
+	ghdl -a -fsynopsys --workdir=$(GHDL_WORK_DIR)/works $(lib_misc) $(lib_uart_path) $(lib_max7219_interface_path) $(lib_max7219_static_path) $(lib_max7219_scroller_path) $(tb_lib_uart_display_ctrl_path) $(lib_uart_max7219_top_path) $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
+#$(lib_uart_path) $(lib_max7219_interface_path) $(lib_max7219_static_path) $(lib_max7219_scroller_path) $(tb_lib_uart_display_ctrl_path)
+
+
+ghdl_analyse_and_elab:
+	ghdl -m --workdir=$(GHDL_WORK_DIR)/works tb_top
+
+
+ghdl_clean:
+	ghdl --clean --workdir=$(GHDL_WORK_DIR)/works
+
+# ================

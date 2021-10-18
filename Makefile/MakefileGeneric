@@ -1,22 +1,29 @@
 # == MODELSIM ALIAS ==
+ifeq ($(SEL_STATION), VM)
 # Virtual Machines PATH
-# vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
-# vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
-# vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
-# vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
-# vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
-
+  vsim=/opt/intelFPGA/18.1/modelsim_ase/bin/vsim
+  vlib=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlib
+  vmap=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vmap
+  vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
+  vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
+else ifeq ($(SEL_STATION), LINUX)
 # Linux Path
-vsim=/opt/Modelsim/modelsim_ase/bin/vsim
-vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
-vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
-vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
-vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
+  vsim=/opt/Modelsim/modelsim_ase/bin/vsim
+  vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
+  vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
+  vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
+  vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
+endif
 # ====================
 
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
-GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
-TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+ifeq ($(SEL_STATION), VM)
+  GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+  TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+else ifeq ($(SEL_STATION), LINUX)
+  GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+  TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+endif
 # =========================================
 
 # == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
@@ -27,6 +34,7 @@ TB_SRC_DIR=$(ROOT)/tb_sources
 SCRIPTS_DIR=$(ROOT)/scripts
 RUN_DO_DIR=$(ROOT)/do_files/run_files
 SCN_DIR=$(ROOT)/scenarios
+SRC_DIR=$(ROOT)/sources
 
 TRANSCRIPTS_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts
 WLF_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF
@@ -53,6 +61,19 @@ ifeq ($(DO_FILES_EN), ON)
   RUN_ARGS+= -d $(RUN_DO_DIR)/$(TEST)_run.do
 endif
 # ======================
+
+
+# == GENERIC TB FILES ==
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_modules_custom_class.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
+# ======================
+
 
 print_generic_rules:
 	@echo "== GenericMakefile rules =="
@@ -192,3 +213,10 @@ run_test:
 	$(vsim) $(VSIM_ARGS) $(TB_LIB_TOP) $(LIB_ARGS) $(TRANSCRIPT_ARGS) $(VSIM_G_ARGS) $(RUN_ARGS)
 
 # ===================
+
+
+# == Generate Scenarii ==
+generate_scn :
+	cd $(SCN_DIR)/$(SCN_LIB); \
+	$(foreach list, $(SCN_LIST), python $(list);) \
+# =======================

@@ -1,53 +1,49 @@
-############################################
+# ========================================== #
 #
-#	Makefile for UART blocks tests
+# Makefile for UART blocks tests
 #
-############################################
-# Repository Organization
-# /(ROOT)
-# 	|__ /scripts        => Scripts - Makefile
-#	|__ /sources        => Design VHD - V files
-#	     |__ /lib_x
-#	     |__ /lib_y
-#	|__ /tb_sources     => Specific TestBench files
-#	     |__ /testbench_setup.sv
-#	     |__ /tb_top.sv
-#	|__ /do_files       => Do Files
-#	     |__ /run_files => Run .do
-#	     |__ /waves     => Waves .do
-#	|__ /scenarios      => Scenario list
-#	|__ /WLF            => WLF files
-#	|__ /transcripts    => Transcripts files
-#
-#
-#
+# ========================================== #
 
-# Author : J.P
-# Date   : 17/04/2021
-#
+# ========================================== #
+# Author  : J.P
+# Date    : 17/04/2021
+# Version : 2.0
+#         - Ajout MakefileGeneric
+# ========================================== #
 
+# == Makefile Configuration ==
+SEL_STATION=LINUX
 ROOT=$(PWD)/..
-WORK_DIR_NAME=UART_WORK
+HDL_SIMU_PATH=~/SIMULATION_VHDL
+PROJECT_NAME=UART
+WORK_DIR=UART_WORK
+SCN_LIB_DIR=scn_lib_uart_display_ctrl
+LIB_TB_TOP=lib_tb_uart_display_ctrl
+TRANSCRIPT_EN=OFF
+# ============================
+
+#ROOT=$(PWD)/..
+#WORK_DIR_NAME=UART_WORK
 #WORK_DIR=/home/jorisp/MODELSIM_WORKS/$(WORK_DIR_NAME)
-WORK_DIR=~/SIMULATION_VHDL/UART/$(WORK_DIR_NAME)
+#WORK_DIR=~/SIMULATION_VHDL/UART/$(WORK_DIR_NAME)
 
 
 
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
-GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
-TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+#GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+#TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
 # =========================================
 
 # == TESTBENCH SPECIFIC SOURCES DIRECTORY ==
-TB_SRC_DIR=$(ROOT)/tb_sources
+#TB_SRC_DIR=$(ROOT)/tb_sources
 # ==========================================
 
 # == PROJECT DIRECTORIES ==
-SCRIPTS_DIR=$(ROOT)/scripts
-RUN_DO_DIR=$(ROOT)/do_files/run_files
-TRANSCRIPTS_DIR=$(ROOT)/transcripts
-WLF_DIR=$(ROOT)/WLF
-SCN_DIR=$(ROOT)/scenarios
+# SCRIPTS_DIR=$(ROOT)/scripts
+# RUN_DO_DIR=$(ROOT)/do_files/run_files
+# TRANSCRIPTS_DIR=$(ROOT)/transcripts
+# WLF_DIR=$(ROOT)/WLF
+# SCN_DIR=$(ROOT)/scenarios
 # =========================
 
 # == MODELSIM ALIAS ==
@@ -57,25 +53,25 @@ SCN_DIR=$(ROOT)/scenarios
 # vcom=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vcom
 # vlog=/opt/intelFPGA/18.1/modelsim_ase/linuxaloem/vlog
 
-vsim=/opt/Modelsim/modelsim_ase/bin/vsim
-vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
-vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
-vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
-vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
+# vsim=/opt/Modelsim/modelsim_ase/bin/vsim
+# vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
+# vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
+# vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
+# vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
 # ====================
 
 # == SOURCES DIRECTORY ==
-SRC_DIR=$(ROOT)/sources
+#SRC_DIR=$(ROOT)/sources
 SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
 # =======================
 
 # == VSIM ARGS ==
-VSIM_ARGS+=-novopt -t ps -default_radix hexadecimal -fsmdebug
-VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
+# VSIM_ARGS+=-novopt -t ps -default_radix hexadecimal -fsmdebug
+# VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/
 
-ifeq ($(GUI), OFF)
-	VSIM_ARGS=-c
-endif
+# ifeq ($(GUI), OFF)
+# 	VSIM_ARGS=-c
+# endif
 
 
 # ===============
@@ -89,16 +85,11 @@ LIB_MAX7219_STATIC=lib_max7219_static
 LIB_MAX7219_SCROLLER=lib_max7219_scroller
 LIB_MAX7219_CONTROLLER=lib_max7219_controller
 LIB_MAX7219_INTERFACE=lib_max7219_interface
-
-
 # ======================
-
 
 # == TESTBENCH LIBRARIES ==
 LIB_TB_UART_DISPLAY_CTRL+=lib_tb_uart_display_ctrl
-
 # =========================
-
 
 # ==  LIB LIST ==
 LIB_LIST+=$(LIB_UART)
@@ -113,21 +104,9 @@ LIB_LIST+=$(LIB_TB_UART_DISPLAY_CTRL)
 
 
 
-all: 
+all: print_generic_rules
 	@echo ""
 	@echo "Makefile for compilation & Simulation with Modelsim"
-	@echo ""
-	@echo "== PROJECT CONFIGURATION =="
-	@echo "- Create Work Directory : "
-	@echo "make create_dir"
-	@echo ""
-	@echo "- Clean work repository : "
-	@echo "make clean"
-	@echo ""
-	@echo "- Prepare Modelsim Library :"
-	@echo "make libs"
-	@echo ""
-	@echo "==========================="
 	@echo ""
 	@echo "== SOURCES COMPILATIONS =="	
 	@echo ""
@@ -153,44 +132,44 @@ all:
 
 
 # == CREATE WORK DIR. ==
-create_dir:
-	cd $(ROOT); \
-	mkdir transcripts; \
-	mkdir do_files; \
-	mkdir WLF; \
-	mkdir sources; \
-	mkdir tb_sources; \
-	mkdir scenarios; \
-	cd ./do_files; \
-	mkdir run_files; \
-	mkdir waves; \
+# create_dir:
+# 	cd $(ROOT); \
+# 	mkdir transcripts; \
+# 	mkdir do_files; \
+# 	mkdir WLF; \
+# 	mkdir sources; \
+# 	mkdir tb_sources; \
+# 	mkdir scenarios; \
+# 	cd ./do_files; \
+# 	mkdir run_files; \
+# 	mkdir waves; \
 
-create_work:
-	cd ~/MODELSIM_WORKS/; \
-	mkdir $(WORK_DIR_NAME); \
+# create_work:
+# 	cd ~/MODELSIM_WORKS/; \
+# 	mkdir $(WORK_DIR_NAME); \
 
 # ======================
 
 
 # == CLEAN PROJECT ==
-clean:
-	cd $(WORK_DIR); \
-	rm -rRf *;
+# clean:
+# 	cd $(WORK_DIR); \
+# 	rm -rRf *;
 
 # ====================
 
 
 # == PREPARE MODELSIM LIBRARY ==
-prepare_libs:
-	cd $(WORK_DIR); \
-	$(foreach list, $(LIB_LIST), $(vlib) ./$(list);) \
+# prepare_libs:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(LIB_LIST), $(vlib) ./$(list);) \
 
-create_libs:
-	cd $(WORK_DIR); \
-	$(foreach list, $(LIB_LIST), $(vmap) $(list) $(list);) \
+# create_libs:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(LIB_LIST), $(vmap) $(list) $(list);) \
 
 
-libs:  prepare_libs create_libs
+# libs:  prepare_libs create_libs
 # ===========================================
 
 
@@ -237,14 +216,14 @@ src_vhd_lib_max7219_interface+=$(SRC_MAX7219_DIR)/lib_max7219_interface/max7219_
 
 
 # == GENERIC TB FILES ==
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_wrapper.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_modules_custom_class.sv
-src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_wrapper.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_modules_custom_class.sv
+# src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
 # ======================
 
 # == TESTBENCH UART V FILES LIST ==
@@ -283,67 +262,97 @@ src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.sv
 ## == COMPILE DESIGN == ##
 
 compile_others:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_OTHERS) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_others) VHD_DESIGN_LIB=$(LIB_OTHERS)
+#	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_OTHERS) $(list);) \
 
 compile_uart:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_lib_uart), $(vcom) -work $(LIB_UART) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_lib_uart) VHD_DESIGN_LIB=$(LIB_UART)
+
+# compile_uart:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_lib_uart), $(vcom) -work $(LIB_UART) $(list);) \
 
 compile_uart_display_ctrl:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_uart_display_ctrl), $(vcom) -work $(LIB_UART_DISPLAY_CTRL) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_uart_display_ctrl) VHD_DESIGN_LIB=$(LIB_UART_DISPLAY_CTRL)
+
+# compile_uart_display_ctrl:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_vhd_lib_uart_display_ctrl), $(vcom) -work $(LIB_UART_DISPLAY_CTRL) $(list);) \
+
 
 compile_max7219_interface:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_max7219_interface), $(vcom) -work $(LIB_MAX7219_INTERFACE) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_max7219_interface) VHD_DESIGN_LIB=$(LIB_MAX7219_INTERFACE)
+
+# compile_max7219_interface:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_vhd_lib_max7219_interface), $(vcom) -work $(LIB_MAX7219_INTERFACE) $(list);) \
 
 #	$(vcom) -work $(LIB_MAX7219_INTERFACE) $(SRC_MAX7219_DIR)/lib_max7219_interface/pkg_max7219_interface.vhd; \
 
 compile_max7219_static:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_max7219_static), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
-	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_max7219_static) VHD_DESIGN_LIB=$(LIB_MAX7219_STATIC)
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_others) VHD_DESIGN_LIB=$(LIB_MAX7219_STATIC)
+
+# compile_max7219_static:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_vhd_lib_max7219_static), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
+# 	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_STATIC) $(list);) \
 
 compile_max7219_scroller:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_max7219_scroller), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
-	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_max7219_scroller) VHD_DESIGN_LIB=$(LIB_MAX7219_SCROLLER)
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_others) VHD_DESIGN_LIB=$(LIB_MAX7219_SCROLLER)
+
+# compile_max7219_scroller:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_vhd_lib_max7219_scroller), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
+# 	$(foreach list, $(src_vhd_lib_others), $(vcom) -work $(LIB_MAX7219_SCROLLER) $(list);) \
 
 compile_max7219_controller:
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_vhd_lib_max7219_controller), $(vcom) -work $(LIB_MAX7219_CONTROLLER) $(list);) \
+	make compile_design_vhd_files SRC_VHD=$(src_vhd_lib_max7219_controller) VHD_DESIGN_LIB=$(LIB_MAX7219_CONTROLLER)
+
+# compile_max7219_controller:
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_vhd_lib_max7219_controller), $(vcom) -work $(LIB_MAX7219_CONTROLLER) $(list);) \
 
 
-# Compile Design Library here
+# == Compile Design Library here ==
 compile_design : compile_others compile_max7219_interface compile_max7219_static compile_max7219_scroller compile_max7219_controller compile_uart compile_uart_display_ctrl
-
-## ==================== ##
+# ================================
 
 
 ## == COMPILE TESTBENCH == ##
-compile_uart_vhd_files :
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_tb_uart_vhd), $(vcom) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+compile_tb_uart_vhd_files:
+	make compile_tb_vhd_files SRC_TB_VHD=$(src_tb_uart_vhd) TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
+
+# compile_uart_vhd_files :
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_tb_uart_vhd), $(vcom) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+
+compile_generic_tb_v_files:
+	make compile_tb_v_files SRC_TB_V=$(src_gen_tb_v) TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
+	make compile_tb_v_files SRC_TB_V=$(src_tb_uart_v) TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
 
 
-compile_generic_tb_v_files :
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-	$(foreach list, $(src_tb_uart_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+# compile_generic_tb_v_files :
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_gen_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+# 	$(foreach list, $(src_tb_uart_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
 
+compile_testbench_sources:
+	make compile_tb_v_files SRC_TB_V=$(src_tb_v) TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
+	make compile_tb_v_files SRC_TB_V=$(src_tb_lib_uart_display_ctrl_v) TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
 
-compile_tb_v_files :
-	cd $(WORK_DIR); \
-	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
-	$(foreach list, $(src_tb_lib_uart_display_ctrl_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+# compile_tb_v_files :
+# 	cd $(WORK_DIR); \
+# 	$(foreach list, $(src_tb_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
+# 	$(foreach list, $(src_tb_lib_uart_display_ctrl_v), $(vlog) -work $(LIB_TB_UART_DISPLAY_CTRL) $(list);) \
 
 # == COMPILE ALL TESTBENCH files ==
-compile_testbench : compile_uart_vhd_files compile_generic_tb_v_files compile_tb_v_files
+compile_testbench : compile_tb_uart_vhd_files compile_generic_tb_v_files compile_testbench_sources
 # =======================
 
 # == COMPILE ALL ==
-compile_all : clean libs compile_design compile_testbench
+compile_all : clean_all create_project_dir libs compile_design compile_testbench
 # =================
 
 ## ======================= ##
@@ -358,9 +367,7 @@ SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_04.py
 SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_05.py
 
-vsimgenerate_scn :
-	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
-	$(foreach list, $(SCN_LIST), python $(list);) \
+
 
 # =======================
 
@@ -379,76 +386,7 @@ run_tb_uart_display_ctrl :
 
 
 
-# == GHDL Tests ==
-GHDL_WORK_DIR=/home/jorisp/GHDL_UART_COMPILATION
-
-ghdl_import_vhd_src:
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works ~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_interface $(SRC_MAX7219_DIR)/lib_max7219_interface/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_static $(SRC_MAX7219_DIR)/lib_max7219_static/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_scroller $(SRC_MAX7219_DIR)/lib_max7219_scroller/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_controller $(SRC_MAX7219_DIR)/lib_max7219_controller/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_uart $(SRC_DIR)/lib_uart/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_uart_display_ctrl $(SRC_DIR)/lib_uart_display_ctrl/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
-
-ghdl_import_vhd_src_2:
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works ~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_interface/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_static/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_scroller/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_MAX7219_DIR)/lib_max7219_controller/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_DIR)/lib_uart/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works /home/jorisp/GitHub/VHDL_code/DE0_nano/lib_uart_max7219_top/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(SRC_DIR)/lib_uart_display_ctrl/*.vhd
-	ghdl -i --workdir=$(GHDL_WORK_DIR)/works $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
-
-
-lib_misc=-P~/GitHub/VHDL_code/RAM/TDPRAM/
-lib_uart_path=-P$(SRC_DIR)/lib_uart/
-lib_max7219_interface_path=-P$(SRC_MAX7219_DIR)/lib_max7219_interface/
-lib_max7219_static_path=-P$(SRC_MAX7219_DIR)/lib_max7219_static/
-lib_max7219_scroller_path=-P$(SRC_MAX7219_DIR)/lib_max7219_scroller/
-tb_lib_uart_display_ctrl_path=-P$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/
-lib_uart_max7219_top_path=-P/home/jorisp/GitHub/VHDL_code/DE0_nano/lib_uart_max7219_top/
-
-ghdl_analyse_src_vhd:
-	ghdl -a -fsynopsys --workdir=$(GHDL_WORK_DIR)/works $(lib_misc) $(lib_uart_path) $(lib_max7219_interface_path) $(lib_max7219_static_path) $(lib_max7219_scroller_path) $(tb_lib_uart_display_ctrl_path) $(lib_uart_max7219_top_path) $(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
-#$(lib_uart_path) $(lib_max7219_interface_path) $(lib_max7219_static_path) $(lib_max7219_scroller_path) $(tb_lib_uart_display_ctrl_path)
-
-
-ghdl_analyse_and_elab:
-	ghdl -m --workdir=$(GHDL_WORK_DIR)/works tb_top
-
-
-ghdl_clean:
-	ghdl --clean --workdir=$(GHDL_WORK_DIR)/works
-
-# ================
 
 
 
-
-# == OLD ==
-src=    $(SRC_DIR)/pkg_rs232.vhd \
-	$(SRC_DIR)/tx_rs232.vhd \
-	$(SRC_DIR)/rx_uart.vhd \
-	$(SRC_DIR)/test_tx_rs232.vhd \
-	$(SRC_DIR)/test_robustesse_1.vhd
-
-compile_src : 
-	cd $(WORK_DIR); \
-	$(VCOM1) $(LIB_TB_TOP) $(src);
-
-run_1 :
-	cd $(WORK_DIR); \
-	vsim  -novopt -t ps $(LIB_TB_TOP).test_tx_rs232  -l transcript.txt -do $(SCRIPTS_DIR)/run.do;
-
-run_2 :
-	cd $(WORK_DIR); \
-	vsim  -novopt -t ps $(LIB_TB_TOP).test_robustesse  -l transcript.txt -do $(SCRIPTS_DIR)/wave_robustesse.do;
-
-run_test1: clean libs compile_src run_1
-
-run_test_robustesse : clean libs compile_src run_2
-
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
