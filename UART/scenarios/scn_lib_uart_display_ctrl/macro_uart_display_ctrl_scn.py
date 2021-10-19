@@ -1,4 +1,4 @@
-
+import os
 import generic_tb_cmd_class
 import tb_uart_cmd_class
 import scn_class
@@ -31,7 +31,7 @@ def str_cmd_2_hex_data_cmd(cmd):
             data_list.append(0x00)
 
             
-    print data_list    
+    print(data_list)
 
     return data_list
 

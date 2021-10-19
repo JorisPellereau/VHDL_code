@@ -38,11 +38,12 @@ SRC_DIR=$(ROOT)/sources
 
 TRANSCRIPTS_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts
 WLF_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF
+SCN_TXT_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios
 # =========================
 
 # == Config. ARGS by DEFAULT ==
 VSIM_ARGS+=-novopt -t ps -default_radix hexadecimal -fsmdebug
-VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_DIR)/$(SCN_LIB_DIR)/$(TEST).txt
+VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_TXT_DIR)/$(TEST).txt
 TB_LIB_TOP+=$(LIB_TB_TOP).tb_top
 # =============================
 
@@ -135,6 +136,13 @@ create_temp_dir:
 	  mkdir WLF; \
 	fi
 
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d scenarios ]; then \
+	  mkdir scenarios; \
+	fi
+
+
+
 create_work:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
 	if [ ! -d $(WORK_DIR) ]; then \
@@ -217,6 +225,6 @@ run_test:
 
 # == Generate Scenarii ==
 generate_scn :
-	cd $(SCN_DIR)/$(SCN_LIB); \
-	$(foreach list, $(SCN_LIST), python $(list);) \
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios; \
+	$(foreach list, $(SCN_LIST), python3 $(list);) \
 # =======================
