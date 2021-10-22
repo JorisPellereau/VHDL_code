@@ -11,7 +11,7 @@ import sys
 scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/scripts/scn_generator'
 sys.path.append(scn_generator_class)
 
-scn_txt_path = "/home/linux-jp/SIMULATION_VHDL/UART/scenarios"
+scn_txt_path = "/home/linux-jp/SIMULATION_VHDL/UART/scenarios/"
 
 # Import Class
 import generic_tb_cmd_class

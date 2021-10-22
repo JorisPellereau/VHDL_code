@@ -39,6 +39,8 @@ SRC_DIR=$(ROOT)/sources
 TRANSCRIPTS_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts
 WLF_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF
 SCN_TXT_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios
+LOGS_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/LOGS
+COMPILE_LOGS_FILE=$(LOGS_DIR)/compilation.log
 # =========================
 
 # == Config. ARGS by DEFAULT ==
@@ -54,12 +56,12 @@ endif
 
 # Enable Transcript
 ifeq ($(TRANSCRIPT_EN), ON)
-  TRANSCRIPT_ARG+= -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+  TRANSCRIPT_ARGS+= -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
 endif
 
 # Enable Do File
 ifeq ($(DO_FILES_EN), ON)
-  RUN_ARGS+= -d $(RUN_DO_DIR)/$(TEST)_run.do
+  RUN_ARGS+= -do $(RUN_DO_DIR)/$(TEST)_run.do
 endif
 # ======================
 
@@ -96,6 +98,12 @@ print_generic_rules:
 	@echo ""
 	@echo "- Create Modelsim Libs :"
 	@echo "make libs"
+	@echo ""
+	@echo "- Generate Text Scenarii :"
+	@echo "make generate_scn"
+	@echo ""
+	@echo "- Compile Design and Testbench :"
+	@echo "make compile_all"
 
 
 # Generic Commands
@@ -141,6 +149,11 @@ create_temp_dir:
 	  mkdir scenarios; \
 	fi
 
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d LOGS ]; then \
+	  mkdir LOGS; \
+	fi
+
 
 
 create_work:
@@ -160,12 +173,15 @@ clean_work:
 
 clean_transcripts:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/transcripts; \
-	   rm -rRf *;
+	rm -rRf *;
 
 clean_wlf:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/WLF; \
-	   rm -rRf *;
-
+	rm -rRf *;
+clean_logs:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/LOGS; \
+	rm -rRf *;
+	   
 clean_all:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
 	rm -rRf *;
@@ -192,20 +208,26 @@ libs:  prepare_libs create_libs
 # == COMPILE VHD-V Files ==
 compile_tb_vhd_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list, $(SRC_TB_VHD), $(vcom) -work $(TB_LIB_TOP) $(list);)
+	$(foreach list,$(SRC_TB_VHD),$(vcom) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_tb_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list, $(SRC_TB_V), $(vlog) -work $(TB_LIB_TOP) $(list);)
+	$(foreach list,$(SRC_TB_V),$(vlog) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_design_vhd_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list, $(SRC_VHD), $(vcom) -work $(VHD_DESIGN_LIB) $(list);)
+	$(foreach list,$(SRC_VHD),$(vcom) -work $(VHD_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_design_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list, $(SRC_V), $(vlog) -work $(V_DESIGN_LIB) $(list);)
-# =============
+	$(foreach list,$(SRC_V),$(vlog) -work $(V_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
+# ========================
+
+# == COMPILE ALL ==
+# compile_design and compile_testbench rules must be define in user Makefile
+compile_all : clean_all create_project_dir libs compile_design compile_testbench
+	make print_compile_logs_file
+# =================
 
 # == RUN VSIM TEST ==
 # $(vsim) : Run Modelsim
@@ -228,3 +250,21 @@ generate_scn :
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios; \
 	$(foreach list, $(SCN_LIST), python3 $(list);) \
 # =======================
+
+# == PRINT LOGS ==
+print_compile_logs_file:
+	cat $(COMPILE_LOGS_FILE) | sed -e ''/Errors/s//`printf "\033[31mErrors\033[0m"`/';'/Warnings/s//`printf "\033[38;2;255;191;20mWarnings\033[0m"`/';'/vcom/s//`printf "\033[36mvcom\033[0m"`/';'/vlog/s//`printf "\033[36mvlog\033[0m"`/';'/Warning:/s//`printf "\033[38;2;255;191;20mWarning:\033[0m"`/''	
+# ================
+
+
+# == Add Color ==
+# $(RED)="\031[32m"
+# $(GREEN)="\033[32m"
+# $(BLUE)="\034[32m"
+# ===============
+
+# $(ERROR_to_RED)='/Errors/s//`printf "\033[31mErrors\033[0m"`/'
+# $(WARNING_to_CYAN)='/Warnings/s//`printf "\033[36mWarnings\033[0m"`/'
+# $(VCOM_to_BLUE)'/vcom/s//`printf "\033[34mvcom\033[0m"`/'
+
+#

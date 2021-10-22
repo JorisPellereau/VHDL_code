@@ -7,8 +7,10 @@
 import sys
 
 # Path of Python SCN scripts generator
-scn_generator_class = '/home/jorisp/GitHub/Verilog/scripts/scn_generator'
+scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/scripts/scn_generator'
 sys.path.append(scn_generator_class)
+
+scn_txt_path = "/home/linux-jp/SIMULATION_VHDL/UART/scenarios/"
 
 
 # Import Class
@@ -21,7 +23,7 @@ from macro_uart_display_ctrl_scn import *
 
 
 # Create SCN Class
-scn = scn_class.scn_class("UART_DISPLAY_CTRL_03.txt")
+scn = scn_class.scn_class(scn_txt_path + "UART_DISPLAY_CTRL_03.txt")
 
 
 
