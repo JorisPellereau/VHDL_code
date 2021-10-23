@@ -14,7 +14,6 @@
 # == Makefile Configuration ==
 SEL_STATION=LINUX
 ROOT=$(PWD)/..
-HDL_SIMU_PATH=~/SIMULATION_VHDL
 PROJECT_NAME=UART
 WORK_DIR=UART_WORK
 SCN_LIB_DIR=scn_lib_uart_display_ctrl
@@ -56,7 +55,7 @@ LIB_LIST+=$(LIB_TB_UART_DISPLAY_CTRL)
 
 all: print_generic_rules
 	@echo ""
-	@echo "Makefile for compilation & Simulation with Modelsim"
+	@echo "Makefile for UART blocks tests"
 	@echo ""
 	@echo "== SOURCES COMPILATIONS =="
 	@echo ""
@@ -78,6 +77,7 @@ all: print_generic_rules
 	@echo ""
 	@echo "== SCENARII LIST =="
 	@echo "$(SCN_LIST)"
+	@echo "==================="
 
 
 # == DESIGN VHD FILE LIST ==
@@ -191,12 +191,12 @@ compile_testbench : compile_tb_uart_vhd_files compile_generic_tb_v_files compile
 # =======================
 
 # == SCENARII LIST ==
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_00.py
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_01.py
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_02.py
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_03.py
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_04.py
-SCN_LIST+=$(SCN_DIR)/scn_lib_uart_display_ctrl/UART_DISPLAY_CTRL_05.py
+SCN_LIST+=UART_DISPLAY_CTRL_00.py
+SCN_LIST+=UART_DISPLAY_CTRL_01.py
+SCN_LIST+=UART_DISPLAY_CTRL_02.py
+SCN_LIST+=UART_DISPLAY_CTRL_03.py
+SCN_LIST+=UART_DISPLAY_CTRL_04.py
+SCN_LIST+=UART_DISPLAY_CTRL_05.py
 # =======================
 
 # == LIB ARGS ==
@@ -207,21 +207,7 @@ LIB_ARGS=-L lib_max7219_controller -L lib_uart_display_ctrl
 # == RUN TEST ==
 run_tb_uart_display_ctrl:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
-
-# run_tb_uart_display_ctrl :
-# 	cd $(SCN_DIR)/scn_lib_uart_display_ctrl/; \
-# 	python $(TEST).py; \
-# 	cd $(TRANSCRITPS_DIR); \
-# 	rm $(TEST)_transcript.txt; \
-# 	cd $(WORK_DIR); \
-# 	$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -L lib_max7219_controller -L lib_uart_display_ctrl -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
-
-#$(vsim) $(VSIM_ARGS) $(LIB_TB_UART_DISPLAY_CTRL).tb_top -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt $(VSIM_G_ARGS)scn_lib_uart_display_ctrl/$(TEST).txt -do $(RUN_DO_DIR)/$(TEST)_run.do;
 # ==============
-
-
-
-
 
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
