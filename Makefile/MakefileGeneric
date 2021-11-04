@@ -283,7 +283,7 @@ create_run_do_files:
 # TEST variable must be used as argument
 create_wave_do_files:
 	if [ ! -e $(WAVES_DO_DIR)/$(TEST)_wave.do ] ; then \
-	  touch $(WAVES_DO_DIR)/$(TEST)_wave.do
+	  echo >> $(WAVES_DO_DIR)/$(TEST)_wave.do; \
 	fi
 # =====================================================
 
@@ -291,7 +291,7 @@ create_wave_do_files:
 # == PRINT LOGS ==
 print_compile_logs_file:
 	cat $(COMPILE_LOGS_FILE) | sed -e ''/Errors/s//`printf "\033[31mErrors\033[0m"`/';'/Warnings/s//`printf "\033[38;2;255;191;20mWarnings\033[0m"`/';'/vcom/s//`printf "\033[36mvcom\033[0m"`/';'/vlog/s//`printf "\033[36mvlog\033[0m"`/';'/Warning:/s//`printf "\033[38;2;255;191;20mWarning:\033[0m"`/';'/\.vhd/s//`printf "\033[36m\.vhd\033[0m"`/';'/\.sv/s//`printf "\033[36m\.sv\033[0m"`/''	
-# ================
+#================
 
 
 # == Add Color ==

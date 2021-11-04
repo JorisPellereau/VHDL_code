@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-11
--- Last update: 2021-05-30
+-- Last update: 2021-10-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -168,9 +168,10 @@ begin  -- architecture behv
 
   o_tx <= s_tx;
 
-  o_max7219_clk  <= s_max7219_clk;
-  o_max7219_data <= s_max7219_data;
-  o_max7219_load <= s_max7219_load;
+  -- Inverted Outputs in order to fit with 75HCT540N component
+  o_max7219_clk  <= not s_max7219_clk;
+  o_max7219_data <= not s_max7219_data;
+  o_max7219_load <= not s_max7219_load;
 
 
   -- Alive RX/TX Leds
