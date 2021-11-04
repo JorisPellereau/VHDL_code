@@ -50,7 +50,8 @@ module tb_top
    wire [15:0] s_data;   
    wire        s_max7219_load;   
    wire        s_max7219_data;
-   wire        s_max7219_clk;   
+   wire        s_max7219_clk;
+   wire        s_done;   
    
    
    // == CLK GEN INST ==
@@ -98,12 +99,14 @@ module tb_top
    assign s_wait_event_if.wait_alias[1] = "CLK";
    assign s_wait_event_if.wait_alias[2] = "O_MAX7219_LOAD";
    assign s_wait_event_if.wait_alias[3] = "O_MAX7219_CLK";
+   assign s_wait_event_if.wait_alias[4] = "O_DONE";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
    assign s_wait_event_if.wait_signals[2] = s_max7219_load;
    assign s_wait_event_if.wait_signals[3] = s_max7219_clk;
+   assign s_wait_event_if.wait_signals[4] = s_done;   
 
    // INIT SET ALIAS
    assign s_set_injector_if.set_alias[0]  = "I_START";
@@ -126,12 +129,14 @@ module tb_top
    assign s_check_level_if.check_alias[0] = "O_MAX7219_LOAD";
    assign s_check_level_if.check_alias[1] = "O_MAX7219_DATA";
    assign s_check_level_if.check_alias[2] = "O_MAX7219_CLK";
+   assign s_check_level_if.check_alias[3] = "O_DONE";
 
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_max7219_load;   
    assign s_check_level_if.check_signals[1] =  s_max7219_data;   
    assign s_check_level_if.check_signals[2] =  s_max7219_clk;
+   assign s_check_level_if.check_signals[3] =  s_done;
    // =====================================================
 
 
@@ -228,7 +233,9 @@ module tb_top
 
 	  .o_max7219_load  (s_max7219_load),
 	  .o_max7219_data  (s_max7219_data),
-	  .o_max7219_clk   (s_max7219_clk)
+	  .o_max7219_clk   (s_max7219_clk),
+	  
+	  .o_done (s_done)
    );
    
    // ==============
