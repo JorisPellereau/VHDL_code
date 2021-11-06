@@ -114,6 +114,13 @@ print_generic_rules:
 	@echo ""
 	@echo "- Compile Design and Testbench :"
 	@echo "make compile_all"
+	@echo ""
+	@echo ""
+	@echo "- Check One Test :"
+	@echo "make check_one_test [TEST=TEST_XX]"
+	@echo ""
+	@echo "- Check Multiple Test :"
+	@echo "make check_multiple_test [TEST_LIST=\"TEST_XX TEST_YY TEST_ZZ\"]"
 
 
 # Generic Commands
@@ -251,7 +258,7 @@ compile_all : clean_all create_project_dir libs compile_design compile_testbench
 run_test: generate_scn
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
 	$(vsim) $(VSIM_ARGS) $(TB_LIB_TOP) $(LIB_ARGS) $(TRANSCRIPT_ARGS) $(VSIM_G_ARGS) $(RUN_ARGS)
-
+	@make check_one_test
 # ===================
 
 
@@ -293,6 +300,15 @@ print_compile_logs_file:
 	cat $(COMPILE_LOGS_FILE) | sed -e ''/Errors/s//`printf "\033[31mErrors\033[0m"`/';'/Warnings/s//`printf "\033[38;2;255;191;20mWarnings\033[0m"`/';'/vcom/s//`printf "\033[36mvcom\033[0m"`/';'/vlog/s//`printf "\033[36mvlog\033[0m"`/';'/Warning:/s//`printf "\033[38;2;255;191;20mWarning:\033[0m"`/';'/\.vhd/s//`printf "\033[36m\.vhd\033[0m"`/';'/\.sv/s//`printf "\033[36m\.sv\033[0m"`/''	
 #================
 
+# == Check if Test is PASS or KO ==
+
+# TEST must be pass as argument
+check_one_test:	
+	@sed -e '1,/# == Beginning of Sequencer == #/ d; /# == End of Test == #/,$$ d' $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt | grep -n "Error:*\|Failed*\|fail*" && echo $(TEST) : "\033[31mFailed\033[0m" || echo $(TEST) : "\033[32mPASS\033[0m"
+	
+check_multiple_tests:
+	@$(foreach list, $(TEST_LIST), sed -e '1,/# == Beginning of Sequencer == #/ d; /# == End of Test == #/,$$ d' $(TRANSCRIPTS_DIR)/$(list)_transcript.txt | grep -n "Error:*\|Failed*\|fail*" && echo $(list) : "\033[31mFailed\033[0m" || echo $(list) : "\033[32mPASS\033[0m";) \
+# =================================
 
 # == Add Color ==
 # $(RED)="\031[32m"
