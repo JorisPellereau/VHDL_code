@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-05
--- Last update: 2021-08-01
+-- Last update: 2021-11-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -72,6 +72,7 @@ architecture behv of max7219_if is
   signal s_cnt_half_period    : integer range 0 to G_MAX_HALF_PERIOD - 1;  -- Counter for clk generation
   signal s_load_px            : std_logic_vector(G_LOAD_DURATION - 1 downto 0);  -- Pipe of s_load
   signal s_end_frame          : std_logic;  -- End of frame internal flag
+  signal s_ongoing            : std_logic;  -- Frame ongoing
 begin  -- architecture behv
 
   -- Latch the inputs
@@ -82,16 +83,19 @@ begin  -- architecture behv
       s_en_load   <= '0';
       s_data      <= (others => '0');
       s_init_data <= '0';
+      s_ongoing   <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
       s_start     <= i_start;
       s_init_data <= '0';
-      if(s_start_r_edge = '1') then
+      if(s_start_r_edge = '1' and s_ongoing = '0') then
         s_en_load   <= i_en_load;
         s_data      <= i_data;
         s_init_data <= '1';
+        s_ongoing   <= '1';             -- Set ongoing flag
       elsif(s_done = '1') then
         s_en_load <= '0';
         s_data    <= (others => '0');
+        s_ongoing <= '0';               -- Reset ongoing flag
       end if;
     end if;
   end process p_latch_inputs;
