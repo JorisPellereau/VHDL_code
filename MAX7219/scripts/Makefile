@@ -185,6 +185,11 @@ compile_testbench : compile_generic_tb_v_files compile_testbench_max719_if_sourc
 
 # == SCENARII LIST ==
 SCN_LIST_MAX7219_IF+=MAX7219_IF_00.py
+SCN_LIST_MAX7219_IF+=MAX7219_IF_01.py
+SCN_LIST_MAX7219_IF+=MAX7219_IF_02.py
+SCN_LIST_MAX7219_IF+=MAX7219_IF_03.py
+SCN_LIST_MAX7219_IF+=MAX7219_IF_04.py
+
 SCN_LIST+=$(SCN_LIST_MAX7219_IF)
 # =======================
 
@@ -193,11 +198,29 @@ LIB_ARGS=-L lib_max7219_interface
 #-L lib_uart_display_ctrl
 # ==============
 
+# == Change G_LOAD_DURATION Generic for test MAX7219_IF_03 ==
+# $(TEST) for single test
+# $(TEST_LIST) for run_multiple_tests
+ifeq ($(TEST), MAX7219_IF_03)
+  VSIM_G_ARGS+=-G/tb_top/i_dut/G_LOAD_DURATION=40
+else ifneq (, $(findstring MAX7219_IF_03, $(TEST_LIST)))
+  VSIM_G_ARGS_FOR_LIST+=-G/tb_top/i_dut/G_LOAD_DURATION=40
+endif
+
+# == Change G_LOAD_DURATION and G_MAX_HALF_PERIOD Generics for test MAX7219_IF_04 ==
+# $(TEST) for single test
+# $(TEST_LIST) for run_multiple_tests
+ifeq ($(TEST), MAX7219_IF_04)
+  VSIM_G_ARGS+=-G/tb_top/i_dut/G_MAX_HALF_PERIOD=50
+  VSIM_G_ARGS+=-G/tb_top/i_dut/G_LOAD_DURATION=40
+else ifneq (, $(findstring MAX7219_IF_04, $(TEST_LIST)))
+  VSIM_G_ARGS_FOR_LIST+=-G/tb_top/i_dut/G_MAX_HALF_PERIOD=50
+  VSIM_G_ARGS_FOR_LIST+=-G/tb_top/i_dut/G_LOAD_DURATION=40
+endif
+
 
 # == RUN TEST ==
 run_tb_max7219_if:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
-# ==============
-
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
