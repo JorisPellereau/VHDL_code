@@ -20,9 +20,11 @@ endif
 ifeq ($(SEL_STATION), VM)
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+  TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_data_collector
 else ifeq ($(SEL_STATION), LINUX)
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
+  TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_data_collector
 endif
 # =========================================
 
@@ -64,6 +66,7 @@ endif
 # Enable Transcript
 ifeq ($(TRANSCRIPT_EN), ON)
   TRANSCRIPT_ARGS+= -l $(TRANSCRIPTS_DIR)/$(TEST)_transcript.txt
+  TRANSCRIPT_ARGS_FOR_LIST+= -l $(TRANSCRIPTS_DIR)/$(list)_transcript.txt
 endif
 
 # Enable Do File
@@ -73,7 +76,8 @@ endif
 # ======================
 
 
-# == GENERIC TB FILES ==
+# ==== GENERIC TB FILES ====
+# -- Current TB Files --
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
@@ -82,8 +86,14 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_duration_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/check_level_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_modules_custom_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/tb_tasks.sv
-# ======================
 
+# -- CUSTOM TB Files --
+# -- UART TB MODULES --
+
+# -- DATA COLLECTOR V FILES LIST --
+src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/data_collector.sv
+
+# ===========================
 
 print_generic_rules:
 	@echo "== GenericMakefile rules =="
@@ -271,7 +281,7 @@ VSIM_G_ARGS_FOR_LIST+=-G/tb_top/SCN_FILE_PATH=$(SCN_TXT_DIR)/$(list).txt
 RUN_ARGS_FOR_LIST+= -do $(RUN_DO_DIR)/$(list)_run.do
 run_multiple_tests: generate_all_scn
 		    cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-		    $(foreach list, $(TEST_LIST), $(vsim) $(VSIM_ARGS) $(TB_LIB_TOP) $(LIB_ARGS) $(TRANSCRIPT_ARGS) $(VSIM_G_ARGS_FOR_LIST) $(RUN_ARGS_FOR_LIST);)
+		    $(foreach list, $(TEST_LIST), $(vsim) $(VSIM_ARGS) $(TB_LIB_TOP) $(LIB_ARGS) $(TRANSCRIPT_ARGS_FOR_LIST) $(VSIM_G_ARGS_FOR_LIST) $(RUN_ARGS_FOR_LIST);)
 		    @make check_multiple_tests
 # ===================
 

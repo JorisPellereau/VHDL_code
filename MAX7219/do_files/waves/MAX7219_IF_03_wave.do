@@ -46,6 +46,19 @@ add wave -noupdate -expand -group MAX7219_SPI_Checker /tb_top/max7219_spi_checke
 add wave -noupdate -expand -group MAX7219_SPI_Checker /tb_top/max7219_spi_checker_0/s_cnt_15_done
 add wave -noupdate -expand -group MAX7219_SPI_Checker /tb_top/max7219_spi_checker_0/s_max7219_clk_r_edge
 add wave -noupdate -expand -group MAX7219_SPI_Checker /tb_top/max7219_spi_checker_0/s_max7219_load_f_edge
+add wave -noupdate -expand -group DATA_COLLECTOR /tb_top/i_data_collector_0/clk
+add wave -noupdate -expand -group DATA_COLLECTOR /tb_top/i_data_collector_0/rst_n
+add wave -noupdate -expand -group DATA_COLLECTOR /tb_top/i_data_collector_0/i_data
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/G_NB_COLLECTOR
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/G_DATA_WIDTH
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/clk
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_init_file
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_file_is_init
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_close_file
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_start_collect
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_stop_collect
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_file
+add wave -noupdate -expand -group data_collector_if /tb_top/s_data_collector_if/s_file_and_path
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {299967 ps} 0} {{Cursor 2} {3522901 ps} 0}
 quietly wave cursor active 2
@@ -63,4 +76,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {2822373 ps} {5999089 ps}
+WaveRestoreZoom {57192120 ps} {60368836 ps}

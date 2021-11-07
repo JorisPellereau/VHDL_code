@@ -70,8 +70,12 @@ all: print_generic_rules
 	@echo "=========================="
 	@echo ""
 	@echo "== RUN TESTS =="
-	@echo "- Run Test of MAX7219 I/F"
+	@echo "- Run Test of MAX7219 I/F :"
 	@echo "make run_tb_max7219_if TEST=[TEST_NB]"
+	@echo ""
+	@echo "- Run All Tests of MAX7219 I/F in Console mode :"
+	@echo "make run_all_tests_tb_max7219_if"
+	@echo ""
 	@echo ""
 	@echo "- Run Test of MAX7219 Static"
 	@echo "make run_tb_max7219_static TEST=[TEST_NB]"
@@ -119,6 +123,7 @@ src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_emul.sv
 src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/max7219_matrix_emul.sv
 src_tb_v+=$(GENERIC_TB_SRC_DIR)/../TB_modules/MAX7219_checker/max7219_spi_checker.sv
 # ====================================
+
 
 
 # == Specific Testbench File List ==
@@ -170,6 +175,7 @@ compile_design : compile_others compile_max7219_interface
 ## == COMPILE TESTBENCH == ##
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 
 compile_testbench_max719_if_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
@@ -184,6 +190,7 @@ compile_testbench : compile_generic_tb_v_files compile_testbench_max719_if_sourc
 # =======================
 
 # == SCENARII LIST ==
+# Python test list
 SCN_LIST_MAX7219_IF+=MAX7219_IF_00.py
 SCN_LIST_MAX7219_IF+=MAX7219_IF_01.py
 SCN_LIST_MAX7219_IF+=MAX7219_IF_02.py
@@ -191,6 +198,13 @@ SCN_LIST_MAX7219_IF+=MAX7219_IF_03.py
 SCN_LIST_MAX7219_IF+=MAX7219_IF_04.py
 
 SCN_LIST+=$(SCN_LIST_MAX7219_IF)
+
+# Name test list
+MAX7219_IF_TEST_LIST+=MAX7219_IF_00
+MAX7219_IF_TEST_LIST+=MAX7219_IF_01
+MAX7219_IF_TEST_LIST+=MAX7219_IF_02
+MAX7219_IF_TEST_LIST+=MAX7219_IF_03
+MAX7219_IF_TEST_LIST+=MAX7219_IF_04
 # =======================
 
 # == LIB ARGS ==
@@ -220,7 +234,12 @@ endif
 
 
 # == RUN TEST ==
+# Run single test of MAX7219 I/F
 run_tb_max7219_if:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
+
+# Run All Tests MAX7219 in console Mode
+run_all_tests_tb_max7219_if:
+	make run_multiple_tests TEST_LIST="$(MAX7219_IF_TEST_LIST)" TRANSCRIPT_EN=ON GUI=OFF
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric

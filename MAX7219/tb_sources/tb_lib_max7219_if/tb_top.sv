@@ -30,6 +30,7 @@
 `include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
 `include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/tb_tasks.sv"
 
+// Data Collector Modules and Class
 
 // TB TOP
 module tb_top
@@ -57,6 +58,9 @@ module tb_top
    wire        s_frame_received;
    wire        s_load_received;
    wire [15:0] s_data_received;
+
+   // == DATA Collector Signals ==
+   wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
    
    
    
@@ -94,6 +98,13 @@ module tb_top
 		        .CHECK_WIDTH (`C_CHECK_WIDTH)
     )
     s_check_level_if();
+
+   data_collector_intf #(
+			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+			 )
+   s_data_collector_if();
+   
    
 
    // =====================================================
@@ -174,6 +185,28 @@ module tb_top
    
    // ===========================
 
+   // == DATA Collector INST ==
+   wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
+   wire rst_n_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+   
+   data_collector #(
+		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+		    .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+		    )
+   i_data_collector_0 (
+		       .clk                  (clk_data_collector),
+		       .rst_n                (rst_n_data_collector),
+		       .i_data               (s_data_collector),
+		       .data_collector_if    (s_data_collector_if)
+		       );
+
+   
+   assign clk_data_collector[0]   = clk;
+   assign rst_n_data_collector[0] = rst_n;   
+   assign s_data_collector[0]     = {clk, rst_n, s_start, s_en_load, s_data}; // Collect input Data
+   // =========================   
+
+
 
    // == TESTBENCH SEQUENCER ==
    tb_modules_custom_class tb_modules_custom_class_inst = new();
@@ -203,30 +236,6 @@ module tb_top
    // ========================
 
 
-   
-   // == MAX7219 MATRIX EMUL ==
-   // max7219_checker_wrapper #(
-   //                       .G_NB_MATRIX  (8)
-   //  )
-   //  i_max7219_checker_wrapper_0
-   //  (
-   //                        .clk  (clk),
-   //                        .rst_n  (rst_n),
-     
-   //                        .i_max7219_clk   (s_max7219_clk),
-   //                        .i_max7219_din   (s_max7219_data),
-   //                        .i_max7219_load  (s_max7219_load),
-     
-   //                        .i_display_reg_matrix_n   (s_display_reg_matrix_n),
-   //                        .i_display_screen_matrix  (s_display_screen_matrix)
-     
-   //  );
-   // =========================
-   
-
-   //assign s_display_screen_matrix = (s_sel == 0) ? s_display_screen_matrix_tb : s_max7219_if_en_load; // Mux for selection
-
-
    // == MAX7219 SPI Checker ==
    max7219_spi_checker max7219_spi_checker_0 (
 					      .clk    (clk),
@@ -245,8 +254,8 @@ module tb_top
 
    // == DUT INST ==
    max7219_if #(
-		.G_MAX_HALF_PERIOD (4),
-		.G_LOAD_DURATION   (4)
+		.G_MAX_HALF_PERIOD (`C_MAX_HALF_PERIOD),
+		.G_LOAD_DURATION   (`C_LOAD_DURATION)
    )
    i_dut (
 	  .clk    (clk),
@@ -261,9 +270,7 @@ module tb_top
 	  .o_max7219_clk   (s_max7219_clk),
 	  
 	  .o_done (s_done)
-   );
-   
+   );   
    // ==============
-
-   
+      
 endmodule // tb_top
