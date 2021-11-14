@@ -213,6 +213,14 @@ module tb_top
 		       .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
 		       ) 
    uart_checker_if();
+
+   // Create UART checker Interface
+   uart_checker_intf #(
+		       .G_NB_UART_CHECKER    (`C_NB_UART_CHECKER),
+		       .G_DATA_WIDTH         (`C_UART_DATA_WIDTH),
+		       .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
+		       ) 
+   uart_checker_if_2();
    
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
@@ -414,17 +422,29 @@ module tb_top
    // =============================
    
 
-   // == TESTBENCH Configuration ==
+   // == TESTBENCH Configuration ==      
+   /*tb_modules_custom_class #(.G_NB_UART_CHECKER   (`C_NB_UART_CHECKER),
+			     .G_DATA_WIDTH        (`C_UART_DATA_WIDTH),
+			     .G_BUFFER_ADDR_WIDTH (`C_UART_BUFFER_ADDR_WIDTH)
+			     ) tb_modules_custom_class_inst_default = new();*/ // Default inst
 
-   // Declare UART TB Modules Class 
-   tb_modules_custom_uart #(
-			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
-			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
-			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
-			    ) tb_modules_custom_class_inst = new(uart_checker_if);
+   // // Modules that I want to control
+   // // Declare UART TB Modules Class 
+   // tb_modules_custom_uart #(
+   // 			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
+   // 			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
+   // 			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
+   // 			    ) tb_modules_custom_class_inst = new(uart_checker_if, "UART_RPi");
+
+   // // Declare UART TB Modules Class - Test of a 2nd instanciation
+   // tb_modules_custom_uart #(
+   // 			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
+   // 			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
+   // 			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
+   // 			    ) tb_modules_custom_class_inst_2 = new(uart_checker_if, "UART_RPi_TEST");
 
    
-   // CREATE CLASS - Configure Parameters
+   // CREATE Handle and object CLASS - Configure Parameters
    static tb_class #( `C_SET_SIZE, 
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
@@ -434,17 +454,39 @@ module tb_top
                       `C_CHECK_WIDTH
 		      )
    
-   tb_class_inst= new (s_wait_event_if, 
+   tb_class_inst = new (s_wait_event_if, 
                        s_set_injector_if, 
                        s_wait_duration_if,
-                       s_check_level_if,
-		       tb_modules_custom_class_inst);
+                       s_check_level_if/*,
+		       tb_modules_custom_class_inst_default*/);
+   
+//tb_modules_custom_class_inst_default); // Pass default TB_MODULE_CUSTOM
    
    initial begin// : TB_SEQUENCER
-
-
+      //tb_modules_custom_class_inst_default = new();
+      
+      //tb_modules_custom_class_inst_default = tb_modules_custom_class_inst; // p = c
+//      $cast(tb_modules_custom_class_inst_default, tb_modules_custom_class_inst_2);
+      
+      
       // Add Alias of Custom TB Modules
-      tb_modules_custom_class_inst.ADD_TB_CUSTOM_MODULES_ALIAS("UART_RPi", 0);
+      //tb_modules_custom_class_inst_default.ADD_TB_CUSTOM_MODULES_ALIAS("UART_RPi", 0);
+
+      // Add Infos of Custom Modules
+      // tb_modules_custom_class_inst_default.ADD_INFO(tb_modules_custom_class_inst.tb_uart_class_inst.UART_COMMAND_TYPE, 
+      // 						    tb_modules_custom_class_inst.tb_uart_class_inst.UART_CMD_ARRAY, 
+      // 						    tb_modules_custom_class_inst.tb_uart_class_inst.UART_ALIAS);
+
+      // // Add Infos of Custom Modules
+      // tb_modules_custom_class_inst_default.ADD_INFO(tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_COMMAND_TYPE, 
+      // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_CMD_ARRAY, 
+      // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_ALIAS);
+
+      // init_uart_custom_class
+      tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if,   "UART_RPi");
+      tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if_2, "UART_RPi_TEST");
+      
+      
       
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
