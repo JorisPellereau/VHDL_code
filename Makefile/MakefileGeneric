@@ -23,6 +23,7 @@ ifeq ($(SEL_STATION), VM)
   TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_data_collector
 else ifeq ($(SEL_STATION), LINUX)
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/lib_testbench
+  GENERIC_TB_CLASS_SRC_DIR=~/Documents/GitHub/Verilog/lib_tb_generic
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_uart
   TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/lib_tb_data_collector
 endif
@@ -78,6 +79,7 @@ endif
 
 # ==== GENERIC TB FILES ====
 # -- Current TB Files --
+src_gen_tb_v+=$(GENERIC_TB_CLASS_SRC_DIR)/tb_check_level_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/set_injector_tb.sv
