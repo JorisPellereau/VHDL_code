@@ -79,6 +79,7 @@ endif
 
 # ==== GENERIC TB FILES ====
 # -- Current TB Files --
+src_gen_tb_v+=$(GENERIC_TB_CLASS_SRC_DIR)/tb_wait_event_class.sv
 src_gen_tb_v+=$(GENERIC_TB_CLASS_SRC_DIR)/tb_check_level_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/wait_event_wrapper.sv

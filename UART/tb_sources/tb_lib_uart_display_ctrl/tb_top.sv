@@ -363,7 +363,7 @@ module tb_top
    
    // INIT CHECK LEVEL ALIAS
 
-   assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
+   /*assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
    assign s_check_level_if.check_alias[1] = "O_RDATA_STATIC";   
    assign s_check_level_if.check_alias[2] = "O_PTR_EQUALITY_STATIC";
    assign s_check_level_if.check_alias[3] = "O_STATIC_BUSY";      
@@ -372,7 +372,7 @@ module tb_top
    assign s_check_level_if.check_alias[6] = "O_MAX7219_LOAD";
    assign s_check_level_if.check_alias[7] = "O_MAX7219_DATA";
    assign s_check_level_if.check_alias[8] = "O_MAX7219_CLK";
-   assign s_check_level_if.check_alias[9] = "O_SPI_DATA_RECEIVED";
+   assign s_check_level_if.check_alias[9] = "O_SPI_DATA_RECEIVED";*/
    
 
    // SET CHECK_SIGNALS
@@ -484,17 +484,28 @@ module tb_top
 
       // Add Alias of Generic TB Modules
 
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("RST_N",                 0);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("CLK",                   1);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_CONFIG_DONE",         2);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_LOAD",        3);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_PTR_EQUALITY_STATIC", 4);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_STATIC_BUSY",         5);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_SCROLLER_BUSY",       6);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("STATIC_DISCARD",        7);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("SPI_FRAME_RECEIVED",    8);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("SPI_LOAD_RECEIVED",     9);
+
       // Check Level Alias
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_CONFIG_DONE", 0);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_STATIC", 1);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_CONFIG_DONE",         0);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_STATIC",        1);
       tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_PTR_EQUALITY_STATIC", 2);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_STATIC_BUSY", 3);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SCROLLER_BUSY", 4);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_SCROLLER", 5);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD", 6);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA", 7);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK", 8);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SPI_DATA_RECEIVED", 9);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_STATIC_BUSY",         3);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SCROLLER_BUSY",       4);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_SCROLLER",      5);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD",        6);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA",        7);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK",         8);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SPI_DATA_RECEIVED",  9);
 
 	
       // init_uart_custom_class
