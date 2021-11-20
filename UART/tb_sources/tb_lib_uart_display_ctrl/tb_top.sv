@@ -482,6 +482,21 @@ module tb_top
       // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_CMD_ARRAY, 
       // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_ALIAS);
 
+      // Add Alias of Generic TB Modules
+
+      // Check Level Alias
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_CONFIG_DONE", 0);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_STATIC", 1);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_PTR_EQUALITY_STATIC", 2);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_STATIC_BUSY", 3);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SCROLLER_BUSY", 4);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_SCROLLER", 5);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD", 6);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA", 7);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK", 8);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SPI_DATA_RECEIVED", 9);
+
+	
       // init_uart_custom_class
       tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if,   "UART_RPi");
       tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if_2, "UART_RPi_TEST");
