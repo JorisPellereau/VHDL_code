@@ -483,7 +483,27 @@ module tb_top
       // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_ALIAS);
 
       // Add Alias of Generic TB Modules
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_STATIC_DYN", 0);      
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_NEW_DISPLAY", 1);      
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_NEW_CONFIG_VAL", 2);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_EN_STATIC", 3); 
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_RAM_START_PTR_SCROLLER", 12);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_MSG_LENGTH_SCROLLER", 13);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_MAX_TEMPO_CNT_SCROLLER", 15);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_ME_SCROLLER", 16);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_WE_SCROLLER", 17);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_ADDR_SCROLLER", 18);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_WDATA_SCROLLER", 19);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DISPLAY_TEST", 20);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DECODE_MODE", 21);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_INTENSITY", 22);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_SCAN_LIMIT", 23);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_SHUTDOWN", 24);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_SCREEN_SEL", 25);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_SCREEN_MATRIX", 26);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_REG_MATRIX_N", 27);      
 
+      
       tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("RST_N",                 0);
       tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("CLK",                   1);
       tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_CONFIG_DONE",         2);

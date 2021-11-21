@@ -51,6 +51,8 @@ data_to_read = str_cmd_2_hex_data_cmd("RAM_STATIC_DONE")
 scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 
 scn.generic_tb_cmd.CHK("O_CONFIG_DONE", 0, "OK")
+scn.generic_tb_cmd.SET("DISPLAY_SCREEN_SEL", 1)
+scn.generic_tb_cmd.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/s_config_done 0 0")
 scn.END_TEST()
 
 # scn.print_line("//-- Send : INIT_RAM_STATICI\n")
