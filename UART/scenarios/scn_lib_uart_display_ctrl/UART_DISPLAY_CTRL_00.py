@@ -8,7 +8,7 @@
 import sys
 
 # Path of Python SCN scripts generator
-scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/scripts/scn_generator'
+scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/scn_generator'
 sys.path.append(scn_generator_class)
 
 scn_txt_path = "/home/linux-jp/SIMULATION_VHDL/UART/scenarios/"
@@ -50,147 +50,145 @@ scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
 data_to_read = str_cmd_2_hex_data_cmd("RAM_STATIC_DONE")
 scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
 
-scn.generic_tb_cmd.CHK("O_CONFIG_DONE", 0, "OK")
-scn.generic_tb_cmd.SET("DISPLAY_SCREEN_SEL", 1)
-scn.generic_tb_cmd.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/s_config_done 0 0")
+
+
+
+scn.print_line("//-- Send : INIT_RAM_STATICI\n")
+data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_STATICI")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("CMD_DISCARD")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+scn.generic_tb_cmd.WAIT(1, "us")
+
+
+scn.print_line("//-- STEP 2\n")
+scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
+scn.print_line("\n")
+
+
+data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+data_to_send = []
+data_to_send.append(0x00) # Start @
+for i in range(0, 128):
+    data_to_send.append(0xAA)
+    
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+
+
+scn.print_line("//-- STEP 3\n")
+scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
+scn.print_line("\n")
+
+
+data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+data_to_send = []
+data_to_send.append(0x00) # Start @
+for i in range(0, 128):
+    data_to_send.append(i)
+    
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+scn.print_line("//-- STEP 4\n")
+scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
+scn.print_line("\n")
+
+
+data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+data_to_send = []
+data_to_send.append(64) # Start @
+for i in range(0, 128):
+    data_to_send.append(i)
+    
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+
+
+scn.print_line("//-- STEP 5\n")
+scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
+scn.print_line("\n")
+
+
+data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+data_to_send = []
+data_to_send.append(2*64) # Start @
+for i in range(0, 128):
+    data_to_send.append(i)
+    
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+
+scn.print_line("//-- STEP 6\n")
+scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
+scn.print_line("\n")
+
+
+data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+data_to_send = []
+data_to_send.append(3*64) # Start @
+for i in range(0, 128):
+    data_to_send.append(i)
+    
+scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
+
+data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
+scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
+
+
+
 scn.END_TEST()
-
-# scn.print_line("//-- Send : INIT_RAM_STATICI\n")
-# data_to_send = str_cmd_2_hex_data_cmd("INIT_RAM_STATICI")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("CMD_DISCARD")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-# scn.generic_tb_cmd.WAIT(1, "us")
-
-
-# scn.print_line("//-- STEP 2\n")
-# scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
-# scn.print_line("\n")
-
-
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# data_to_send = []
-# data_to_send.append(0x00) # Start @
-# for i in range(0, 128):
-#     data_to_send.append(0xAA)
-    
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-
-
-# scn.print_line("//-- STEP 3\n")
-# scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
-# scn.print_line("\n")
-
-
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# data_to_send = []
-# data_to_send.append(0x00) # Start @
-# for i in range(0, 128):
-#     data_to_send.append(i)
-    
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# scn.print_line("//-- STEP 4\n")
-# scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
-# scn.print_line("\n")
-
-
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# data_to_send = []
-# data_to_send.append(64) # Start @
-# for i in range(0, 128):
-#     data_to_send.append(i)
-    
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-
-
-# scn.print_line("//-- STEP 5\n")
-# scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
-# scn.print_line("\n")
-
-
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# data_to_send = []
-# data_to_send.append(2*64) # Start @
-# for i in range(0, 128):
-#     data_to_send.append(i)
-    
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-
-# scn.print_line("//-- STEP 6\n")
-# scn.print_line("//-- Injection of LOAD_PATTERN_STATIC and check\n")
-# scn.print_line("\n")
-
-
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_PATTERN_STATIC")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-# data_to_send = []
-# data_to_send.append(3*64) # Start @
-# for i in range(0, 128):
-#     data_to_send.append(i)
-    
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_STATIC_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-
-
-# scn.END_TEST()
 
