@@ -17,12 +17,7 @@
 
 
 `include "/home/linux-jp/Documents/GitHub/VHDL_code/UART/tb_sources/tb_lib_uart_display_ctrl/testbench_setup.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_tb_uart/uart_checker_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 
 // TB TOP
@@ -213,6 +208,14 @@ module tb_top
 		       .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
 		       ) 
    uart_checker_if();
+
+   // Create UART checker Interface
+   uart_checker_intf #(
+		       .G_NB_UART_CHECKER    (`C_NB_UART_CHECKER),
+		       .G_DATA_WIDTH         (`C_UART_DATA_WIDTH),
+		       .G_BUFFER_ADDR_WIDTH  (`C_UART_BUFFER_ADDR_WIDTH)
+		       ) 
+   uart_checker_if_2();
    
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
@@ -355,7 +358,7 @@ module tb_top
    
    // INIT CHECK LEVEL ALIAS
 
-   assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
+   /*assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
    assign s_check_level_if.check_alias[1] = "O_RDATA_STATIC";   
    assign s_check_level_if.check_alias[2] = "O_PTR_EQUALITY_STATIC";
    assign s_check_level_if.check_alias[3] = "O_STATIC_BUSY";      
@@ -364,7 +367,7 @@ module tb_top
    assign s_check_level_if.check_alias[6] = "O_MAX7219_LOAD";
    assign s_check_level_if.check_alias[7] = "O_MAX7219_DATA";
    assign s_check_level_if.check_alias[8] = "O_MAX7219_CLK";
-   assign s_check_level_if.check_alias[9] = "O_SPI_DATA_RECEIVED";
+   assign s_check_level_if.check_alias[9] = "O_SPI_DATA_RECEIVED";*/
    
 
    // SET CHECK_SIGNALS
@@ -414,17 +417,29 @@ module tb_top
    // =============================
    
 
-   // == TESTBENCH Configuration ==
+   // == TESTBENCH Configuration ==      
+   /*tb_modules_custom_class #(.G_NB_UART_CHECKER   (`C_NB_UART_CHECKER),
+			     .G_DATA_WIDTH        (`C_UART_DATA_WIDTH),
+			     .G_BUFFER_ADDR_WIDTH (`C_UART_BUFFER_ADDR_WIDTH)
+			     ) tb_modules_custom_class_inst_default = new();*/ // Default inst
 
-   // Declare UART TB Modules Class 
-   tb_modules_custom_uart #(
-			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
-			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
-			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
-			    ) tb_modules_custom_class_inst = new(uart_checker_if);
+   // // Modules that I want to control
+   // // Declare UART TB Modules Class 
+   // tb_modules_custom_uart #(
+   // 			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
+   // 			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
+   // 			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
+   // 			    ) tb_modules_custom_class_inst = new(uart_checker_if, "UART_RPi");
+
+   // // Declare UART TB Modules Class - Test of a 2nd instanciation
+   // tb_modules_custom_uart #(
+   // 			    .G_NB_UART_CHECKER     (`C_NB_UART_CHECKER),
+   // 			    .G_DATA_WIDTH          (`C_UART_DATA_WIDTH),
+   // 			    .G_BUFFER_ADDR_WIDTH   (`C_UART_BUFFER_ADDR_WIDTH)
+   // 			    ) tb_modules_custom_class_inst_2 = new(uart_checker_if, "UART_RPi_TEST");
 
    
-   // CREATE CLASS - Configure Parameters
+   // CREATE Handle and object CLASS - Configure Parameters
    static tb_class #( `C_SET_SIZE, 
                       `C_SET_WIDTH,
                       `C_WAIT_ALIAS_NB,
@@ -434,17 +449,85 @@ module tb_top
                       `C_CHECK_WIDTH
 		      )
    
-   tb_class_inst= new (s_wait_event_if, 
+   tb_class_inst = new (s_wait_event_if, 
                        s_set_injector_if, 
                        s_wait_duration_if,
-                       s_check_level_if,
-		       tb_modules_custom_class_inst);
+                       s_check_level_if/*,
+		       tb_modules_custom_class_inst_default*/);
+   
+//tb_modules_custom_class_inst_default); // Pass default TB_MODULE_CUSTOM
    
    initial begin// : TB_SEQUENCER
-
-
+      //tb_modules_custom_class_inst_default = new();
+      
+      //tb_modules_custom_class_inst_default = tb_modules_custom_class_inst; // p = c
+//      $cast(tb_modules_custom_class_inst_default, tb_modules_custom_class_inst_2);
+      
+      
       // Add Alias of Custom TB Modules
-      tb_modules_custom_class_inst.ADD_TB_CUSTOM_MODULES_ALIAS("UART_RPi", 0);
+      //tb_modules_custom_class_inst_default.ADD_TB_CUSTOM_MODULES_ALIAS("UART_RPi", 0);
+
+      // Add Infos of Custom Modules
+      // tb_modules_custom_class_inst_default.ADD_INFO(tb_modules_custom_class_inst.tb_uart_class_inst.UART_COMMAND_TYPE, 
+      // 						    tb_modules_custom_class_inst.tb_uart_class_inst.UART_CMD_ARRAY, 
+      // 						    tb_modules_custom_class_inst.tb_uart_class_inst.UART_ALIAS);
+
+      // // Add Infos of Custom Modules
+      // tb_modules_custom_class_inst_default.ADD_INFO(tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_COMMAND_TYPE, 
+      // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_CMD_ARRAY, 
+      // 						    tb_modules_custom_class_inst_2.tb_uart_class_inst.UART_ALIAS);
+
+      // Add Alias of Generic TB Modules
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_STATIC_DYN", 0);      
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_NEW_DISPLAY", 1);      
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_NEW_CONFIG_VAL", 2);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_EN_STATIC", 3); 
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_RAM_START_PTR_SCROLLER", 12);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_MSG_LENGTH_SCROLLER", 13);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_MAX_TEMPO_CNT_SCROLLER", 15);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_ME_SCROLLER", 16);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_WE_SCROLLER", 17);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_ADDR_SCROLLER", 18);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_WDATA_SCROLLER", 19);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DISPLAY_TEST", 20);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DECODE_MODE", 21);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_INTENSITY", 22);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_SCAN_LIMIT", 23);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_SHUTDOWN", 24);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_SCREEN_SEL", 25);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_SCREEN_MATRIX", 26);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("DISPLAY_REG_MATRIX_N", 27);      
+
+      
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("RST_N",                 0);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("CLK",                   1);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_CONFIG_DONE",         2);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_LOAD",        3);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_PTR_EQUALITY_STATIC", 4);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_STATIC_BUSY",         5);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_SCROLLER_BUSY",       6);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("STATIC_DISCARD",        7);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("SPI_FRAME_RECEIVED",    8);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("SPI_LOAD_RECEIVED",     9);
+
+      // Check Level Alias
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_CONFIG_DONE",         0);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_STATIC",        1);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_PTR_EQUALITY_STATIC", 2);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_STATIC_BUSY",         3);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SCROLLER_BUSY",       4);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_RDATA_SCROLLER",      5);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD",        6);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA",        7);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK",         8);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_SPI_DATA_RECEIVED",  9);
+
+	
+      // init_uart_custom_class
+      tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if,   "UART_RPi");
+      tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if_2, "UART_RPi_TEST");
+      
+      
       
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
