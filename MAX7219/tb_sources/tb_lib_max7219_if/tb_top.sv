@@ -15,20 +15,8 @@
 
 `timescale 1ps/1ps
 
-
-// `include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_static/testbench_setup.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
-
 `include "/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_if/testbench_setup.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 // Data Collector Modules and Class
 
@@ -109,16 +97,7 @@ module tb_top
 
    // =====================================================
 
-   // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
-
-   // INIT WAIT EVENT ALIAS
-   assign s_wait_event_if.wait_alias[0] = "RST_N";
-   assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "O_MAX7219_LOAD";
-   assign s_wait_event_if.wait_alias[3] = "O_MAX7219_CLK";
-   assign s_wait_event_if.wait_alias[4] = "O_DONE";
-   assign s_wait_event_if.wait_alias[5] = "S_FRAME_RECEIVED";
-   assign s_wait_event_if.wait_alias[6] = "S_LOAD_RECEIVED";
+   // == TESTBENCH SIGNALS AFFECTATION ==
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
@@ -129,11 +108,7 @@ module tb_top
    assign s_wait_event_if.wait_signals[5] = s_frame_received;  
    assign s_wait_event_if.wait_signals[6] = s_load_received;   
 
-   // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0]  = "I_START";
-   assign s_set_injector_if.set_alias[1]  = "I_EN_LOAD";
-   assign s_set_injector_if.set_alias[2]  = "I_DATA";
-   
+
    // SET SET_INJECTOR SIGNALS
    assign s_start   = s_set_injector_if.set_signals_synch[0];
    assign s_en_load = s_set_injector_if.set_signals_synch[1];
@@ -143,14 +118,6 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
-
-   
-   // INIT CHECK LEVEL ALIAS
-   assign s_check_level_if.check_alias[0] = "O_MAX7219_LOAD";
-   assign s_check_level_if.check_alias[1] = "O_MAX7219_DATA";
-   assign s_check_level_if.check_alias[2] = "O_MAX7219_CLK";
-   assign s_check_level_if.check_alias[3] = "O_DONE";
-   assign s_check_level_if.check_alias[4] = "S_DATA_RECEIVED";
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_max7219_load;   
@@ -209,26 +176,46 @@ module tb_top
 
 
    // == TESTBENCH SEQUENCER ==
-   tb_modules_custom_class tb_modules_custom_class_inst = new();
-   
    
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_SET_SIZE, 
-                      `C_SET_WIDTH,
-                      `C_WAIT_ALIAS_NB,
-                      `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD,
-                      `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH) 
+   static tb_class #( 
+		      .G_SET_SIZE        (`C_SET_SIZE),
+                      .G_SET_WIDTH       (`C_SET_WIDTH),
+                      .G_WAIT_SIZE       (`C_WAIT_ALIAS_NB),
+                      .G_WAIT_WIDTH      (`C_WAIT_WIDTH), 
+                      .G_CLK_PERIOD      (`C_TB_CLK_PERIOD),
+                      .G_CHECK_SIZE      (`C_CHECK_SIZE),
+                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH)
+		      )
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if,
-			tb_modules_custom_class_inst
+                        s_check_level_if/*,
+			tb_modules_custom_class_inst*/
 			);
    
    
    initial begin// : TB_SEQUENCER
+
+      // == INIT Testbench ALIASES ==
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_START",   0);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_EN_LOAD", 1);
+      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DATA",    2);
+
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("RST_N",            0);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("CLK",              1);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_LOAD",   2);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_CLK",    3);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_DONE",           4);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("S_FRAME_RECEIVED", 5);
+      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("S_LOAD_RECEIVED",  6);
+      
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD",  0);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA",  1);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK",   2);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_DONE",          3);
+      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("S_DATA_RECEIVED", 4);
+      
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
    end// : TB_SEQUENCER
