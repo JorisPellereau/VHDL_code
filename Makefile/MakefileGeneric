@@ -75,6 +75,11 @@ endif
 ifeq ($(DO_FILES_EN), ON)
   RUN_ARGS+= -do $(RUN_DO_DIR)/$(TEST)_run.do
 endif
+
+# Permit unmatch virtual interface (Use when No custom Testbench Modules like UART-DATA_COLLECTOR are unused)
+ifeq ($(PERMIT_UNMATCHED_VIRTUAL_INTF), ON)
+  VSIM_ARGS+=-permit_unmatched_virtual_intf
+endif
 # ======================
 
 
