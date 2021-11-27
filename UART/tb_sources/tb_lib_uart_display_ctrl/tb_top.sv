@@ -440,13 +440,17 @@ module tb_top
 
    
    // CREATE Handle and object CLASS - Configure Parameters
-   static tb_class #( `C_SET_SIZE, 
-                      `C_SET_WIDTH,
-                      `C_WAIT_ALIAS_NB,
-                      `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD,
-                      `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH
+   static tb_class #( .G_SET_SIZE        (`C_SET_SIZE),
+                      .G_SET_WIDTH       (`C_SET_WIDTH),
+                      .G_WAIT_SIZE       (`C_WAIT_ALIAS_NB),
+                      .G_WAIT_WIDTH      (`C_WAIT_WIDTH), 
+                      .G_CLK_PERIOD      (`C_TB_CLK_PERIOD),
+                      .G_CHECK_SIZE      (`C_CHECK_SIZE),
+                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH),
+		      
+		      .G_NB_UART_CHECKER        (`C_NB_UART_CHECKER),
+		      .G_UART_DATA_WIDTH        (`C_UART_DATA_WIDTH),
+		      .G_UART_BUFFER_ADDR_WIDTH (`C_UART_DATA_WIDTH)
 		      )
    
    tb_class_inst = new (s_wait_event_if, 
