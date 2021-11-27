@@ -11,7 +11,7 @@
 import sys
 
 # Path of Python SCN scripts generator
-scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/scripts/scn_generator'
+scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/scn_generator'
 sys.path.append(scn_generator_class)
 
 

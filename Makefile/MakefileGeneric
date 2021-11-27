@@ -101,6 +101,7 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
 
 # -- DATA COLLECTOR V FILES LIST --
 src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/data_collector.sv
+src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/tb_data_collector_class.sv
 
 # ===========================
 
