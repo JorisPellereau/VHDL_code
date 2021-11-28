@@ -170,7 +170,7 @@ module tb_top
    
    assign clk_data_collector[0]   = clk;
    assign rst_n_data_collector[0] = rst_n;   
-   assign s_data_collector[0]     = {clk, rst_n, s_start, s_en_load, s_data}; // Collect input Data
+   assign s_data_collector[0]     = {rst_n, s_start, s_en_load, s_data}; // Collect input Data Without Clock
    // =========================   
 
 
@@ -185,7 +185,10 @@ module tb_top
                       .G_WAIT_WIDTH      (`C_WAIT_WIDTH), 
                       .G_CLK_PERIOD      (`C_TB_CLK_PERIOD),
                       .G_CHECK_SIZE      (`C_CHECK_SIZE),
-                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH)
+                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH),
+		      
+		      .G_NB_COLLECTOR          (`C_NB_DATA_COLLECTOR),
+		      .G_DATA_COLLECTOR_WIDTH  (`C_DATA_COLLECTOR_DATA_WIDTH)
 		      )
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
@@ -215,6 +218,10 @@ module tb_top
       tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK",   2);
       tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_DONE",          3);
       tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("S_DATA_RECEIVED", 4);
+
+      // == INIT DATA COLLECTOR MODULE ==
+      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_IF_INPUT_COLLECTOR_0");
+      
       
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       

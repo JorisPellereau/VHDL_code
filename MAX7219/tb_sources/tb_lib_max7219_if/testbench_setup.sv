@@ -38,7 +38,7 @@
 
 // DATA COLLECTOR Configuration
 `define C_NB_DATA_COLLECTOR         1
-`define C_DATA_COLLECTOR_DATA_WIDTH 20
+`define C_DATA_COLLECTOR_DATA_WIDTH 19
 
 // DUT Configuration
 `define C_MAX_HALF_PERIOD 4

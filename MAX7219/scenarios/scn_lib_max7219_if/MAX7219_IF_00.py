@@ -42,6 +42,7 @@ scn.WAIT(100, "ns")
 scn.print_line("//-- STEP 2 - Init Value and send a frame\n")
 scn.print_line("\n")
 
+scn.DATA_COLLECTOR_INIT("MAX7219_IF_INPUT_COLLECTOR_0", 0, "/home/linux-jp/SIMULATION_VHDL/test_collect.txt")
 
 i_data = 0xFFFF
 scn.SET("I_DATA", i_data)
@@ -49,6 +50,9 @@ scn.SET("I_EN_LOAD", 0)
 scn.SET("I_START", 0)
 
 scn.WTFS("CLK")
+
+scn.DATA_COLLECTOR_START("MAX7219_IF_INPUT_COLLECTOR_0", 0)
+
 scn.SET("I_START", 1)
 scn.WTFS("CLK")
 scn.SET("I_START", 0)
@@ -63,12 +67,14 @@ scn.WTRS("O_DONE")
 scn.WAIT(100, "ns")
 
 
+
+
 scn.print_line("//-- STEP 3 - Test All Value of data : 0x0000 to 0xFFFF \n")
 scn.print_line("\n")
 
 i_data = 0x0000
-
-for i in range(0, 0xFFFF + 1):
+max_data = 0xFFFF + 1
+for i in range(0, max_data):
     scn.SET("I_DATA", i)
     scn.SET("I_EN_LOAD", 0)
     scn.SET("I_START", 0)
@@ -86,6 +92,9 @@ for i in range(0, 0xFFFF + 1):
 
     scn.WAIT(10, "ns")
 
-    
+
+scn.DATA_COLLECTOR_STOP("MAX7219_IF_INPUT_COLLECTOR_0", 0)
+scn.DATA_COLLECTOR_CLOSE("MAX7219_IF_INPUT_COLLECTOR_0", 0)
+
 
 scn.END_TEST()
