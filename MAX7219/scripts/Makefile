@@ -242,4 +242,12 @@ run_tb_max7219_if:
 run_all_tests_tb_max7219_if:
 	make run_multiple_tests TEST_LIST="$(MAX7219_IF_TEST_LIST)" TRANSCRIPT_EN=ON GUI=OFF
 
+# == GHDL Section ==
+ghdl_compile_all:
+	make ghdl_import_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" VHD_LIB=$(LIB_MAX7219_INTERFACE)
+	make ghdl_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" VHD_LIB=$(LIB_MAX7219_INTERFACE)
+# ==================
+
+
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
