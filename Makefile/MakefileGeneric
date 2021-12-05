@@ -18,11 +18,13 @@ endif
 
 # == GENERIC TESTBENCH SOURCES DIRECTORY ==
 ifeq ($(SEL_STATION), VM)
+  GENERIC_TB_VHD_SRC_DIR=~/Documents/GitHub/VHDL_code/Testbench
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   GENERIC_TB_CLASS_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_uart
   TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_data_collector
 else ifeq ($(SEL_STATION), LINUX)
+  GENERIC_TB_VHD_SRC_DIR=~/Documents/GitHub/VHDL_code/Testbench
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   GENERIC_TB_CLASS_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_uart
@@ -97,6 +99,7 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_check_level/check_level_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_modules_custom_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
 
+
 # -- CUSTOM TB Files --
 # -- UART TB MODULES --
 
@@ -104,6 +107,9 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
 src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/data_collector.sv
 src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/tb_data_collector_class.sv
 
+# -- Code Coverage TB Files --
+src_code_cov_tb_vhd+=$(GENERIC_TB_VHD_SRC_DIR)/lib_code_coverage/pkg_code_coverage.vhd
+src_code_cov_tb_vhd+=$(GENERIC_TB_VHD_SRC_DIR)/lib_code_coverage/code_coverage_injector.vhd
 # ===========================
 
 print_generic_rules:

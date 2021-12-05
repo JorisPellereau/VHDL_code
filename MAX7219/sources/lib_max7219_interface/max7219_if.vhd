@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-05
--- Last update: 2021-11-06
+-- Last update: 2021-12-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,9 +22,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
-
---library lib_max7219;
---use lib_max7219.pkg_max7219.all;
 
 entity max7219_if is
 

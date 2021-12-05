@@ -18,6 +18,12 @@ create_ghdl_libs:
 	$(foreach list, $(LIB_LIST), mkdir $(list);)
 # =========================
 
+# == Clean GHDL Work Dir ==
+clean_ghdl_work_dir:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR); \
+	rm -rRf *;
+# =========================
+
 # == MakefileGHDL RULES ==
 print_ghdl_generic_rules:
 	@echo "== GenericGHDL rules =="
@@ -27,6 +33,10 @@ print_ghdl_generic_rules:
 	@echo "Create GHDL Library"
 	@echo "make create_ghdl_libs"
 	@echo ""
+	@echo "Clean GHDL Work Directory"
+	@echo "make clean_ghdl_work_dir"
+	@echo ""
+	@echo ""
 	@echo "Scan parsed and added into libraries (NO ANALYZIS)"
 	@echo "make ghdl_import_vhd_src [SRC_VHD="XXX"] [VHD_LIB=YYY]"
 	@echo ""
@@ -35,7 +45,7 @@ print_ghdl_generic_rules:
 	@echo ""
 	@echo ""
 	@echo ""
-	@echo ""
+	@echo "$(ANALYSIS_ARGS)"
 	@echo "$(LIB_LIST)"
 
 # ========================
@@ -43,14 +53,58 @@ print_ghdl_generic_rules:
 
 # == GHDL Tests ==
 
+
+
 # Pass As argument : SRC_VHD : A list with VHD file of a common library
 # VHD_LIB : VHDL Library
 ghdl_import_vhd_src:
-	$(foreach list, $(SRC_VHD),ghdl -i --workdir=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(VHD_LIB) $(list);) \
+	$(foreach list, $(SRC_VHD),ghdl -i $(GHDL_WORKDIR_PATH) $(list);) \
+
+
+# == ANALYSE VHD FILES ==
+WORK_NAME=--work=$(GHDL_WORK_LIB_NAME)
+GHDL_WORKDIR_PATH=--workdir=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(GHDL_WORK_LIB_NAME)
+ANALYSIS_ARGS+=--ieee=synopsys
+
+# GHDL_LIB_LIST must be pass as argument
+ifeq ($(P_ARGS_EN), ON)
+     P_ARGS +=$(foreach list, $(GHDL_LIB_LIST),-P$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(list))
+endif
+
+#$(ANALYSIS_OPTIONS)
+ifeq ($(GHDL_VERBOSE), ON)
+  ANALYSIS_OPTIONS=-v
+endif
 
 ghdl_analysis_vhd_src:
-	$(foreach list, $(SRC_VHD),ghdl -a -fsynopsys --workdir=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(VHD_LIB) $(list);) \
+	$(foreach list, $(SRC_VHD),ghdl -a $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
 
+# ======================
+
+# == ELABORATION VHD FILES ==
+# GHDL_TOP_NIT must ba passed as argument
+ghdl_elaboration_vhd_src:
+	ghdl -e $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
+# ===========================
+
+# == RUN DESIGN ==
+GHDL_RUNTIME_ARGS+=--stop-time=$(TIME)
+GHDL_RUNTIME_ARGS+=--vcd=/home/linux-jp/SIMULATION_VHDL/test.vcd
+
+ifeq ($(CODE_COV), ON)
+  GHDL_GENERIC+=-gG_FILE_PATH=$(CODE_COVERAGE_INJECTION_FILE)
+  GHDL_GENERIC+=-gG_INJECTOR_DATA_WIDTH=$(CODE_COVERAGE_INJECTOR_DATA_WIDTH)
+endif
+
+ghdl_run:
+	ghdl -r $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT) $(GHDL_RUNTIME_ARGS) $(GHDL_GENERIC)
+# ================
+
+
+#ghdl_elaborate_vhd_src:
+	
+	
+#-g -fsynopsys
 # ghdl_import_vhd_src:
 # 	ghdl -i --workdir=$(GHDL_WORK_DIR)/works ~/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 # 	ghdl -i --workdir=$(GHDL_WORK_DIR)/lib_max7219_interface $(SRC_MAX7219_DIR)/lib_max7219_interface/*.vhd
