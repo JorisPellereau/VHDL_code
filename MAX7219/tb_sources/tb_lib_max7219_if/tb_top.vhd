@@ -42,6 +42,9 @@ architecture arch_tb_top of tb_top is
 
     generic (
       G_FILE_PATH           : string  := "INPUT_FILE.txt";
+      G_CHAR_NB_DATA_1      : integer := 5;    -- Number of Character of DATA1
+      G_CHAR_NB_DATA_2      : integer := 4;    -- Number of Character of DATA2
+      G_DATA_1_FORMAT       : integer := 1;    -- 0 => INTEGER - 1 => HEXA
       G_INJECTOR_DATA_WIDTH : integer := 10);  -- Output data width
 
     port (
@@ -83,7 +86,12 @@ begin  -- architecture arch_tb_top
   p_en_code_injector : process is
   begin  -- process p_en_code_injector
     s_en <= '0';
-    wait for 100 ns;    
+    rst_n <= '1';
+    wait for 100 ns;
+    rst_n <= '0';
+    wait for 100 ns;
+    rst_n <= '1';
+    wait for 100 ns;
     s_en <= '1';
     DISPLAY_MESSAGE("Enable Code Coverage Injector");
     DISPLAY_MESSAGE("");
@@ -94,12 +102,20 @@ begin  -- architecture arch_tb_top
   i_code_coverage_injector_0 : code_coverage_injector
     generic map(
       G_FILE_PATH           => G_FILE_PATH,
+      G_CHAR_NB_DATA_1      => 5,       -- Number of Character of DATA1
+      G_CHAR_NB_DATA_2      => 4,       -- Number of Character of DATA2
+      G_DATA_1_FORMAT       => 1,       -- 0 => INTEGER - 1 => HEXA
       G_INJECTOR_DATA_WIDTH => G_INJECTOR_DATA_WIDTH)  -- Output data width
     port map(
       clk    => clk,
       i_en   => s_en,
       o_data => s_data);
 
+  -- Connect Code Coverage injector to input of DUT
+  --rst_n                <= s_data(18);
+  s_max7219_if_start   <= s_data(17);
+  s_max7219_if_en_load <= s_data(16);
+  s_max7219_if_data    <= s_data(15 downto 0);
 
   -- MAX7219 I/F INST
   max7219_if_inst_0 : max7219_if

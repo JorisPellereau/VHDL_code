@@ -170,7 +170,7 @@ module tb_top
    
    assign clk_data_collector[0]   = clk;
    assign rst_n_data_collector[0] = rst_n;   
-   assign s_data_collector[0]     = {rst_n, s_start, s_en_load, s_data}; // Collect input Data Without Clock
+   assign s_data_collector[0]     = {s_start, s_en_load, s_data}; // Collect input Data Without Clock and Reset
    // =========================   
 
 

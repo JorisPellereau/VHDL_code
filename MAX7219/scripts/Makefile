@@ -98,6 +98,16 @@ all: print_generic_rules
 	@echo ""
 	@echo "==============="
 	@echo ""
+	@echo "== RUN CODE COVERAGE =="
+	@echo ""
+	@echo "Compile Testbench MAX7219 IF for Code Coverage"
+	@echo "make ghdl_compile_max7219_if_tb"
+	@echo ""
+	@echo "Run Testbench MAX7219 IF for Code Coverage"
+	@echo "make ghdl_run_max7219_if_tb"
+	@echo ""
+	@echo "======================="
+	@echo ""
 	@echo "== SCENARII LIST =="
 	@echo "$(SCN_LIST)"
 	@echo "==================="
@@ -271,7 +281,7 @@ CODE_COV_ARGS+=CODE_COV=ON CODE_COVERAGE_INJECTION_FILE="/home/linux-jp/SIMULATI
 CODE_COV_ARGS+=CODE_COVERAGE_INJECTOR_DATA_WIDTH=20
 
 ghdl_run_max7219_if_tb:
-	make ghdl_run GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON TIME=100us $(CODE_COV_ARGS) 
+	make ghdl_run GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON TIME=50ms $(CODE_COV_ARGS) 
 
 
 #-P/home/linux-jp/SIMULATION_VHDL/MAX7219/MAX7219_WORK_GHDL/lib_max7219_interface

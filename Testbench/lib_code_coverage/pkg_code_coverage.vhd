@@ -32,12 +32,20 @@ package pkg_code_coverage is
 
   -- Decode Line - Get Data and number of Data
   procedure DECODE_LINE (
-    variable v_line   : inout line;
-    signal o_data_out : out   integer;
-    signal o_data_nb  : out   integer);
+    variable v_line          : inout line;
+    constant i_char_nb_data1 : in    integer;
+    constant i_char_nb_data2 : in    integer;
+    constant i_data1_format  : in    integer;
+    variable o_data_out        : out   integer;
+    variable o_data_nb         : out   integer);
 
-
+  -- A single Char to Int
   function char_2_int(i_char : character)
+    return integer;
+
+  -- A str to int
+  function str_2_int(i_str    : string;
+                     i_format : integer)
     return integer;
 
 end package pkg_code_coverage;
@@ -57,62 +65,45 @@ package body pkg_code_coverage is
 
   -- Decode Line - Get Data and number of Data
   procedure DECODE_LINE (
-    variable v_line   : inout line;
-    signal o_data_out : out   integer;
-    signal o_data_nb  : out   integer) is
+    variable v_line          : inout line;
+    constant i_char_nb_data1 : in    integer;
+    constant i_char_nb_data2 : in    integer;
+    constant i_data1_format  : in    integer;
+    variable o_data_out        : out   integer;
+    variable o_data_nb         : out   integer) is
 
     -- VARIABLES
+    variable v_str_data : string(1 to i_char_nb_data1);
+    variable v_str_cnt  : string(1 to i_char_nb_data2);
+    variable v_space    : character;
+    variable v_int_data : integer;
+    variable v_int_cnt  : integer;
+
+
     variable v_line_length    : integer;
     variable v_space_position : integer;
     variable v_one_char       : character;
     variable v_init_puissance : integer;
     variable v_digit_nb       : integer;
-    variable v_line_tmp : line;
-    variable s_data_tmp : integer;
+    variable v_line_tmp       : line;
+    variable v_data_tmp       : integer;
+
+    variable v_str : string(1 to 500);  -- Max Line : 500 Characters
 
   begin
-    v_line_tmp := v_line;
+    v_line_tmp    := v_line;
     v_line_length := v_line'length;
 
-    -- Get Space Position
-    for i in 0 to v_line_length - 1 loop
-      read(v_line, v_one_char);
-      if(v_one_char = ' ') then
-        v_space_position := i;
-      end if;
-    end loop;  -- i
+    -- Line to v_str
+    read(v_line, v_str_data);           -- Read 1st Data
+    read(v_line, v_space);              -- Read space
+    read(v_line, v_str_cnt);            -- Read 2nd Data
 
-    v_digit_nb := v_space_position - 1;  -- Number of digit in o_data
-    case v_digit_nb is
-      when 1 =>
-        v_init_puissance := 1;
-      when 2 =>
-        v_init_puissance := 10;
-      when 3 =>
-        v_init_puissance := 100;
-      when 4 =>
-        v_init_puissance := 1000;
-      when 5 =>
-        v_init_puissance := 10000;
-      when 6 =>
-        v_init_puissance := 100000;
-      when 7 =>
-        v_init_puissance := 1000000;
-      when 8 =>
-        v_init_puissance := 10000000;
-      when 9 =>
-        v_init_puissance := 100000000;
-      when 10 =>
-        v_init_puissance := 1000000000;
-      when others => DISPLAY_MESSAGE("Error wrong value og v_digit_nb");
-    end case;
-    
-    -- for i in 0 to v_digit_nb loop
-    --   read(v_line_tmp, v_one_char);
-    --   --s_data_tmp := s_data_tmp + char_2_int(v_one_char)*v_init_puissance;
-    --   --v_init_puissance := v_init_puissance / 10;
-    -- end loop;
+    v_int_data := str_2_int(v_str_data, i_data1_format);
+    v_int_cnt  := str_2_int(v_str_cnt, 0);
 
+    o_data_out := v_int_data;
+    o_data_nb  := v_int_cnt;
   end procedure DECODE_LINE;
 
 
@@ -157,7 +148,44 @@ package body pkg_code_coverage is
 
       when others => null;
     end case;
+    return v_int;
   end function char_2_int;
 
+
+  -- A str to int
+  function str_2_int(i_str    : string;
+                     i_format : integer)
+    return integer is
+
+    -- Internal variables
+    variable v_str_length     : integer;
+    variable v_init_puissance : integer;
+    variable v_data           : integer := 0;
+  begin
+
+    v_str_length := i_str'length;       -- Get Length
+
+    -- Init Puissance
+    if(i_format = 0) then
+      v_init_puissance := 10**(v_str_length - 1);
+    elsif(i_format = 1) then
+      v_init_puissance := 16**(v_str_length - 1);
+    end if;
+
+    -- Compute Value in integer
+    for i in 1 to v_str_length loop
+      -- Integer format
+      if(i_format = 0) then
+        v_data           := v_data + char_2_int(i_str(i))*v_init_puissance;
+        v_init_puissance := v_init_puissance / 10;
+      -- HEX Format
+      elsif(i_format = 1) then
+        v_data           := v_data + char_2_int(i_str(i))*v_init_puissance;
+        v_init_puissance := v_init_puissance / 16;
+      end if;
+    end loop;
+
+    return v_data;
+  end function str_2_int;
 
 end package body pkg_code_coverage;

@@ -21,6 +21,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
 use std.textio.all;
 use ieee.std_logic_textio.all;
 
@@ -31,6 +32,9 @@ entity code_coverage_injector is
 
   generic (
     G_FILE_PATH           : string  := "INPUT_FILE.txt";
+    G_CHAR_NB_DATA_1      : integer := 5;    -- Number of Character of DATA1
+    G_CHAR_NB_DATA_2      : integer := 4;    -- Number of Character of DATA2
+    G_DATA_1_FORMAT       : integer := 1;    -- 0 => INTEGER - 1 => HEXA
     G_INJECTOR_DATA_WIDTH : integer := 10);  -- Output data width
 
   port (
@@ -43,10 +47,7 @@ end entity code_coverage_injector;
 architecture arch_code_coverage_injector of code_coverage_injector is
 
   -- INTERNAL SIGNALS
-  file input_file : text;
-
-  signal s_data_out : integer;
-  signal s_data_nb  : integer;
+  signal s_data : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
 
 begin  -- architecture arch_code_coverage_injector
 
@@ -55,16 +56,11 @@ begin  -- architecture arch_code_coverage_injector
 
     -- VARIABLES
     variable v_row      : line;
-    variable v_data     : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
-    variable v_data_int : integer;
-    variable v_data_cnt : integer;
     variable v_line     : line;
-    variable v_line_tmp : line;
-
-    variable v_one_char : character;
-    --variable v_data_str : string;
+    variable v_data_out : integer;
+    variable v_data_nb  : integer;
     file v_FILE         : text;         --is in G_FILE_PATH;
-  --variable v_
+
   begin  -- process p_data_mngt
 
 
@@ -81,34 +77,29 @@ begin  -- architecture arch_code_coverage_injector
 
       -- Read a line
       readline(v_FILE, v_row);
-      DECODE_LINE(v_row, s_data_out, s_data_nb);
+      DECODE_LINE(v_row, G_CHAR_NB_DATA_1, G_CHAR_NB_DATA_2, G_DATA_1_FORMAT, v_data_out, v_data_nb);
 
-      --while(v_one_char /= '2') loop
-      --  read(v_row, v_one_char);        -- read Only 1 char
-      --end loop;
 
-      write(v_line_tmp, v_row'length);
-      writeline(output, v_line_tmp);
-
-    --hread(v_row, v_data);
-    --wait until rising_edge(clk);
-    --DISPLAY_MESSAGE(string'(v_row(1 downto 0)));
-    --DISPLAY_MESSAGE("file not ended");
+      -- Loop and generate Data s_data_nb time every clk period
+      for i in 0 to v_data_nb - 1 loop
+        wait until rising_edge(clk);
+        s_data <= conv_std_logic_vector(v_data_out, s_data'length);
+      end loop;
     end loop;
 
 
     -- Close File
-    file_close(input_file);
+    file_close(v_FILE);
 
     DISPLAY_MESSAGE("End of p_data_mngt");
     DISPLAY_MESSAGE("");
-    --end if;
-
-
 
     wait;
 
   end process p_data_mngt;
+
+  -- Output Affectations
+  o_data <= s_data;
 
 
 
