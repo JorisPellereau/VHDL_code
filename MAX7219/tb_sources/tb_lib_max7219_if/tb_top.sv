@@ -201,23 +201,23 @@ module tb_top
    initial begin// : TB_SEQUENCER
 
       // == INIT Testbench ALIASES ==
-      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_START",   0);
-      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_EN_LOAD", 1);
-      tb_class_inst.tb_modules_custom_inst.tb_set_injector_inst.ADD_SET_INJECTOR_ALIAS("I_DATA",    2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START",   0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_EN_LOAD", 1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DATA",    2);
 
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("RST_N",            0);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("CLK",              1);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_LOAD",   2);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_MAX7219_CLK",    3);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("O_DONE",           4);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("S_FRAME_RECEIVED", 5);
-      tb_class_inst.tb_modules_custom_inst.tb_wait_event_inst.ADD_WAIT_EVENT_ALIAS("S_LOAD_RECEIVED",  6);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",            0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",              1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_MAX7219_LOAD",   2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_MAX7219_CLK",    3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_DONE",           4);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "S_FRAME_RECEIVED", 5);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "S_LOAD_RECEIVED",  6);
       
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_LOAD",  0);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_DATA",  1);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_MAX7219_CLK",   2);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("O_DONE",          3);
-      tb_class_inst.tb_modules_custom_inst.tb_check_level_inst.ADD_CHECK_LEVEL_ALIAS("S_DATA_RECEIVED", 4);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_LOAD",  0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_DATA",  1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_CLK",   2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_DONE",          3);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_DATA_RECEIVED", 4);
 
       // == INIT DATA COLLECTOR MODULE ==
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_IF_INPUT_COLLECTOR_0");
