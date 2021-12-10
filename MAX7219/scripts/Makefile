@@ -21,6 +21,11 @@ LIB_TB_TOP=lib_tb_max7219_if
 TRANSCRIPT_EN=OFF
 # ============================
 
+# == Collect File Directory ==
+MAX7219_COLLECT_DIR=MAX7219_COLLECT
+MAX7219_COLLECT_PATH=$(HDL_SIMU_PATH)/$(MAX7219_COLLECT_DIR)
+# ============================
+
 # == SOURCES DIRECTORY ==
 SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
 # =======================
@@ -67,6 +72,7 @@ LIB_TB_TOP_MAX7219_IF_COVERAGE=lib_tb_top_max7219_if_coverage
 GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ===================
+
 
 # ==================================================== #
 
@@ -122,6 +128,13 @@ all: print_generic_rules
 	@echo "==================="
 
 
+# == COLLECT DIRECTORY ==
+create_collect_dir:
+	cd $(HDL_SIMU_PATH); \
+	if [ ! -d  $(MAX7219_COLLECT_DIR) ]; then \
+	  mkdir $(MAX7219_COLLECT_DIR); \
+	fi
+# =======================
 # == DESIGN VHD FILE LIST ==
 src_vhd_lib_others+=~/Documents/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 

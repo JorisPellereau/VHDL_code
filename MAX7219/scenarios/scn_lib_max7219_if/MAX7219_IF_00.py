@@ -21,6 +21,9 @@ import scn_class
 # Create SCN Class
 scn = scn_class.scn_class()
 
+# == Collect Path ==
+collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX721_COLLECT/MAX7219_IF_{:02d}_collect.txt"
+
 # Start of SCN
 scn.print_line("//-- STEP 0\n")
 scn.print_line("\n")
@@ -42,7 +45,7 @@ scn.WAIT(100, "ns")
 scn.print_line("//-- STEP 2 - Init Value and send a frame\n")
 scn.print_line("\n")
 
-scn.DATA_COLLECTOR_INIT("MAX7219_IF_INPUT_COLLECTOR_0", 0, "/home/linux-jp/SIMULATION_VHDL/test_collect.txt")
+scn.DATA_COLLECTOR_INIT("MAX7219_IF_INPUT_COLLECTOR_0", 0, collect_path.format(0))
 
 i_data = 0xFFFF
 scn.SET("I_DATA", i_data)
