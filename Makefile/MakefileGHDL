@@ -143,13 +143,31 @@ ghdl_gcc_elaboration_vhd_src:
 # COVERAGE_DIR must be pass as argument
 ghdl_gcc_run:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
-	./$(GHDL_TOP_UNIT)
+	ghdl-gcc -r $(GHDL_TOP_UNIT) --stop-time=$(TIME)
 
+#./$(GHDL_TOP_UNIT)
+
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_gcov:
+	gcov  --object-directory $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/ -b -u -t -d /home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_if/max7219_if.vhd
+	
+	# cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+	# gcov -b -u -t -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)
+
+#$(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/*.gcno $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/*.gcda
+	
 # COVERAGE_DIR must be pass as argument
 ghdl_gcc_lcov:
-	lcov -c -d $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) -o coverage.info
+	lcov -c -d $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/coverage.info
 
 # COVERAGE_DIR must be pass as argument
+GENHTML_ARGS+=--missed
+#GENHTML_ARGS+=-t toto
 ghdl_gcc_genhtml:
-	genhtml -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) coverage.info
+	genhtml $(GENHTML_ARGS) -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/coverage.info
+
+
+ghdl_gcc_open_coverage_html:
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+	firefox index.html
 # ===================

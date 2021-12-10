@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2021-12-05
+-- Last update: 2021-12-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,8 +36,8 @@ package pkg_code_coverage is
     constant i_char_nb_data1 : in    integer;
     constant i_char_nb_data2 : in    integer;
     constant i_data1_format  : in    integer;
-    variable o_data_out        : out   integer;
-    variable o_data_nb         : out   integer);
+    variable o_data_out      : out   integer;
+    variable o_data_nb       : out   integer);
 
   -- A single Char to Int
   function char_2_int(i_char : character)
@@ -69,8 +69,8 @@ package body pkg_code_coverage is
     constant i_char_nb_data1 : in    integer;
     constant i_char_nb_data2 : in    integer;
     constant i_data1_format  : in    integer;
-    variable o_data_out        : out   integer;
-    variable o_data_nb         : out   integer) is
+    variable o_data_out      : out   integer;
+    variable o_data_nb       : out   integer) is
 
     -- VARIABLES
     variable v_str_data : string(1 to i_char_nb_data1);
@@ -133,6 +133,7 @@ package body pkg_code_coverage is
         v_int := 8;
       when '9' =>
         v_int := 9;
+        
       when 'A' =>
         v_int := 10;
       when 'B' =>
@@ -144,6 +145,19 @@ package body pkg_code_coverage is
       when 'E' =>
         v_int := 14;
       when 'F' =>
+        v_int := 15;
+
+      when 'a' =>
+        v_int := 10;
+      when 'b' =>
+        v_int := 11;
+      when 'c' =>
+        v_int := 12;
+      when 'd' =>
+        v_int := 13;
+      when 'e' =>
+        v_int := 14;
+      when 'f' =>
         v_int := 15;
 
       when others => null;

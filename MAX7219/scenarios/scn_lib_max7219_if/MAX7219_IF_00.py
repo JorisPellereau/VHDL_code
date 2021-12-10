@@ -73,7 +73,14 @@ scn.print_line("//-- STEP 3 - Test All Value of data : 0x0000 to 0xFFFF \n")
 scn.print_line("\n")
 
 i_data = 0x0000
-max_data = 0xFFFF + 1
+
+if(len(sys.argv) == 1):
+    max_data = 0xFFFF    
+else:
+    max_data = int(sys.argv[1])
+
+max_data += 1
+
 for i in range(0, max_data):
     scn.SET("I_DATA", i)
     scn.SET("I_EN_LOAD", 0)

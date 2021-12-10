@@ -290,7 +290,7 @@ CODE_COV_ARGS+=CODE_COV=ON CODE_COVERAGE_INJECTION_FILE="/home/linux-jp/SIMULATI
 CODE_COV_ARGS+=CODE_COVERAGE_INJECTOR_DATA_WIDTH=18
 
 ghdl_run_max7219_if_tb:
-	make ghdl_run GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON TIME=50ms $(CODE_COV_ARGS) 
+	make ghdl_run GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON TIME=700us $(CODE_COV_ARGS) 
 
 
 # == CODE COV SECTION ==
@@ -301,13 +301,14 @@ ghdl_gcc_compile_max7219_if_tb:
 	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
 ghdl_gcc_run_max7219_if_tb:
-	make ghdl_gcc_run COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE GHDL_TOP_UNIT=tb_top
+	make ghdl_gcc_run COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=1ms
 
 ghdl_gcc_gen_code_cov_if_tb:
 	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
-
+run_max7219_if_code_coverage: ghdl_gcc_compile_max7219_if_tb ghdl_gcc_run_max7219_if_tb ghdl_gcc_gen_code_cov_if_tb
+	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
 #-P/home/linux-jp/SIMULATION_VHDL/MAX7219/MAX7219_WORK_GHDL/lib_max7219_interface
 #ANALYSIS_ARGS+=

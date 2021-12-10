@@ -84,6 +84,11 @@ begin  -- architecture arch_code_coverage_injector
       for i in 0 to v_data_nb - 1 loop
         wait until rising_edge(clk);
         s_data <= conv_std_logic_vector(v_data_out, s_data'length);
+
+      -- if(s_data /= x"0000" & "00") then
+      --   write(v_line, s_data);
+      --   writeline(output, v_line);
+      -- end if;
       end loop;
     end loop;
 
@@ -91,10 +96,11 @@ begin  -- architecture arch_code_coverage_injector
     -- Close File
     file_close(v_FILE);
 
-    DISPLAY_MESSAGE("End of p_data_mngt");
+    DISPLAY_MESSAGE("End of injection for Code Coverage");
     DISPLAY_MESSAGE("");
 
-    assert false severity failure;
+    --assert false severity error;
+    --finish;
     wait;
 
   end process p_data_mngt;
@@ -102,6 +108,43 @@ begin  -- architecture arch_code_coverage_injector
   -- Output Affectations
   o_data <= s_data;
 
+
+  -- p_test : process is
+  --   variable v_line : line;
+  --   variable v_data : integer;
+  -- begin  -- process p_test
+
+  --   v_data := char_2_int('A');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := char_2_int('B');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := char_2_int('C');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := char_2_int('D');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := char_2_int('E');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := char_2_int('F');
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+  --   v_data := str_2_int("AA", 1);
+  --   write(v_line, v_data);
+  --   writeline(output, v_line);
+
+
+  --   wait;
+  -- end process p_test;
 
 
 end architecture arch_code_coverage_injector;
