@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2021-12-05
+-- Last update: 2021-12-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -94,6 +94,7 @@ begin  -- architecture arch_code_coverage_injector
     DISPLAY_MESSAGE("End of p_data_mngt");
     DISPLAY_MESSAGE("");
 
+    assert false severity failure;
     wait;
 
   end process p_data_mngt;

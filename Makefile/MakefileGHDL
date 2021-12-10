@@ -1,12 +1,12 @@
 # TBD Makefile for GHDL compilation
 
-
-GHDL_WORK_DIR=$(WORK_DIR)_GHDL
+# == PATH ==
+GHDL_WORK_DIR=$(PROJECT_NAME)_GHDL
 
 
 # == Create GHDL Work Dir ==
 create_ghdl_work_dir:
-	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	cd $(HDL_SIMU_PATH); \
 	if [ ! -d $(GHDL_WORK_DIR) ]; then \
 	  mkdir $(GHDL_WORK_DIR); \
 	fi
@@ -14,13 +14,24 @@ create_ghdl_work_dir:
 
 # == Create GHDL Library ==
 create_ghdl_libs:
-	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR); \
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR); \
 	$(foreach list, $(LIB_LIST), mkdir $(list);)
 # =========================
 
+# == Create GHDL COVERAGE directory ==
+# GHDL_COV_DIR_LIST Must be defined in Makefile
+create_ghdl_cov_dir:
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR); \
+	$(foreach list, $(GHDL_COV_DIR_LIST), mkdir $(list);)
+# ====================================
+
+# == CREATE GHDL DIRECTORIES ==
+create_ghdl_dir: clean_ghdl_work_dir create_ghdl_work_dir create_ghdl_libs create_ghdl_cov_dir
+# =============================
+
 # == Clean GHDL Work Dir ==
 clean_ghdl_work_dir:
-	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR); \
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR); \
 	rm -rRf *;
 # =========================
 
@@ -33,8 +44,24 @@ print_ghdl_generic_rules:
 	@echo "Create GHDL Library"
 	@echo "make create_ghdl_libs"
 	@echo ""
+	@echo "Create GHDL CODE COVERAGE Directories:"
+	@echo "make create_ghdl_cov_dir"
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo ""
 	@echo "Clean GHDL Work Directory"
 	@echo "make clean_ghdl_work_dir"
+	@echo ""
+	@echo "Create All GHDL Directories"
+	@echo "make create_ghdl_dir"
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo ""
 	@echo ""
 	@echo ""
 	@echo "Scan parsed and added into libraries (NO ANALYZIS)"
@@ -53,22 +80,19 @@ print_ghdl_generic_rules:
 
 # == GHDL Tests ==
 
-
-
 # Pass As argument : SRC_VHD : A list with VHD file of a common library
 # VHD_LIB : VHDL Library
 ghdl_import_vhd_src:
 	$(foreach list, $(SRC_VHD),ghdl -i $(GHDL_WORKDIR_PATH) $(list);) \
 
-
 # == ANALYSE VHD FILES ==
 WORK_NAME=--work=$(GHDL_WORK_LIB_NAME)
-GHDL_WORKDIR_PATH=--workdir=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(GHDL_WORK_LIB_NAME)
+GHDL_WORKDIR_PATH=--workdir=$(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(GHDL_WORK_LIB_NAME)
 ANALYSIS_ARGS+=--ieee=synopsys
 
 # GHDL_LIB_LIST must be pass as argument
 ifeq ($(P_ARGS_EN), ON)
-     P_ARGS +=$(foreach list, $(GHDL_LIB_LIST),-P$(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(GHDL_WORK_DIR)/$(list))
+     P_ARGS +=$(foreach list, $(GHDL_LIB_LIST),-P$(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(list))
 endif
 
 #$(ANALYSIS_OPTIONS)
@@ -76,16 +100,20 @@ ifeq ($(GHDL_VERBOSE), ON)
   ANALYSIS_OPTIONS=-v
 endif
 
+
 ghdl_analysis_vhd_src:
 	$(foreach list, $(SRC_VHD),ghdl -a $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
 
 # ======================
 
+
+	
 # == ELABORATION VHD FILES ==
-# GHDL_TOP_NIT must ba passed as argument
+# GHDL_TOP_INIT must ba passed as argument
 ghdl_elaboration_vhd_src:
 	ghdl -e $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
 # ===========================
+
 
 # == RUN DESIGN ==
 GHDL_RUNTIME_ARGS+=--stop-time=$(TIME)
@@ -99,3 +127,29 @@ endif
 ghdl_run:
 	ghdl -r $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT) $(GHDL_RUNTIME_ARGS) $(GHDL_GENERIC)
 # ================
+
+
+# == CODE COVERAGE ==
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_analysis_vhd_src:
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+	$(foreach list, $(SRC_VHD),ghdl-gcc -a -g -Wc,-ftest-coverage -Wc,-fprofile-arcs $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
+
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_elaboration_vhd_src:
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+	ghdl-gcc -e -Wl,-lgcov -Wl,--coverage $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
+	
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_run:
+	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+	./$(GHDL_TOP_UNIT)
+
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_lcov:
+	lcov -c -d $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) -o coverage.info
+
+# COVERAGE_DIR must be pass as argument
+ghdl_gcc_genhtml:
+	genhtml -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) coverage.info
+# ===================

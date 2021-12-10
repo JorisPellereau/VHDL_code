@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2021-12-05
+-- Last update: 2021-12-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -30,8 +30,8 @@ use lib_code_coverage.pkg_code_coverage.all;
 
 entity tb_top is
   generic (
-    G_FILE_PATH           : string  := "INPUT_FILE.txt";
-    G_INJECTOR_DATA_WIDTH : integer := 10);  -- Output data width
+    G_FILE_PATH           : string  := "/home/linux-jp/SIMULATION_VHDL/test_collect_out.txt";  --"INPUT_FILE.txt";
+    G_INJECTOR_DATA_WIDTH : integer := 18);  -- Output data width
 
 end entity tb_top;
 
@@ -71,34 +71,6 @@ architecture arch_tb_top of tb_top is
 begin  -- architecture arch_tb_top
 
 
-  -- == Clock Generation ==
-  -- purpose: Clock Maagement
-  -- type   : combinational
-  -- inputs : 
-  -- outputs: 
-  p_clk_mngt : process is
-  begin  -- process p_clk_mngt
-    clk <= not clk;
-    wait for 10 ns;
-  end process p_clk_mngt;
-  -- ======================
-
-  p_en_code_injector : process is
-  begin  -- process p_en_code_injector
-    s_en <= '0';
-    rst_n <= '1';
-    wait for 100 ns;
-    rst_n <= '0';
-    wait for 100 ns;
-    rst_n <= '1';
-    wait for 100 ns;
-    s_en <= '1';
-    DISPLAY_MESSAGE("Enable Code Coverage Injector");
-    DISPLAY_MESSAGE("");
-    wait;
-  end process p_en_code_injector;
-
-
   i_code_coverage_injector_0 : code_coverage_injector
     generic map(
       G_FILE_PATH           => G_FILE_PATH,
@@ -111,11 +83,7 @@ begin  -- architecture arch_tb_top
       i_en   => s_en,
       o_data => s_data);
 
-  -- Connect Code Coverage injector to input of DUT
-  --rst_n                <= s_data(18);
-  s_max7219_if_start   <= s_data(17);
-  s_max7219_if_en_load <= s_data(16);
-  s_max7219_if_data    <= s_data(15 downto 0);
+
 
   -- MAX7219 I/F INST
   max7219_if_inst_0 : max7219_if
@@ -138,6 +106,43 @@ begin  -- architecture arch_tb_top
 
       -- Transaction Done
       o_done => s_max7219_if_done);
+
+
+  -- Limitation : process and combinationnal affectation must be placed after
+  -- component instantiation /!\
+
+  -- == Clock Generation ==
+  -- purpose: Clock Maagement
+  -- type   : combinational
+  -- inputs : 
+  -- outputs: 
+  p_clk_mngt : process
+  begin  -- process p_clk_mngt
+    clk <= not clk;
+    wait for 10 ns;
+  end process p_clk_mngt;
+  -- ======================
+
+  p_en_code_injector : process
+  begin  -- process p_en_code_injector
+    s_en  <= '0';
+    rst_n <= '1';
+    wait for 100 ns;
+    rst_n <= '0';
+    wait for 100 ns;
+    rst_n <= '1';
+    wait for 100 ns;
+    s_en  <= '1';
+    DISPLAY_MESSAGE("Enable Code Coverage Injector");
+    DISPLAY_MESSAGE("");
+    wait;
+  end process p_en_code_injector;
+
+  -- Connect Code Coverage injector to input of DUT
+  --rst_n                <= s_data(18);
+  s_max7219_if_start   <= s_data(17);
+  s_max7219_if_en_load <= s_data(16);
+  s_max7219_if_data    <= s_data(15 downto 0);
 
 
 

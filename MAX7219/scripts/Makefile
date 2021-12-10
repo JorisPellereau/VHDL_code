@@ -42,9 +42,6 @@ LIB_TB_TOP_MAX7219_CONTROLLER=lib_tb_max7219_controller
 LIB_CODE_COVERAGE=lib_code_coverage
 # =========================
 
-# == COVERAGE LIBRARIES ==
-LIB_TB_TOP_MAX7219_IF_COVERAGE=lib_tb_top_max7219_if_coverage
-# ========================
 
 # ==  LIB LIST ==
 LIB_LIST+=$(LIB_OTHERS)
@@ -57,10 +54,22 @@ LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF_COVERAGE)
 LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ================
 
+
+
+# ================ GHDL CONFIGURATION ================ #
+GHDL_COV_DIR_LIST+=MAX7219_IF_CODE_COVERAGE
+
+# == COVERAGE LIBRARIES ==
+LIB_TB_TOP_MAX7219_IF_COVERAGE=lib_tb_top_max7219_if_coverage
+# ========================
+
 # == GHDL LIB LIST ==
 GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ===================
+
+# ==================================================== #
+
 
 all: print_generic_rules
 	@echo ""
@@ -165,8 +174,8 @@ src_tb_lib_max7219_controller_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/tb_top.
 # ==================================
 
 # == Coverage Testbench File List ==
-src_tb_coverage_max7219_if+=$(TB_SRC_DIR)/tb_lib_max7219_if/tb_top.vhd
 src_tb_coverage_max7219_if+=$(src_code_cov_tb_vhd)
+src_tb_coverage_max7219_if+=$(TB_SRC_DIR)/tb_lib_max7219_if/tb_top.vhd
 # ==================================
 
 
@@ -278,10 +287,26 @@ ghdl_compile_max7219_if_tb:
 
 
 CODE_COV_ARGS+=CODE_COV=ON CODE_COVERAGE_INJECTION_FILE="/home/linux-jp/SIMULATION_VHDL/test_collect_out.txt"
-CODE_COV_ARGS+=CODE_COVERAGE_INJECTOR_DATA_WIDTH=20
+CODE_COV_ARGS+=CODE_COVERAGE_INJECTOR_DATA_WIDTH=18
 
 ghdl_run_max7219_if_tb:
 	make ghdl_run GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON TIME=50ms $(CODE_COV_ARGS) 
+
+
+# == CODE COV SECTION ==
+ghdl_gcc_compile_max7219_if_tb: 
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_INTERFACE) COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_tb_coverage_max7219_if)" GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) P_ARGS_EN=ON COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top P_ARGS_EN=ON COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+
+ghdl_gcc_run_max7219_if_tb:
+	make ghdl_gcc_run COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE GHDL_TOP_UNIT=tb_top
+
+ghdl_gcc_gen_code_cov_if_tb:
+	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+
 
 
 #-P/home/linux-jp/SIMULATION_VHDL/MAX7219/MAX7219_WORK_GHDL/lib_max7219_interface
