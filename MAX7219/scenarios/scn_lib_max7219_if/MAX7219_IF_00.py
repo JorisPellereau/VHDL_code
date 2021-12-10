@@ -22,7 +22,7 @@ import scn_class
 scn = scn_class.scn_class()
 
 # == Collect Path ==
-collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX721_COLLECT/MAX7219_IF_{:02d}_collect.txt"
+collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_{:02d}_collect.txt"
 
 # Start of SCN
 scn.print_line("//-- STEP 0\n")

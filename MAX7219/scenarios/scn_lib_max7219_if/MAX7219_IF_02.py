@@ -19,7 +19,7 @@ sys.path.append(scn_generator_class)
 import scn_class
 
 # == Collect Path ==
-collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX721_COLLECT/MAX7219_IF_{:02d}_collect.txt"
+collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_{:02d}_collect.txt"
 
 # Create SCN Class
 scn = scn_class.scn_class()
