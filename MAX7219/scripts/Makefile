@@ -78,10 +78,35 @@ GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
 
 
 all: print_generic_rules
-	@echo ""
 	@echo "Makefile for MAX7219 blocks tests"
 	@echo ""
 	@echo "== SOURCES COMPILATIONS =="
+	@echo ""
+	@echo "# -- DESIGNS COMPILATIONS -- #"
+	@echo "- Compile DESIGN MAX7219 IF"
+	@echo "make compile_design_max7219_if"
+	@echo ""
+	@echo "- Compile DESIGN MAX7219 STATIC"
+	@echo "make compile_design_max7219_static"
+	@echo ""
+	@echo "# -------------------------- #"
+	@echo ""
+	@echo "# -- TESTBENCHS COMPILATIONS -- #"
+	@echo "- Compile TESBENCH MAX7219 IF"
+	@echo "make compile_testbench_max7219_if"
+	@echo ""
+	@echo "- Compile TESTBENCH MAX7219 STATIC"
+	@echo "make compile_testbench_max7219_static"
+	@echo ""
+	@echo "# ----------------------------- #"
+	@echo ""
+	@echo "# -- COMPILE ALL (DESIGN + TB) -- #"
+	@echo "- Compile design and TB MAX7219 IF"
+	@echo "make compile_all_max7219_if"
+	@echo ""
+	@echo "- Compile design and TB MAX7219 STATIC"
+	@echo "make compile_all_max7219_static"
+	@echo "# ------------------------------- #"
 	@echo ""
 	@echo "- Design Sources Compilation :"
 	@echo "make compile_design"
@@ -219,7 +244,10 @@ compile_max7219_controller:
 
 
 # == Compile Design Library here ==
-compile_design : compile_others compile_max7219_interface
+compile_design_max7219_if: compile_others compile_max7219_interface
+compile_design_max7219_static: compile_others compile_max7219_static
+
+compile_design : compile_design_max7219_if compile_design_max7219_static
 #compile_max7219_static compile_max7219_scroller compile_max7219_controller
 # ================================
 
@@ -228,18 +256,30 @@ compile_design : compile_others compile_max7219_interface
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
+	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
 
-compile_testbench_max719_if_sources:
+compile_testbench_max7219_if_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_max7219_if_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 
-# compile_testbench_sources:
-# 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
-# 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_uart_display_ctrl_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
+compile_testbench_max7219_static_sources:
+	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_max7219_static_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
+
 
 # == COMPILE ALL TESTBENCH files ==
-compile_testbench : compile_generic_tb_v_files compile_testbench_max719_if_sources
+
+compile_testbench_max7219_if: compile_generic_tb_v_files compile_testbench_max7219_if_sources
+compile_testbench_max7219_static: compile_generic_tb_v_files compile_testbench_max7219_static_sources
+
+compile_testbench : compile_testbench_max7219_if compile_testbench_max7219_static
 # =======================
+
+# == COMPILE ALL DESIGN & TB ==
+compile_all_max7219_if: compile_design_max7219_if compile_testbench_max7219_if print_compile_logs_file
+compile_all_max7219_static: compile_design_max7219_static compile_testbench_max7219_static print_compile_logs_file
+# =============================
 
 # == SCENARII LIST ==
 # Python test list
@@ -249,7 +289,11 @@ SCN_LIST_MAX7219_IF+=MAX7219_IF_02.py
 SCN_LIST_MAX7219_IF+=MAX7219_IF_03.py
 SCN_LIST_MAX7219_IF+=MAX7219_IF_04.py
 
+SCN_LIST_MAX7219_STATIC+=MAX7219_STATIC_00.py
+SCN_LIST_MAX7219_STATIC+=MAX7219_STATIC_05.py
+
 SCN_LIST+=$(SCN_LIST_MAX7219_IF)
+SCN_LIST+=$(SCN_LIST_MAX7219_STATIC)
 
 # Name test list
 MAX7219_IF_TEST_LIST+=MAX7219_IF_00
@@ -257,6 +301,9 @@ MAX7219_IF_TEST_LIST+=MAX7219_IF_01
 MAX7219_IF_TEST_LIST+=MAX7219_IF_02
 MAX7219_IF_TEST_LIST+=MAX7219_IF_03
 MAX7219_IF_TEST_LIST+=MAX7219_IF_04
+
+MAX7219_STATIC_TEST_LIST+=MAX7219_STATIC_00
+MAX7219_STATIC_TEST_LIST+=MAX7219_STATIC_05
 # =======================
 
 # == LIB ARGS ==
@@ -288,11 +335,19 @@ endif
 # == RUN TEST ==
 # Run single test of MAX7219 I/F
 run_tb_max7219_if:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
+
+run_tb_max7219_if:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
+
 
 # Run All Tests MAX7219 in console Mode
 run_all_tests_tb_max7219_if:
 	make run_multiple_tests TEST_LIST="$(MAX7219_IF_TEST_LIST)" TRANSCRIPT_EN=ON GUI=OFF
+
+
+
+
 
 # == GHDL Section ==
 
