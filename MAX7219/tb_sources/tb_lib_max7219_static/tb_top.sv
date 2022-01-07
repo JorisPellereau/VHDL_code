@@ -67,16 +67,14 @@ module tb_top
    wire        s_sel;
    wire        s_display_screen_matrix_tb;
    wire        s_display_screen_matrix;
-   
-   
-   
 
-   // SET INJECTOR signals
-   wire [31:0] i0;
-   wire [31:0] i1;
-   wire [31:0] i2;
-   wire [31:0] i3;
-   wire [31:0] i4;
+   // == SPI Checker Signals ==
+   wire        s_frame_received;
+   wire        s_load_received;
+   wire [15:0] s_data_received;
+   
+   
+  
 
    
    // == CLK GEN INST ==
@@ -123,34 +121,16 @@ module tb_top
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
 
-   // // INIT WAIT EVENT ALIAS
-   // assign s_wait_event_if.wait_alias[0] = "RST_N";
-   // assign s_wait_event_if.wait_alias[1] = "CLK";
-   // assign s_wait_event_if.wait_alias[2] = "PTR_EQUALITY";
-   // assign s_wait_event_if.wait_alias[3] = "O_DISCARD";
-   // assign s_wait_event_if.wait_alias[4] = "O4";
-
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
    assign s_wait_event_if.wait_signals[2] = s_ptr_equality;
    assign s_wait_event_if.wait_signals[3] = s_discard;
-   assign s_wait_event_if.wait_signals[4] = 1'b0;
-
-   // // INIT SET ALIAS
-   // assign s_set_injector_if.set_alias[0]  = "ME";
-   // assign s_set_injector_if.set_alias[1]  = "WE";
-   // assign s_set_injector_if.set_alias[2]  = "ADDR";
-   // assign s_set_injector_if.set_alias[3]  = "WDATA";
-   // assign s_set_injector_if.set_alias[4]  = "START_PTR";
-   // assign s_set_injector_if.set_alias[5]  = "LAST_PTR";
-   // assign s_set_injector_if.set_alias[6]  = "PTR_VAL";
-   // assign s_set_injector_if.set_alias[7]  = "LOOP";
-   // assign s_set_injector_if.set_alias[8]  = "EN";
-   // assign s_set_injector_if.set_alias[9]  = "DISPLAY_REG_MATRIX_N";
-   // assign s_set_injector_if.set_alias[10] = "DISPLAY_SCREEN_MATRIX";
-   // assign s_set_injector_if.set_alias[11] = "SEL";
+   assign s_wait_event_if.wait_signals[4] = s_frame_received;
+   assign s_wait_event_if.wait_signals[5] = s_load_received;
    
+
+
    // SET SET_INJECTOR SIGNALS
    assign s_me        = s_set_injector_if.set_signals_synch[0];
    assign s_we        = s_set_injector_if.set_signals_synch[1];
@@ -181,19 +161,9 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[10] = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[11] = 0;
    
-   // // INIT CHECK LEVEL ALIAS
-   // assign s_check_level_if.check_alias[0] = "TOTO0";
-   // assign s_check_level_if.check_alias[1] = "TOTO1";
-   // assign s_check_level_if.check_alias[2] = "TOTO2";
-   // assign s_check_level_if.check_alias[3] = "TOTO3";
-   // assign s_check_level_if.check_alias[4] = "TOTO4";
-
    // SET CHECK_SIGNALS
-   assign s_check_level_if.check_signals[0] =  32'hCAFEDECA;
-   assign s_check_level_if.check_signals[1] =  32'hCAFEDEC0;
-   assign s_check_level_if.check_signals[2] =  32'hCAFEDEC1;
-   assign s_check_level_if.check_signals[3] =  32'hCAFEDEC2;
-   assign s_check_level_if.check_signals[4] =  32'hCAFEDEC3;
+   assign s_check_level_if.check_signals[0] = s_data_received;
+
   
    // =====================================================
 
@@ -237,8 +207,8 @@ module tb_top
                       .G_CHECK_SIZE   (`C_CHECK_SIZE),
                       .G_CHECK_WIDTH  (`C_CHECK_WIDTH),
 		      
-		      .G_NB_COLLECTOR          (),
-		      .G_DATA_COLLECTOR_WIDTH  ()
+		      .G_NB_COLLECTOR          (`C_NB_DATA_COLLECTOR),
+		      .G_DATA_COLLECTOR_WIDTH  (`C_DATA_COLLECTOR_DATA_WIDTH)
 		      )
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
@@ -263,12 +233,14 @@ module tb_top
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "SEL",                    11);
       
 
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",        0);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",          1);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "PTR_EQUALITY", 2);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_DISCARD",    3);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O4",           4);
-      
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",              0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "PTR_EQUALITY",       2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_DISCARD",          3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_FRAME_RECEIVED", 4);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",  5);
+
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "SPI_DATA",  0);
       // == INIT DATA COLLECTOR MODULE ==
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_STATIC_INPUT_COLLECTOR_0");
       
@@ -326,6 +298,19 @@ module tb_top
    assign s_display_screen_matrix = (s_sel == 0) ? s_display_screen_matrix_tb : s_max7219_if_en_load; // Mux for selection
    
 
+   // == MAX7219 SPI Checker ==
+   max7219_spi_checker max7219_spi_checker_0 (
+					      .clk    (clk),
+					      .rst_n  (rst_n),
+
+					      .i_max7219_clk   (s_max7219_clk),
+					      .i_max7219_din   (s_max7219_data),
+					      .i_max7219_load  (s_max7219_load),
+
+					      .o_frame_received  (s_frame_received),
+					      .o_load_received   (s_load_received),
+					      .o_data_received   (s_data_received)
+					      );
 
    // == DUT INST ==
    max7219_cmd_decod #(

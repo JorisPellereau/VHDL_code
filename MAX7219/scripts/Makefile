@@ -16,7 +16,7 @@ SEL_STATION=LINUX
 ROOT=$(PWD)/..
 PROJECT_NAME=MAX7219
 WORK_DIR=MAX7219_WORK
-SCN_LIB_DIR=scn_lib_max7219_if
+#SCN_LIB_DIR=scn_lib_max7219_if
 LIB_TB_TOP=lib_tb_max7219_if
 TRANSCRIPT_EN=OFF
 # ============================
@@ -49,6 +49,7 @@ LIB_CODE_COVERAGE=lib_code_coverage
 
 
 # ==  LIB LIST ==
+LIB_LIST+=work
 LIB_LIST+=$(LIB_OTHERS)
 LIB_LIST+=$(LIB_MAX7219_STATIC)
 LIB_LIST+=$(LIB_MAX7219_SCROLLER)
@@ -232,8 +233,8 @@ compile_max7219_interface:
 	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_max7219_interface)" VHD_DESIGN_LIB=$(LIB_MAX7219_INTERFACE)
 
 compile_max7219_static:
-	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_max7219_static)" VHD_DESIGN_LIB=$(LIB_MAX7219_STATIC)
 	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_others)" VHD_DESIGN_LIB=$(LIB_MAX7219_STATIC)
+	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_max7219_static)" VHD_DESIGN_LIB=$(LIB_MAX7219_STATIC)
 
 compile_max7219_scroller:
 	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_max7219_scroller)" VHD_DESIGN_LIB=$(LIB_MAX7219_SCROLLER)
@@ -307,7 +308,7 @@ MAX7219_STATIC_TEST_LIST+=MAX7219_STATIC_05
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L lib_max7219_interface
+#LIB_ARGS=-L lib_max7219_interface
 #-L lib_uart_display_ctrl
 # ==============
 
@@ -334,12 +335,17 @@ endif
 
 # == RUN TEST ==
 # Run single test of MAX7219 I/F
-run_tb_max7219_if:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 
+LIB_ARGS_MAX7219_IF="-L lib_max7219_interface"
 run_tb_max7219_if:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_if LIB_TB_TOP=lib_tb_max7219_if LIB_ARGS=$(LIB_ARGS_MAX7219_IF)
+#TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_IF)
 
+
+LIB_ARGS_MAX7219_STATIC="-L lib_max7219_static -L lib_max7219_interface"
+run_tb_max7219_static:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_static LIB_TB_TOP=lib_tb_max7219_static LIB_ARGS=$(LIB_ARGS_MAX7219_STATIC)
+#TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
 
 # Run All Tests MAX7219 in console Mode
 run_all_tests_tb_max7219_if:
