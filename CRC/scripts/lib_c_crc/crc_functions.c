@@ -10,7 +10,9 @@
  *
  */
 
+#include "math.h"
 #include "crc_functions.h"
+
 
 /*
 *  CRC SERIAL Computation
@@ -30,7 +32,7 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
   case 5 :
     if(crc_number == 1) {
 
-      // CRC : x^5 + x^2 + 1
+      // CRC : x^5 + x^2 + 1      
       crc_serial[0] = crc[4] ^ i_data;
       crc_serial[1] = crc[0];
       crc_serial[2] = crc[1] ^ crc[4] ^ i_data;
@@ -44,11 +46,33 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
 
       break;
     }
+	
+  case 8 :
+    if(crc_number == 1) {
+		
+		// CRC : X^8 + X^2 + X + 1
+		crc_serial[0] = crc[7] ^ i_data;
+		crc_serial[1] = crc[0] ^ crc[7] ^ i_data;
+		crc_serial[2] = crc[1] ^ crc[7] ^ i_data;
+		crc_serial[3] = crc[2];
+		crc_serial[4] = crc[3];
+		crc_serial[5] = crc[4];
+		crc_serial[6] = crc[5];
+		crc_serial[7] = crc[6];
+		
+		break;
+	}
+	else {
+		printf("CRC 8 ERROR \n\n");
+		
+		break;
+	}
+	
 
   case 16 :
     if(crc_number == 1) {
 
-      // CRC : x^16 + x^12 + x^5 + 1
+      // CRC : x^16 + x^12 + x^5 + 1      
       crc_serial[0] = crc[15] ^ i_data;
       crc_serial[1] = crc[0];
       crc_serial[2] = crc[1];
@@ -69,7 +93,7 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
       break;
     }
     else if(crc_number == 2) {
-      // CRC : x^16 + x^12 + x^5 + 1 - bis
+      // CRC : x^16 + x^12 + x^5 + 1 - bis      
       crc_serial[0] = crc[15] ^ i_data;
       crc_serial[1] = crc[0];
       crc_serial[2] = crc[1];
@@ -90,7 +114,7 @@ void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbo
       break;
     }
     else if(crc_number == 3) {
-      // CRC : x^16 + x^12 + x^5 + 1 - ter
+      // CRC : x^16 + x^12 + x^5 + 1 - ter      
       crc_serial[0] = crc[15] ^ i_data;
       crc_serial[1] = crc[0];
       crc_serial[2] = crc[1];
@@ -158,6 +182,10 @@ void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, in
   int i = 0;
   int crc_hex = 0;
 
+  if(crc_par_verbose == 1) {
+    printf("crc_parallel START \n\n");
+  }
+
   // MSB FIRST
   for(i = data_in_width - 1 ; i >= 0 ; i --) {  
     crc_serial(poly_width, i_data[i], i_crc, i_crc_serial, crc_serial_verbose, crc_number);    
@@ -170,6 +198,7 @@ void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, in
       crc_hex = crc_hex + i_crc_serial[i]*pow(2, i);
     }    
     printf("\nCRC PARALLEL OUT : 0x%x \n", crc_hex);
+    printf("crc_parallel DONE. \n\n");
   }
   else if(crc_par_verbose == 0) {
   }
@@ -179,6 +208,176 @@ void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, in
   
 
 }
+
+
+
+/* /\* */
+/* *  CRC SERIAL Computation */
+/* *  i_data      : input        - Bit of data (0 or 1) */
+/* *  poly_width  : input        - CRC polynom Width */
+/* *  *crc        : input/output - Current CRC  */
+/* *  *crc_serial : output       - CRC result */
+/* *  verbose     : input        - 1 : Verbose On - 0 : Verbose Off */
+/* *  crc_numer   : input        - CRC Number selected */
+/* *\/ */
+/* void crc_serial(int poly_width, int i_data, int *crc, int *crc_serial, int verbose, int crc_number) { */
+
+/*   int i = 0; */
+
+/*   // HARD CODED CRC */
+/*   switch(poly_width) { */
+/*   case 5 : */
+/*     if(crc_number == 1) { */
+
+/*       // CRC : x^5 + x^2 + 1 */
+/*       crc_serial[0] = crc[4] ^ i_data; */
+/*       crc_serial[1] = crc[0]; */
+/*       crc_serial[2] = crc[1] ^ crc[4] ^ i_data; */
+/*       crc_serial[3] = crc[2]; */
+/*       crc_serial[4] = crc[3]; */
+
+/*       break; */
+/*     } */
+/*     else { */
+/*       printf("CRC 5 ERROR \n\n"); */
+
+/*       break; */
+/*     } */
+
+/*   case 16 : */
+/*     if(crc_number == 1) { */
+
+/*       // CRC : x^16 + x^12 + x^5 + 1 */
+/*       crc_serial[0] = crc[15] ^ i_data; */
+/*       crc_serial[1] = crc[0]; */
+/*       crc_serial[2] = crc[1]; */
+/*       crc_serial[3] = crc[2]; */
+/*       crc_serial[4] = crc[3]; */
+/*       crc_serial[5] = crc[4]  ^ crc[15] ^ i_data; */
+/*       crc_serial[6] = crc[5]; */
+/*       crc_serial[7] = crc[6]; */
+/*       crc_serial[8] = crc[7]; */
+/*       crc_serial[9] = crc[8]; */
+/*       crc_serial[10] = crc[9]; */
+/*       crc_serial[11] = crc[10]; */
+/*       crc_serial[12] = crc[11] ^ crc[15] ^ i_data; */
+/*       crc_serial[13] = crc[12]; */
+/*       crc_serial[14] = crc[13]; */
+/*       crc_serial[15] = crc[14]; */
+
+/*       break; */
+/*     } */
+/*     else if(crc_number == 2) { */
+/*       // CRC : x^16 + x^12 + x^5 + 1 - bis */
+/*       crc_serial[0] = crc[15] ^ i_data; */
+/*       crc_serial[1] = crc[0]; */
+/*       crc_serial[2] = crc[1]; */
+/*       crc_serial[3] = crc[2]; */
+/*       crc_serial[4] = crc[3]; */
+/*       crc_serial[5] = crc[4]  ^ crc[15]; */
+/*       crc_serial[6] = crc[5]; */
+/*       crc_serial[7] = crc[6]; */
+/*       crc_serial[8] = crc[7]; */
+/*       crc_serial[9] = crc[8]; */
+/*       crc_serial[10] = crc[9]; */
+/*       crc_serial[11] = crc[10]; */
+/*       crc_serial[12] = crc[11]  ^ crc[15]; */
+/*       crc_serial[13] = crc[12]; */
+/*       crc_serial[14] = crc[13]; */
+/*       crc_serial[15] = crc[14]; */
+      
+/*       break; */
+/*     } */
+/*     else if(crc_number == 3) { */
+/*       // CRC : x^16 + x^12 + x^5 + 1 - ter */
+/*       crc_serial[0] = crc[15] ^ i_data; */
+/*       crc_serial[1] = crc[0]; */
+/*       crc_serial[2] = crc[1]; */
+/*       crc_serial[3] = crc[2]; */
+/*       crc_serial[4] = crc[3]; */
+/*       crc_serial[5] = crc[4]  ^ crc[15] ^ i_data; */
+/*       crc_serial[6] = crc[5]; */
+/*       crc_serial[7] = crc[6]; */
+/*       crc_serial[8] = crc[7]; */
+/*       crc_serial[9] = crc[8]; */
+/*       crc_serial[10] = crc[9]; */
+/*       crc_serial[11] = crc[10]; */
+/*       crc_serial[12] = crc[11]  ^ crc[15] ^ i_data; */
+/*       crc_serial[13] = crc[12]; */
+/*       crc_serial[14] = crc[13]; */
+/*       crc_serial[15] = crc[14] ^ crc[15] ^ i_data; */
+      
+/*       break; */
+/*     } */
+/*     else { */
+/*       printf("CRC 16 ERROR \n\n"); */
+
+/*       break; */
+/*     } */
+
+/*   default : */
+/*     printf("ERROR : CRC Not in the list \n\n"); */
+   
+    
+/*   } */
+
+/*   // Update */
+/*   for(i = 0 ; i < poly_width ; i++) { */
+/*     crc[i] = crc_serial[i]; */
+/*   } */
+
+/*   // Verbose */
+/*   if(verbose == 1) { */
+/*     printf("crc_serial : "); */
+/*     for(i = poly_width - 1 ; i >= 0 ; i--) {     */
+/*       printf("%d", crc_serial[i]);  // MSB First */
+/*     } */
+/*     printf("\n"); */
+/*   } */
+/*   else if(verbose == 0) { */
+/*   } */
+/*   else { */
+/*       printf("Verbose Error \n\n"); */
+/*   } */
+   
+/* } */
+
+/* /\* */
+/* *  data_in_width      : input        - Data INPUT WIDTH */
+/* *  poly_width         : input        - CRC Polynom WIDTH */
+/* *  *i_data            : input        - Data input  (Array type) */
+/* *  *i_crc             : input/output - Current CRC */
+/* *  *i_crc_serial      : output       - CRC RESULT */
+/* *  crc_par_verbose    : input        - 1 : Verbose On - 0 : Verbose Off */
+/* *  crc_serial_verbose : input        - 1 : Verbose On - 0 : Verbose Off */
+/* *  crc_number         : input        - CRC Number selected */
+/* *\/ */
+/* void crc_parallel(int data_in_width, int poly_width, int *i_data, int *i_crc, int *i_crc_serial, int crc_par_verbose, int crc_serial_verbose, int crc_number) { */
+
+/*   int i = 0; */
+/*   int crc_hex = 0; */
+
+/*   // MSB FIRST */
+/*   for(i = data_in_width - 1 ; i >= 0 ; i --) {   */
+/*     crc_serial(poly_width, i_data[i], i_crc, i_crc_serial, crc_serial_verbose, crc_number);     */
+/*   } */
+
+/*   if(crc_par_verbose == 1) { */
+/*     printf("CRC PARALELL OUT : "); */
+/*     for(i = poly_width - 1 ; i >= 0 ; i --) { */
+/*       printf("%d", i_crc_serial[i]); */
+/*       crc_hex = crc_hex + i_crc_serial[i]*pow(2, i); */
+/*     }     */
+/*     printf("\nCRC PARALLEL OUT : 0x%x \n", crc_hex); */
+/*   } */
+/*   else if(crc_par_verbose == 0) { */
+/*   } */
+/*   else { */
+/*       printf("CRC SERIAL VERBOSE ERROR \n\n"); */
+/*   } */
+  
+
+/* } */
 
 /*
  *  data_in_width      : input        - Data in width

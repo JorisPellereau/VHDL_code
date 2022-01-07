@@ -21,3 +21,4 @@ void fill_h1(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, i
 void fill_h2(int data_in_width, int poly_width, int *i_crc, int *i_crc_serial, int **h2_matrix, int h2_verbose, int crc_par_verbose, int crc_ser_verbose, int crc_number);
 void print_impl_crc_par(int data_in_width, int poly_width, int **h1_matrix, int **h2_matrix);
 // ================
+
