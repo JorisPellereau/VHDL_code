@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2021-12-10
+-- Last update: 2022-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.numeric_std.all;
 use std.textio.all;
 use ieee.std_logic_textio.all;
 
@@ -47,6 +49,16 @@ package pkg_code_coverage is
   function str_2_int(i_str    : string;
                      i_format : integer)
     return integer;
+
+  -- A int to a str on N character
+  function int_2_str(i_int     : integer;
+                     i_nb_char : integer)
+    return string;
+
+  -- int_2_str_32
+  function int_2_str_32(i_int                : integer;
+                        i_nb_char_to_display : integer)
+    return string;
 
 end package pkg_code_coverage;
 
@@ -133,7 +145,7 @@ package body pkg_code_coverage is
         v_int := 8;
       when '9' =>
         v_int := 9;
-        
+
       when 'A' =>
         v_int := 10;
       when 'B' =>
@@ -201,5 +213,91 @@ package body pkg_code_coverage is
 
     return v_data;
   end function str_2_int;
+
+
+  -- A int to a str on N character
+  function int_2_str(i_int     : integer;
+                     i_nb_char : integer)
+    return string is
+
+    -- Variables
+    variable v_str_tmp        : string(1 to i_nb_char);
+    variable v_str_tmp_length : integer;
+    variable v_str            : string(1 to 32);  -- := integer'image(i_int);  --string(1 to i_nb_char);
+  begin
+    v_str := integer'image(i_int);
+--    v_str_tmp(1 to i_nb_char) := integer'image(i_int);
+    --v_str_tmp := to_string(i_int);
+    --v_str_tmp_length := v_str_tmp'length;
+
+    return v_str;
+  end function int_2_str;
+
+
+  -- int_2_str_32
+  function int_2_str_32(i_int                : integer;
+                        i_nb_char_to_display : integer)
+    return string is
+
+    -- Variable
+    variable v_line : line;
+
+    -- Init with space
+    variable v_str           : string(1 to 32) := "                                ";
+    variable v_str_tmp       : string(1 to 32);
+    variable v_str_return    : string(1 to i_nb_char_to_display);
+    variable v_char_nb       : integer         := 0;  -- Number of character for the current integer converts in string
+    variable v_nb_0_to_add   : integer         := 0;
+    variable v_conversion_ok : boolean         := false;
+  begin
+
+    -- Fill v_str with value of integer - other digit set to ' ' (space)
+    std.TextIO.write(v_line, i_int);
+    v_str(v_line.all'range) := v_line.all;
+    deallocate(v_line);
+
+    -- Get the size of integer convert in string
+    for i in 1 to 32 loop
+      if(v_str(i) /= ' ') then
+        v_char_nb := v_char_nb + 1;     -- Inc
+      end if;
+    end loop;
+
+    -- Computes number of 0 to add
+    if(i_nb_char_to_display > v_char_nb) then
+      v_nb_0_to_add   := i_nb_char_to_display - v_char_nb;
+      v_conversion_ok := true;
+    elsif(i_nb_char_to_display < v_char_nb) then
+      DISPLAY_MESSAGE("Error: i_nb_char_to_display < v_char_nb");
+      DISPLAY_MESSAGE("v_char_nb : " & integer'image(v_char_nb));
+      DISPLAY_MESSAGE("i_nb_char_to_display : " & integer'image(i_nb_char_to_display));
+      v_conversion_ok := false;
+    else
+      v_nb_0_to_add   := 0;
+      v_conversion_ok := true;
+    end if;
+
+    DISPLAY_MESSAGE("v_char_nb : " & integer'image(v_char_nb));
+    DISPLAY_MESSAGE("v_nb_0_to_add : " & integer'image(v_nb_0_to_add));
+
+    v_str_tmp := v_str;                 -- Temporary save before roll shift
+
+    if(v_conversion_ok = true) then
+
+      -- Shift integer only if i_nb_char_to_display is greater than v_char_nb
+      for i in 1 to v_char_nb loop      --i_nb_char_to_display loop
+        v_str(i + v_nb_0_to_add) := v_str_tmp(i);
+      end loop;
+
+      -- Add 0
+      for i in 1 to v_nb_0_to_add loop
+        v_str(i) := '0';
+      end loop;
+    end if;
+
+    -- Update v_str_return
+    v_str_return := v_str(1 to i_nb_char_to_display);
+    return v_str_return;                       --(1 to i_nb_char_to_display);
+  end function int_2_str_32;
 
 end package body pkg_code_coverage;
