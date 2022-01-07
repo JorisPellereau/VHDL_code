@@ -16,12 +16,13 @@
 `timescale 1ps/1ps
 
 
-`include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_static/testbench_setup.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_static/testbench_setup.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
+// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
+// `include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
+// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
+// `include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
+// `include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
 
 
 // TB TOP
@@ -113,17 +114,21 @@ module tb_top
     )
     s_check_level_if();
    
-
+   data_collector_intf #(
+			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+			 )
+   s_data_collector_if();
    // =====================================================
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
 
-   // INIT WAIT EVENT ALIAS
-   assign s_wait_event_if.wait_alias[0] = "RST_N";
-   assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "PTR_EQUALITY";
-   assign s_wait_event_if.wait_alias[3] = "O_DISCARD";
-   assign s_wait_event_if.wait_alias[4] = "O4";
+   // // INIT WAIT EVENT ALIAS
+   // assign s_wait_event_if.wait_alias[0] = "RST_N";
+   // assign s_wait_event_if.wait_alias[1] = "CLK";
+   // assign s_wait_event_if.wait_alias[2] = "PTR_EQUALITY";
+   // assign s_wait_event_if.wait_alias[3] = "O_DISCARD";
+   // assign s_wait_event_if.wait_alias[4] = "O4";
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
@@ -132,19 +137,19 @@ module tb_top
    assign s_wait_event_if.wait_signals[3] = s_discard;
    assign s_wait_event_if.wait_signals[4] = 1'b0;
 
-   // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0]  = "ME";
-   assign s_set_injector_if.set_alias[1]  = "WE";
-   assign s_set_injector_if.set_alias[2]  = "ADDR";
-   assign s_set_injector_if.set_alias[3]  = "WDATA";
-   assign s_set_injector_if.set_alias[4]  = "START_PTR";
-   assign s_set_injector_if.set_alias[5]  = "LAST_PTR";
-   assign s_set_injector_if.set_alias[6]  = "PTR_VAL";
-   assign s_set_injector_if.set_alias[7]  = "LOOP";
-   assign s_set_injector_if.set_alias[8]  = "EN";
-   assign s_set_injector_if.set_alias[9]  = "DISPLAY_REG_MATRIX_N";
-   assign s_set_injector_if.set_alias[10] = "DISPLAY_SCREEN_MATRIX";
-   assign s_set_injector_if.set_alias[11] = "SEL";
+   // // INIT SET ALIAS
+   // assign s_set_injector_if.set_alias[0]  = "ME";
+   // assign s_set_injector_if.set_alias[1]  = "WE";
+   // assign s_set_injector_if.set_alias[2]  = "ADDR";
+   // assign s_set_injector_if.set_alias[3]  = "WDATA";
+   // assign s_set_injector_if.set_alias[4]  = "START_PTR";
+   // assign s_set_injector_if.set_alias[5]  = "LAST_PTR";
+   // assign s_set_injector_if.set_alias[6]  = "PTR_VAL";
+   // assign s_set_injector_if.set_alias[7]  = "LOOP";
+   // assign s_set_injector_if.set_alias[8]  = "EN";
+   // assign s_set_injector_if.set_alias[9]  = "DISPLAY_REG_MATRIX_N";
+   // assign s_set_injector_if.set_alias[10] = "DISPLAY_SCREEN_MATRIX";
+   // assign s_set_injector_if.set_alias[11] = "SEL";
    
    // SET SET_INJECTOR SIGNALS
    assign s_me        = s_set_injector_if.set_signals_synch[0];
@@ -176,12 +181,12 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[10] = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[11] = 0;
    
-   // INIT CHECK LEVEL ALIAS
-   assign s_check_level_if.check_alias[0] = "TOTO0";
-   assign s_check_level_if.check_alias[1] = "TOTO1";
-   assign s_check_level_if.check_alias[2] = "TOTO2";
-   assign s_check_level_if.check_alias[3] = "TOTO3";
-   assign s_check_level_if.check_alias[4] = "TOTO4";
+   // // INIT CHECK LEVEL ALIAS
+   // assign s_check_level_if.check_alias[0] = "TOTO0";
+   // assign s_check_level_if.check_alias[1] = "TOTO1";
+   // assign s_check_level_if.check_alias[2] = "TOTO2";
+   // assign s_check_level_if.check_alias[3] = "TOTO3";
+   // assign s_check_level_if.check_alias[4] = "TOTO4";
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  32'hCAFEDECA;
@@ -218,27 +223,56 @@ module tb_top
    // ===========================
 
 
-   // == TESTBENCH SEQUENCER ==
-   tb_modules_custom_class tb_modules_custom_class_inst = new();
+   // // == TESTBENCH SEQUENCER ==
+   // tb_modules_custom_class tb_modules_custom_class_inst = new();
    
    
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_SET_SIZE, 
-                      `C_SET_WIDTH,
-                      `C_WAIT_ALIAS_NB,
-                      `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD,
-                      `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH) 
+   static tb_class #( 
+		      .G_SET_SIZE     (`C_SET_SIZE),
+                      .G_SET_WIDTH    (`C_SET_WIDTH),
+                      .G_WAIT_SIZE    (`C_WAIT_ALIAS_NB),
+                      .G_WAIT_WIDTH   (`C_WAIT_WIDTH), 
+                      .G_CLK_PERIOD   (`C_TB_CLK_PERIOD),
+                      .G_CHECK_SIZE   (`C_CHECK_SIZE),
+                      .G_CHECK_WIDTH  (`C_CHECK_WIDTH),
+		      
+		      .G_NB_COLLECTOR          (),
+		      .G_DATA_COLLECTOR_WIDTH  ()
+		      )
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if,
-			tb_modules_custom_class_inst
+                        s_check_level_if
 			);
    
    
    initial begin// : TB_SEQUENCER
+
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ME",                     0);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WE",                     1);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ADDR",                   2);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA",                  3);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START_PTR",              4);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "LAST_PTR",               5);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "PTR_VAL",                6);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "LOOP",                   7);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "EN",                     8);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_REG_MATRIX_N",   9);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_MATRIX",  10);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "SEL",                    11);
+      
+
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",        0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",          1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "PTR_EQUALITY", 2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_DISCARD",    3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O4",           4);
+      
+      // == INIT DATA COLLECTOR MODULE ==
+      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_STATIC_INPUT_COLLECTOR_0");
+      
+      
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
    end// : TB_SEQUENCER
