@@ -1,0 +1,75 @@
+# ************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fbouquet <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2016/12/14 16:30:45 by fbouquet          #+#    #+#              #
+#    Updated: 2017/05/16 13:44:41 by fbouquet         ###   ########.fr        #
+#                                                                              #
+# ************************************************************************** #
+
+.PHONY: all clean fclean re
+
+#==========EXECUTABLES==========#
+
+EXE= lem-in
+LIBRARY= libft/libft.a
+
+#=======COMPILER AND FLAGS======#
+
+CC= gcc
+FLAGS= -Wall -Wextra -Werror
+
+#============HEADERS============#
+
+HEADER= includes
+HLIBFT= libft/includes
+
+#============COLORS=============#
+
+RED=\033[1;31m
+GREEN=\033[1;32m
+EOC=\033[0m
+
+#=============LEM_IN============#
+
+SRCIN = $(addprefix ./srcs/, $(SRC))
+SRC = main.c lemin.c lem_parse.c lem_room.c lem_tube.c file.c pre_algo.c algorithm.c \
+	  combination_tools.c lem_options.c find_best_combination.c find_best_tools.c \
+	  norme.c super_bonus.c follow.c re_distance.c
+
+OBJS= ${SRCIN:.c=.o}
+
+#=============RULES=============#
+
+all: $(EXE)
+
+%.o: %.c Makefile $(HEADER) $(HLIBFT)
+	@$(CC) $(FLAGS) -c $< -o $@ -I $(HEADER) -I $(HLIBFT)
+	@printf "$(GREEN)+$(EOC)"
+
+$(LIBRARY): $(HLIBFT) libft/srcs
+	@make -C libft
+
+$(EXE): $(LIBRARY) $(OBJS)
+	@echo "\t$(EXE)'s objects compiled"
+	@$(CC) $(FLAGS) $^ -o $(EXE) -L libft -lft
+	@echo "executable $(GREEN)$(EXE)$(EOC) created"
+	@echo "$(GREEN)---------->>>$(EOC)"
+
+clean:
+	@make clean -C libft
+	@rm -f $(OBJS)
+	@echo "$(RED)[x]$(EOC) $(EXE)'s objects cleaned"
+
+fclean:
+	@make fclean -C libft
+	@rm -f $(OBJS)
+	@echo "$(RED)[x]$(EOC) $(EXE)'s objects cleaned"
+	@rm -f $(EXE)
+	@echo "executable $(RED)$(EXE)$(EOC) removed"
+	@echo "$(RED)<<<----------$(EOC)"
+
+re: fclean all
