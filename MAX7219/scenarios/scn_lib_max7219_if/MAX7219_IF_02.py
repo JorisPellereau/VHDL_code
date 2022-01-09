@@ -93,8 +93,8 @@ scn.WAIT(100, "ns")
 scn.print_line("//-- STEP 2 - Init Value and send a frame - Enable LOAD for all frame\n")
 scn.print_line("\n")
 
-
-for i in range(0, 0xFFFF + 1):
+data_nb = 0xFF #0xFFFF
+for i in range(0, data_nb + 1):
     scn.SET("I_DATA", i)
     scn.SET("I_EN_LOAD", 1)
     scn.SET("I_START", 0)

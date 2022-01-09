@@ -82,6 +82,7 @@ if(len(sys.argv) == 1):
 else:
     max_data = int(sys.argv[1])
 
+max_data = 0xFF # Temporaire
 max_data += 1
 
 for i in range(0, max_data):

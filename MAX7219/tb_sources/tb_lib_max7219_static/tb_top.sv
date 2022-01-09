@@ -107,8 +107,8 @@ module tb_top
     assign s_wait_duration_if.clk = clk;
    
 
-    check_level_intf #( .CHECK_SIZE  (),
-		        .CHECK_WIDTH  ()
+    check_level_intf #( .CHECK_SIZE   (`C_CHECK_SIZE),
+		        .CHECK_WIDTH  (`C_CHECK_WIDTH)
     )
     s_check_level_if();
    
@@ -163,7 +163,10 @@ module tb_top
    
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] = s_data_received;
-
+   assign s_check_level_if.check_signals[1] = s_rdata;
+   assign s_check_level_if.check_signals[2] = s_ptr_equality;
+   assign s_check_level_if.check_signals[3] = s_discard;
+   
   
    // =====================================================
 
@@ -187,16 +190,10 @@ module tb_top
        .clk              (clk),
        .rst_n            (rst_n),
        .set_injector_if  (s_set_injector_if)			   
-   );
-   
-   
+   );      
    // ===========================
 
 
-   // // == TESTBENCH SEQUENCER ==
-   // tb_modules_custom_class tb_modules_custom_class_inst = new();
-   
-   
    // CREATE CLASS - Configure Parameters
    static tb_class #( 
 		      .G_SET_SIZE     (`C_SET_SIZE),
@@ -241,6 +238,10 @@ module tb_top
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",  5);
 
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "SPI_DATA",  0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_RDATA",   1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_PTR_EQUALITY",   2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_DISCARD",   3);
+      
       // == INIT DATA COLLECTOR MODULE ==
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_STATIC_INPUT_COLLECTOR_0");
       

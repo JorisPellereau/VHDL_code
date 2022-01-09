@@ -1,5 +1,5 @@
-# MAX_STATIC_00.py
-# Use for the generation of the scenario MAX_STATIC_00.txt
+# MAX7219_STATIC_00.py
+# Use for the generation of the scenario MAX7219_STATIC_00.txt
 #
 #
 # Aim of test : Configure All eight Matrix and turn on entire screen (All digit register to 0xFF value)

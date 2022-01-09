@@ -32,8 +32,8 @@
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 1
-`define C_CHECK_SIZE     1
+`define C_CHECK_ALIAS_NB 4
+`define C_CHECK_SIZE     4
 `define C_CHECK_WIDTH    32
 
 // DATA COLLECTOR Configuration
