@@ -3,7 +3,7 @@
 #
 #
 # Aim of test : Write a single value in each Memory Addr and check the generate of 1 SPI frame
-#
+# Do it with and without en_load
 
 import sys
 
