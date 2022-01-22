@@ -1,7 +1,10 @@
 # TBD Makefile for GHDL compilation
 
 # == GHDL commandes ==
-GHDL_GCC=/opt/ghdl/build/ghdl_gcc
+#GHDL_GCC=/home/linux-jp/ghdl/build/ghdl_gcc
+GHDL_GCC=/opt/ghdl1/bin/ghdl
+GCOV=/opt/ghdl1/bin/gcov
+#/opt/ghdl/build/ghdl_gcc
 
 # == PATH ==
 GHDL_WORK_DIR=$(PROJECT_NAME)_GHDL
@@ -152,7 +155,7 @@ ghdl_gcc_run:
 
 # COVERAGE_DIR must be pass as argument
 ghdl_gcc_gcov:
-	gcov  --object-directory $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/ -b -u -t -d /home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_if/max7219_if.vhd
+	$(GCOV)  --object-directory $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/ -b -u -d /home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_if/max7219_if.vhd
 	
 	# cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
 	# gcov -b -u -t -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)
