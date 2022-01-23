@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-05
--- Last update: 2021-12-04
+-- Last update: 2022-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -157,8 +157,6 @@ begin  -- architecture behv
       if(s_max7219_clk_r_edge = '1') then
         if(s_cnt_16 < 16) then
           s_cnt_16 <= s_cnt_16 + 1;
-        else
-          s_cnt_16 <= 0;
         end if;
       elsif(s_end_frame = '1') then
         s_cnt_16 <= 0;
