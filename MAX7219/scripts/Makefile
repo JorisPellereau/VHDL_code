@@ -57,6 +57,7 @@ LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
 LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF_COVERAGE)
+LIB_LIST+=$(LIB_TB_TOP_MAX7219_STATIC_COVERAGE)
 LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ================
 
@@ -64,16 +65,22 @@ LIB_LIST+=$(LIB_CODE_COVERAGE)
 
 # ================ GHDL CONFIGURATION ================ #
 GHDL_COV_DIR_LIST+=MAX7219_IF_CODE_COVERAGE
+GHDL_COV_DIR_LIST+=MAX7219_STATIC_CODE_COVERAGE
 
 # == COVERAGE LIBRARIES ==
 LIB_TB_TOP_MAX7219_IF_COVERAGE=lib_tb_top_max7219_if_coverage
+LIB_TB_TOP_MAX7219_STATIC_COVERAGE=lib_tb_top_max7219_static_coverage
 # ========================
 
 # == GHDL LIB LIST ==
 GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
+GHDL_LIB_LIST+=$(LIB_MAX7219_STATIC)
 # ===================
 
+# == PYTHON SCRIPTS PATH ==
+FILE_OPTI_SCRIPT=~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py
+# =========================
 
 # ==================================================== #
 
@@ -139,21 +146,41 @@ all: print_generic_rules
 	@echo ""
 	@echo "==============="
 	@echo ""
-	@echo "== RUN CODE COVERAGE =="
+	@echo "== RUN TEST WITH GHDL =="
+	@echo "Compile Testbench MAX7219 IF with GHDL"
+	@echo "make ghdl_compile_max7219_if_tb"
 	@echo ""
+	@echo "Run Testbench MAX7219 IF with GHSL"
+	@echo "make ghdl_run_max7219_if_tb"
+	@echo "========================"
+	@echo ""
+	@echo "== RUN CODE COVERAGE =="
+	@echo "-- MAX7219 IF --"
 	@echo "Compile Testbench MAX7219 IF for Code Coverage"
 	@echo "make ghdl_gcc_compile_max7219_if_tb"
 	@echo ""
 	@echo "Run Testbench MAX7219 IF for Code Coverage"
-	@echo "make ghdl_gcc_run_max7219_if_tb"
+	@echo "make ghdl_gcc_run_max7219_if_tb SIMU_TIME=XXms"
 	@echo ""
-	@echo "Compile Testbench MAX7219 IF for Code Coverage"
-	@echo "make ghdl_compile_max7219_if_tb"
+	@echo "Run Coverage and open result : "
+	@echo "make run_max7219_if_code_coverage SIMU_TIME=XXms"
 	@echo ""
-	@echo "Run Testbench MAX7219 IF for Code Coverage"
-	@echo "make ghdl_run_max7219_if_tb"
+	@echo "------"
+	@echo ""
+	@echo "-- MAX7219 STATIC --"
+	@echo "Compile Testbench MAX7219 STATIC for Code Coverage"
+	@echo "make ghdl_gcc_compile_max7219_static_tb"
+	@echo ""
+	@echo "make ghdl_gcc_run_max7219_static_tb SIMU_TIME=XXms"
+	@echo ""
+	@echo "Run Coverage and open result : "
+	@echo "make run_max7219_static_code_coverage SIMU_TIME=XXms1"
 	@echo ""
 	@echo "======================="
+	@echo ""
+	@echo "== PYTHON SCRIPTS =="
+	@echo "make genarate_collect_opti_files TEST=XXX"
+	@echo "===================="
 	@echo ""
 	@echo "== SCENARII LIST =="
 	@echo "$(SCN_LIST)"
@@ -171,6 +198,7 @@ create_collect_dir:
 src_vhd_lib_others+=~/Documents/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/pkg_max7219_static.vhd
+src_vhd_lib_max7219_static+=~/Documents/GitHub/VHDL_code/RAM/TDPRAM/tdpram_sclk.vhd
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/max7219_ram_decod.vhd
 src_vhd_lib_max7219_static+=$(SRC_MAX7219_DIR)/lib_max7219_static/max7219_cmd_decod.vhd
 
@@ -221,6 +249,9 @@ src_tb_lib_max7219_controller_v+=$(TB_SRC_DIR)/tb_lib_max7219_controller/tb_top.
 # == Coverage Testbench File List ==
 src_tb_coverage_max7219_if+=$(src_code_cov_tb_vhd)
 src_tb_coverage_max7219_if+=$(TB_SRC_DIR)/tb_lib_max7219_if/tb_top.vhd
+
+src_tb_coverage_max7219_static+=$(src_code_cov_tb_vhd)
+src_tb_coverage_max7219_static+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.vhd
 # ==================================
 
 
@@ -382,6 +413,8 @@ ghdl_run_max7219_if_tb:
 
 
 # == CODE COV SECTION ==
+
+# -- MAX7219 IF --
 ghdl_gcc_compile_max7219_if_tb: 
 	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_INTERFACE) \
 	COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
@@ -399,15 +432,52 @@ ghdl_gcc_gen_code_cov_if_tb:
 	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
+# SIMU_TIME must be passed as argument
 run_max7219_if_code_coverage: ghdl_gcc_compile_max7219_if_tb ghdl_gcc_run_max7219_if_tb ghdl_gcc_gen_code_cov_if_tb
 	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+# -----
 
-generate_collect_opti_files:
-	python ~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_00_collect.txt ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_00_collect_opti.txt
-	python ~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_01_collect.txt ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_01_collect_opti.txt
-	python ~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_02_collect.txt ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_02_collect_opti.txt
-	python ~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_03_collect.txt ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_03_collect_opti.txt
-	python ~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_04_collect.txt ~/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_IF_04_collect_opti.txt;
+
+# -- MAX7219 CMD DECOD --
+ghdl_gcc_compile_max7219_static_tb:
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_others)" GHDL_WORK_LIB_NAME=$(LIB_OTHERS) \
+	COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_static)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_STATIC) \
+	COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) \
+	COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_tb_coverage_max7219_static)" \
+	GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_STATIC_COVERAGE) P_ARGS_EN=ON COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_STATIC_COVERAGE) GHDL_TOP_UNIT=tb_top \
+	P_ARGS_EN=ON COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+
+#	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) \
+#	COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+# SIMU_TIME must be passed as argument
+GHDL_RUN_ARGS_STATIC+=--vcd=/home/linux-jp/SIMULATION_VHDL/run_code_cov_max7219_static.vcd
+ghdl_gcc_run_max7219_static_tb:
+	make ghdl_gcc_run COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME) GHDL_GCC_RUN_ARGS=$(GHDL_RUN_ARGS_STATIC)
+
+ghdl_gcc_gen_code_cov_static_tb:
+	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+
+# SIMU_TIME must be passed as argument
+run_max7219_static_code_coverage: ghdl_gcc_compile_max7219_static_tb ghdl_gcc_run_max7219_static_tb ghdl_gcc_gen_code_cov_static_tb
+	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
+# -----------------------
+
+# TEST must be pass as argument
+genarate_collect_opti_files:
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(TEST)_collect.txt  $(MAX7219_COLLECT_PATH)/$(TEST)_collect_opti.txt
+
+generate_collect_all_opti_files:
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect_opti.txt
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect_opti.txt
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_02_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_02_collect_opti.txt
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_03_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_03_collect_opti.txt
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_04_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_04_collect_opti.txt;
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_00_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_00_collect_opti.txt
 
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric

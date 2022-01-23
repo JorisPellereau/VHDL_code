@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2020-09-26
--- Last update: 2021-04-16
+-- Last update: 2022-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -99,6 +99,30 @@ package pkg_max7219_static is
       o_max7219_if_data    : out std_logic_vector(15 downto 0));
   end component;
 
+
+  -- TDPRAM single CLOCK
+  component tdpram_sclk is
+
+    generic (
+      G_ADDR_WIDTH : integer := 8;      -- ADDR WIDTH
+      G_DATA_WIDTH : integer := 8);     -- DATA WIDTH
+
+    port (
+      clk       : in  std_logic;        -- Clock
+      i_me_a    : in  std_logic;        -- Memory Enable port A
+      i_we_a    : in  std_logic;        -- Memory Write/Read access port A
+      i_addr_a  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- ADDR port A
+      i_wdata_a : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- WDATA port A
+      o_rdata_a : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- RDATA port A
+
+      i_me_b    : in  std_logic;        -- Memory Enable port B
+      i_we_b    : in  std_logic;        -- Memory Write/Read access port B
+      i_addr_b  : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- ADDR port B
+      i_wdata_b : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- WDATA port B
+      o_rdata_b : out std_logic_vector(G_DATA_WIDTH - 1 downto 0)  -- RDATA port B
+      );
+
+  end component tdpram_sclk;
 
 
 

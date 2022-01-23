@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2022-01-04
+-- Last update: 2022-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -28,18 +28,24 @@ use ieee.std_logic_textio.all;
 
 package pkg_code_coverage is
 
+  -- Constaants
+  constant C_NB_ARRAY_OF_INT : integer := 10;
+  -- New Type
+  type t_array_of_int is array (0 to C_NB_ARRAY_OF_INT) of integer;  -- Array of int type
+
   -- Display a simple message pass as a string
   procedure DISPLAY_MESSAGE (
     constant i_msg : in string);        -- Input Message
 
   -- Decode Line - Get Data and number of Data
   procedure DECODE_LINE (
-    variable v_line          : inout line;
-    constant i_char_nb_data1 : in    integer;
-    constant i_char_nb_data2 : in    integer;
-    constant i_data1_format  : in    integer;
-    variable o_data_out      : out   integer;
-    variable o_data_nb       : out   integer);
+    variable v_line                : inout line;
+    constant i_char_nb_data1       : in    integer;
+    constant i_char_nb_data2       : in    integer;
+    constant i_data1_format        : in    integer;
+    constant i_injector_data_width : in    integer;
+    variable o_data_out            : out   t_array_of_int;
+    variable o_data_nb             : out   integer);
 
   -- A single Char to Int
   function char_2_int(i_char : character)
@@ -77,12 +83,13 @@ package body pkg_code_coverage is
 
   -- Decode Line - Get Data and number of Data
   procedure DECODE_LINE (
-    variable v_line          : inout line;
-    constant i_char_nb_data1 : in    integer;
-    constant i_char_nb_data2 : in    integer;
-    constant i_data1_format  : in    integer;
-    variable o_data_out      : out   integer;
-    variable o_data_nb       : out   integer) is
+    variable v_line                : inout line;
+    constant i_char_nb_data1       : in    integer;
+    constant i_char_nb_data2       : in    integer;
+    constant i_data1_format        : in    integer;
+    constant i_injector_data_width : in    integer;
+    variable o_data_out            : out   t_array_of_int;
+    variable o_data_nb             : out   integer) is
 
     -- VARIABLES
     variable v_str_data : string(1 to i_char_nb_data1);
@@ -99,10 +106,17 @@ package body pkg_code_coverage is
     variable v_digit_nb       : integer;
     variable v_line_tmp       : line;
     variable v_data_tmp       : integer;
+    variable v_32b_packet_nb  : integer := 0;
+    variable v_remain_bit_nb  : integer := 0;
 
     variable v_str : string(1 to 500);  -- Max Line : 500 Characters
 
   begin
+    -- INIT Output
+    for i in 0 to C_NB_ARRAY_OF_INT - 1 loop
+      o_data_out(i) := 0;
+    end loop;
+
     v_line_tmp    := v_line;
     v_line_length := v_line'length;
 
@@ -111,11 +125,27 @@ package body pkg_code_coverage is
     read(v_line, v_space);              -- Read space
     read(v_line, v_str_cnt);            -- Read 2nd Data
 
+    DISPLAY_MESSAGE("v_str_data : " & v_str_data);
+    DISPLAY_MESSAGE("v_str_cnt : " & v_str_cnt);
+
+    -- Test if the length of v_str_data can be store in an integer (32bits)
+    if(v_str_data'length > 8) then
+      DISPLAY_MESSAGE("Warning: v_str_data greater than 32bits");
+    end if;
+
+    -- Get the number of 32bits packet
+    v_32b_packet_nb := i_injector_data_width / 32; -- Packet Entier of 32 bits
+    v_remain_bit_nb := i_injector_data_width - 32*v_32b_packet_nb; -- Remain bits
+
+    -- Case No 32bits packet 
+    if(v_32b_packet_nb = 0) then
+      v_int_data := str_2_int(v_str_data, ); -- TBD
+    end if;
     v_int_data := str_2_int(v_str_data, i_data1_format);
     v_int_cnt  := str_2_int(v_str_cnt, 0);
 
-    o_data_out := v_int_data;
-    o_data_nb  := v_int_cnt;
+    o_data_out(0) := v_int_data;        -- TBD
+    o_data_nb     := v_int_cnt;
   end procedure DECODE_LINE;
 
 
@@ -277,8 +307,8 @@ package body pkg_code_coverage is
       v_conversion_ok := true;
     end if;
 
-    DISPLAY_MESSAGE("v_char_nb : " & integer'image(v_char_nb));
-    DISPLAY_MESSAGE("v_nb_0_to_add : " & integer'image(v_nb_0_to_add));
+    --DISPLAY_MESSAGE("v_char_nb : " & integer'image(v_char_nb));
+    --DISPLAY_MESSAGE("v_nb_0_to_add : " & integer'image(v_nb_0_to_add));
 
     v_str_tmp := v_str;                 -- Temporary save before roll shift
 
@@ -297,7 +327,7 @@ package body pkg_code_coverage is
 
     -- Update v_str_return
     v_str_return := v_str(1 to i_nb_char_to_display);
-    return v_str_return;                       --(1 to i_nb_char_to_display);
+    return v_str_return;                --(1 to i_nb_char_to_display);
   end function int_2_str_32;
 
 end package body pkg_code_coverage;

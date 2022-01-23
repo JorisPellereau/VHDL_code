@@ -55,18 +55,11 @@ print_ghdl_generic_rules:
 	@echo ""
 	@echo ""
 	@echo ""
-	@echo ""
-	@echo ""
-	@echo ""
 	@echo "Clean GHDL Work Directory"
 	@echo "make clean_ghdl_work_dir"
 	@echo ""
 	@echo "Create All GHDL Directories"
 	@echo "make create_ghdl_dir"
-	@echo ""
-	@echo ""
-	@echo ""
-	@echo ""
 	@echo ""
 	@echo ""
 	@echo ""
@@ -137,9 +130,13 @@ ghdl_run:
 
 # == CODE COVERAGE ==
 # COVERAGE_DIR must be pass as argument
+# ghdl_gcc_analysis_vhd_src:
+# 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
+# 	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -g -Wc,-ftest-coverage -Wc,-fprofile-arcs $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
+
 ghdl_gcc_analysis_vhd_src:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
-	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -g -Wc,-ftest-coverage -Wc,-fprofile-arcs $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
+	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -Wc,-fprofile-arcs -Wc,-ftest-coverage $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
 
 # COVERAGE_DIR must be pass as argument
 ghdl_gcc_elaboration_vhd_src:
@@ -147,9 +144,10 @@ ghdl_gcc_elaboration_vhd_src:
 	$(GHDL_GCC) -e -Wl,-lgcov -Wl,--coverage $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
 	
 # COVERAGE_DIR must be pass as argument
+#GHDL_GCC_RUN_ARGS+=
 ghdl_gcc_run:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
-	$(GHDL_GCC) -r $(GHDL_TOP_UNIT) --stop-time=$(TIME)
+	$(GHDL_GCC) -r $(GHDL_TOP_UNIT) $(GHDL_GCC_RUN_ARGS) --stop-time=$(TIME)
 
 #./$(GHDL_TOP_UNIT)
 
@@ -163,8 +161,12 @@ ghdl_gcc_gcov:
 #$(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/*.gcno $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/*.gcda
 	
 # COVERAGE_DIR must be pass as argument
+# Info. : lcov_branch_coverage and genhtml_branch_coverage passed to 1 in lcvorc file (/etc/lcovrc)
+#LCOV_RC+=--rc lcov_branch_coverage=0
+#LCOV_RC+=--rc genhtml_branch_coverage=0
+LCOV_RC+=
 ghdl_gcc_lcov:
-	lcov -c -d $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/coverage.info
+	lcov $(LCOV_RC) -c -d $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR) -o $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR)/coverage.info
 
 # COVERAGE_DIR must be pass as argument
 GENHTML_ARGS+=--missed

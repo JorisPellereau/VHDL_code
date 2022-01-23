@@ -38,4 +38,4 @@
 
 // DATA COLLECTOR Configuration
 `define C_NB_DATA_COLLECTOR         1
-`define C_DATA_COLLECTOR_DATA_WIDTH 18
+`define C_DATA_COLLECTOR_DATA_WIDTH 45 // 8 + 8 + 1 + 1 + 1 + 1 + 8 + 16 + 1 = 45

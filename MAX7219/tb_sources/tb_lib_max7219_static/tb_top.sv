@@ -18,12 +18,6 @@
 
 `include "/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_static/testbench_setup.sv"
 `include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-// `include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
-
 
 // TB TOP
 module tb_top
@@ -74,7 +68,9 @@ module tb_top
    wire [15:0] s_data_received;
    
    
-  
+   // == DATA Collector Signals ==
+   wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+   
 
    
    // == CLK GEN INST ==
@@ -193,6 +189,28 @@ module tb_top
    );      
    // ===========================
 
+
+   // == DATA Collector INST ==
+   wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
+   wire rst_n_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+   
+   data_collector #(
+		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+		    .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+		    )
+   i_data_collector_0 (
+		       .clk                  (clk_data_collector),
+		       .rst_n                (rst_n_data_collector),
+		       .i_data               (s_data_collector),
+		       .data_collector_if    (s_data_collector_if)
+		       );
+
+   assign clk_data_collector[0]   = clk;
+   assign rst_n_data_collector[0] = rst_n;
+   // 8 + 8 + 1 + 1 + 1 + 1 + 8 + 16 + 1 = 45 // Collect input Data Without Clock and Reset
+   assign s_data_collector[0]     = {s_start_ptr, s_last_ptr, s_ptr_val, s_loop, s_me, s_we, s_addr, s_wdata, s_en}; 
+   
+   // =========================
 
    // CREATE CLASS - Configure Parameters
    static tb_class #( 

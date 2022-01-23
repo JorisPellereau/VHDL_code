@@ -193,8 +193,7 @@ module tb_top
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if/*,
-			tb_modules_custom_class_inst*/
+                        s_check_level_if
 			);
    
    
