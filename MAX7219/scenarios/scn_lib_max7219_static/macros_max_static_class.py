@@ -125,7 +125,7 @@ class macros_max_static_class:
     # Write several data value in RAM and send it
     # Check value through SPI
     # /!\ MAX list element = 256
-    def send_multiple_spi_request_and_check(self, ram_addr, ram_data_list, spi_check_expected):
+    def send_multiple_spi_request_and_check(self, ram_addr, ram_data_list, spi_check_expected, spi_timeout = [10, "ms"]):
 
         offset  = 0 # Offset for wrapping addr
         data_nb = 1
@@ -155,17 +155,18 @@ class macros_max_static_class:
             
             # SPI Frame only generated for normal_cmd
             if(cmd_type == "normal_cmd"):
-
+                self.scn.print_comment("normal_cmd :")
                 if(load_en == 1):
                     ram_data_list[j] = ram_data_list[j] & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
                 # Frame is received before PTR Equality is released
-                self.scn.WTRS("SPI_FRAME_RECEIVED", 10, "ms")
+                self.scn.WTRS("SPI_FRAME_RECEIVED", spi_timeout[0], spi_timeout[1])
                 self.scn.CHK("SPI_DATA", ram_data_list[j], spi_check_expected)
 
                     # SPI LOAD RECEVIED always after FRAME received
                 if(load_en == 1):
-                    self.scn.WTRS("SPI_LOAD_RECEIVED", 10, "ms")
-                
+                    self.scn.WTRS("SPI_LOAD_RECEIVED", spi_timeout[0], spi_timeout[1])
+            elif(cmd_type == "wait_cmd"):
+                self.scn.print_comment("wait_cmd - Wait value : %d (load_en : %d - spi_data : %d)" %( ((load_en << 12) + spi_data), load_en, spi_data))
         # Wait for PTR equality after the end of transmission
         self.scn.WTRS("PTR_EQUALITY", 10, "ms")            
             

@@ -2,7 +2,7 @@
 # Use for the generation of the scenario MAX_STATIC_04.txt
 #
 #
-# Aim of test :
+# Aim of test : Test of WAIT command and WAIT G_CNT command
 
 import sys
 
@@ -46,5 +46,42 @@ scn.print_line("//-- STEP 1\n")
 scn.print_line("//-- STEP 1.1 : Enable Block\n")
 scn.SET("EN", 1)
 scn.WTFS("CLK")
+
+
+scn.print_line("//-- STEP 1.2 : Load Memory with one data to send through SPI and a wait of 0x1FFF\n")
+ram_addr = 0x00
+ram_data_list = [0x00BB, 0x3FFF, 0x00CC, 0x3FFF, 0x0DD, 0x3FFF, 0x0EE]
+scn_macros.send_multiple_spi_request_and_check(ram_addr, ram_data_list, "OK")
+
+scn.WAIT(100, "us")
+
+scn.print_line("//-- STEP 1.3 : Load Memory with one data to send through SPI and a wait of 0x001\n")
+ram_addr = 0x00
+ram_data_list = [0x00BB, 0x2001, 0x00CC, 0x2001, 0x0DD, 0x2001, 0x0EE]
+scn_macros.send_multiple_spi_request_and_check(ram_addr, ram_data_list, "OK")
+
+scn.WAIT(100, "us")
+
+scn.print_line("//-- STEP 1.4 : Load Memory with one data to send through SPI and a wait of 0x000 - Corner case\n")
+ram_addr = 0x00
+ram_data_list = [0x00B1, 0x2000, 0x00C1, 0x2000, 0x0D1, 0x2000, 0x0E1]
+scn_macros.send_multiple_spi_request_and_check(ram_addr, ram_data_list, "OK")
+
+scn.WAIT(100, "us")
+
+scn.print_line("//-- STEP 2 : Load Memory with one data at @0x00 and a data @0xFF - insert wait_cmd inside 0x01=>0xFE - Corner case\n")
+ram_addr = 0x00
+ram_data_list = [0x3FFF for i in range(255)]
+ram_data_list[0]   = 0x0AA
+ram_data_list[254] = 0x55
+scn_macros.send_multiple_spi_request_and_check(ram_addr, ram_data_list, "OK")
+
+
+scn.WAIT(100, "us")
+
+scn.print_line("//-- STEP 3 : Load Memory with one data at @0x00 and a data @0x02 - insert wait_G_MAX_CNT command\n")
+ram_addr = 0x00
+ram_data_list = [0x0012, 0x4000, 0x0026, 0x0012, 0x4000, 0x0026, 0x0012, 0x4000, 0x0026]
+scn_macros.send_multiple_spi_request_and_check(ram_addr, ram_data_list, "OK")
 
 scn.END_TEST()
