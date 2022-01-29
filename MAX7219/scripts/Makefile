@@ -433,8 +433,11 @@ ghdl_gcc_gen_code_cov_if_tb:
 	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
+clean_code_cov_if_tb_dir:
+	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/MAX7219_IF_CODE_COVERAGE/*
+
 # SIMU_TIME must be passed as argument
-run_max7219_if_code_coverage: ghdl_gcc_compile_max7219_if_tb ghdl_gcc_run_max7219_if_tb ghdl_gcc_gen_code_cov_if_tb
+run_max7219_if_code_coverage: clean_code_cov_if_tb_dir ghdl_gcc_compile_max7219_if_tb ghdl_gcc_run_max7219_if_tb ghdl_gcc_gen_code_cov_if_tb
 	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 # -----
 
@@ -463,8 +466,11 @@ ghdl_gcc_gen_code_cov_static_tb:
 	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
 	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
 
+clean_code_cov_static_tb_dir:
+	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/MAX7219_STATIC_CODE_COVERAGE/*
+
 # SIMU_TIME must be passed as argument
-run_max7219_static_code_coverage: ghdl_gcc_compile_max7219_static_tb ghdl_gcc_run_max7219_static_tb ghdl_gcc_gen_code_cov_static_tb
+run_max7219_static_code_coverage: clean_code_cov_static_tb_dir ghdl_gcc_compile_max7219_static_tb ghdl_gcc_run_max7219_static_tb ghdl_gcc_gen_code_cov_static_tb
 	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_STATIC_CODE_COVERAGE
 # -----------------------
 
