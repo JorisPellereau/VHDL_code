@@ -1,0 +1,3794 @@
+//-- STEP 0
+
+
+
+WTR[RST_N]
+WAIT[] (100 ns)
+
+
+//-- STEP 0
+
+//-- INIT STATIC
+
+
+
+SET[EN] (0x1)
+
+
+SET[SEL] (0x1)
+WAIT[] (1 ns)
+WAIT[] (1 us)
+//-- STEP 1
+
+//-- Start a Transation with start ptr = Last_ptr = 0
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0x0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WAIT[] (1 us)
+WTFS[CLK]
+
+
+WAIT[] (1 us)
+
+
+//-- STEP 2
+
+//-- Start a correct Transation 
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0x40)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[PTR_EQUALITY] (20 ms)
+
+
+WTFS[CLK]
+
+
+WAIT[] (10 us)
+
+
+//-- STEP 3
+
+//-- Start with LAST PTR > 63 
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0x80)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[PTR_EQUALITY] (20 ms)
+
+
+WTFS[CLK]
+
+
+WAIT[] (10 us)
+
+
+//-- STEP 4
+
+//-- Start with LAST PTR > 63 
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0xff)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[PTR_EQUALITY] (20 ms)
+
+
+WTFS[CLK]
+
+
+WAIT[] (10 us)
+
+
+//-- STEP 5
+
+//-- Start with LAST PTR > 63 
+
+
+
+SET[START_PTR] (0x80)
+SET[LAST_PTR] (0x7f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[PTR_EQUALITY] (20 ms)
+
+
+WTFS[CLK]
+
+
+WAIT[] (10 us)
+
+
+//-- STEP 6
+
+//-- Start a Transation with start ptr = Last_ptr = 0
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0x0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+//-- STEP 7
+
+//-- Start a Transation with start ptr = Last_ptr = 255
+
+
+
+SET[START_PTR] (0xff)
+SET[LAST_PTR] (0xff)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+//-- STEP 8
+
+//-- Start a Transation with start ptr = Last_ptr = 37
+
+
+
+SET[START_PTR] (0x25)
+SET[LAST_PTR] (0x25)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+//-- STEP 9
+
+//-- Start a Transation with start ptr = Last_ptr = 0:255
+
+
+
+SET[START_PTR] (0x0)
+SET[LAST_PTR] (0x0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1)
+SET[LAST_PTR] (0x1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2)
+SET[LAST_PTR] (0x2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3)
+SET[LAST_PTR] (0x3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4)
+SET[LAST_PTR] (0x4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5)
+SET[LAST_PTR] (0x5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6)
+SET[LAST_PTR] (0x6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7)
+SET[LAST_PTR] (0x7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8)
+SET[LAST_PTR] (0x8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9)
+SET[LAST_PTR] (0x9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa)
+SET[LAST_PTR] (0xa)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb)
+SET[LAST_PTR] (0xb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc)
+SET[LAST_PTR] (0xc)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd)
+SET[LAST_PTR] (0xd)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe)
+SET[LAST_PTR] (0xe)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf)
+SET[LAST_PTR] (0xf)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x10)
+SET[LAST_PTR] (0x10)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x11)
+SET[LAST_PTR] (0x11)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x12)
+SET[LAST_PTR] (0x12)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x13)
+SET[LAST_PTR] (0x13)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x14)
+SET[LAST_PTR] (0x14)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x15)
+SET[LAST_PTR] (0x15)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x16)
+SET[LAST_PTR] (0x16)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x17)
+SET[LAST_PTR] (0x17)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x18)
+SET[LAST_PTR] (0x18)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x19)
+SET[LAST_PTR] (0x19)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1a)
+SET[LAST_PTR] (0x1a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1b)
+SET[LAST_PTR] (0x1b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1c)
+SET[LAST_PTR] (0x1c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1d)
+SET[LAST_PTR] (0x1d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1e)
+SET[LAST_PTR] (0x1e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x1f)
+SET[LAST_PTR] (0x1f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x20)
+SET[LAST_PTR] (0x20)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x21)
+SET[LAST_PTR] (0x21)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x22)
+SET[LAST_PTR] (0x22)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x23)
+SET[LAST_PTR] (0x23)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x24)
+SET[LAST_PTR] (0x24)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x25)
+SET[LAST_PTR] (0x25)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x26)
+SET[LAST_PTR] (0x26)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x27)
+SET[LAST_PTR] (0x27)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x28)
+SET[LAST_PTR] (0x28)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x29)
+SET[LAST_PTR] (0x29)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2a)
+SET[LAST_PTR] (0x2a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2b)
+SET[LAST_PTR] (0x2b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2c)
+SET[LAST_PTR] (0x2c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2d)
+SET[LAST_PTR] (0x2d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2e)
+SET[LAST_PTR] (0x2e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x2f)
+SET[LAST_PTR] (0x2f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x30)
+SET[LAST_PTR] (0x30)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x31)
+SET[LAST_PTR] (0x31)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x32)
+SET[LAST_PTR] (0x32)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x33)
+SET[LAST_PTR] (0x33)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x34)
+SET[LAST_PTR] (0x34)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x35)
+SET[LAST_PTR] (0x35)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x36)
+SET[LAST_PTR] (0x36)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x37)
+SET[LAST_PTR] (0x37)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x38)
+SET[LAST_PTR] (0x38)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x39)
+SET[LAST_PTR] (0x39)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3a)
+SET[LAST_PTR] (0x3a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3b)
+SET[LAST_PTR] (0x3b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3c)
+SET[LAST_PTR] (0x3c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3d)
+SET[LAST_PTR] (0x3d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3e)
+SET[LAST_PTR] (0x3e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x3f)
+SET[LAST_PTR] (0x3f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x40)
+SET[LAST_PTR] (0x40)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x41)
+SET[LAST_PTR] (0x41)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x42)
+SET[LAST_PTR] (0x42)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x43)
+SET[LAST_PTR] (0x43)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x44)
+SET[LAST_PTR] (0x44)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x45)
+SET[LAST_PTR] (0x45)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x46)
+SET[LAST_PTR] (0x46)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x47)
+SET[LAST_PTR] (0x47)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x48)
+SET[LAST_PTR] (0x48)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x49)
+SET[LAST_PTR] (0x49)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4a)
+SET[LAST_PTR] (0x4a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4b)
+SET[LAST_PTR] (0x4b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4c)
+SET[LAST_PTR] (0x4c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4d)
+SET[LAST_PTR] (0x4d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4e)
+SET[LAST_PTR] (0x4e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x4f)
+SET[LAST_PTR] (0x4f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x50)
+SET[LAST_PTR] (0x50)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x51)
+SET[LAST_PTR] (0x51)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x52)
+SET[LAST_PTR] (0x52)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x53)
+SET[LAST_PTR] (0x53)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x54)
+SET[LAST_PTR] (0x54)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x55)
+SET[LAST_PTR] (0x55)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x56)
+SET[LAST_PTR] (0x56)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x57)
+SET[LAST_PTR] (0x57)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x58)
+SET[LAST_PTR] (0x58)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x59)
+SET[LAST_PTR] (0x59)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5a)
+SET[LAST_PTR] (0x5a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5b)
+SET[LAST_PTR] (0x5b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5c)
+SET[LAST_PTR] (0x5c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5d)
+SET[LAST_PTR] (0x5d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5e)
+SET[LAST_PTR] (0x5e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x5f)
+SET[LAST_PTR] (0x5f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x60)
+SET[LAST_PTR] (0x60)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x61)
+SET[LAST_PTR] (0x61)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x62)
+SET[LAST_PTR] (0x62)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x63)
+SET[LAST_PTR] (0x63)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x64)
+SET[LAST_PTR] (0x64)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x65)
+SET[LAST_PTR] (0x65)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x66)
+SET[LAST_PTR] (0x66)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x67)
+SET[LAST_PTR] (0x67)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x68)
+SET[LAST_PTR] (0x68)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x69)
+SET[LAST_PTR] (0x69)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6a)
+SET[LAST_PTR] (0x6a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6b)
+SET[LAST_PTR] (0x6b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6c)
+SET[LAST_PTR] (0x6c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6d)
+SET[LAST_PTR] (0x6d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6e)
+SET[LAST_PTR] (0x6e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x6f)
+SET[LAST_PTR] (0x6f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x70)
+SET[LAST_PTR] (0x70)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x71)
+SET[LAST_PTR] (0x71)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x72)
+SET[LAST_PTR] (0x72)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x73)
+SET[LAST_PTR] (0x73)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x74)
+SET[LAST_PTR] (0x74)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x75)
+SET[LAST_PTR] (0x75)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x76)
+SET[LAST_PTR] (0x76)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x77)
+SET[LAST_PTR] (0x77)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x78)
+SET[LAST_PTR] (0x78)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x79)
+SET[LAST_PTR] (0x79)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7a)
+SET[LAST_PTR] (0x7a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7b)
+SET[LAST_PTR] (0x7b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7c)
+SET[LAST_PTR] (0x7c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7d)
+SET[LAST_PTR] (0x7d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7e)
+SET[LAST_PTR] (0x7e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x7f)
+SET[LAST_PTR] (0x7f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x80)
+SET[LAST_PTR] (0x80)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x81)
+SET[LAST_PTR] (0x81)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x82)
+SET[LAST_PTR] (0x82)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x83)
+SET[LAST_PTR] (0x83)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x84)
+SET[LAST_PTR] (0x84)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x85)
+SET[LAST_PTR] (0x85)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x86)
+SET[LAST_PTR] (0x86)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x87)
+SET[LAST_PTR] (0x87)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x88)
+SET[LAST_PTR] (0x88)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x89)
+SET[LAST_PTR] (0x89)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8a)
+SET[LAST_PTR] (0x8a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8b)
+SET[LAST_PTR] (0x8b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8c)
+SET[LAST_PTR] (0x8c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8d)
+SET[LAST_PTR] (0x8d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8e)
+SET[LAST_PTR] (0x8e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x8f)
+SET[LAST_PTR] (0x8f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x90)
+SET[LAST_PTR] (0x90)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x91)
+SET[LAST_PTR] (0x91)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x92)
+SET[LAST_PTR] (0x92)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x93)
+SET[LAST_PTR] (0x93)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x94)
+SET[LAST_PTR] (0x94)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x95)
+SET[LAST_PTR] (0x95)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x96)
+SET[LAST_PTR] (0x96)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x97)
+SET[LAST_PTR] (0x97)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x98)
+SET[LAST_PTR] (0x98)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x99)
+SET[LAST_PTR] (0x99)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9a)
+SET[LAST_PTR] (0x9a)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9b)
+SET[LAST_PTR] (0x9b)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9c)
+SET[LAST_PTR] (0x9c)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9d)
+SET[LAST_PTR] (0x9d)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9e)
+SET[LAST_PTR] (0x9e)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0x9f)
+SET[LAST_PTR] (0x9f)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa0)
+SET[LAST_PTR] (0xa0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa1)
+SET[LAST_PTR] (0xa1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa2)
+SET[LAST_PTR] (0xa2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa3)
+SET[LAST_PTR] (0xa3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa4)
+SET[LAST_PTR] (0xa4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa5)
+SET[LAST_PTR] (0xa5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa6)
+SET[LAST_PTR] (0xa6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa7)
+SET[LAST_PTR] (0xa7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa8)
+SET[LAST_PTR] (0xa8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xa9)
+SET[LAST_PTR] (0xa9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xaa)
+SET[LAST_PTR] (0xaa)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xab)
+SET[LAST_PTR] (0xab)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xac)
+SET[LAST_PTR] (0xac)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xad)
+SET[LAST_PTR] (0xad)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xae)
+SET[LAST_PTR] (0xae)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xaf)
+SET[LAST_PTR] (0xaf)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb0)
+SET[LAST_PTR] (0xb0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb1)
+SET[LAST_PTR] (0xb1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb2)
+SET[LAST_PTR] (0xb2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb3)
+SET[LAST_PTR] (0xb3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb4)
+SET[LAST_PTR] (0xb4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb5)
+SET[LAST_PTR] (0xb5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb6)
+SET[LAST_PTR] (0xb6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb7)
+SET[LAST_PTR] (0xb7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb8)
+SET[LAST_PTR] (0xb8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xb9)
+SET[LAST_PTR] (0xb9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xba)
+SET[LAST_PTR] (0xba)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xbb)
+SET[LAST_PTR] (0xbb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xbc)
+SET[LAST_PTR] (0xbc)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xbd)
+SET[LAST_PTR] (0xbd)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xbe)
+SET[LAST_PTR] (0xbe)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xbf)
+SET[LAST_PTR] (0xbf)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc0)
+SET[LAST_PTR] (0xc0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc1)
+SET[LAST_PTR] (0xc1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc2)
+SET[LAST_PTR] (0xc2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc3)
+SET[LAST_PTR] (0xc3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc4)
+SET[LAST_PTR] (0xc4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc5)
+SET[LAST_PTR] (0xc5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc6)
+SET[LAST_PTR] (0xc6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc7)
+SET[LAST_PTR] (0xc7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc8)
+SET[LAST_PTR] (0xc8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xc9)
+SET[LAST_PTR] (0xc9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xca)
+SET[LAST_PTR] (0xca)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xcb)
+SET[LAST_PTR] (0xcb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xcc)
+SET[LAST_PTR] (0xcc)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xcd)
+SET[LAST_PTR] (0xcd)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xce)
+SET[LAST_PTR] (0xce)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xcf)
+SET[LAST_PTR] (0xcf)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd0)
+SET[LAST_PTR] (0xd0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd1)
+SET[LAST_PTR] (0xd1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd2)
+SET[LAST_PTR] (0xd2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd3)
+SET[LAST_PTR] (0xd3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd4)
+SET[LAST_PTR] (0xd4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd5)
+SET[LAST_PTR] (0xd5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd6)
+SET[LAST_PTR] (0xd6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd7)
+SET[LAST_PTR] (0xd7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd8)
+SET[LAST_PTR] (0xd8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xd9)
+SET[LAST_PTR] (0xd9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xda)
+SET[LAST_PTR] (0xda)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xdb)
+SET[LAST_PTR] (0xdb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xdc)
+SET[LAST_PTR] (0xdc)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xdd)
+SET[LAST_PTR] (0xdd)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xde)
+SET[LAST_PTR] (0xde)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xdf)
+SET[LAST_PTR] (0xdf)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe0)
+SET[LAST_PTR] (0xe0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe1)
+SET[LAST_PTR] (0xe1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe2)
+SET[LAST_PTR] (0xe2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe3)
+SET[LAST_PTR] (0xe3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe4)
+SET[LAST_PTR] (0xe4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe5)
+SET[LAST_PTR] (0xe5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe6)
+SET[LAST_PTR] (0xe6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe7)
+SET[LAST_PTR] (0xe7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe8)
+SET[LAST_PTR] (0xe8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xe9)
+SET[LAST_PTR] (0xe9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xea)
+SET[LAST_PTR] (0xea)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xeb)
+SET[LAST_PTR] (0xeb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xec)
+SET[LAST_PTR] (0xec)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xed)
+SET[LAST_PTR] (0xed)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xee)
+SET[LAST_PTR] (0xee)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xef)
+SET[LAST_PTR] (0xef)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf0)
+SET[LAST_PTR] (0xf0)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf1)
+SET[LAST_PTR] (0xf1)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf2)
+SET[LAST_PTR] (0xf2)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf3)
+SET[LAST_PTR] (0xf3)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf4)
+SET[LAST_PTR] (0xf4)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf5)
+SET[LAST_PTR] (0xf5)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf6)
+SET[LAST_PTR] (0xf6)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf7)
+SET[LAST_PTR] (0xf7)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf8)
+SET[LAST_PTR] (0xf8)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xf9)
+SET[LAST_PTR] (0xf9)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xfa)
+SET[LAST_PTR] (0xfa)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xfb)
+SET[LAST_PTR] (0xfb)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xfc)
+SET[LAST_PTR] (0xfc)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xfd)
+SET[LAST_PTR] (0xfd)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xfe)
+SET[LAST_PTR] (0xfe)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+SET[START_PTR] (0xff)
+SET[LAST_PTR] (0xff)
+
+
+WTFS[CLK]
+SET[PTR_VAL] (0x1)
+WTFS[CLK]
+SET[PTR_VAL] (0x0)
+
+
+WTRS[O_DISCARD] (1 ms)
+
+
+WAIT[] (1 us)
+END_TEST
