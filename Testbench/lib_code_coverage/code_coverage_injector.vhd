@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-23
+-- Last update: 2022-01-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -55,8 +55,9 @@ architecture arch_code_coverage_injector of code_coverage_injector is
   constant C_SUFFIX_NAME : string := "_collect_opti.txt";
 
   -- INTERNAL SIGNALS
-  signal s_data  : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
-  signal s_rst_n : std_logic;
+  signal s_data     : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
+  signal s_rst_n    : std_logic;
+  signal s_data_out : std_logic_vector(C_NB_ARRAY_OF_INT*32 - 1 downto 0);
 
 begin  -- architecture arch_code_coverage_injector
 
@@ -64,14 +65,15 @@ begin  -- architecture arch_code_coverage_injector
   p_data_mngt : process is
 
     -- VARIABLES
-    variable v_row           : line;
-    variable v_line          : line;
-    variable v_data_out      : t_array_of_int;
-    variable v_data_nb       : integer;
-    file v_FILE              : text;
-    variable v_str           : string(1 to 500);  -- Input file
-    variable v_str_length    : integer := 0;
-    
+    variable v_row             : line;
+    variable v_line            : line;
+    variable v_data_out        : t_array_of_int;
+    variable v_data_nb         : integer;
+    file v_FILE                : text;
+    variable v_str             : string(1 to 500);  -- Input file
+    variable v_str_length      : integer := 0;
+    variable v_vector_data_out : std_logic_vector(C_NB_ARRAY_OF_INT*32 - 1 downto 0);
+
   begin  -- process p_data_mngt
 
     s_rst_n <= '1';
@@ -98,23 +100,25 @@ begin  -- architecture arch_code_coverage_injector
       -- Open File in read mode
       file_open(v_FILE, v_str(1 to v_str_length), read_mode);
 
-      
-      DISPLAY_MESSAGE("v_32b_packet_nb : " & integer'image(v_32b_packet_nb));
-      DISPLAY_MESSAGE("v_remain_bit_nb : " & integer'image(v_remain_bit_nb));
       while not endfile(v_FILE) loop
 
         -- Read a line
         readline(v_FILE, v_row);
         DECODE_LINE(v_row, G_CHAR_NB_DATA_1, G_CHAR_NB_DATA_2, G_DATA_1_FORMAT, G_INJECTOR_DATA_WIDTH, v_data_out, v_data_nb);
 
-        DISPLAY_MESSAGE("v_data_out(0) : " & integer'image(v_data_out(0)));
+        -- Convert Int Array to std_logic_vector
+        for i in 0 to C_NB_ARRAY_OF_INT - 1 loop
+          DISPLAY_MESSAGE("v_data_out(" & integer'image(i) & ") : " & integer'image(v_data_out(i)));
+          v_vector_data_out(32*(i+1) - 1 downto i*32) := conv_std_logic_vector(v_data_out(i), 32);
+        end loop;
+
         -- Loop and generate Data s_data_nb time every clk period
         for i in 0 to v_data_nb - 1 loop
           wait until rising_edge(clk);
-          s_data <= conv_std_logic_vector(v_data_out(0), s_data'length);
+          s_data     <= v_vector_data_out(G_INJECTOR_DATA_WIDTH - 1 downto 0);
+          s_data_out <= v_vector_data_out; -- Debug Purpose
         end loop;
       end loop;
-
 
       -- Close File
       file_close(v_FILE);

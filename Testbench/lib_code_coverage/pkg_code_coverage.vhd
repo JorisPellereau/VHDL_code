@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2022-01-23
+-- Last update: 2022-01-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ use ieee.std_logic_textio.all;
 package pkg_code_coverage is
 
   -- Constaants
-  constant C_NB_ARRAY_OF_INT : integer := 10;
+  constant C_NB_ARRAY_OF_INT : integer := 2;
   -- New Type
   type t_array_of_int is array (0 to C_NB_ARRAY_OF_INT) of integer;  -- Array of int type
 
@@ -65,6 +65,11 @@ package pkg_code_coverage is
   function int_2_str_32(i_int                : integer;
                         i_nb_char_to_display : integer)
     return string;
+
+  -- An int to a number of HEX character
+  -- int = 255 => 2 Char
+  -- function int_2_nb_hex_char(i_int : integer)
+  --   return integer;
 
 end package pkg_code_coverage;
 
@@ -109,8 +114,8 @@ package body pkg_code_coverage is
     variable v_32b_packet_nb  : integer := 0;
     variable v_remain_bit_nb  : integer := 0;
 
-    variable v_str : string(1 to 500);  -- Max Line : 500 Characters
-
+    variable v_str     : string(1 to 500);  -- Max Line : 500 Characters
+    variable v_str_tmp : string(1 to 8);
   begin
     -- INIT Output
     for i in 0 to C_NB_ARRAY_OF_INT - 1 loop
@@ -125,27 +130,28 @@ package body pkg_code_coverage is
     read(v_line, v_space);              -- Read space
     read(v_line, v_str_cnt);            -- Read 2nd Data
 
-    DISPLAY_MESSAGE("v_str_data : " & v_str_data);
-    DISPLAY_MESSAGE("v_str_cnt : " & v_str_cnt);
-
-    -- Test if the length of v_str_data can be store in an integer (32bits)
-    if(v_str_data'length > 8) then
-      DISPLAY_MESSAGE("Warning: v_str_data greater than 32bits");
-    end if;
+    -- DISPLAY_MESSAGE("v_str_data : " & v_str_data);
+    -- DISPLAY_MESSAGE("v_str_cnt : " & v_str_cnt);
 
     -- Get the number of 32bits packet
-    v_32b_packet_nb := i_injector_data_width / 32; -- Packet Entier of 32 bits
-    v_remain_bit_nb := i_injector_data_width - 32*v_32b_packet_nb; -- Remain bits
-
-    -- Case No 32bits packet 
-    if(v_32b_packet_nb = 0) then
-      v_int_data := str_2_int(v_str_data, ); -- TBD
+    --DISPLAY_MESSAGE("v_str_data'length : " & integer'image(v_str_data'length));
+    v_32b_packet_nb := (v_str_data'length / 8);
+    if(v_32b_packet_nb > C_NB_ARRAY_OF_INT) then
+      DISPLAY_MESSAGE("Error: v_32b_packet_nb > C_NB_ARRAY_OF_INT (" & integer'image(v_32b_packet_nb) & ") !!");
     end if;
-    v_int_data := str_2_int(v_str_data, i_data1_format);
-    v_int_cnt  := str_2_int(v_str_cnt, 0);
 
-    o_data_out(0) := v_int_data;        -- TBD
-    o_data_nb     := v_int_cnt;
+    --DISPLAY_MESSAGE("v_32b_packet_nb : " & integer'image(v_32b_packet_nb));
+    --DISPLAY_MESSAGE("v_str_data : " & v_str_data);
+    -- Construct packet of int
+    for i in 0 to v_32b_packet_nb - 1 loop
+      --DISPLAY_MESSAGE(v_str_data(1 + (v_32b_packet_nb - i - 1)*8 to 8 + (v_32b_packet_nb - i - 1)*8));
+      v_str_tmp     := v_str_data(1 + (v_32b_packet_nb - i - 1)*8 to 8 + (v_32b_packet_nb - i - 1)*8);
+      --DISPLAY_MESSAGE("v_str_tmp " & integer'image(i) & " " & v_str_tmp);
+      o_data_out(i) := str_2_int(v_str_tmp, i_data1_format);  -- TBD
+    end loop;
+
+
+    o_data_nb := str_2_int(v_str_cnt, 0);  -- Get count
   end procedure DECODE_LINE;
 
 
@@ -208,7 +214,7 @@ package body pkg_code_coverage is
   end function char_2_int;
 
 
-  -- A str to int
+  -- A str to int (32 bits)
   function str_2_int(i_str    : string;
                      i_format : integer)
     return integer is
@@ -228,6 +234,7 @@ package body pkg_code_coverage is
       v_init_puissance := 16**(v_str_length - 1);
     end if;
 
+    DISPLAY_MESSAGE(i_str);
     -- Compute Value in integer
     for i in 1 to v_str_length loop
       -- Integer format

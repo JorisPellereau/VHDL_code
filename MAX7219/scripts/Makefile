@@ -425,8 +425,9 @@ ghdl_gcc_compile_max7219_if_tb:
 	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_IF_COVERAGE) GHDL_TOP_UNIT=tb_top \
 	P_ARGS_EN=ON COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
 
+GHDL_RUN_ARGS_IF+=--vcd=/home/linux-jp/SIMULATION_VHDL/run_code_cov_max7219_if.vcd
 ghdl_gcc_run_max7219_if_tb:
-	make ghdl_gcc_run COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME)
+	make ghdl_gcc_run COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME) GHDL_GCC_RUN_ARGS=$(GHDL_RUN_ARGS_IF)
 
 ghdl_gcc_gen_code_cov_if_tb:
 	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_IF_CODE_COVERAGE
@@ -468,7 +469,7 @@ run_max7219_static_code_coverage: ghdl_gcc_compile_max7219_static_tb ghdl_gcc_ru
 # -----------------------
 
 # TEST must be pass as argument
-genarate_collect_opti_files:
+generate_collect_opti_files:
 	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(TEST)_collect.txt  $(MAX7219_COLLECT_PATH)/$(TEST)_collect_opti.txt
 
 generate_collect_all_opti_files:

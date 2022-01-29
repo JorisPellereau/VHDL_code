@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-04
+-- Last update: 2022-01-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ begin  -- architecture arch_tb_top
       G_FILE_PATH           => G_FILE_PATH,
       G_TESTS_NAME          => G_TESTS_NAME,
       G_NB_CHAR_TESTS_INDEX => 2,
-      G_CHAR_NB_DATA_1      => 5,       -- Number of Character of DATA1
+      G_CHAR_NB_DATA_1      => 8,       -- Number of Character of DATA1
       G_CHAR_NB_DATA_2      => 4,       -- Number of Character of DATA2
       G_DATA_1_FORMAT       => 1,       -- 0 => INTEGER - 1 => HEXA
       G_INJECTOR_DATA_WIDTH => G_INJECTOR_DATA_WIDTH)  -- Output data width
