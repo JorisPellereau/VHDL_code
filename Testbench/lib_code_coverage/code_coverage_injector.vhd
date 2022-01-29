@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-28
+-- Last update: 2022-01-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ begin  -- architecture arch_code_coverage_injector
 
         -- Convert Int Array to std_logic_vector
         for i in 0 to C_NB_ARRAY_OF_INT - 1 loop
-          DISPLAY_MESSAGE("v_data_out(" & integer'image(i) & ") : " & integer'image(v_data_out(i)));
+          --DISPLAY_MESSAGE("v_data_out(" & integer'image(i) & ") : " & integer'image(v_data_out(i)));
           v_vector_data_out(32*(i+1) - 1 downto i*32) := conv_std_logic_vector(v_data_out(i), 32);
         end loop;
 

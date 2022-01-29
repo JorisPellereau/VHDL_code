@@ -489,7 +489,7 @@ generate_collect_all_opti_files:
 	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_02_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_02_collect_opti.txt
 	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_03_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_03_collect_opti.txt
 	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_04_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_04_collect_opti.txt
-
+	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_05_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_05_collect_opti.txt
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL

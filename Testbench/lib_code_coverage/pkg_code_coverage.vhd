@@ -234,7 +234,7 @@ package body pkg_code_coverage is
       v_init_puissance := 16**(v_str_length - 1);
     end if;
 
-    DISPLAY_MESSAGE(i_str);
+    --DISPLAY_MESSAGE(i_str);
     -- Compute Value in integer
     for i in 1 to v_str_length loop
       -- Integer format

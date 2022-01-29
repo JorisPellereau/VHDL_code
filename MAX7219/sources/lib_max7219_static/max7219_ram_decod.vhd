@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2021-05-24
+-- Last update: 2022-01-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -84,7 +84,6 @@ architecture behv of max7219_ram_decod is
   signal s_ptr_val        : std_logic;  -- i_ptr_val latch
   signal s_ptr_val_r_edge : std_logic;  -- Rising Edge of i_ptr_val
 
-
   signal s_data        : std_logic_vector(15 downto 0);  -- DATA to MAX7219
   signal s_addr        : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- RAM ADDR
   signal s_rdata       : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);  -- RDATA
@@ -94,6 +93,7 @@ architecture behv of max7219_ram_decod is
   signal s_start_ptr : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- START PTR
   signal s_last_ptr  : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);  -- LAST PTR
 
+  signal s_loop_en : std_logic;         -- Loop Mode Enabled
 begin  -- architecture behv
 
 
@@ -116,6 +116,7 @@ begin  -- architecture behv
       s_last_ptr   <= (others => '0');
       s_update_ptr <= '0';
       o_discard    <= '0';
+      s_loop_en    <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_ptr_val_r_edge = '1' and s_ptr_equality = '1') then
@@ -127,12 +128,22 @@ begin  -- architecture behv
           s_last_ptr   <= i_last_ptr;
           s_start_ptr  <= i_start_ptr;
           s_update_ptr <= '1';
+
+          -- Loop Mode enable on ptr_val and i_loop = '1'
+          if(i_loop = '1') then
+            s_loop_en <= '1';
+          end if;
         end if;
 
       else
         s_update_ptr <= '0';
         o_discard    <= '0';            -- Pulse
       end if;
+
+      if(i_loop = '0') then
+        s_loop_en <= '0';               -- stop loop when it fall
+      end if;
+      
     end if;
   end process p_last_ptr_update;
 
@@ -240,6 +251,10 @@ begin  -- architecture behv
         elsif(s_rdata(15 downto 13) = "010") then
           s_max_cnt_32b   <= G_MAX_CNT_32B;
           s_max_cnt_valid <= '1';
+
+        -- "011" : RAM Reset - Internal pointer reset
+        elsif(s_rdata(15 downto 13) = "011") then
+        -- TBD !
         end if;
       end if;
     end if;
@@ -271,19 +286,11 @@ begin  -- architecture behv
       -- UPDATE START PTR when ENABLE disable
       if(s_update_ptr = '1') then
 
-        -- Case Start_PTR = Last_PTR
-        --if(s_start_ptr = s_last_ptr) then
-        --  o_discard <= '1';
-
-        --else
         s_addr <= s_start_ptr;  -- Update only when Start_PTR /= LAST_PTR
-        --end if;
-
 
       -- UPDATE START PTR at then end of the CONFIG. done
-      elsif(s_ptr_equality = '1' and i_loop = '1') then
+      elsif(s_ptr_equality = '1' and s_loop_en = '1') then
         s_addr <= s_start_ptr;
-
       end if;
 
       s_inc_done <= '0';
