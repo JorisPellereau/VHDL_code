@@ -157,7 +157,8 @@ class window(QtWidgets.QDialog):
     # Generation of Memory file Function
     def generer_mem(self):
         #print("Generer Mem fctn")
-
+        #print(self.grid)
+        
         self.digit_7_matrix_n = []
         self.digit_6_matrix_n = []
         self.digit_5_matrix_n = []
@@ -194,18 +195,18 @@ class window(QtWidgets.QDialog):
                 self.digit_0_matrix_n[i] = self.digit_0_matrix_n[i] + ("1" if self.grid[j][i*8 + 7] else "0")
                 
 
-        for i in range (0, self.matrix_nb):
-            print(self.digit_7_matrix_n[i])
-            print(self.digit_6_matrix_n[i])
-            print(self.digit_5_matrix_n[i])
-            print(self.digit_4_matrix_n[i])
-            print(self.digit_3_matrix_n[i])
-            print(self.digit_2_matrix_n[i])
-            print(self.digit_1_matrix_n[i])
-            print(self.digit_0_matrix_n[i])
+        # for i in range (0, self.matrix_nb):
+        #     print(self.digit_7_matrix_n[i])
+        #     print(self.digit_6_matrix_n[i])
+        #     print(self.digit_5_matrix_n[i])
+        #     print(self.digit_4_matrix_n[i])
+        #     print(self.digit_3_matrix_n[i])
+        #     print(self.digit_2_matrix_n[i])
+        #     print(self.digit_1_matrix_n[i])
+        #     print(self.digit_0_matrix_n[i])
             
         self.write_file()
-
+        self.grid_to_list()
 
     def write_file(self):
 
@@ -513,6 +514,27 @@ class window(QtWidgets.QDialog):
         print("Save States checkboxes")
 
 
+    def grid_to_list(self):
+        # == Save in self.grid the state of checkboxes
+        self.get_checkbox_states()
+
+        # list_tmp[0] == Collumn of M0_D0
+        list_tmp = ["" for i in range(8*self.matrix_nb)]
+
+        for i in range(len(list_tmp)):
+
+            for j in range(0, 8):
+
+                if(self.grid[j][i] == False):
+                    str_tmp = '0'
+                else:
+                    str_tmp = '1'
+                    
+                list_tmp[i] = list_tmp[i] + str_tmp
+
+            # str to int
+            list_tmp[i] = int(list_tmp[i], 2)
+        print(list_tmp)
 
 app = QtWidgets.QApplication(sys.argv)
 dialog = window()
