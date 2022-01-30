@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2022-01-29
+-- Last update: 2022-01-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ package body pkg_code_coverage is
     end loop;
 
 
-    o_data_nb := str_2_int(v_str_cnt, 0);  -- Get count
+    o_data_nb := str_2_int(v_str_cnt, 1);  -- Get count HEXA FORMAT
   end procedure DECODE_LINE;
 
 

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-29
+-- Last update: 2022-01-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -104,8 +104,9 @@ begin  -- architecture arch_code_coverage_injector
 
         -- Read a line
         readline(v_FILE, v_row);
-        DECODE_LINE(v_row, G_CHAR_NB_DATA_1, G_CHAR_NB_DATA_2, G_DATA_1_FORMAT, G_INJECTOR_DATA_WIDTH, v_data_out, v_data_nb);
+        DECODE_LINE(v_row, G_CHAR_NB_DATA_1, 8, G_DATA_1_FORMAT, G_INJECTOR_DATA_WIDTH, v_data_out, v_data_nb);
 
+        --DISPLAY_MESSAGE("DEBUG v_data_nb : " & integer'image(v_data_nb));
         -- Convert Int Array to std_logic_vector
         for i in 0 to C_NB_ARRAY_OF_INT - 1 loop
           --DISPLAY_MESSAGE("v_data_out(" & integer'image(i) & ") : " & integer'image(v_data_out(i)));
