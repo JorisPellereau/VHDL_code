@@ -122,11 +122,37 @@ add wave -noupdate -group {MAX7219 SPI CHECKER} /tb_top/max7219_spi_checker_0/s_
 add wave -noupdate -group {MAX7219 SPI CHECKER} /tb_top/max7219_spi_checker_0/s_cnt_15_done
 add wave -noupdate -group {MAX7219 SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_clk_r_edge
 add wave -noupdate -group {MAX7219 SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_load_f_edge
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/clk
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/rst_n
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/i_max7219_clk
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/i_max7219_din
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/i_max7219_load
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/i_display_reg_matrix_n
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/i_display_screen_matrix
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/s_max7219_din
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/s_max7219_dout
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/s_frame_received
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/s_display_screen_matrix_r_edge
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/line_char
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/line
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/k
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/l
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/m
+add wave -noupdate -group {MAX7219 CHECKER} /tb_top/i_max7219_checker_wrapper_0/n
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[0]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[1]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[2]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[3]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[4]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[5]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3223089 ps} 0}
+WaveRestoreCursors {{Cursor 1} {299030000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 255
-configure wave -valuecolwidth 100
+configure wave -valuecolwidth 501
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -139,4 +165,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {8275 ps} {3483775 ps}
+WaveRestoreZoom {0 ps} {315094500 ps}
