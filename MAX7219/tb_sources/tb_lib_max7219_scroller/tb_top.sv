@@ -15,13 +15,8 @@
 
 `timescale 1ps/1ps
 
-
-`include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_scroller/testbench_setup.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_scroller/testbench_setup.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 
 // TB TOP
@@ -92,7 +87,8 @@ module tb_top
 
    wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
     
-   
+   // == DATA Collector Signals ==
+   wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
 
    // SET INJECTOR signals
    wire [31:0] i0;
@@ -136,18 +132,19 @@ module tb_top
 		        .CHECK_WIDTH  (`C_CHECK_WIDTH)
     )
     s_check_level_if();
-   
 
+   
+   data_collector_intf #(
+			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+			 )
+   s_data_collector_if();
+  
    // =====================================================
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
 
-   // INIT WAIT EVENT ALIAS
-   assign s_wait_event_if.wait_alias[0] = "RST_N";
-   assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "BUSY";
-   assign s_wait_event_if.wait_alias[3] = "MAX7219_LOAD";
-   assign s_wait_event_if.wait_alias[4] = "DONE_LOAD_RAM";
+   
 
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
@@ -156,29 +153,9 @@ module tb_top
    assign s_wait_event_if.wait_signals[3] = s_max7219_load;
    assign s_wait_event_if.wait_signals[4] = s_done_load_ram;
 
-   // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0]  = "ME";
-   assign s_set_injector_if.set_alias[1]  = "WE";
-   assign s_set_injector_if.set_alias[2]  = "ADDR";
-   assign s_set_injector_if.set_alias[3]  = "WDATA";
-   assign s_set_injector_if.set_alias[4]  = "RAM_START_PTR";
-   assign s_set_injector_if.set_alias[5]  = "MSG_LENGTH";
-   assign s_set_injector_if.set_alias[6]  = "START_SCROLL";
-   assign s_set_injector_if.set_alias[7]  = "MAX_TEMPO_CNT";
-   assign s_set_injector_if.set_alias[8]  = "DISPLAY_REG_MATRIX_N";
-   assign s_set_injector_if.set_alias[9]  = "DISPLAY_SCREEN_MATRIX";
+   
 
-   // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
-   assign s_set_injector_if.set_alias[10]  = "DISPLAY_SCREEN_SEL";
-
-   // MUX : Sel SET inj or checker
-   assign s_set_injector_if.set_alias[11]  = "LOAD_RAM_SEL";
-
-   // RAM LOAD Injector Control signals
-   assign s_set_injector_if.set_alias[12]  = "START_ADDR_LOAD_RAM";
-   assign s_set_injector_if.set_alias[13]  = "STOP_ADDR_LOAD_RAM";
-   assign s_set_injector_if.set_alias[14]  = "START_LOAD_RAM";
-   assign s_set_injector_if.set_alias[15]  = "SEL_PATTERN_LOAD_RAM";
+   
    
    
    // SET SET_INJECTOR SIGNALS
@@ -221,19 +198,12 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[14]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[15]  = 0;
    
-   // INIT CHECK LEVEL ALIAS
-   assign s_check_level_if.check_alias[0] = "BUSY";
-   assign s_check_level_if.check_alias[1] = "TOTO1";
-   assign s_check_level_if.check_alias[2] = "TOTO2";
-   assign s_check_level_if.check_alias[3] = "TOTO3";
-   assign s_check_level_if.check_alias[4] = "TOTO4";
+   
+   
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_busy;
-   assign s_check_level_if.check_signals[1] =  32'hCAFEDEC0;
-   assign s_check_level_if.check_signals[2] =  32'hCAFEDEC1;
-   assign s_check_level_if.check_signals[3] =  32'hCAFEDEC2;
-   assign s_check_level_if.check_signals[4] =  32'hCAFEDEC3;
+
   
    // =====================================================
 
@@ -264,25 +234,67 @@ module tb_top
 
 
    // == TESTBENCH SEQUENCER ==
-   tb_modules_custom_class tb_modules_custom_class_inst = new();
-   
+ 
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_SET_SIZE, 
-                      `C_SET_WIDTH,
-                      `C_WAIT_ALIAS_NB,
-                      `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD,
-                      `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH) 
+   static tb_class #( 
+		      .G_SET_SIZE              (`C_SET_SIZE),
+                      .G_SET_WIDTH             (`C_SET_WIDTH),
+                      .G_WAIT_SIZE             (`C_WAIT_ALIAS_NB),
+                      .G_WAIT_WIDTH            (`C_WAIT_WIDTH), 
+                      .G_CLK_PERIOD            (`C_TB_CLK_PERIOD),
+                      .G_CHECK_SIZE            (`C_CHECK_SIZE),
+                      .G_CHECK_WIDTH           (`C_CHECK_WIDTH),		      
+		      .G_NB_COLLECTOR          (`C_NB_DATA_COLLECTOR),
+		      .G_DATA_COLLECTOR_WIDTH  (`C_DATA_COLLECTOR_DATA_WIDTH)
+		      )
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if,
-			tb_modules_custom_class_inst
+                        s_check_level_if
 			);
    
    
    initial begin// : TB_SEQUENCER
+
+
+      // INIT WAIT EVENT ALIAS
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",         0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",           1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "BUSY",          2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "MAX7219_LOAD",  3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "DONE_LOAD_RAM", 4);
+
+      // INIT SET ALIAS
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ME",                    0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WE",                    1);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ADDR",                  2);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA",                 3);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RAM_START_PTR",         4);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "MSG_LENGTH",            5);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START_SCROLL",          6);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "MAX_TEMPO_CNT",         7);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_REG_MATRIX_N",  8);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_MATRIX", 9);
+      
+      // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_SEL", 10);
+      
+      // MUX : Sel SET inj or checker
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "LOAD_RAM_SEL", 11);
+      
+      // RAM LOAD Injector Control signals
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START_ADDR_LOAD_RAM",  12);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "STOP_ADDR_LOAD_RAM",   13);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START_LOAD_RAM",       14);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "SEL_PATTERN_LOAD_RAM", 15);
+      
+      // INIT CHECK LEVEL ALIAS
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL","BUSY", 0);
+
+      // == INIT DATA COLLECTOR MODULE ==
+      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_SCROLLER_INPUT_COLLECTOR_0");
+      
+      
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
    end// : TB_SEQUENCER

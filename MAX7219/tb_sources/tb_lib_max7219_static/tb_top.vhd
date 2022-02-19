@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-29
+-- Last update: 2022-02-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ use lib_code_coverage.pkg_code_coverage.all;
 entity tb_top is
   generic (
     G_FILE_PATH           : string  := "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT";
-    G_FILE_NB             : integer := 6;
+    G_FILE_NB             : integer := 7;
     G_TESTS_NAME          : string  := "MAX7219_STATIC";
     G_INJECTOR_DATA_WIDTH : integer := 45);  -- Output data width
 
