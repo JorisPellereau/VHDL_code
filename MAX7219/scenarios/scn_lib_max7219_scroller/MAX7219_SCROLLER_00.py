@@ -1,7 +1,7 @@
 # MAX7219_SCROLLER_00.py
 # Use for the generation of the scenario MAX7219_SCROLLER_00.txt
 #
-# Auto Test 1 : Write 
+# Write in memory and read back
 # 
 
 
@@ -38,3 +38,27 @@ scn.WAIT(100, "ns")
 scn.print_line("\n")
 
 scn.DATA_COLLECTOR_START("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
+
+scn.print_step("INIT RAM")
+
+ram_addr = 0
+ram_data = [i for i in range(256)]
+scn_macros.write_data_in_ram(ram_addr, ram_data)
+
+scn.print_step("READ RAM")
+
+scn.WTFS("CLK")
+for i in range(0, 256):
+    scn.SET("ME", 1)
+    scn.SET("WE", 0)
+    scn.SET("ADDR", i)
+    scn.WTFS("CLK")
+    scn.WTFS("CLK")
+    scn.CHK("O_RDATA", ram_data[i], "OK")
+#    scn.WTFS("CLK")
+
+
+scn.DATA_COLLECTOR_STOP("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
+scn.DATA_COLLECTOR_CLOSE("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
+
+scn.END_TEST()

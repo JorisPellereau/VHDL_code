@@ -90,12 +90,7 @@ module tb_top
    // == DATA Collector Signals ==
    wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
 
-   // SET INJECTOR signals
-   wire [31:0] i0;
-   wire [31:0] i1;
-   wire [31:0] i2;
-   wire [31:0] i3;
-   wire [31:0] i4;
+
 
    
    // == CLK GEN INST ==
@@ -202,9 +197,36 @@ module tb_top
    
 
    // SET CHECK_SIGNALS
-   assign s_check_level_if.check_signals[0] =  s_busy;
+   assign s_check_level_if.check_signals[0] = s_busy;
+   assign s_check_level_if.check_signals[1] = s_rdata_dut;   
+   assign s_check_level_if.check_signals[2] = s_max7219_if_start;   
+   assign s_check_level_if.check_signals[3] = s_max7219_if_en_load;   
+   assign s_check_level_if.check_signals[4] = s_max7219_if_data;
 
-  
+   
+
+   // == DATA Collector INST ==
+   wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
+   wire rst_n_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+   
+   assign clk_data_collector[0]   = clk;
+   assign rst_n_data_collector[0] = rst_n;
+   // 8 + 8 + 1 + 32 + 1 + 1 + 1 + 8 + 8 = 68
+   assign s_data_collector[0] = {s_ram_start_ptr, s_msg_length, s_start_scroll, s_max_tempo_cnt, s_max7219_if_done,
+				 s_me_dut, s_we_dut, s_addr_dut, s_wdata_dut};
+   
+   data_collector #(
+		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+		    .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+		    )
+   i_data_collector_0 (
+		       .clk                  (clk_data_collector),
+		       .rst_n                (rst_n_data_collector),
+		       .i_data               (s_data_collector),
+		       .data_collector_if    (s_data_collector_if)
+		       );
+
+   
    // =====================================================
 
 
@@ -289,7 +311,13 @@ module tb_top
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "SEL_PATTERN_LOAD_RAM", 15);
       
       // INIT CHECK LEVEL ALIAS
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL","BUSY", 0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "BUSY",                 0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_RDATA",              1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_START",   2);   
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_EN_LOAD", 3);   
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_DATA",    4);
+
+   
 
       // == INIT DATA COLLECTOR MODULE ==
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_SCROLLER_INPUT_COLLECTOR_0");
@@ -349,7 +377,7 @@ module tb_top
 
 
    // RAM Load Injector
-   load_ram_injector #(
+   /*load_ram_injector #(
 		       .G_RAM_ADDR_WIDTH  (8),
 		       .G_RAM_DATA_WIDTH  (8),
 		       .G_SEL_WIDTH       (8)
@@ -370,7 +398,7 @@ module tb_top
 			  .i_rdata  (s_rdata_load_ram),
 
 			  .o_done (s_done_load_ram)
-   );
+   );*/
    
    
 
@@ -412,6 +440,22 @@ module tb_top
    );
    
    // ==============
+
+
+   // == MAX7219 SPI Checker ==
+   /*max7219_spi_checker max7219_spi_checker_0 (
+					      .clk    (clk),
+					      .rst_n  (rst_n),
+
+					      .i_max7219_clk   (s_max7219_clk),
+					      .i_max7219_din   (s_max7219_data),
+					      .i_max7219_load  (s_max7219_load),
+
+					      .o_frame_received  (s_frame_received),
+					      .o_load_received   (s_load_received),
+					      .o_data_received   (s_data_received)
+					      );*/
+
 
    
 endmodule // tb_top
