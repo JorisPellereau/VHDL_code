@@ -90,6 +90,10 @@ module tb_top
    // == DATA Collector Signals ==
    wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
 
+   wire 				     s_frame_received;   
+   wire 				     s_load_received;      
+   wire [15:0] 				     s_data_received;
+   
 
 
    
@@ -147,7 +151,8 @@ module tb_top
    assign s_wait_event_if.wait_signals[2] = s_busy;
    assign s_wait_event_if.wait_signals[3] = s_max7219_load;
    assign s_wait_event_if.wait_signals[4] = s_done_load_ram;
-
+   assign s_wait_event_if.wait_signals[5] = s_frame_received;   
+   assign s_wait_event_if.wait_signals[6] = s_load_received; 
    
 
    
@@ -202,7 +207,8 @@ module tb_top
    assign s_check_level_if.check_signals[2] = s_max7219_if_start;   
    assign s_check_level_if.check_signals[3] = s_max7219_if_en_load;   
    assign s_check_level_if.check_signals[4] = s_max7219_if_data;
-
+   assign s_check_level_if.check_signals[5] = s_data_received;
+   
    
 
    // == DATA Collector INST ==
@@ -280,11 +286,13 @@ module tb_top
 
 
       // INIT WAIT EVENT ALIAS
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",         0);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",           1);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "BUSY",          2);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "MAX7219_LOAD",  3);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "DONE_LOAD_RAM", 4);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",              0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "BUSY",               2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "MAX7219_LOAD",       3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "DONE_LOAD_RAM",      4);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_FRAME_RECEIVED", 5);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "LOAD_RECEIVED",      6);
 
       // INIT SET ALIAS
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ME",                    0);
@@ -316,6 +324,7 @@ module tb_top
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_START",   2);   
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_EN_LOAD", 3);   
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_IF_DATA",    4);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "SPI_DATA",             5);
 
    
 
@@ -443,10 +452,10 @@ module tb_top
 
 
    // == MAX7219 SPI Checker ==
-   /*max7219_spi_checker max7219_spi_checker_0 (
+   max7219_spi_checker max7219_spi_checker_0 (
 					      .clk    (clk),
 					      .rst_n  (rst_n),
-
+					      
 					      .i_max7219_clk   (s_max7219_clk),
 					      .i_max7219_din   (s_max7219_data),
 					      .i_max7219_load  (s_max7219_load),
@@ -454,7 +463,7 @@ module tb_top
 					      .o_frame_received  (s_frame_received),
 					      .o_load_received   (s_load_received),
 					      .o_data_received   (s_data_received)
-					      );*/
+					      );
 
 
    

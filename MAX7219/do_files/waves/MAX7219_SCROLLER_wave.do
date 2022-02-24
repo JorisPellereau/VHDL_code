@@ -1,33 +1,33 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -group DUT /tb_top/i_dut/clk
-add wave -noupdate -group DUT /tb_top/i_dut/rst_n
-add wave -noupdate -group DUT -group {RAM I/F} /tb_top/i_dut/i_me
-add wave -noupdate -group DUT -group {RAM I/F} /tb_top/i_dut/i_we
-add wave -noupdate -group DUT -group {RAM I/F} /tb_top/i_dut/i_addr
-add wave -noupdate -group DUT -group {RAM I/F} /tb_top/i_dut/i_wdata
-add wave -noupdate -group DUT -group {RAM I/F} /tb_top/i_dut/o_rdata
-add wave -noupdate -group DUT -group I_CONTROLS /tb_top/i_dut/i_ram_start_ptr
-add wave -noupdate -group DUT -group I_CONTROLS /tb_top/i_dut/i_msg_length
-add wave -noupdate -group DUT -group I_CONTROLS /tb_top/i_dut/i_start_scroll
-add wave -noupdate -group DUT -group I_CONTROLS /tb_top/i_dut/i_max_tempo_cnt
-add wave -noupdate -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_start
-add wave -noupdate -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_en_load
-add wave -noupdate -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_data
-add wave -noupdate -group DUT -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_if_done
-add wave -noupdate -group DUT /tb_top/i_dut/o_busy
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_me_b
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_we_b
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_addr_b
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_wdata_b
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_rdata_b
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_seg_data
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_seg_data_valid
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_scroller_if_busy
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_done
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_start
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_en_load
-add wave -noupdate -group DUT -group {Internal Signals} /tb_top/i_dut/s_data
+add wave -noupdate -expand -group DUT /tb_top/i_dut/clk
+add wave -noupdate -expand -group DUT /tb_top/i_dut/rst_n
+add wave -noupdate -expand -group DUT -group {RAM I/F} /tb_top/i_dut/i_me
+add wave -noupdate -expand -group DUT -group {RAM I/F} /tb_top/i_dut/i_we
+add wave -noupdate -expand -group DUT -group {RAM I/F} /tb_top/i_dut/i_addr
+add wave -noupdate -expand -group DUT -group {RAM I/F} /tb_top/i_dut/i_wdata
+add wave -noupdate -expand -group DUT -group {RAM I/F} /tb_top/i_dut/o_rdata
+add wave -noupdate -expand -group DUT -group I_CONTROLS /tb_top/i_dut/i_ram_start_ptr
+add wave -noupdate -expand -group DUT -group I_CONTROLS /tb_top/i_dut/i_msg_length
+add wave -noupdate -expand -group DUT -group I_CONTROLS /tb_top/i_dut/i_start_scroll
+add wave -noupdate -expand -group DUT -group I_CONTROLS /tb_top/i_dut/i_max_tempo_cnt
+add wave -noupdate -expand -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_start
+add wave -noupdate -expand -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_en_load
+add wave -noupdate -expand -group DUT -group {MAX7219 I/F} /tb_top/i_dut/o_max7219_if_data
+add wave -noupdate -expand -group DUT -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_if_done
+add wave -noupdate -expand -group DUT /tb_top/i_dut/o_busy
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_me_b
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_we_b
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_addr_b
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_wdata_b
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_rdata_b
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_seg_data
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_seg_data_valid
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_scroller_if_busy
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_done
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_start
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_en_load
+add wave -noupdate -expand -group DUT -group {Internal Signals} /tb_top/i_dut/s_data
 add wave -noupdate -divider <NULL>
 add wave -noupdate -group RAM_2_SCROLLER_IF /tb_top/i_dut/max7219_ram2scroller_if_inst_0/clk
 add wave -noupdate -group RAM_2_SCROLLER_IF /tb_top/i_dut/max7219_ram2scroller_if_inst_0/rst_n
@@ -60,8 +60,8 @@ add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_du
 add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_msg_length
 add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_ram_addr
 add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_rdata
-add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_access_cnt
-add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_max_access
+add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals -radix decimal /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_access_cnt
+add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals -radix unsigned /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_max_access
 add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_seg_data
 add wave -noupdate -group RAM_2_SCROLLER_IF -group Internal_signals /tb_top/i_dut/max7219_ram2scroller_if_inst_0/s_reject_scroll
 add wave -noupdate -divider <NULL>
@@ -106,40 +106,64 @@ add wave -noupdate -group TDPRAM /tb_top/i_dut/tdpram_inst_0/i_wdata_b
 add wave -noupdate -group TDPRAM /tb_top/i_dut/tdpram_inst_0/o_rdata_b
 add wave -noupdate -group TDPRAM /tb_top/i_dut/tdpram_inst_0/v_ram
 add wave -noupdate -divider <NULL>
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/clk
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/rst_n
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/i_start
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/i_en_load
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/i_data
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_load
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_data
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_clk
-add wave -noupdate -group MAX7219_IF /tb_top/i_max7219_if_0/o_done
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_data
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_en_load
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_start
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_init_data
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_en_clk
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_data
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_p
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_f_edge
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_r_edge
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_load
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_start_r_edge
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_done
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_15
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_16
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_half_period
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_load_px
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_end_frame
-add wave -noupdate -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_ongoing
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/clk
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/rst_n
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/i_start
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/i_en_load
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/i_data
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_load
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_data
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/o_max7219_clk
+add wave -noupdate -expand -group MAX7219_IF /tb_top/i_max7219_if_0/o_done
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_data
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_en_load
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_start
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_init_data
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_en_clk
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_data
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_p
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_f_edge
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_clk_r_edge
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_max7219_load
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_start_r_edge
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_done
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_15
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_16
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_cnt_half_period
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_load_px
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_end_frame
+add wave -noupdate -expand -group MAX7219_IF -group intertnal /tb_top/i_max7219_if_0/s_ongoing
 add wave -noupdate -divider <NULL>
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/clk
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/rst_n
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/i_max7219_clk
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/i_max7219_din
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/i_max7219_load
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/o_frame_received
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/o_load_received
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/o_data_received
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_clk
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_load
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_frame_received
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_data
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_cnt_15
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_cnt_15_done
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_clk_r_edge
+add wave -noupdate -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/s_max7219_load_f_edge
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[0]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[1]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[2]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[3]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[4]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[5]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ps} 0}
-quietly wave cursor active 0
-configure wave -namecolwidth 339
-configure wave -valuecolwidth 100
+WaveRestoreCursors {{Cursor 1} {11117850000 ps} 1} {{Cursor 2} {11023907857 ps} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 288
+configure wave -valuecolwidth 130
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -152,4 +176,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {329050 ps} {329861 ps}
+WaveRestoreZoom {10693106850 ps} {11433958634 ps}

@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-28
--- Last update: 2021-04-09
+-- Last update: 2022-02-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -71,12 +71,10 @@ architecture behv of max7219_ram2scroller_if is
   signal s_me                         : std_logic;
   signal s_me_p                       : std_logic;
   signal s_rdata_valid                : std_logic;
-
-  signal s_access_cnt_done : std_logic;
-
-
-  signal s_ram_sel        : std_logic;
-  signal s_seg_data_valid : std_logic;
+  signal s_access_cnt_done            : std_logic;
+  signal s_ram_sel                    : std_logic;
+  signal s_seg_data_valid             : std_logic;
+  signal s_reject_scroll              : std_logic;  -- Reject Scroll
 
   signal s_msg_length : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
   signal s_ram_addr   : std_logic_vector(G_RAM_ADDR_WIDTH - 1 downto 0);
@@ -85,7 +83,7 @@ architecture behv of max7219_ram2scroller_if is
   signal s_max_access : std_logic_vector(G_RAM_DATA_WIDTH downto 0);
   signal s_seg_data   : std_logic_vector(G_RAM_DATA_WIDTH - 1 downto 0);
 
-  signal s_reject_scroll : std_logic;   -- Reject Scroll
+
 
 begin  -- architecture behv
 
@@ -129,7 +127,7 @@ begin  -- architecture behv
           if(i_msg_length /= x"00") then
             s_msg_length <= i_msg_length;
             --if(i_msg_length /= x"FF") then
-            s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length);
+            s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length) - 1;
             --else
             --s_max_access <= conv_unsigned(8*G_MATRIX_NB, s_access_cnt'length) + unsigned(i_msg_length) - 1;
             --end if;
