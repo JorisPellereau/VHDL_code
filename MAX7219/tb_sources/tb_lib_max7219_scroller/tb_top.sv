@@ -217,8 +217,8 @@ module tb_top
    
    assign clk_data_collector[0]   = clk;
    assign rst_n_data_collector[0] = rst_n;
-   // 8 + 8 + 1 + 32 + 1 + 1 + 1 + 8 + 8 = 68
-   assign s_data_collector[0] = {s_ram_start_ptr, s_msg_length, s_start_scroll, s_max_tempo_cnt, s_max7219_if_done,
+   // 8 + 8 + 1 + 32 + 1 + 1 + 8 + 8 = 67
+   assign s_data_collector[0] = {s_ram_start_ptr, s_msg_length, s_start_scroll, s_max_tempo_cnt,
 				 s_me_dut, s_we_dut, s_addr_dut, s_wdata_dut};
    
    data_collector #(

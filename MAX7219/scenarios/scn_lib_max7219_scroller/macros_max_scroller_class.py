@@ -38,14 +38,34 @@ class macros_max_scroller_class:
                                      255, 255, 255, 255, 255, 255, 195, 129, 0, 0, 0, 16, 56, 189, 255, 255, 255, 255, 255, 255, \
                                      255, 254, 252, 40, 252, 254, 255, 255, 255, 255, 255, 255, 255, 255, 1, 126, 189, 221, 238, \
                                      197, 221, 222, 221, 235, 247])
-    
-    def write_data_in_ram(self, ram_addr, ram_data):
-        self.macros_max_static_class.write_data_to_ram(ram_addr, ram_data)
+
+        self.patterns_matrix.append([255, 255, 24, 24, 24, 24, 255, 255, 0, 0, 255, 255, 219, 219, 195, 195, 0, 0, 255, 255, 3, \
+                                     3, 3, 0, 0, 255, 255, 3, 3, 3, 0, 0, 126, 127, 129, 129, 127, 126, 0, 0, 6, 239, 239, 6, 0, \
+                                     0, 0, 0, 0, 3, 52, 120, 220, 248, 248, 220, 120, 52, 3, 0, 0, 0, 0, 0])
+
+
+    # Write All Data in RAM
+    def write_data_in_ram(self, ram_addr = 0, ram_data = [0 for i in range(256)]):
+
+        self.scn.print_line("//-- Write value to RAM")
+        self.scn.WTFS("CLK")
+        self.scn.SET("ME", 1)
+        self.scn.SET("WE", 1)
+
+        for i in range(0, 256):
+            self.scn.SET("ADDR", i)
+            self.scn.SET("WDATA", ram_data[i])
+            self.scn.WTFS("CLK")
+            
+        self.scn.SET("ME", 0)
+        self.scn.SET("WE", 0)
+        self.scn.WTFS("CLK")
+#        self.macros_max_static_class.write_data_to_ram(ram_addr, ram_data)
 
 
     # Check SPI Transaction from ram_data
     # Digit 0 Updated first
-    def check_spi_transaction(self, ram_addr, ram_data, msg_length, matrix_nb = 8):                
+    def check_spi_transaction(self, ram_addr, ram_data, msg_length, matrix_nb = 8, html_debug_en = False, html_debug_name = ""):                
         
         if(type(ram_data) != list):
             print("Error: type(ram_data) != list")
@@ -74,8 +94,10 @@ class macros_max_scroller_class:
             if(shift_i < msg_length):#ram_data_len):
 
                 # Manage wrapp addr
-                if((ram_addr + shift_i) > 256):
+                if((ram_addr + shift_i) >= 256):
+                    print("shift_i : %d" %(shift_i))
                     offset = 256
+                    
                 data_to_check[shift_i, 7, 0] = data_to_check[shift_i, 7, 0] | ram_data[ram_addr + shift_i - offset]
                
 
@@ -110,16 +132,16 @@ class macros_max_scroller_class:
                     data_to_check[shift_i + 1, 7, matrix_i] = (data_to_check[shift_i + 1, 7, matrix_i] & 0xF00) | (data_to_check[shift_i, 0, matrix_i - 1] & 0xFF)
 
 
-
-        buttons_name_list = ["SHIFT_" + str(i) for i in range(shift_nb)]
-        div_content_list  = [self.html_blocs.np_array_2_tab(data_to_check[i]) for i in range(shift_nb)]
-        html_page_str = self.html_blocs.create_page_with_multiple_button(page_name         = "SPI SCROLLER MATRIX SHIFT DEBUG",
-                                                                         buttons_name_list = buttons_name_list,
-                                                                         div_content_list  = div_content_list)
+        if(html_debug_en == True):
+            buttons_name_list = ["SHIFT_" + str(i) for i in range(shift_nb)]
+            div_content_list  = [self.html_blocs.np_array_2_tab(data_to_check[i]) for i in range(shift_nb)]
+            html_page_str = self.html_blocs.create_page_with_multiple_button(page_name         = "SPI SCROLLER MATRIX SHIFT DEBUG",
+                                                                             buttons_name_list = buttons_name_list,
+                                                                             div_content_list  = div_content_list)
         
-        f = open("/home/linux-jp/SIMULATION_VHDL/index_scroller_matrix_shift_debug.html", "w")
-        f.write(html_page_str)
-        f.close()
+            f = open("/home/linux-jp/SIMULATION_VHDL/index_scroller_matrix_shift_debug_" + html_debug_name + ".html", "w")
+            f.write(html_page_str)
+            f.close()
 
 
 
