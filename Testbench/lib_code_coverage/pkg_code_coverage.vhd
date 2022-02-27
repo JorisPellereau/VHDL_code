@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-12-04
--- Last update: 2022-01-30
+-- Last update: 2022-02-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ use ieee.std_logic_textio.all;
 package pkg_code_coverage is
 
   -- Constaants
-  constant C_NB_ARRAY_OF_INT : integer := 2;
+  constant C_NB_ARRAY_OF_INT : integer := 3;
   -- New Type
   type t_array_of_int is array (0 to C_NB_ARRAY_OF_INT) of integer;  -- Array of int type
 

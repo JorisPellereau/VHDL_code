@@ -1,4 +1,12 @@
 onerror {resume}
+quietly virtual signal -install /tb_top/i_data_collector_0 { /tb_top/i_data_collector_0/i_data[0][7:0]} wdata
+quietly virtual signal -install /tb_top/i_data_collector_0 { /tb_top/i_data_collector_0/i_data[0][15:8]} addr
+quietly virtual signal -install /tb_top/i_data_collector_0 {/tb_top/i_data_collector_0/i_data[0][16]  } WE
+quietly virtual signal -install /tb_top/i_data_collector_0 {/tb_top/i_data_collector_0/i_data[0][17]  } ME
+quietly virtual signal -install /tb_top/i_data_collector_0 { /tb_top/i_data_collector_0/i_data[0][49:18]} tempo_max
+quietly virtual signal -install /tb_top/i_data_collector_0 {/tb_top/i_data_collector_0/i_data[0][50]  } start_scroll
+quietly virtual signal -install /tb_top/i_data_collector_0 { /tb_top/i_data_collector_0/i_data[0][58:51]} msg_length
+quietly virtual signal -install /tb_top/i_data_collector_0 { /tb_top/i_data_collector_0/i_data[0][66:59]} ram_addr_start
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -expand -group DUT /tb_top/i_dut/clk
 add wave -noupdate -expand -group DUT /tb_top/i_dut/rst_n
@@ -159,8 +167,17 @@ add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_
 add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[5]}
 add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
 add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/wdata
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/addr
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/WE
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/ME
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/tempo_max
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/start_scroll
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/msg_length
+add wave -noupdate -expand -group Collect_Signals /tb_top/i_data_collector_0/ram_addr_start
+add wave -noupdate -expand -group Collect_Signals -subitemconfig {{/tb_top/i_data_collector_0/i_data[0]} -expand} /tb_top/i_data_collector_0/i_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {11117850000 ps} 1} {{Cursor 2} {11023907857 ps} 0}
+WaveRestoreCursors {{Cursor 1} {11117850000 ps} 1} {{Cursor 2} {0 ps} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 288
 configure wave -valuecolwidth 130
@@ -176,4 +193,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {10693106850 ps} {11433958634 ps}
+WaveRestoreZoom {0 ps} {6294193500 ps}

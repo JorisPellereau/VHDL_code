@@ -1,7 +1,7 @@
-# MAX7219_SCROLLER_01.py
-# Use for the generation of the scenario MAX7219_SCROLLER_01.txt
+# MAX7219_SCROLLER_05.py
+# Use for the generation of the scenario MAX7219_SCROLLER_05.txt
 #
-# Init All RAM with Random Data - Send a scroll pattern over the entire RAM
+# Corner Cases
 # 
 
 
@@ -32,7 +32,7 @@ scn_macros = macros_max_scroller_class.macros_max_scroller_class(scn)
 scn.print_step("//-- STEP 0\n")
 scn.print_line("\n")
 
-scn.DATA_COLLECTOR_INIT("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0, collect_path.format(4))
+scn.DATA_COLLECTOR_INIT("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0, collect_path.format(5))
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
@@ -41,11 +41,11 @@ scn.print_line("\n")
 scn.DATA_COLLECTOR_START("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
 
 # == VARIABLES ==
-random.seed("MAX7219_SCROLLER_04")
+random.seed("MAX7219_SCROLLER_05")
 ram_data      = [random.randint(0, 255) for i in range(256)]
-msg_length    = 0x1
+msg_length    = 0x00
 ram_addr      = 0
-max_tempo_cnt = 0x000000FF
+max_tempo_cnt = 0x00000000
 
 
 scn.print_step("INIT INPUTS")
@@ -58,7 +58,13 @@ scn.SET("DISPLAY_SCREEN_SEL", 1) # Enable SCREEN display from MAX7219 I/F
 
 scn.WTRS("CLK")
 
-scn_macros.send_patterns_and_check(ram_addr, ram_data, msg_length)
+scn.print_step("Start Pattern when i_msg_length == 0x00")
+
+for i in range(0, 10):
+    scn.SET("START_SCROLL", 1)
+    scn.WAIT(10, "us")
+    scn.SET("START_SCROLL", 0)
+    scn.WTRS("CLK")
 
 scn.DATA_COLLECTOR_STOP("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
 scn.DATA_COLLECTOR_CLOSE("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)

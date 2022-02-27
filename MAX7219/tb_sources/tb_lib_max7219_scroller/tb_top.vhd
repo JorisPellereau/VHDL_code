@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-02-26
+-- Last update: 2022-02-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,9 +34,9 @@ use lib_code_coverage.pkg_code_coverage.all;
 entity tb_top is
   generic (
     G_FILE_PATH           : string  := "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT";
-    G_FILE_NB             : integer := 5;
+    G_FILE_NB             : integer := 6;
     G_TESTS_NAME          : string  := "MAX7219_SCROLLER";
-    G_INJECTOR_DATA_WIDTH : integer := 45);  -- Output data width
+    G_INJECTOR_DATA_WIDTH : integer := 67);  -- Output data width
 
 end entity tb_top;
 
@@ -163,8 +163,8 @@ begin  -- architecture arch_tb_top
       G_FILE_PATH           => G_FILE_PATH,
       G_TESTS_NAME          => G_TESTS_NAME,
       G_NB_CHAR_TESTS_INDEX => 2,
-      G_CHAR_NB_DATA_1      => 16,      -- Number of Character of DATA1
-      G_CHAR_NB_DATA_2      => 4,       -- Number of Character of DATA2
+      G_CHAR_NB_DATA_1      => 24,      -- Number of Character of DATA1
+      G_CHAR_NB_DATA_2      => 8,       -- Number of Character of DATA2
       G_DATA_1_FORMAT       => 1,       -- 0 => INTEGER - 1 => HEXA
       G_INJECTOR_DATA_WIDTH => G_INJECTOR_DATA_WIDTH)  -- Output data width
     port map(
