@@ -101,6 +101,12 @@ all: print_generic_rules
 	@echo "- Compile DESIGN MAX7219 STATIC"
 	@echo "make compile_design_max7219_static"
 	@echo ""
+	@echo ""
+	@echo "- Compile DESIGN MAX7219 SCROLLER"
+	@echo "make compile_design_max7219_scroller"
+	@echo ""
+	@echo "- Compile DESIGN MAX7219 CONTROLLER"
+	@echo "make compile_design_max7219_controller"
 	@echo "# -------------------------- #"
 	@echo ""
 	@echo "# -- TESTBENCHS COMPILATIONS -- #"
@@ -296,8 +302,9 @@ compile_max7219_controller:
 compile_design_max7219_if: compile_others compile_max7219_interface
 compile_design_max7219_static: compile_others compile_max7219_static
 compile_design_max7219_scroller: compile_others compile_max7219_scroller
+compile_design_max7219_controller: compile_others compile_max7219_controller
 
-compile_design : compile_design_max7219_if compile_design_max7219_static compile_design_max7219_scroller
+compile_design : compile_design_max7219_if compile_design_max7219_static compile_design_max7219_scroller compile_design_max7219_controller
 #compile_max7219_static compile_max7219_scroller compile_max7219_controller
 # ================================
 
@@ -324,11 +331,17 @@ compile_testbench_max7219_scroller_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_SCROLLER)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_max7219_scroller_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_SCROLLER)
 
+compile_testbench_max7219_controller_sources:
+	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_CONTROLLER)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_max7219_controller_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_CONTROLLER)
+
+
 # == COMPILE ALL TESTBENCH files ==
 
 compile_testbench_max7219_if: compile_generic_tb_v_files compile_testbench_max7219_if_sources
 compile_testbench_max7219_static: compile_generic_tb_v_files compile_testbench_max7219_static_sources
 compile_testbench_max7219_scroller: compile_generic_tb_v_files compile_testbench_max7219_scroller_sources
+compile_testbench_max7219_controller: compile_generic_tb_v_files compile_testbench_max7219_controller_sources
 
 compile_testbench : compile_testbench_max7219_if compile_testbench_max7219_static compile_testbench_max7219_scroller
 # =======================
@@ -337,6 +350,7 @@ compile_testbench : compile_testbench_max7219_if compile_testbench_max7219_stati
 compile_all_max7219_if: compile_design_max7219_if compile_testbench_max7219_if print_compile_logs_file
 compile_all_max7219_static: compile_design_max7219_static compile_testbench_max7219_static print_compile_logs_file
 compile_all_max7219_scroller: compile_design_max7219_scroller compile_testbench_max7219_scroller print_compile_logs_file
+compile_all_max7219_controller: compile_design_max7219_controller compile_testbench_max7219_controller print_compile_logs_file
 # =============================
 
 # == SCENARII LIST ==
@@ -432,6 +446,10 @@ run_tb_max7219_static:
 LIB_ARGS_MAX7219_SCROLLER="-L lib_max7219_scroller -L lib_max7219_interface"
 run_tb_max7219_scroller:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_scroller LIB_TB_TOP=lib_tb_max7219_scroller LIB_ARGS=$(LIB_ARGS_MAX7219_SCROLLER)
+
+LIB_ARGS_MAX7219_CONTROLLER="-L lib_max7219_static -L lib_max7219_scroller -L lib_max7219_interface"
+run_tb_max7219_controller:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_controller LIB_TB_TOP=lib_tb_max7219_controller LIB_ARGS=$(LIB_ARGS_MAX7219_CONTROLLER)
 
 # Run All Tests MAX7219 in console Mode
 run_all_tests_tb_max7219_if:

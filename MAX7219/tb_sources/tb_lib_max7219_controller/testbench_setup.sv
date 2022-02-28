@@ -35,3 +35,7 @@
 `define C_CHECK_ALIAS_NB 9
 `define C_CHECK_SIZE     9
 `define C_CHECK_WIDTH    32
+
+// DATA COLLECTOR Configuration
+`define C_NB_DATA_COLLECTOR         1
+`define C_DATA_COLLECTOR_DATA_WIDTH 67 // 8 + 8 + 1 + 32 + 1 + 1 + 8 + 8 = 67

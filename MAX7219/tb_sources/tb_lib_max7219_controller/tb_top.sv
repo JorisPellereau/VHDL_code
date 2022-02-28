@@ -15,13 +15,8 @@
 
 `timescale 1ps/1ps
 
-
-`include "/home/jorisp/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_controller/testbench_setup.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_event_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/set_injector_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/wait_duration_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/check_level_wrapper.sv"
-`include "/home/jorisp/GitHub/Verilog/lib_testbench/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/tb_sources/tb_lib_max7219_controller/testbench_setup.sv"
+`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 
 // TB TOP
@@ -44,10 +39,8 @@ module tb_top
    wire [7:0]  s_addr;
    wire [7:0]  s_wdata;
    wire [7:0]  s_rdata;
-
    
    // Signals to DUT
-
    wire        s_static_dyn;
    wire        s_new_display;
 
@@ -79,15 +72,12 @@ module tb_top
    wire        s_ptr_equality_static;
    wire        s_static_busy;
    
-
    wire [7:0]  s_ram_start_ptr_scroller;
    wire [7:0]  s_msg_length_scroller;
    wire        s_start_scroll;
    wire [31:0] s_max_tempo_cnt_scroller;
    wire        s_scroller_busy;   
-   
-
-   
+      
    wire s_me_dut;
    wire s_we_dut;
    wire [7:0]  s_addr_dut;
@@ -106,13 +96,11 @@ module tb_top
    wire [7:0]  s_ram_stop_ptr_load_ram;
    wire        s_start_load_ram;
    wire        s_done_load_ram;   
-      
-   
+         
    wire [7:0]  s_ram_start_ptr;   
    wire [7:0]  s_msg_length;
    wire [31:0] s_max_tempo_cnt;
-   
-   
+      
    wire      s_max7219_if_done;
    wire      s_max7219_if_start;
    wire      s_max7219_if_en_load;
@@ -121,14 +109,7 @@ module tb_top
    wire        s_max7219_load;
    wire        s_max7219_data;
    wire        s_max7219_clk;
-
-
-   
-
-   wire        s_busy;
-   
-   
-
+   wire        s_busy;      
    wire [7:0]  s_display_reg_matrix_n;
    wire        s_display_screen_matrix_checker;
    wire        s_display_screen_matrix;
@@ -136,7 +117,12 @@ module tb_top
 
    wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
     
-   
+   // == DATA Collector Signals ==
+   wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+
+   wire 				     s_frame_received;   
+   wire 				     s_load_received;      
+   wire [15:0] 				     s_data_received;
    
    // == CLK GEN INST ==
    clk_gen #(
@@ -173,7 +159,11 @@ module tb_top
     )
     s_check_level_if();
    
-
+   data_collector_intf #(
+			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+			 )
+   s_data_collector_if();
 
     // == HDL GENERIC TESTBENCH MODULES ==
 
@@ -200,17 +190,6 @@ module tb_top
 
    // == TESTBENCH MODULES ALIASES & SIGNALS AFFECTATION ==
 
-   // INIT WAIT EVENT ALIAS
-   assign s_wait_event_if.wait_alias[0] = "RST_N";
-   assign s_wait_event_if.wait_alias[1] = "CLK";
-   assign s_wait_event_if.wait_alias[2] = "O_CONFIG_DONE";
-   assign s_wait_event_if.wait_alias[3] = "O_MAX7219_LOAD";
-   assign s_wait_event_if.wait_alias[4] = "O_PTR_EQUALITY_STATIC";
-   assign s_wait_event_if.wait_alias[5] = "O_STATIC_BUSY";
-   assign s_wait_event_if.wait_alias[6] = "O_SCROLLER_BUSY";
-   assign s_wait_event_if.wait_alias[7] = "STATIC_DISCARD"; // Internal signal
-   
-
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
@@ -222,44 +201,6 @@ module tb_top
    assign s_wait_event_if.wait_signals[7] = i_dut.s_discard_static;
    
 
-   // INIT SET ALIAS
-   assign s_set_injector_if.set_alias[0]   = "I_STATIC_DYN";
-   assign s_set_injector_if.set_alias[1]   = "I_NEW_DISPLAY";
-   
-   assign s_set_injector_if.set_alias[2]   = "I_NEW_CONFIG_VAL";
-   
-   assign s_set_injector_if.set_alias[3]   = "I_EN_STATIC";
-   
-   assign s_set_injector_if.set_alias[4]   = "I_ME_STATIC";
-   assign s_set_injector_if.set_alias[5]   = "I_WE_STATIC";
-   assign s_set_injector_if.set_alias[6]   = "I_ADDR_STATIC";
-   assign s_set_injector_if.set_alias[7]   = "I_WDATA_STATIC";
-   assign s_set_injector_if.set_alias[8]   = "I_START_PTR_STATIC";
-   assign s_set_injector_if.set_alias[9]   = "I_LAST_PTR_STATIC";
-   //assign s_set_injector_if.set_alias[10]  = "TOTO";
-   assign s_set_injector_if.set_alias[11]  = "I_LOOP_STATIC";
-   
-   assign s_set_injector_if.set_alias[12]  = "I_RAM_START_PTR_SCROLLER";
-   assign s_set_injector_if.set_alias[13]  = "I_MSG_LENGTH_SCROLLER";
-   //assign s_set_injector_if.set_alias[14]  = "I_START_SCROLL";   
-   assign s_set_injector_if.set_alias[15]  = "I_MAX_TEMPO_CNT_SCROLLER";   
-   assign s_set_injector_if.set_alias[16]  = "I_ME_SCROLLER";   
-   assign s_set_injector_if.set_alias[17]  = "I_WE_SCROLLER";
-   assign s_set_injector_if.set_alias[18]  = "I_ADDR_SCROLLER";
-   assign s_set_injector_if.set_alias[19]  = "I_WDATA_SCROLLER";
-
-   assign s_set_injector_if.set_alias[20]  = "I_DISPLAY_TEST";
-   assign s_set_injector_if.set_alias[21]  = "I_DECOD_MODE";
-   assign s_set_injector_if.set_alias[22]  = "I_INTENSITY";
-   assign s_set_injector_if.set_alias[23]  = "I_SCAN_LIMIT";
-   assign s_set_injector_if.set_alias[24]  = "I_SHUTDOWN";
-
-   // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
-   assign s_set_injector_if.set_alias[25]  = "DISPLAY_SCREEN_SEL";
-   
-   assign s_set_injector_if.set_alias[26]  = "DISPLAY_SCREEN_MATRIX";
-   assign s_set_injector_if.set_alias[27]  = "DISPLAY_REG_MATRIX_N";
-  
    
    
 
@@ -346,17 +287,7 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[27]  = 0;
    
    
-   // INIT CHECK LEVEL ALIAS
-
-   assign s_check_level_if.check_alias[0] = "O_CONFIG_DONE";
-   assign s_check_level_if.check_alias[1] = "O_RDATA_STATIC";   
-   assign s_check_level_if.check_alias[2] = "O_PTR_EQUALITY_STATIC";
-   assign s_check_level_if.check_alias[3] = "O_STATIC_BUSY";      
-   assign s_check_level_if.check_alias[4] = "O_SCROLLER_BUSY";   
-   assign s_check_level_if.check_alias[5] = "O_RDATA_SCROLLER";      
-   assign s_check_level_if.check_alias[6] = "O_MAX7219_LOAD";
-   assign s_check_level_if.check_alias[7] = "O_MAX7219_DATA";
-   assign s_check_level_if.check_alias[8] = "O_MAX7219_CLK";
+   
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_config_done;
@@ -367,31 +298,114 @@ module tb_top
    assign s_check_level_if.check_signals[6] =  s_max7219_load;
    assign s_check_level_if.check_signals[7] =  s_max7219_data;
    assign s_check_level_if.check_signals[8] =  s_max7219_clk;
+
+
+   // == DATA Collector INST ==
+   wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
+   wire rst_n_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
+   
+   assign clk_data_collector[0]   = clk;
+   assign rst_n_data_collector[0] = rst_n;
+   // 8 + 8 + 1 + 32 + 1 + 1 + 8 + 8 = 67
+   assign s_data_collector[0] = {s_ram_start_ptr, s_msg_length, s_start_scroll, s_max_tempo_cnt,
+				 s_me_dut, s_we_dut, s_addr_dut, s_wdata_dut};
+   
+   data_collector #(
+		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
+		    .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
+		    )
+   i_data_collector_0 (
+		       .clk                  (clk_data_collector),
+		       .rst_n                (rst_n_data_collector),
+		       .i_data               (s_data_collector),
+		       .data_collector_if    (s_data_collector_if)
+		       );
+
    
    // =====================================================
 
  
 
    // == TESTBENCH SEQUENCER ==
-   tb_modules_custom_class tb_modules_custom_class_inst = new();
-   
+  
    // CREATE CLASS - Configure Parameters
-   static tb_class #( `C_SET_SIZE, 
-                      `C_SET_WIDTH,
-                      `C_WAIT_ALIAS_NB,
-                      `C_WAIT_WIDTH, 
-                      `C_TB_CLK_PERIOD,
-                      `C_CHECK_SIZE,
-                      `C_CHECK_WIDTH) 
+   static tb_class #( 		       
+		      .G_SET_SIZE              (`C_SET_SIZE),
+                      .G_SET_WIDTH             (`C_SET_WIDTH),
+                      .G_WAIT_SIZE             (`C_WAIT_ALIAS_NB),
+                      .G_WAIT_WIDTH            (`C_WAIT_WIDTH), 
+                      .G_CLK_PERIOD            (`C_TB_CLK_PERIOD),
+                      .G_CHECK_SIZE            (`C_CHECK_SIZE),
+                      .G_CHECK_WIDTH           (`C_CHECK_WIDTH),
+		      .G_NB_COLLECTOR          (`C_NB_DATA_COLLECTOR), 	     
+		      .G_DATA_COLLECTOR_WIDTH  (`C_DATA_COLLECTOR_DATA_WIDTH))
+
    tb_class_inst = new (s_wait_event_if, 
                         s_set_injector_if, 
                         s_wait_duration_if,
-                        s_check_level_if,
-			tb_modules_custom_class_inst
+                        s_check_level_if
 			);
    
    
    initial begin// : TB_SEQUENCER
+
+      // INIT WAIT EVENT ALIAS
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                 0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                   1);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_CONFIG_DONE",         2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_MAX7219_LOAD",        3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_PTR_EQUALITY_STATIC", 4);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_STATIC_BUSY",         5);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_SCROLLER_BUSY",       6);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "STATIC_DISCARD",        7);
+
+      // INIT SET ALIAS
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_STATIC_DYN",       0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_NEW_DISPLAY",      1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_NEW_CONFIG_VAL",   2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_EN_STATIC",        3);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_ME_STATIC",        4);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WE_STATIC",        5);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_ADDR_STATIC",      6);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WDATA_STATIC",     7);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START_PTR_STATIC", 8);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LAST_PTR_STATIC",  9);
+      //assign s_set_injector_if.set_alias[10]  = "TOTO", );
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LOOP_STATIC",            11);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RAM_START_PTR_SCROLLER", 12);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_MSG_LENGTH_SCROLLER",    13);
+      //tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START_SCROLL", );   
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_MAX_TEMPO_CNT_SCROLLER", 15);   
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_ME_SCROLLER",            16);   
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WE_SCROLLER",            17);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_ADDR_SCROLLER",          18);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WDATA_SCROLLER",         19);
+      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DISPLAY_TEST", 20);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DECOD_MODE",   21);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_INTENSITY",    22);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_SCAN_LIMIT",   23);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_SHUTDOWN",     24);
+      
+      // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_SEL",    25);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_MATRIX", 26);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_REG_MATRIX_N",  27);
+  
+      // INIT CHECK LEVEL ALIAS
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_CONFIG_DONE",         0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_RDATA_STATIC",        1);   
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_PTR_EQUALITY_STATIC", 2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_STATIC_BUSY",         3);      
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SCROLLER_BUSY",       4);   
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_RDATA_SCROLLER",      5);      
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_LOAD",        6);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_DATA",        7);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_CLK",         8);
+      
+      // == INIT DATA COLLECTOR MODULE ==
+      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_CONTROLLER_INPUT_COLLECTOR_0");
+		      
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
       
    end// : TB_SEQUENCER
@@ -423,40 +437,6 @@ module tb_top
 
    assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : s_max7219_load;
 
-
-   // RAM Load Injector
-   /*load_ram_injector #(
-		       .G_RAM_ADDR_WIDTH  (8),
-		       .G_RAM_DATA_WIDTH  (8),
-		       .G_SEL_WIDTH       (8)
-		       )
-   i_load_ram_injector_0 (
-			  .clk    (clk),
-			  .rst_n  (rst_n),
-
-			  .i_ram_start_addr  (s_ram_start_addr_load_ram),
-			  .i_ram_stop_addr   (s_ram_stop_ptr_load_ram),
-			  .i_sel             (s_sel_load_ram),
-			  .i_start           (s_start_load_ram),
-
-			  .o_me     (s_me_load_ram),
-			  .o_we     (s_we_load_ram),
-			  .o_addr   (s_addr_load_ram),
-			  .o_wdata  (s_wdata_load_ram),
-			  .i_rdata  (s_rdata_load_ram),
-
-			  .o_done (s_done_load_ram)
-   );*/
-   
-   
-
-
-   /*assign s_me_dut    = (s_load_ram_sel == 0) ? s_me    : s_me_load_ram;
-   assign s_we_dut    = (s_load_ram_sel == 0) ? s_we    : s_we_load_ram;
-   assign s_addr_dut  = (s_load_ram_sel == 0) ? s_addr  : s_addr_load_ram;
-   assign s_wdata_dut = (s_load_ram_sel == 0) ? s_wdata : s_wdata_load_ram;
-   assign s_rdata     = s_rdata_dut;*/
-   
 
    // == DUT INST ==
     max7219_display_controller #(
