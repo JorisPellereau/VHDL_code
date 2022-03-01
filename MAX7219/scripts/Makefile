@@ -59,6 +59,7 @@ LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF_COVERAGE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_STATIC_COVERAGE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_SCROLLER_COVERAGE)
+#LIB_LIST+=$()
 LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ================
 
@@ -317,6 +318,8 @@ compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_STATIC)
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_SCROLLER)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_SCROLLER)
+	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_CONTROLLER)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_TOP_MAX7219_CONTROLLER)
 
 
 compile_testbench_max7219_if_sources:
@@ -376,9 +379,12 @@ SCN_LIST_MAX7219_SCROLLER+=MAX7219_SCROLLER_03.py
 SCN_LIST_MAX7219_SCROLLER+=MAX7219_SCROLLER_04.py
 SCN_LIST_MAX7219_SCROLLER+=MAX7219_SCROLLER_05.py
 
+SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_00.py
+
 SCN_LIST+=$(SCN_LIST_MAX7219_IF)
 SCN_LIST+=$(SCN_LIST_MAX7219_STATIC)
 SCN_LIST+=$(SCN_LIST_MAX7219_SCROLLER)
+SCN_LSIT+=$(SCN_LIST_MAX7219_CONTROLLER)
 
 # Name test list
 MAX7219_IF_TEST_LIST+=MAX7219_IF_00
@@ -447,7 +453,7 @@ LIB_ARGS_MAX7219_SCROLLER="-L lib_max7219_scroller -L lib_max7219_interface"
 run_tb_max7219_scroller:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_scroller LIB_TB_TOP=lib_tb_max7219_scroller LIB_ARGS=$(LIB_ARGS_MAX7219_SCROLLER)
 
-LIB_ARGS_MAX7219_CONTROLLER="-L lib_max7219_static -L lib_max7219_scroller -L lib_max7219_interface"
+LIB_ARGS_MAX7219_CONTROLLER="-L lib_max7219_controller -L lib_max7219_static -L lib_max7219_scroller -L lib_max7219_interface"
 run_tb_max7219_controller:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_max7219_controller LIB_TB_TOP=lib_tb_max7219_controller LIB_ARGS=$(LIB_ARGS_MAX7219_CONTROLLER)
 

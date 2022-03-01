@@ -28,12 +28,12 @@
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration
-`define C_WAIT_ALIAS_NB 8
+`define C_WAIT_ALIAS_NB 10
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 9
-`define C_CHECK_SIZE     9
+`define C_CHECK_ALIAS_NB 10
+`define C_CHECK_SIZE     10
 `define C_CHECK_WIDTH    32
 
 // DATA COLLECTOR Configuration

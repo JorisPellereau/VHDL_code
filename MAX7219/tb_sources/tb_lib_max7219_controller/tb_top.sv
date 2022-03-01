@@ -123,6 +123,8 @@ module tb_top
    wire 				     s_frame_received;   
    wire 				     s_load_received;      
    wire [15:0] 				     s_data_received;
+
+   
    
    // == CLK GEN INST ==
    clk_gen #(
@@ -199,6 +201,8 @@ module tb_top
    assign s_wait_event_if.wait_signals[5] = s_static_busy;
    assign s_wait_event_if.wait_signals[6] = s_scroller_busy;
    assign s_wait_event_if.wait_signals[7] = i_dut.s_discard_static;
+   assign s_wait_event_if.wait_signals[8] = s_frame_received;
+   assign s_wait_event_if.wait_signals[9] = s_load_received;
    
 
    
@@ -285,9 +289,7 @@ module tb_top
    assign s_set_injector_if.set_signals_asynch_init_value[25]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[26]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[27]  = 0;
-   
-   
-   
+         
 
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] =  s_config_done;
@@ -298,7 +300,7 @@ module tb_top
    assign s_check_level_if.check_signals[6] =  s_max7219_load;
    assign s_check_level_if.check_signals[7] =  s_max7219_data;
    assign s_check_level_if.check_signals[8] =  s_max7219_clk;
-
+   assign s_check_level_if.check_signals[9] =  s_data_received;   
 
    // == DATA Collector INST ==
    wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
@@ -319,9 +321,7 @@ module tb_top
 		       .rst_n                (rst_n_data_collector),
 		       .i_data               (s_data_collector),
 		       .data_collector_if    (s_data_collector_if)
-		       );
-
-   
+		       );   
    // =====================================================
 
  
@@ -358,6 +358,8 @@ module tb_top
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_STATIC_BUSY",         5);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_SCROLLER_BUSY",       6);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "STATIC_DISCARD",        7);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_FRAME_RECEIVED",    8);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",     9);
 
       // INIT SET ALIAS
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_STATIC_DYN",       0);
@@ -402,6 +404,7 @@ module tb_top
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_LOAD",        6);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_DATA",        7);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_MAX7219_CLK",         8);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "SPI_DATA",              9);
       
       // == INIT DATA COLLECTOR MODULE ==
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "MAX7219_CONTROLLER_INPUT_COLLECTOR_0");
@@ -439,7 +442,7 @@ module tb_top
 
 
    // == DUT INST ==
-    max7219_display_controller #(
+   max7219_display_controller #(
     .G_MATRIX_NB (8), 
    
     .G_MAX_HALF_PERIOD (2*25),//4),
@@ -500,6 +503,21 @@ module tb_top
 
     );
    // ==============
+
+
+   // == MAX7219 SPI Checker ==
+   max7219_spi_checker max7219_spi_checker_0 (
+					      .clk    (clk),
+					      .rst_n  (rst_n),
+					      
+					      .i_max7219_clk   (s_max7219_clk),
+					      .i_max7219_din   (s_max7219_data),
+					      .i_max7219_load  (s_max7219_load),
+
+					      .o_frame_received  (s_frame_received),
+					      .o_load_received   (s_load_received),
+					      .o_data_received   (s_data_received)
+					      );
 
    
 endmodule // tb_top
