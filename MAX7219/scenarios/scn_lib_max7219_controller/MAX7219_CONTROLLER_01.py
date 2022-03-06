@@ -69,7 +69,19 @@ for i in range(0, 256):
     ram_data = ram_data_list[ram_addr]
     scn_macros.send_one_spi_request_and_check_static(ram_addr, ram_data)
     scn.WAIT(10, "us")
-    
+
+
+scn.WAIT(100, "us")
+
+
+scn.print_step("Send Multiple  SPI Request and check it")
+
+ram_addr = 0
+
+scn_macros.send_multiple_spi_request_and_check_static(ram_addr,
+                                                      ram_data_list[0:2])
+
+
 scn.DATA_COLLECTOR_STOP("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
 scn.DATA_COLLECTOR_CLOSE("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
 

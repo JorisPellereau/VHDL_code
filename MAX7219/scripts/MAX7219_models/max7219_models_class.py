@@ -31,7 +31,9 @@ class max7219_models_class:
         self.matrix_nb         = matrix_nb
         self.static_ram_addr   = static_ram_addr
         self.scroller_ram_addr = scroller_ram_addr
-        
+
+        self.static_memory   = [0 for i in range(2**static_ram_addr)]
+        self.scroller_memory = [0 for i in range(2**scroller_ram_addr)]
 
         # == MAX7219 INFOS ==
         self.decode_mode_reg_addr  = 0x9
@@ -77,7 +79,8 @@ class max7219_models_class:
 
     # Write Data in Entire RAM - Start from 0 to last Addr
     def write_data_in_ram(self, ram_data_list, me_alias, we_alias, addr_alias, wdata_alias, clk_alias):
-        
+
+        self.static_memory = ram_data_list # Update RAM Model Static
         self.scn.WTFS(clk_alias)
         self.scn.SET(me_alias, 1)
         self.scn.SET(we_alias, 1)
@@ -118,7 +121,10 @@ class max7219_models_class:
 
     # Check value through SPI
     # /!\ Only one Data send and One data checked
-    def send_one_spi_request_and_check(self, ram_addr, ram_data, spi_check_expected,
+    def send_one_spi_request_and_check(self,
+                                       ram_addr,
+                                       ram_data,
+                                       spi_check_expected,
                                        start_ptr_static_alias,
                                        last_ptr_static_alias,
                                        static_dyn_alias,
@@ -126,7 +132,7 @@ class max7219_models_class:
                                        ptr_equality_alias,
                                        clk_alias):
 
-        (cmd_type, load_en, spi_data) = self.get_cmd_type_load_data(ram_data)
+        (cmd_type, load_en, spi_data) = self.get_cmd_type_load_data(self.static_memory[ram_addr])#ram_data)
      
         self.scn.print_line("//-- Set STATIC inputs - One Value to transmit\n")
         self.scn.SET(static_dyn_alias, 0)
@@ -147,8 +153,9 @@ class max7219_models_class:
         # SPI Frame only generated for normal_cmd
         if(cmd_type == "normal_cmd"):
 
+            ram_data = self.static_memory[ram_addr]
             if(load_en == 1):
-                ram_data = ram_data & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
+                ram_data = self.static_memory[ram_addr] & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
             # Frame is received before PTR Equality is released
             self.scn.WTRS(self.spi_frame_received_alias, 10, "ms")
             self.scn.CHK(self.spi_data_alias, ram_data, spi_check_expected)
@@ -162,7 +169,66 @@ class max7219_models_class:
             
         self.scn.print_line("//-- end")
 
+    # Check value through SPI
+    # /!\ MAX list element = 256
+    def send_multiple_spi_request_and_check(self, ram_start_addr,
+                                            ram_stop_addr,
+                                            ram_data_list,
+                                            spi_check_expected, 
+                                            start_ptr_static_alias,
+                                            last_ptr_static_alias,
+                                            static_dyn_alias,
+                                            new_display_alias,
+                                            ptr_equality_alias,
+                                            clk_alias,
+                                            spi_timeout = [10, "ms"]):
 
+        offset  = 0 # Offset for wrapping addr
+        data_nb = 1
+        
+        if(len(ram_data_list) > 256):
+            print("Error: len(ram_data_list) > 256 !")
+        else:
+            data_nb = len(ram_data_list)
+
+        self.scn.print_line("//-- Set STATIC inputs - One Value to transmit\n")
+        self.scn.SET(static_dyn_alias, 0)
+        self.scn.SET(start_ptr_static_alias, ram_start_addr)        
+        self.scn.SET(last_ptr_static_alias, ram_stop_addr)
+
+            
+        self.scn.WTFS(clk_alias)
+
+        self.scn.print_line("//-- Send NEW STATIC Display\n")
+        self.scn.WTFS(clk_alias)
+        self.scn.SET(new_display_alias, 1)
+        self.scn.WTFS(clk_alias)
+        self.scn.SET(new_display_alias, 0)
+                
+        
+
+        for j in range(0, data_nb):            
+            (cmd_type, load_en, spi_data) = self.get_cmd_type_load_data(ram_data_list[j])
+            
+            # SPI Frame only generated for normal_cmd
+            if(cmd_type == "normal_cmd"):
+                self.scn.print_comment("normal_cmd :")
+                if(load_en == 1):
+                    ram_data_list[j] = ram_data_list[j] & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
+                # Frame is received before PTR Equality is released
+                self.scn.WTRS(self.spi_frame_received_alias, spi_timeout[0], spi_timeout[1])
+                self.scn.CHK(self.spi_data_alias, ram_data_list[j], spi_check_expected)
+
+                    # SPI LOAD RECEVIED always after FRAME received
+                if(load_en == 1):
+                    self.scn.WTRS(self.spi_load_received_alias, spi_timeout[0], spi_timeout[1])
+            elif(cmd_type == "wait_cmd"):
+                self.scn.print_comment("wait_cmd - Wait value : %d (load_en : %d - spi_data : %d)" %( ((load_en << 12) + spi_data), load_en, spi_data))
+        # Wait for PTR equality after the end of transmission
+        self.scn.WTRS(ptr_equality_alias, 10, "ms")            
+            
+        self.scn.print_line("//-- end")
+    
         # == LOCAL FUNCTIONS ==
 
     # Return Command type, load value and spi_data

@@ -172,3 +172,17 @@ class macros_max_controller_class:
                                                                  self.i_new_display_alias,
                                                                  self.o_ptr_equality_static_alias,
                                                                  self.clk_alias)
+    # Send Multiple SPI REQUAEST and check it - Static Mode
+    def send_multiple_spi_request_and_check_static(self,
+                                                   ram_addr,
+                                                   ram_data_list):
+        spi_check_expected = "OK"
+        self.max7219_models_class.send_multiple_spi_request_and_check(ram_addr,
+                                                                      ram_data_list,
+                                                                      spi_check_expected,
+                                                                      self.i_start_ptr_static_alias,
+                                                                      self.i_last_ptr_static_alias,
+                                                                      self.i_static_dyn_alias,
+                                                                      self.i_new_display_alias,
+                                                                      self.o_ptr_equality_static_alias,
+                                                                      self.clk_alias)

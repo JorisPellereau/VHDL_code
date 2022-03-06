@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2021-05-24
+-- Last update: 2022-03-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ architecture behv of max7219_display_sequencer is
   -- Internal Writes and Read Ptrs
   signal s_cmd_wr_ptr    : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_cmd_rd_ptr    : integer range 0 to G_FIFO_DEPTH - 1;
-  signal s_cmd_fifo_cnt  : integer range 0 to G_FIFO_DEPTH;
+  signal s_cmd_fifo_cnt  : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_cmd_wr_ptr_up : std_logic;
   signal s_cmd_rd_ptr_up : std_logic;
 
@@ -328,10 +328,11 @@ begin  -- architecture behv
           s_cmd_array(s_cmd_wr_ptr) <= s_cmd_type;  -- Save Command Type
           if(s_cmd_wr_ptr < G_FIFO_DEPTH - 1) then
             s_cmd_wr_ptr    <= s_cmd_wr_ptr + 1;    -- Inc Write Ptr
-            s_cmd_wr_ptr_up <= '1';
+            --s_cmd_wr_ptr_up <= '1';
           else
             s_cmd_wr_ptr <= 0;
           end if;
+          s_cmd_wr_ptr_up <= '1'; -- Up in any way
         end if;
       end if;
 
@@ -380,10 +381,11 @@ begin  -- architecture behv
           if(s_next_cmd_config = '1' or s_next_cmd_static = '1' or s_next_cmd_scroller = '1') then
             if(s_cmd_rd_ptr < G_FIFO_DEPTH - 1) then
               s_cmd_rd_ptr    <= s_cmd_rd_ptr + 1;
-              s_cmd_rd_ptr_up <= '1';
+              --s_cmd_rd_ptr_up <= '1';
             else
               s_cmd_rd_ptr <= 0;
             end if;
+            s_cmd_rd_ptr_up <= '1';
           end if;
 
 
@@ -417,7 +419,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(s_cmd_wr_ptr_up = '1') then
-        if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
+        if(s_cmd_fifo_cnt < G_FIFO_DEPTH - 1) then
           s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
         end if;
       elsif(s_cmd_rd_ptr_up = '1') then
