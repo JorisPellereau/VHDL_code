@@ -46,7 +46,7 @@ scn_macros.write_static_data_in_ram(ram_data_list)
 scn_macros.read_static_data_in_ram(ram_data_list)
 
 
-scn.print_step("Wait for the end of Cnfig Init and INIT STATIC Functions")
+scn.print_step("Wait for the end of Config Init and INIT STATIC Functions")
 
 scn.WTRS("O_CONFIG_DONE", 1, "ms")
 scn.SET("I_EN_STATIC", 1)
@@ -74,12 +74,12 @@ for i in range(0, 256):
 scn.WAIT(100, "us")
 
 
-scn.print_step("Send Multiple  SPI Request and check it")
+scn.print_step("Send Multiple SPI Request and check it")
 
-ram_addr = 0
-
-scn_macros.send_multiple_spi_request_and_check_static(ram_addr,
-                                                      ram_data_list[0:2])
+ram_start_addr = 0
+ram_stop_addr  = 1
+scn_macros.send_multiple_spi_request_and_check_static(ram_start_addr,
+                                                      ram_stop_addr)
 
 
 scn.DATA_COLLECTOR_STOP("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)

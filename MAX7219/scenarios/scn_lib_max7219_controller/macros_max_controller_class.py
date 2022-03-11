@@ -52,6 +52,9 @@ class macros_max_controller_class:
         self.o_rdata_static_alias     = "O_RDATA_STATIC"
         self.o_ptr_equality_static_alias = "O_PTR_EQUALITY_STATIC"
 
+        self.sel_display_screen_matrix_alias = "DISPLAY_SCREEN_SEL"
+        self.display_screen_matrix_alias     = "DISPLAY_SCREEN_MATRIX"
+
         # == Default Value from TB ==        
         self.decode_mode_init_data  = 0xAA        
         self.intensity_init_data    = 0xBB
@@ -174,11 +177,11 @@ class macros_max_controller_class:
                                                                  self.clk_alias)
     # Send Multiple SPI REQUAEST and check it - Static Mode
     def send_multiple_spi_request_and_check_static(self,
-                                                   ram_addr,
-                                                   ram_data_list):
+                                                   ram_start_ptr,
+                                                   ram_stop_ptr):
         spi_check_expected = "OK"
-        self.max7219_models_class.send_multiple_spi_request_and_check(ram_addr,
-                                                                      ram_data_list,
+        self.max7219_models_class.send_multiple_spi_request_and_check(ram_start_ptr,
+                                                                      ram_stop_ptr,
                                                                       spi_check_expected,
                                                                       self.i_start_ptr_static_alias,
                                                                       self.i_last_ptr_static_alias,

@@ -5,6 +5,10 @@ scn_generator_class = '/home/jorisp/GitHub/Verilog/scripts/scn_generator'
 sys.path.append(scn_generator_class)
 
 
+sys.path.append("/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/scenarios/scn_lib_max7219_static")
+import macros_max_static_class
+
+
 # Import Class
 import scn_class
 
@@ -21,6 +25,8 @@ class max7219_models_class:
                  scroller_ram_addr = 8):
 
         self.scn = scn
+
+        self.macros_max_static_class = macros_max_static_class.macros_max_static_class(self.scn)
         
         # == ALIAS from TB ==
         self.spi_frame_received_alias = spi_frame_received_alias
@@ -171,9 +177,9 @@ class max7219_models_class:
 
     # Check value through SPI
     # /!\ MAX list element = 256
-    def send_multiple_spi_request_and_check(self, ram_start_addr,
+    def send_multiple_spi_request_and_check(self,
+                                            ram_start_addr,
                                             ram_stop_addr,
-                                            ram_data_list,
                                             spi_check_expected, 
                                             start_ptr_static_alias,
                                             last_ptr_static_alias,
@@ -184,13 +190,20 @@ class max7219_models_class:
                                             spi_timeout = [10, "ms"]):
 
         offset  = 0 # Offset for wrapping addr
-        data_nb = 1
         
-        if(len(ram_data_list) > 256):
-            print("Error: len(ram_data_list) > 256 !")
+        if((ram_stop_addr - ram_start_addr) >= 0):            
+            data_nb = ram_stop_addr - ram_start_addr
         else:
-            data_nb = len(ram_data_list)
+            data_nb = ram_stop_addr - ram_start_addr + 256 # Wrap Management
+        
+        ram_addr_list = []
+        for i in range(0, data_nb):
 
+            if((ram_start_addr + i > 255)):
+                ram_addr_list.append(ram_start_addr + i - 256)
+            else:
+                ram_addr_list.append(ram_start_addr + i)
+                
         self.scn.print_line("//-- Set STATIC inputs - One Value to transmit\n")
         self.scn.SET(static_dyn_alias, 0)
         self.scn.SET(start_ptr_static_alias, ram_start_addr)        
@@ -207,17 +220,18 @@ class max7219_models_class:
                 
         
 
-        for j in range(0, data_nb):            
-            (cmd_type, load_en, spi_data) = self.get_cmd_type_load_data(ram_data_list[j])
+        for j in ram_addr_list:          
+            (cmd_type, load_en, spi_data) = self.get_cmd_type_load_data(self.static_memory[j])
             
             # SPI Frame only generated for normal_cmd
             if(cmd_type == "normal_cmd"):
                 self.scn.print_comment("normal_cmd :")
+                ram_data = self.static_memory[j]
                 if(load_en == 1):
-                    ram_data_list[j] = ram_data_list[j] & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
+                    ram_data = self.static_memory[j] & 0xEFFF # Force en_load to 0 (not expected in SPI received data)
                 # Frame is received before PTR Equality is released
                 self.scn.WTRS(self.spi_frame_received_alias, spi_timeout[0], spi_timeout[1])
-                self.scn.CHK(self.spi_data_alias, ram_data_list[j], spi_check_expected)
+                self.scn.CHK(self.spi_data_alias, ram_data, spi_check_expected)
 
                     # SPI LOAD RECEVIED always after FRAME received
                 if(load_en == 1):
@@ -257,7 +271,9 @@ class max7219_models_class:
         return cmd_type, load_en, spi_data
     # ===================
 
-
+    # Sort Mem List
+    def sort_mem_list_static(self, data_list):
+        return self.macros_max_static_class.sort_mem_list(data_list)
 
     # == SCROLLER MODELS ==
     

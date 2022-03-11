@@ -10,10 +10,10 @@ add wave -noupdate -expand -group {DUT TOP} -group {CONFIG I/F} /tb_top/i_dut/i_
 add wave -noupdate -expand -group {DUT TOP} -group {CONFIG I/F} /tb_top/i_dut/i_intensity
 add wave -noupdate -expand -group {DUT TOP} -group {CONFIG I/F} /tb_top/i_dut/i_scan_limit
 add wave -noupdate -expand -group {DUT TOP} -group {CONFIG I/F} /tb_top/i_dut/i_shutdown
-add wave -noupdate -expand -group {DUT TOP} -group {I CONTROL STATIC} /tb_top/i_dut/i_start_ptr_static
-add wave -noupdate -expand -group {DUT TOP} -group {I CONTROL STATIC} /tb_top/i_dut/i_last_ptr_static
-add wave -noupdate -expand -group {DUT TOP} -group {I CONTROL STATIC} /tb_top/i_dut/i_loop_static
-add wave -noupdate -expand -group {DUT TOP} -group {I CONTROL STATIC} /tb_top/i_dut/i_en_static
+add wave -noupdate -expand -group {DUT TOP} -expand -group {I CONTROL STATIC} /tb_top/i_dut/i_start_ptr_static
+add wave -noupdate -expand -group {DUT TOP} -expand -group {I CONTROL STATIC} -radix unsigned /tb_top/i_dut/i_last_ptr_static
+add wave -noupdate -expand -group {DUT TOP} -expand -group {I CONTROL STATIC} /tb_top/i_dut/i_loop_static
+add wave -noupdate -expand -group {DUT TOP} -expand -group {I CONTROL STATIC} /tb_top/i_dut/i_en_static
 add wave -noupdate -expand -group {DUT TOP} -group {RAM STATIC IF} /tb_top/i_dut/i_me_static
 add wave -noupdate -expand -group {DUT TOP} -group {RAM STATIC IF} /tb_top/i_dut/i_we_static
 add wave -noupdate -expand -group {DUT TOP} -group {RAM STATIC IF} /tb_top/i_dut/i_addr_static
@@ -223,11 +223,20 @@ add wave -noupdate -group {Set injector} /tb_top/i_set_injector_wrapper/rst_n
 add wave -noupdate -group {Set injector} /tb_top/i_set_injector_wrapper/i_set_injector_tb/clk
 add wave -noupdate -group {Set injector} /tb_top/i_set_injector_wrapper/i_set_injector_tb/rst_n
 add wave -noupdate -group {Set injector} -expand /tb_top/i_set_injector_wrapper/i_set_injector_tb/i_set_signals_asynch
+add wave -noupdate -divider <NULL>
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[0]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[1]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[2]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[3]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[4]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[5]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3298292436 ps} 0}
+WaveRestoreCursors {{Cursor 1} {977246960 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 307
-configure wave -valuecolwidth 100
+configure wave -namecolwidth 140
+configure wave -valuecolwidth 467
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -240,4 +249,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {0 ps} {16506 ns}
+WaveRestoreZoom {8637975 ps} {4115630103 ps}
