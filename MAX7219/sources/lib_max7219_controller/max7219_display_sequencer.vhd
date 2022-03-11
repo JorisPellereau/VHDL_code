@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2022-03-05
+-- Last update: 2022-03-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -462,7 +462,7 @@ begin  -- architecture behv
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- FIFO Full mngt
-      if(s_cmd_fifo_cnt = G_FIFO_DEPTH) then
+      if(s_cmd_fifo_cnt = G_FIFO_DEPTH - 1) then
         s_fifo_full <= '1';
       else
         s_fifo_full <= '0';

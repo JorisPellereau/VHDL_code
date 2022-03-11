@@ -7,7 +7,10 @@ sys.path.append(scn_generator_class)
 
 sys.path.append("/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/scenarios/scn_lib_max7219_static")
 import macros_max_static_class
+import numpy as np
 
+sys.path.append("/home/linux-jp/Documents/GitHub/Python/Tools/yattag_debug")
+import html_blocs_class
 
 # Import Class
 import scn_class
@@ -38,6 +41,7 @@ class max7219_models_class:
         self.static_ram_addr   = static_ram_addr
         self.scroller_ram_addr = scroller_ram_addr
 
+        # Memory Model
         self.static_memory   = [0 for i in range(2**static_ram_addr)]
         self.scroller_memory = [0 for i in range(2**scroller_ram_addr)]
 
@@ -84,9 +88,13 @@ class max7219_models_class:
 
 
     # Write Data in Entire RAM - Start from 0 to last Addr
-    def write_data_in_ram(self, ram_data_list, me_alias, we_alias, addr_alias, wdata_alias, clk_alias):
+    def write_data_in_ram(self, ram_data_list, me_alias, we_alias, addr_alias, wdata_alias, clk_alias, ram_sel = "STATIC"):
 
-        self.static_memory = ram_data_list # Update RAM Model Static
+        if(ram_sel == "STATIC"):
+            self.static_memory = ram_data_list # Update RAM Model Static
+        elif(ram_sel == "SCROLLER"):
+            self.scroller_memory = ram_data_list
+            
         self.scn.WTFS(clk_alias)
         self.scn.SET(me_alias, 1)
         self.scn.SET(we_alias, 1)
@@ -195,11 +203,11 @@ class max7219_models_class:
             data_nb = ram_stop_addr - ram_start_addr
         else:
             data_nb = ram_stop_addr - ram_start_addr + 256 # Wrap Management
-        
+        # Get RAM ADDR usr for the pattern
         ram_addr_list = []
         for i in range(0, data_nb):
 
-            if((ram_start_addr + i > 255)):
+            if((ram_start_addr + i) > 255):
                 ram_addr_list.append(ram_start_addr + i - 256)
             else:
                 ram_addr_list.append(ram_start_addr + i)
@@ -272,9 +280,140 @@ class max7219_models_class:
     # ===================
 
     # Sort Mem List
+    # The list must have the size of 8*G_MATRIX_NB
     def sort_mem_list_static(self, data_list):
         return self.macros_max_static_class.sort_mem_list(data_list)
 
     # == SCROLLER MODELS ==
-    
+
+    # Set scroller config, start pattern and check it
+    def send_scroller_pattern_and_check(self,
+                                        ram_start_addr,
+                                        msg_length,
+                                        static_dyn_alias,
+                                        ram_start_ptr_alias,
+                                        msg_length_alias,
+                                        new_display_alias,
+                                        scroller_busy_alias,
+                                        clk_alias,
+                                        timeout_value   = 10,
+                                        timeout_unity   = "ms",
+                                        html_debug_en   = False,
+                                        html_debug_name = ""):
+
+        # Get RAM ADDR Use for the pattern
+        ram_addr_list = []
+
+        for i in range(0, msg_length):
+            if((ram_start_addr + i) > 255):
+                ram_addr_list.append(ram_start_addr + i - 256)
+            else:
+                ram_addr_list.append(ram_start_addr + i)
+                
+        self.scn.WTFS(clk_alias)
+
+        self.scn.print_line("//-- Set Configuration for Scroller Pattern\n")
+        self.scn.SET(static_dyn_alias, 1)
+        self.scn.SET(ram_start_ptr_alias, ram_start_addr)
+        self.scn.SET(msg_length_alias, msg_length)
+
+        self.scn.WTFS(clk_alias)
+
+        self.scn.print_line("//-- Send NEW SCROLLER Display\n")
+        self.scn.WTFS(clk_alias)
+        self.scn.SET(new_display_alias, 1)
+        self.scn.WTFS(clk_alias)
+        self.scn.SET(new_display_alias, 0)
+
+        self.scn.WTFS(clk_alias)
+
+        self.check_scroller_spi_transaction(ram_start_addr,
+                                            msg_length,
+                                            html_debug_en,
+                                            html_debug_name)
+
+        self.scn.WTFS(scroller_busy_alias, timeout_value, timeout_unity)
+
+
+
+    def check_scroller_spi_transaction(self,
+                                       ram_start_addr,
+                                       msg_length,
+                                       html_debug_en = False,
+                                       html_debug_name = ""):
+            
+        shift_nb                   = 8*self.matrix_nb + msg_length #ram_data_len # - 1 ?
+        spi_trans_4_screen_refresh = 8*self.matrix_nb
+        spi_transaction_nb         = spi_trans_4_screen_refresh*shift_nb
+        offset                     = 0
+        
+        # data_to_check[0] == Di_M7        
+        # data_to_check[1] == Di_M6
+        # data_to_check[0] == Di_M7
+        data_to_check = np.zeros([shift_nb, 8, self.matrix_nb], int)
+
+        # Init Matrix with Addr of each digit on bits 11 to 8
+        # Digit 0 First
+        for i in range(0, 8):
+            data_to_check[:, i, :] = (i + 1) << 8 #
+            
+        self.scn.print_comment("Number of SPI Transaction expected : %d" %(spi_transaction_nb))
+
+        # Init data_to_check with 
+        # Loop on Number of shift
+        for shift_i in range(0, shift_nb):
+
+            if(shift_i < msg_length):#ram_data_len):
+
+                # Manage wrapp addr
+                if((ram_start_addr + shift_i) >= 256):
+                    print("shift_i : %d" %(shift_i))
+                    offset = 256
+                    
+                data_to_check[shift_i, 7, 0] = data_to_check[shift_i, 7, 0] | self.scroller_memory[ram_start_addr + shift_i - offset]
+               
+
+            # Loop On 8 Digits
+            for digit_i in range(0, 8):
+                
+                # Loop on self.matrix_nb
+                for matrix_i in range(0, self.matrix_nb):
+                                    
+                    self.scn.WTRS(self.spi_frame_received_alias, 1, "ms")
+
+                    self.scn.CHK(self.spi_data_alias, data_to_check[shift_i, digit_i, matrix_i], "OK")
+                    # Every  self.matrix_nb a frame a LOAD is sended
+                    if(matrix_i == self.matrix_nb - 1):
+                        self.scn.WTRS(self.spi_load_received_alias)
+            
+            # Save current matrix
+            data_to_check_tmp = data_to_check
+            # Update data_to_check by shift it
+            if(shift_i < shift_nb - 1):
+                
+                data_to_check[shift_i + 1, 6, :] = (data_to_check[shift_i + 1, 6, :] & 0xF00) | (data_to_check_tmp[shift_i, 7, :] & 0xFF)# D7 => D6
+                data_to_check[shift_i + 1, 5, :] = (data_to_check[shift_i + 1, 5, :] & 0xF00) | (data_to_check_tmp[shift_i, 6, :] & 0xFF)# D6 => D5
+                data_to_check[shift_i + 1, 4, :] = (data_to_check[shift_i + 1, 4, :] & 0xF00) | (data_to_check_tmp[shift_i, 5, :] & 0xFF)# D5 => D4
+                data_to_check[shift_i + 1, 3, :] = (data_to_check[shift_i + 1, 3, :] & 0xF00) | (data_to_check_tmp[shift_i, 4, :] & 0xFF) # D4 => D3
+                data_to_check[shift_i + 1, 2, :] = (data_to_check[shift_i + 1, 2, :] & 0xF00) | (data_to_check_tmp[shift_i, 3, :] & 0xFF) # D3 => D2
+                data_to_check[shift_i + 1, 1, :] = (data_to_check[shift_i + 1, 1, :] & 0xF00) | (data_to_check_tmp[shift_i, 2, :] & 0xFF) # D2 => D1
+                data_to_check[shift_i + 1, 0, :] = (data_to_check[shift_i + 1, 0, :] & 0xF00) | (data_to_check_tmp[shift_i, 1, :] & 0xFF)# D1 => D0
+
+                # D0 Mi to D7 Mi-1
+                for matrix_i in range(1, self.matrix_nb):
+                    data_to_check[shift_i + 1, 7, matrix_i] = (data_to_check[shift_i + 1, 7, matrix_i] & 0xF00) | (data_to_check[shift_i, 0, matrix_i - 1] & 0xFF)
+
+
+        if(html_debug_en == True):
+            buttons_name_list = ["SHIFT_" + str(i) for i in range(shift_nb)]
+            div_content_list  = [self.html_blocs.np_array_2_tab(data_to_check[i]) for i in range(shift_nb)]
+            html_page_str = self.html_blocs.create_page_with_multiple_button(page_name         = "SPI SCROLLER MATRIX SHIFT DEBUG",
+                                                                             buttons_name_list = buttons_name_list,
+                                                                             div_content_list  = div_content_list)
+        
+            f = open("/home/linux-jp/SIMULATION_VHDL/index_scroller_matrix_shift_debug_" + html_debug_name + ".html", "w")
+            f.write(html_page_str)
+            f.close()
+   
+                
     # =====================

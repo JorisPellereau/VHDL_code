@@ -51,15 +51,18 @@ COMPILE_LOGS_FILE=$(LOGS_DIR)/compilation.log
 # =========================
 
 # == Config. ARGS by DEFAULT ==
-VSIM_ARGS+=-t ps -default_radix hexadecimal -fsmdebug
+VSIM_ARGS+=-t ps -default_radix hexadecimal -fsmdebug -title $(TEST)
 VSIM_G_ARGS+=-G/tb_top/SCN_FILE_PATH=$(SCN_TXT_DIR)/$(TEST).txt
 TB_LIB_TOP+=$(LIB_TB_TOP).tb_top
 NO_WLF=OFF
+GUI=ON
 # =============================
 
 # == Config Selection ==
 ifeq ($(GUI), OFF)
 	VSIM_ARGS+=-c
+#else
+#	VSIM_ARGS+=-view wave -title $(TEST) noview dataflow process
 endif
 
 # WLF by default

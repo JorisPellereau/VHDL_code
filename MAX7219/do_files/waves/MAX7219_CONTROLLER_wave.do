@@ -210,6 +210,8 @@ add wave -noupdate -group {MAX7219 IF} /tb_top/i_dut/max7219_if_inst_0/s_ongoing
 add wave -noupdate -divider <NULL>
 add wave -noupdate -label v_ram_static /tb_top/i_dut/max7219_cmd_decod_inst_0/tdpram_inst_0/v_ram
 add wave -noupdate -divider <NULL>
+add wave -noupdate -label v_ram_scroller /tb_top/i_dut/max7219_scroller_ctrl_inst_0/tdpram_inst_0/v_ram
+add wave -noupdate -divider <NULL>
 add wave -noupdate -expand -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/clk
 add wave -noupdate -expand -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/rst_n
 add wave -noupdate -expand -group {SPI CHECKER} /tb_top/max7219_spi_checker_0/i_max7219_clk

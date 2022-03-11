@@ -54,6 +54,15 @@ class macros_max_controller_class:
 
         self.sel_display_screen_matrix_alias = "DISPLAY_SCREEN_SEL"
         self.display_screen_matrix_alias     = "DISPLAY_SCREEN_MATRIX"
+        self.i_me_scroller_alias            = "I_ME_SCROLLER"
+        self.i_we_scroller_alias            = "I_WE_SCROLLER"
+        self.i_addr_scroller_alias          = "I_ADDR_SCROLLER"
+        self.i_wdata_scroller_alias         = "I_WDATA_SCROLLER"
+        self.i_ram_start_ptr_scroller_alias = "I_RAM_START_PTR_SCROLLER"
+        self.i_msg_length_scroller_alias    = "I_MSG_LENGTH_SCROLLER"
+        self.i_max_tempo_cnt_scroller_alias = "I_MAX_TEMPO_CNT_SCROLLER"
+        self.o_rdata_scroller_alias         = "O_RDATA_SCROLLER"
+        self.o_scroller_busy_alias          = "O_SCROLLER_BUSY"
 
         # == Default Value from TB ==        
         self.decode_mode_init_data  = 0xAA        
@@ -175,7 +184,7 @@ class macros_max_controller_class:
                                                                  self.i_new_display_alias,
                                                                  self.o_ptr_equality_static_alias,
                                                                  self.clk_alias)
-    # Send Multiple SPI REQUAEST and check it - Static Mode
+    # Send Multiple SPI REQUEST and check it - Static Mode
     def send_multiple_spi_request_and_check_static(self,
                                                    ram_start_ptr,
                                                    ram_stop_ptr):
@@ -189,3 +198,47 @@ class macros_max_controller_class:
                                                                       self.i_new_display_alias,
                                                                       self.o_ptr_equality_static_alias,
                                                                       self.clk_alias)
+
+
+
+    # Write Data in Scroller RAM
+    def write_scroller_data_in_ram(self, ram_data_list):
+        self.max7219_models_class.write_data_in_ram(ram_data_list,
+                                                    self.i_me_scroller_alias,
+                                                    self.i_we_scroller_alias,
+                                                    self.i_addr_scroller_alias,
+                                                    self.i_wdata_scroller_alias,
+                                                    self.clk_alias,
+                                                    ram_sel = "SCROLLER")
+    # Read Data in Scroller RAM
+    def read_scroller_data_in_ram(self, ram_data_list):
+        self.max7219_models_class.read_data_in_ram(ram_data_list,
+                                                   self.i_me_scroller_alias,
+                                                   self.i_we_scroller_alias,
+                                                   self.i_addr_scroller_alias,
+                                                   self.o_rdata_scroller_alias,
+                                                   self.clk_alias)
+        
+    # Set Scroller Config and check spi transaction
+    # RAM Scroller must be previously written
+    def send_scroller_pattern_and_check(self,
+                                        ram_start_ptr,
+                                        msg_length,
+                                        timeout_value   = 10,
+                                        timeout_unity   = "ms",
+                                        html_debug_en   = False,
+                                        html_debug_name = ""):
+        
+        self.max7219_models_class.send_scroller_pattern_and_check(
+            ram_start_addr      = ram_start_ptr,
+            msg_length          = msg_length,
+            static_dyn_alias    = self.i_static_dyn_alias,
+            ram_start_ptr_alias = self.i_ram_start_ptr_scroller_alias,
+            msg_length_alias    = self.i_msg_length_scroller_alias,
+            new_display_alias   = self.i_new_display_alias,
+            scroller_busy_alias = self.o_scroller_busy_alias,
+            clk_alias           = self.clk_alias,
+            timeout_value       = timeout_value,
+            timeout_unity       = timeout_unity,
+            html_debug_en       = html_debug_en,
+            html_debug_name     = html_debug_name)
