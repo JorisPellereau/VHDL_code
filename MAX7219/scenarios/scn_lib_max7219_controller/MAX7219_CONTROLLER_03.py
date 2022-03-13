@@ -1,7 +1,7 @@
 # MAX7219_CONTROLLER_03.py
 # Use for the generation of the scenario MAX7219_CONTROLLER_03.txt
 #
-# 
+# Test 2 Pattern to scroll - No memory of patterns
 # 
 
 
@@ -15,13 +15,13 @@ sys.path.append(scn_generator_class)
 import scn_class
 
 import macros_max_controller_class
+import os
 
  # Create SCN Class
 scn       = scn_class.scn_class()
 
 # == Collect Path ==
-collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_CONTROLLER_{:02d}_collect.txt"
- 
+collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/{0}_collect.txt".format(os.path.basename(__file__)[:-3])
 
 # Create SCN Macro
 scn_macros = macros_max_controller_class.macros_max_controller_class(scn)
@@ -31,7 +31,7 @@ scn_macros = macros_max_controller_class.macros_max_controller_class(scn)
 scn.print_step("//-- STEP 0\n")
 scn.print_line("\n")
 
-scn.DATA_COLLECTOR_INIT("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0, collect_path.format(3))
+scn.DATA_COLLECTOR_INIT("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0, collect_path)
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
@@ -84,7 +84,7 @@ scn.WAIT(10, "us")
 scn.print_step("Set SCROLLER Config, Send Pattern and check it")
 
 ram_start_ptr = 0
-msg_length    = 256
+msg_length    = 255
 
 scn_macros.send_scroller_pattern_and_check(ram_start_ptr   = ram_start_ptr,
                                            msg_length      = msg_length,

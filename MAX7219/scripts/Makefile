@@ -59,7 +59,7 @@ LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_IF_COVERAGE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_STATIC_COVERAGE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_SCROLLER_COVERAGE)
-#LIB_LIST+=$()
+LIB_LIST+=$(LIB_TB_TOP_MAX7219_CONTROLLER_COVERAGE)
 LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ================
 
@@ -69,11 +69,13 @@ LIB_LIST+=$(LIB_CODE_COVERAGE)
 GHDL_COV_DIR_LIST+=MAX7219_IF_CODE_COVERAGE
 GHDL_COV_DIR_LIST+=MAX7219_STATIC_CODE_COVERAGE
 GHDL_COV_DIR_LIST+=MAX7219_SCROLLER_CODE_COVERAGE
+GHDL_COV_DIR_LIST+=MAX7219_CONTROLLER_CODE_COVERAGE
 
 # == COVERAGE LIBRARIES ==
 LIB_TB_TOP_MAX7219_IF_COVERAGE=lib_tb_top_max7219_if_coverage
 LIB_TB_TOP_MAX7219_STATIC_COVERAGE=lib_tb_top_max7219_static_coverage
 LIB_TB_TOP_MAX7219_SCROLLER_COVERAGE=lib_tb_top_max7219_scroller_coverage
+LIB_TB_TOP_MAX7219_CONTROLLER_COVERAGE=lib_tb_top_max7219_controller_coverage
 # ========================
 
 # == GHDL LIB LIST ==
@@ -81,6 +83,7 @@ GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
 GHDL_LIB_LIST+=$(LIB_MAX7219_STATIC)
 GHDL_LIB_LIST+=$(LIB_MAX7219_SCROLLER)
+GHDL_LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
 # ===================
 
 # == PYTHON SCRIPTS PATH ==
@@ -196,6 +199,15 @@ all: print_generic_rules
 	@echo "make ghdl_gcc_compile_max7219_scroller_tb"
 	@echo ""
 	@echo "make run_max7219_scroller_code_coverage SIMU_TIME=XXms"
+	@echo ""
+	@echo "-- MAX7219 CONTROLLER --"
+	@echo "Compile Testbench MAX7219 CONTROLLER for Code Coverage"
+	@echo "make ghdl_gcc_compile_max7219_controller_tb"
+	@echo ""
+	@echo "make run_max7219_controller_code_coverage SIMU_TIME=XXms"
+	@echo ""
+	@echo ""
+	@echo ""
 	@echo "======================="
 	@echo ""
 	@echo "== PYTHON SCRIPTS =="
@@ -276,6 +288,9 @@ src_tb_coverage_max7219_static+=$(TB_SRC_DIR)/tb_lib_max7219_static/tb_top.vhd
 
 src_tb_coverage_max7219_scroller+=$(src_code_cov_tb_vhd)
 src_tb_coverage_max7219_scroller+=$(TB_SRC_DIR)/tb_lib_max7219_scroller/tb_top.vhd
+
+src_tb_coverage_max7219_controller+=$(src_code_cov_tb_vhd)
+src_tb_coverage_max7219_controller+=$(TB_SRC_DIR)/tb_lib_max7219_controller/tb_top.vhd
 # ==================================
 
 
@@ -383,6 +398,7 @@ SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_00.py
 SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_01.py
 SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_02.py
 SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_03.py
+SCN_LIST_MAX7219_CONTROLLER+=MAX7219_CONTROLLER_04.py
 
 SCN_LIST+=$(SCN_LIST_MAX7219_IF)
 SCN_LIST+=$(SCN_LIST_MAX7219_STATIC)
@@ -415,6 +431,7 @@ MAX7219_CONTROLLER_TEST_LIST+=MAX7219_CONTROLLER_00
 MAX7219_CONTROLLER_TEST_LIST+=MAX7219_CONTROLLER_01
 MAX7219_CONTROLLER_TEST_LIST+=MAX7219_CONTROLLER_02
 MAX7219_CONTROLLER_TEST_LIST+=MAX7219_CONTROLLER_03
+MAX7219_CONTROLLER_TEST_LIST+=MAX7219_CONTROLLER_04
 # =======================
 
 # == LIB ARGS ==
@@ -590,6 +607,43 @@ clean_code_cov_scroller_tb_dir:
 # SIMU_TIME must be passed as argument
 run_max7219_scroller_code_coverage: clean_code_cov_scroller_tb_dir ghdl_gcc_compile_max7219_scroller_tb ghdl_gcc_run_max7219_scroller_tb ghdl_gcc_gen_code_cov_scroller_tb
 	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_SCROLLER_CODE_COVERAGE
+
+
+
+# -- MAX7219_CONTROLLER Code Coverage --
+ghdl_gcc_compile_max7219_controller_tb:
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_others)" GHDL_WORK_LIB_NAME=$(LIB_OTHERS) \
+	COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_INTERFACE) \
+	P_ARGS_EN=ON COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_static)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_STATIC) \
+	COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_scroller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_SCROLLER) \
+	COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_controller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_CONTROLLER) \
+	P_ARGS_EN=ON COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) \
+	COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_tb_coverage_max7219_controller)" \
+	GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_CONTROLLER_COVERAGE) P_ARGS_EN=ON COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_MAX7219_CONTROLLER_COVERAGE) GHDL_TOP_UNIT=tb_top \
+	P_ARGS_EN=ON COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+
+# SIMU_TIME must be passed as argument
+GHDL_RUN_ARGS_CONTROLLER+=--vcd=/home/linux-jp/SIMULATION_VHDL/run_code_cov_max7219_controller.vcd
+ghdl_gcc_run_max7219_controller_tb:
+	make ghdl_gcc_run COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME) GHDL_GCC_RUN_ARGS=$(GHDL_RUN_ARGS_CONTROLLER)
+
+ghdl_gcc_gen_code_cov_controller_tb:
+	make ghdl_gcc_lcov COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+	make ghdl_gcc_genhtml COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
+
+clean_code_cov_controller_tb_dir:
+	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/MAX7219_CONTROLLER_CODE_COVERAGE/*
+
+# SIMU_TIME must be passed as argument
+run_max7219_controller_code_coverage: clean_code_cov_controller_tb_dir ghdl_gcc_compile_max7219_controller_tb ghdl_gcc_run_max7219_controller_tb ghdl_gcc_gen_code_cov_controller_tb
+	make ghdl_gcc_open_coverage_html COVERAGE_DIR=MAX7219_CONTROLLER_CODE_COVERAGE
 # -----------------------
 
 
@@ -606,6 +660,9 @@ generate_collect_all_opti_files:
 	$(foreach list, $(MAX7219_IF_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 	$(foreach list, $(MAX7219_STATIC_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 	$(foreach list, $(MAX7219_SCROLLER_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
+	$(foreach list, $(MAX7219_CONTROLLER_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
+
+
 
 	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect_opti.txt
 	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect_opti.txt

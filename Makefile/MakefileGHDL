@@ -73,7 +73,7 @@ print_ghdl_generic_rules:
 	@echo ""
 	@echo "$(ANALYSIS_ARGS)"
 	@echo "$(LIB_LIST)"
-
+	@echo "COV_ARGS : $(COV_ARGS)"
 # ========================
 
 
@@ -133,6 +133,8 @@ ghdl_run:
 # ghdl_gcc_analysis_vhd_src:
 # 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
 # 	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -g -Wc,-ftest-coverage -Wc,-fprofile-arcs $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
+
+COV_ARGS=-Wc,-fprofile-arcs -Wc,-ftest-coverage
 
 ghdl_gcc_analysis_vhd_src:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \

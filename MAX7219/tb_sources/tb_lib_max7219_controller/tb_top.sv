@@ -113,7 +113,8 @@ module tb_top
    wire [7:0]  s_display_reg_matrix_n;
    wire        s_display_screen_matrix_checker;
    wire        s_display_screen_matrix;
-   wire        s_display_screen_sel;  
+   wire [1:0]  s_display_screen_sel;
+   
 
    wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
     
@@ -124,6 +125,9 @@ module tb_top
    wire 				     s_load_received;      
    wire [15:0] 				     s_data_received;
 
+   reg [3:0] 				     s_cnt_8; // Counter modulo 8
+   reg 					     s_cnt_8_up;
+   
    
    
    // == CLK GEN INST ==
@@ -203,22 +207,7 @@ module tb_top
    assign s_wait_event_if.wait_signals[7] = i_dut.s_discard_static;
    assign s_wait_event_if.wait_signals[8] = s_frame_received;
    assign s_wait_event_if.wait_signals[9] = s_load_received;
-   
-
-   
-   
-
-   // MUX : Sel from SET inj or to LOAD output of MAX7219 checker
-   
-
-   // MUX : Sel SET inj or checker
-   /*assign s_set_injector_if.set_alias[11]  = "LOAD_RAM_SEL";
-
-   // RAM LOAD Injector Control signals
-   assign s_set_injector_if.set_alias[12]  = "START_ADDR_LOAD_RAM";
-   assign s_set_injector_if.set_alias[13]  = "STOP_ADDR_LOAD_RAM";
-   assign s_set_injector_if.set_alias[14]  = "START_LOAD_RAM";
-   assign s_set_injector_if.set_alias[15]  = "SEL_PATTERN_LOAD_RAM";*/
+       
    
    
    // SET SET_INJECTOR SIGNALS
@@ -308,9 +297,35 @@ module tb_top
    
    assign clk_data_collector[0]   = clk;
    assign rst_n_data_collector[0] = rst_n;
-   // 8 + 8 + 1 + 32 + 1 + 1 + 8 + 8 = 67
-   assign s_data_collector[0] = {s_ram_start_ptr, s_msg_length, s_start_scroll, s_max_tempo_cnt,
-				 s_me_dut, s_we_dut, s_addr_dut, s_wdata_dut};
+
+   // Bus width = 146
+   assign s_data_collector[0] = {
+				 // MSB
+				 s_static_dyn,    // 1
+				 s_new_display,   // 1
+				 s_display_test,  // 1
+				 s_decod_mode,    // 8
+				 s_intensity,     // 8
+				 s_scan_limit,    // 8
+				 s_shutdown,      // 8
+				 s_new_config_val, // 1
+				 s_static_en,      // 1
+				 s_me_static,      // 1
+				 s_we_static,      // 1
+				 s_addr_static,    // 8
+				 s_wdata_static,     // 16
+				 s_start_ptr_static, // 8
+				 s_last_ptr_static,  // 8
+				 s_loop_static,      // 1
+				 s_ram_start_ptr_scroller,  // 8
+				 s_msg_length_scroller,     // 8
+				 s_max_tempo_cnt_scroller,  // 32
+				 s_me_scroller,   // 1
+				 s_we_scroller,   // 1
+				 s_addr_scroller, // 8
+				 s_wdata_scroller // 8
+				 // LSB
+				 };
    
    data_collector #(
 		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
@@ -438,14 +453,17 @@ module tb_top
    // =========================
    
 
-   assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : s_max7219_load;
+   assign s_display_screen_matrix_checker = (s_display_screen_sel == 0) ? s_display_screen_matrix : 
+					    (s_display_screen_sel == 1) ? s_max7219_load          :
+					    (s_display_screen_sel == 2) ? s_cnt_8_up : 0;
+   
 
 
    // == DUT INST ==
    max7219_display_controller #(
     .G_MATRIX_NB (8), 
    
-    .G_MAX_HALF_PERIOD (2*25),//4),
+    .G_MAX_HALF_PERIOD (4),//2*25),//4),
     .G_LOAD_DURATION   (4), //4),
 
     .G_RAM_ADDR_WIDTH_STATIC  (8),
@@ -480,14 +498,12 @@ module tb_top
    
     .i_start_ptr_static      (s_start_ptr_static),
     .i_last_ptr_static       (s_last_ptr_static),
-    //.i_ptr_val_static        (s_ptr_val_static),  // TO RM
     .i_loop_static           (s_loop_static),
     .o_ptr_equality_static   (s_ptr_equality_static),
     .o_static_busy           (s_static_busy),
 
     .i_ram_start_ptr_scroller  (s_ram_start_ptr_scroller),
     .i_msg_length_scroller     (s_msg_length_scroller),
-    //.i_start_scroll            (s_start_scroll),
     .i_max_tempo_cnt_scroller  (s_max_tempo_cnt_scroller),
     .o_scroller_busy           (s_scroller_busy),
 
@@ -518,6 +534,31 @@ module tb_top
 					      .o_load_received   (s_load_received),
 					      .o_data_received   (s_data_received)
 					      );
+
+
+
+   // A counter that counts on s_max7219_load received
+   always @(posedge clk) begin
+      if(!rst_n) begin
+	 s_cnt_8    <= 4'h0;
+	 s_cnt_8_up <= 0;	 
+      end
+      else begin
+	 if(s_load_received == 1) begin
+	    if(s_cnt_8 < 7) begin
+	       s_cnt_8 <= s_cnt_8 + 1; // Inc Counter
+	    end
+	    else begin
+	       s_cnt_8_up <= 1;	       
+	       s_cnt_8    <= 0;	       
+	    end
+	 end
+	 else begin
+	    s_cnt_8_up <= 0;	    
+	 end
+      end
+   end
+   
 
    
 endmodule // tb_top

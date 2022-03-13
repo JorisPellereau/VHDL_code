@@ -1,5 +1,5 @@
-# MAX7219_CONTROLLER_03.py
-# Use for the generation of the scenario MAX7219_CONTROLLER_03.txt
+# MAX7219_CONTROLLER_04.py
+# Use for the generation of the scenario MAX7219_CONTROLLER_04.txt
 #
 # 
 # 
@@ -15,13 +15,13 @@ sys.path.append(scn_generator_class)
 import scn_class
 
 import macros_max_controller_class
+import os
 
  # Create SCN Class
 scn       = scn_class.scn_class()
 
 # == Collect Path ==
-collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/MAX7219_CONTROLLER_{:02d}_collect.txt"
- 
+collect_path = "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT/{0}_collect.txt".format(os.path.basename(__file__)[:-3])
 
 # Create SCN Macro
 scn_macros = macros_max_controller_class.macros_max_controller_class(scn)
@@ -31,13 +31,13 @@ scn_macros = macros_max_controller_class.macros_max_controller_class(scn)
 scn.print_step("//-- STEP 0\n")
 scn.print_line("\n")
 
-scn.DATA_COLLECTOR_INIT("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0, collect_path.format(4))
+scn.DATA_COLLECTOR_INIT("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0, collect_path)
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
 scn.print_line("\n")
 
-scn.SET("DISPLAY_SCREEN_SEL", 1)
+scn.SET("DISPLAY_SCREEN_SEL", 2) # Display Screen Only 8th LOAD RECEIVED
 
 scn.DATA_COLLECTOR_START("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
 
@@ -66,13 +66,69 @@ scn.WTRS("O_CONFIG_DONE", 1, "ms")
 
 scn.WTFS("CLK")
 scn.SET("I_MAX_TEMPO_CNT_SCROLLER", 0x00000000)
+scn.SET("I_STATIC_DYN", 1)
+scn.WTFS("CLK")
+
 
 scn.print_step("Set Multiple Scroller Pattern")
 
+nb_scroller_patterns = 2
+ram_start_ptr_scroller_list = [i for i in range(nb_scroller_patterns)]
+msg_length_list = [1 for i in range(nb_scroller_patterns)]
+for i in range(0, nb_scroller_patterns):
+    
+    scn.SET("I_RAM_START_PTR_SCROLLER", ram_start_ptr_scroller_list[i])
+    scn.SET("I_MSG_LENGTH_SCROLLER", msg_length_list[i])
+    scn.SET("I_NEW_DISPLAY", 1)
+    scn.WTFS("CLK")
+    scn.SET("I_NEW_DISPLAY", 0)
+    scn.WTFS("CLK")
+
+# Wait for Number of Sccroller patterns
+for i in range(0, nb_scroller_patterns):
+    scn.WTFS("O_SCROLLER_BUSY", 10, "ms")
+    
+scn.WAIT(10, "us")
+
+scn.print_step("Set Multiple Scroller Pattern")
+scn.WTFS("CLK")
+
+nb_scroller_patterns = 10
+ram_start_ptr_scroller_list = [i for i in range(nb_scroller_patterns)]
+msg_length_list = [1 for i in range(nb_scroller_patterns)]
+for i in range(0, nb_scroller_patterns):
+    
+    scn.SET("I_RAM_START_PTR_SCROLLER", ram_start_ptr_scroller_list[i])
+    scn.SET("I_MSG_LENGTH_SCROLLER", msg_length_list[i])
+    scn.SET("I_NEW_DISPLAY", 1)
+    scn.WTFS("CLK")
+    scn.SET("I_NEW_DISPLAY", 0)
+    scn.WTFS("CLK")
+
+# Wait for Number of Sccroller patterns
+for i in range(0, nb_scroller_patterns):
+    scn.WTFS("O_SCROLLER_BUSY", 10, "ms")
 
 
+scn.print_step("Set Multiple Scroller Pattern")
 
+nb_scroller_patterns = 12
+ram_start_ptr_scroller_list = [i for i in range(nb_scroller_patterns)]
+msg_length_list = [1 for i in range(nb_scroller_patterns)]
+for i in range(0, nb_scroller_patterns):
+    
+    scn.SET("I_RAM_START_PTR_SCROLLER", ram_start_ptr_scroller_list[i])
+    scn.SET("I_MSG_LENGTH_SCROLLER", msg_length_list[i])
+    scn.SET("I_NEW_DISPLAY", 1)
+    scn.WTFS("CLK")
+    scn.SET("I_NEW_DISPLAY", 0)
+    scn.WTFS("CLK")
 
+# Wait for Number of Sccroller patterns
+for i in range(0, 10):
+    scn.WTFS("O_SCROLLER_BUSY", 10, "ms")
+
+    
 scn.DATA_COLLECTOR_STOP("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
 scn.DATA_COLLECTOR_CLOSE("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
 
