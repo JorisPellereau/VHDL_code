@@ -31,12 +31,14 @@ scn.print_step("//-- STEP 0\n")
 scn.print_line("\n")
 
 scn.DATA_COLLECTOR_INIT("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0, collect_path)
+scn.DATA_COLLECTOR_START("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
+
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
 scn.print_line("\n")
 
-scn.DATA_COLLECTOR_START("MAX7219_CONTROLLER_INPUT_COLLECTOR_0", 0)
+
 
 
 scn.print_step("Check initial configuration")

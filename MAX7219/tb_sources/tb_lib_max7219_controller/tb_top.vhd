@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-06-07
--- Last update: 2022-03-13
+-- Last update: 2022-03-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ architecture arch_tb_top of tb_top is
 
   -- Code Coverage injector signals
   signal s_en   : std_logic := '0';     -- Code Coverage Enable
-  signal s_data : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
+  signal s_data : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0) := (others => '0');
 
 begin  -- architecture arch_tb_top
 
@@ -151,7 +151,7 @@ begin  -- architecture arch_tb_top
 
   -- Affectation of signals
   s_static_dyn             <= s_data(145);
-  s_new_display            <= s_data(145);
+  s_new_display            <= s_data(144);
   s_display_test           <= s_data(143);
   s_decod_mode             <= s_data(142 downto 135);
   s_intensity              <= s_data(134 downto 127);

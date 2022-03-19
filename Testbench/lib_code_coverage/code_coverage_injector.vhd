@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2021-11-28
--- Last update: 2022-01-30
+-- Last update: 2022-03-16
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ architecture arch_code_coverage_injector of code_coverage_injector is
   -- INTERNAL SIGNALS
   signal s_data     : std_logic_vector(G_INJECTOR_DATA_WIDTH - 1 downto 0);
   signal s_rst_n    : std_logic;
-  signal s_data_out : std_logic_vector(C_NB_ARRAY_OF_INT*32 - 1 downto 0);
+  signal s_data_out : std_logic_vector(C_NB_ARRAY_OF_INT*32 - 1 downto 0) := (others => '0');
 
 begin  -- architecture arch_code_coverage_injector
 

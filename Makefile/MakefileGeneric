@@ -354,6 +354,23 @@ check_multiple_tests:
 	@$(foreach list, $(TEST_LIST), sed -e '1,/# == Beginning of Sequencer == #/ d; /# == End of Test == #/,$$ d' $(TRANSCRIPTS_DIR)/$(list)_transcript.txt | grep -n "Error:*\|Failed*\|fail*" && echo $(list) : "\033[31mFAILED\033[0m" || echo $(list) : "\033[32mPASS\033[0m";) \
 # =================================
 
+
+# == Get list of simulation time from transcripts ==
+SIMU_TIME=$$time_var
+# TEST_GROUP must be pass as argument
+simu_time_grep_cmd=tail $(TRANSCRIPTS_DIR)/$(TEST_GROUP)_*.txt | grep -o "\s[0-9]*\s[a-z][a-z]" | grep -o "[0-9]*\s[a-z][a-z]"
+export_simu_time:
+	export time_var_tmp="`$(simu_time_grep_cmd)`";\
+	export time_var="`python /home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/str_to_simu_time.py "$$time_var_tmp"`"; \
+	echo SIMU_TIME : $(SIMU_TIME); \
+
+
+
+# ==================================================
+
+
+
+
 # == Add Color ==
 # $(RED)="\031[32m"
 # $(GREEN)="\033[32m"
