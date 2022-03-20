@@ -134,16 +134,22 @@ ghdl_run:
 # 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
 # 	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -g -Wc,-ftest-coverage -Wc,-fprofile-arcs $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
 
-COV_ARGS=-Wc,-fprofile-arcs -Wc,-ftest-coverage
+ifeq ($(CODE_COV_EN), ON)
+  ANALYSIS_COV_ARGS=-Wc,-fprofile-arcs -Wc,-ftest-coverage
+endif
 
 ghdl_gcc_analysis_vhd_src:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
-	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a -Wc,-fprofile-arcs -Wc,-ftest-coverage $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
+	$(foreach list, $(SRC_VHD),$(GHDL_GCC) -a $(ANALYSIS_COV_ARGS) $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(list);) \
 
 # COVERAGE_DIR must be pass as argument
+ifeq ($(CODE_COV_EN), ON)
+  ELAB_COV_ARGS=-Wl,-lgcov -Wl,--coverage
+endif
+
 ghdl_gcc_elaboration_vhd_src:
 	cd $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/$(COVERAGE_DIR); \
-	$(GHDL_GCC) -e -Wl,-lgcov -Wl,--coverage $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
+	$(GHDL_GCC) -e $(ELAB_COV_ARGS) $(WORK_NAME) $(GHDL_WORKDIR_PATH) $(ANALYSIS_ARGS) $(P_ARGS) $(GHDL_TOP_UNIT)
 	
 # COVERAGE_DIR must be pass as argument
 #GHDL_GCC_RUN_ARGS+=

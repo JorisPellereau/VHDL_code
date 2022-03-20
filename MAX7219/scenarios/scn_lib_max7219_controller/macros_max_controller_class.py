@@ -242,3 +242,53 @@ class macros_max_controller_class:
             timeout_unity       = timeout_unity,
             html_debug_en       = html_debug_en,
             html_debug_name     = html_debug_name)
+
+
+    # Send Commandes from a list and check
+    # Commandes : "CONFIG" "STATIC" or "SCROLLER"
+    def send_multile_pattern_and_check(self, commandes_list):
+
+        # Write commands
+        for cmd in range(0, len(commandes_list)):
+            if(commandes_list[cmd] == "CONFIG"):
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_new_config_val_alias, 1)
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_new_config_val_alias, 0)
+
+            elif(commandes_list[cmd] == "STATIC"):
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_static_dyn_alias, 0)
+                self.scn.SET(self.i_new_display_alias, 1)
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_static_dyn_alias, 0)
+                self.scn.SET(self.i_new_display_alias, 0)
+
+            elif(commandes_list[cmd] == "SCROLLER"):
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_static_dyn_alias, 1)
+                self.scn.SET(self.i_new_display_alias, 1)
+                self.scn.WTFS(self.clk_alias)
+                self.scn.SET(self.i_static_dyn_alias, 0)
+                self.scn.SET(self.i_new_display_alias, 0)
+
+            else:
+                print("Error: Commands not recognized")
+
+
+        # Check Status for each commands (MAX 10)
+        if(len(commandes_list) <= 10):
+            max_cmd = len(commandes_list)
+        else:
+            max_cmd = 10
+            
+        for cmd in range(0, max_cmd):
+            if(commandes_list[cmd] == "CONFIG"):
+                self.scn.WTRS(self.config_done_alias, 10, "ms")
+                
+            elif(commandes_list[cmd] == "STATIC"):
+                self.scn.WTRS(self.o_ptr_equality_static_alias, 10, "ms")
+                
+            elif(commandes_list[cmd] == "SCROLLER"):
+                self.scn.WTFS(self.o_scroller_busy_alias, 10, "ms")
+                    

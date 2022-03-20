@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-06-07
--- Last update: 2022-03-19
+-- Last update: 2022-03-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ use lib_max7219_controller.pkg_max7219_controller.all;
 entity tb_top is
   generic (
     G_FILE_PATH           : string  := "/home/linux-jp/SIMULATION_VHDL/MAX7219_COLLECT";
-    G_FILE_NB             : integer := 5;
+    G_FILE_NB             : integer := 6;
     G_TESTS_NAME          : string  := "MAX7219_CONTROLLER";
     G_INJECTOR_DATA_WIDTH : integer := 146);  -- Output data width
 
