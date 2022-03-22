@@ -16,8 +16,6 @@ SEL_STATION=LINUX
 ROOT=$(PWD)/..
 PROJECT_NAME=MAX7219
 WORK_DIR=MAX7219_WORK
-#SCN_LIB_DIR=scn_lib_max7219_if
-#LIB_TB_TOP=lib_tb_max7219_if
 TRANSCRIPT_EN=OFF
 # ============================
 
@@ -47,7 +45,6 @@ LIB_TB_TOP_MAX7219_CONTROLLER=lib_tb_max7219_controller
 LIB_CODE_COVERAGE=lib_code_coverage
 # =========================
 
-
 # ==  LIB LIST ==
 LIB_LIST+=work
 LIB_LIST+=$(LIB_OTHERS)
@@ -62,8 +59,6 @@ LIB_LIST+=$(LIB_TB_TOP_MAX7219_SCROLLER_COVERAGE)
 LIB_LIST+=$(LIB_TB_TOP_MAX7219_CONTROLLER_COVERAGE)
 LIB_LIST+=$(LIB_CODE_COVERAGE)
 # ================
-
-
 
 # ================ GHDL CONFIGURATION ================ #
 GHDL_COV_DIR_LIST+=MAX7219_IF_CODE_COVERAGE
@@ -655,8 +650,6 @@ run_max7219_controller_code_coverage: clean_code_cov_controller_tb_dir ghdl_gcc_
 # ------------------------------------
 
 
-
-
 # TEST must be pass as argument
 generate_collect_opti_files:
 	python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(TEST)_collect.txt  $(MAX7219_COLLECT_PATH)/$(TEST)_collect_opti.txt
@@ -667,21 +660,6 @@ generate_collect_all_opti_files:
 	$(foreach list, $(MAX7219_SCROLLER_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 	$(foreach list, $(MAX7219_CONTROLLER_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 
-
-
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_00_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_01_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_02_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_02_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_03_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_03_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_IF_04_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_IF_04_collect_opti.txt;
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_00_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_00_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_01_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_01_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_02_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_02_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_03_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_03_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_04_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_04_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_05_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_05_collect_opti.txt
-	# python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_06_collect.txt $(MAX7219_COLLECT_PATH)/MAX7219_STATIC_06_collect_opti.txt
-	# $(foreach list, $(MAX7219_SCROLLER_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(MAX7219_COLLECT_PATH)/$(list)_collect.txt $(MAX7219_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
