@@ -16,8 +16,6 @@ SEL_STATION=LINUX
 ROOT=$(PWD)/..
 PROJECT_NAME=UART
 WORK_DIR=UART_WORK
-SCN_LIB_DIR=scn_lib_uart_display_ctrl
-LIB_TB_TOP=lib_tb_uart_display_ctrl
 TRANSCRIPT_EN=OFF
 # ============================
 
@@ -67,7 +65,7 @@ all: print_generic_rules
 	@echo ""
 	@echo "- Compile Design & Testbench :"
 	@echo "make compile_all"
-	@echo ""
+	@echo "make compile_all_uart_display_ctrl"
 	@echo "=========================="
 	@echo ""
 	@echo "== RUN TESTS =="
@@ -79,6 +77,9 @@ all: print_generic_rules
 	@echo "$(SCN_LIST)"
 	@echo "==================="
 
+
+SCN_LIB_DIR=scn_lib_uart_display_ctrl
+LIB_TB_TOP=lib_tb_uart_display_ctrl
 
 # == DESIGN VHD FILE LIST ==
 src_lib_uart+=$(SRC_DIR)/lib_uart/pkg_uart.vhd
@@ -190,6 +191,8 @@ compile_testbench_sources:
 compile_testbench : compile_tb_uart_vhd_files compile_generic_tb_v_files compile_testbench_sources
 # =======================
 
+compile_all_uart_display_ctrl: compile_design compile_testbench print_compile_logs_file
+
 # == SCENARII LIST ==
 SCN_LIST+=UART_DISPLAY_CTRL_00.py
 SCN_LIST+=UART_DISPLAY_CTRL_01.py
@@ -211,3 +214,4 @@ run_tb_uart_display_ctrl:
 
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL

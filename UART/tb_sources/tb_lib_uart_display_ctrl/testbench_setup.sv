@@ -21,17 +21,17 @@
 
 
 // SET ALIAS Configuration
-`define C_SET_ALIAS_NB 28
-`define C_SET_SIZE     28
+`define C_SET_ALIAS_NB 3
+`define C_SET_SIZE     3
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration
-`define C_WAIT_ALIAS_NB 10
+`define C_WAIT_ALIAS_NB 4
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 10
-`define C_CHECK_SIZE     10
+`define C_CHECK_ALIAS_NB 2
+`define C_CHECK_SIZE     2
 `define C_CHECK_WIDTH    32
 
 // UART TESTBENCH Configuration
@@ -45,3 +45,6 @@
 `define C_FIRST_BIT              0
 `define C_CLOCK_FREQ             50000000  // 50 Mhz
 
+// DATA COLLECTOR Configuration
+`define C_NB_DATA_COLLECTOR         1
+`define C_DATA_COLLECTOR_DATA_WIDTH 1 
