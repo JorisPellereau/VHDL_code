@@ -68,65 +68,74 @@ add wave -noupdate -expand -group {DUT TOP} -group Internals /tb_top/i_dut/s_max
 add wave -noupdate -expand -group {DUT TOP} -group Internals /tb_top/i_dut/s_max7219_if_done
 add wave -noupdate -expand -group {DUT TOP} -group Internals /tb_top/i_dut/s_mux_sel
 add wave -noupdate -expand -group {DUT TOP} -group Internals /tb_top/i_dut/s_new_config_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/clk
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/rst_n
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_static_dyn
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_new_display
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/i_new_config_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_config_done
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/o_new_config_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_last_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_ptr_equality
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_last_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_static_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_ram_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_msg_length
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_busy_scroller
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_ram_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_msg_length
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_scroll
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_mux_sel
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_current_state
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_state
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_config_done
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_config_done_r_edge
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val_r_edge
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val_from_seq
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_display
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_display_r_edge
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_fifo_cnt
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr_up
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_static_wr_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_static_rd_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_scroller_wr_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_scroller_rd_ptr
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_config
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_static
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_scroller
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_start_ptr_static_array
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_last_ptr_static_array
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ram_start_scroller_array
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_msg_length_scroller_array
-add wave -noupdate -group DISPLAY_SEQ -expand /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_array
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_fifo_empty
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_val
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr_up
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_fifo_full
-add wave -noupdate -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_type
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_mux_sel
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_last_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ram_start_ptr
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_msg_length
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality_r_edge
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_busy_scroller
-add wave -noupdate -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_busy_scroller_f_edge
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/clk
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/rst_n
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_static_dyn
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_new_display
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/i_new_config_val
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_config_done
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/o_new_config_val
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_last_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_ptr_equality
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_last_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_static_val
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_ram_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_msg_length
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/i_busy_scroller
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_ram_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_msg_length
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_start_scroll
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/o_mux_sel
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_current_state
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_state
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_config_done
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_config_done_r_edge
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val_r_edge
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_config_val_from_seq
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_display
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_new_display_r_edge
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_fifo_cnt
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr_up
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_static_wr_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_static_rd_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_scroller_wr_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_scroller_rd_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_config
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_static
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_scroller
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_start_ptr_static_array
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_last_ptr_static_array
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ram_start_scroller_array
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_msg_length_scroller_array
+add wave -noupdate -expand -group DISPLAY_SEQ -expand /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_array
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_fifo_empty
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_val
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_state
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_current_state
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_fifo_cnt
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_rd_ptr_up
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_wr_ptr_up
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_config
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/clk
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_static
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_next_cmd_scroller
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_fifo_full
+add wave -noupdate -expand -group DISPLAY_SEQ -color Cyan /tb_top/i_dut/max7219_display_sequencer_inst_0/s_cmd_type
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_mux_sel
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_last_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ram_start_ptr
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_msg_length
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality_r_edge
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_ptr_equality
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_busy_scroller
+add wave -noupdate -expand -group DISPLAY_SEQ /tb_top/i_dut/max7219_display_sequencer_inst_0/s_busy_scroller_f_edge
 add wave -noupdate -group {MUX INST} /tb_top/i_dut/max7219_mux_sel_inst_0/clk
 add wave -noupdate -group {MUX INST} /tb_top/i_dut/max7219_mux_sel_inst_0/rst_n
 add wave -noupdate -group {MUX INST} /tb_top/i_dut/max7219_mux_sel_inst_0/i_mux_sel
@@ -235,10 +244,10 @@ add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_
 add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
 add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {977246960 ps} 0}
+WaveRestoreCursors {{Cursor 1} {98829246254 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 140
-configure wave -valuecolwidth 467
+configure wave -namecolwidth 185
+configure wave -valuecolwidth 219
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -251,4 +260,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {8637975 ps} {4115630103 ps}
+WaveRestoreZoom {96923165140 ps} {100200694860 ps}

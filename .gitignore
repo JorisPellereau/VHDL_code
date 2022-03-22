@@ -99,3 +99,9 @@ MAX7219/MAX7219_WORK/
 UART/transcripts/
 
 *.vhd#
+
+MAX7219/scenarios/scn_lib_max7219_static/MAX7219_STATIC_0X_template.py
+
+MAX7219/scenarios/scn_lib_max7219_scroller/MAX7219_test_template.py
+
+MAX7219/scenarios/scn_lib_max7219_controller/MAX7219_CONTROLLER_template.py

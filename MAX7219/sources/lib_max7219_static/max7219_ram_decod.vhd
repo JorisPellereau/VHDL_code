@@ -6,7 +6,7 @@
 -- Author     :   <JorisP@DESKTOP-LO58CMN>
 -- Company    : 
 -- Created    : 2020-04-13
--- Last update: 2022-01-29
+-- Last update: 2022-01-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ begin  -- architecture behv
           s_max_cnt_valid <= '1';
 
         -- "011" : RAM Reset - Internal pointer reset
-        elsif(s_rdata(15 downto 13) = "011") then
+        --elsif(s_rdata(15 downto 13) = "011") then
         -- TBD !
         end if;
       end if;

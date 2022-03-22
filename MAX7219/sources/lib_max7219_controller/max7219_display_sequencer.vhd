@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-01-16
--- Last update: 2022-03-20
+-- Last update: 2022-03-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,10 +80,6 @@ architecture behv of max7219_display_sequencer is
   type t_scroller_data_array is array (0 to G_FIFO_DEPTH - 1) of std_logic_vector(G_RAM_DATA_WIDTH_SCROLLER - 1 downto 0);
   type t_next_cmd_array is array (0 to G_FIFO_DEPTH - 1) of std_logic_vector(1 downto 0);
 
-
-
-
-
   -- Internal Signals
   signal s_current_state : t_states;
   signal s_next_state    : t_states;
@@ -108,15 +104,12 @@ architecture behv of max7219_display_sequencer is
   signal s_static_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_static_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
 
-
   signal s_scroller_wr_ptr : integer range 0 to G_FIFO_DEPTH - 1;
   signal s_scroller_rd_ptr : integer range 0 to G_FIFO_DEPTH - 1;
-
 
   signal s_next_cmd_config   : std_logic;
   signal s_next_cmd_static   : std_logic;
   signal s_next_cmd_scroller : std_logic;
-
 
   -- ARRAYS
   signal s_start_ptr_static_array    : t_static_array;
@@ -328,7 +321,6 @@ begin  -- architecture behv
           s_cmd_array(s_cmd_wr_ptr) <= s_cmd_type;  -- Save Command Type
           if(s_cmd_wr_ptr < G_FIFO_DEPTH - 1) then
             s_cmd_wr_ptr <= s_cmd_wr_ptr + 1;       -- Inc Write Ptr
-          --s_cmd_wr_ptr_up <= '1';
           else
             s_cmd_wr_ptr <= 0;
           end if;
@@ -358,12 +350,12 @@ begin  -- architecture behv
       s_next_cmd_static   <= '0';       -- Pulse
       s_next_cmd_scroller <= '0';       -- Pulse
       s_cmd_rd_ptr_up     <= '0';
-      -- Only when Fifo Not Empty
+
       if(s_fifo_empty = '0') then
 
 
         if(s_next_state = WAIT_CMD) then
-          --if(s_current_state = WAIT_CMD) then
+
           if(s_cmd_array(s_cmd_rd_ptr) = "11") then
             s_next_cmd_config <= '1';
           elsif(s_cmd_array(s_cmd_rd_ptr) = "01") then
@@ -375,13 +367,12 @@ begin  -- architecture behv
             s_next_cmd_static   <= '0';
             s_next_cmd_scroller <= '0';
           end if;
-          --end if;
 
-          -- READ PTR MNGT -- TBD :!\
+          -- READ PTR MNGT 
           if(s_next_cmd_config = '1' or s_next_cmd_static = '1' or s_next_cmd_scroller = '1') then
             if(s_cmd_rd_ptr < G_FIFO_DEPTH - 1) then
               s_cmd_rd_ptr <= s_cmd_rd_ptr + 1;
-            --s_cmd_rd_ptr_up <= '1';
+
             else
               s_cmd_rd_ptr <= 0;
             end if;
@@ -419,17 +410,6 @@ begin  -- architecture behv
       s_cmd_fifo_cnt <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      -- Case Write is prio
-      -- if(s_cmd_wr_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH - 1) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
-      --   end if;
-      -- elsif(s_cmd_rd_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt > 0) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
-      --   end if;
-      -- end if;
-
       -- Case Write Only or Read Only - If Write and Read => +1 -1 = No Inc No
       -- downinc
       if(s_cmd_wr_ptr_up = '1' and s_cmd_rd_ptr_up = '0') then
@@ -442,48 +422,25 @@ begin  -- architecture behv
         end if;
       end if;
 
-      -- if(s_cmd_rd_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt > 0) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
-      --   end if;
-      -- elsif(s_cmd_wr_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
-      --   end if;
-      -- end if;
-
-      -- Case No priority between WR and RD
-      -- if(s_cmd_wr_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt < G_FIFO_DEPTH) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt + 1;
-      --   end if;
-      -- end if;
-
-      -- if(s_cmd_rd_ptr_up = '1') then
-      --   if(s_cmd_fifo_cnt > 0) then
-      --     s_cmd_fifo_cnt <= s_cmd_fifo_cnt - 1;
-      --   end if;
-      -- end if;
-
     end if;
   end process p_cmd_fifo_cnt;
 
-  p_fifo_cmd_status_comb: process (s_cmd_fifo_cnt) is
+  p_fifo_cmd_status_comb : process (s_cmd_fifo_cnt) is
   begin  -- process p_fifo_cmd_status_comb
     -- FIFO Full mngt
-      if(s_cmd_fifo_cnt = G_FIFO_DEPTH - 1) then
-        s_fifo_full <= '1';
-      else
-        s_fifo_full <= '0';
-      end if;
+    if(s_cmd_fifo_cnt = G_FIFO_DEPTH - 1) then
+      s_fifo_full <= '1';
+    else
+      s_fifo_full <= '0';
+    end if;
 
-      if(s_cmd_fifo_cnt = 0) then
-        s_fifo_empty <= '1';
-      else
-        s_fifo_empty <= '0';
-      end if;
+    if(s_cmd_fifo_cnt = 0) then
+      s_fifo_empty <= '1';
+    else
+      s_fifo_empty <= '0';
+    end if;
   end process p_fifo_cmd_status_comb;
-  
+
   -- purpose: Fifo Full & Empty Management 
   -- p_fifo_cmd_status : process (clk, rst_n) is
   -- begin  -- process p_fifo_cmd_status
@@ -562,7 +519,6 @@ begin  -- architecture behv
         end if;
       end if;
 
-
     end if;
   end process p_fifo_data_scroller_write;
 
@@ -592,11 +548,6 @@ begin  -- architecture behv
       o_msg_length              <= (others => '0');
 
       case s_current_state is
-        -- when IDLE =>
-
-
-        -- when CONFIG =>
-        --   --if(s_next_cmd_config = '1'
 
         when WAIT_CMD =>
           if(s_next_cmd_config = '1') then
@@ -614,11 +565,6 @@ begin  -- architecture behv
             s_mux_sel       <= "10";
           end if;
 
-        -- when STATIC =>
-
-        -- when SCROLL =>
-
-
         when others => null;
       end case;
 
@@ -628,7 +574,7 @@ begin  -- architecture behv
 
 
   -- Outputs affectation
-  o_mux_sel        <= s_mux_sel;        --s_cmd_type;
+  o_mux_sel        <= s_mux_sel;
   o_new_config_val <= s_new_config_val_from_seq;
 
 
