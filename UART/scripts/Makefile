@@ -19,6 +19,11 @@ WORK_DIR=UART_WORK
 TRANSCRIPT_EN=OFF
 # ============================
 
+# == Collect File Directory ==
+UART_COLLECT_DIR=UART_COLLECT
+UART_COLLECT_PATH=$(HDL_SIMU_PATH)/$(UART_COLLECT_DIR)
+# ============================
+
 # == SOURCES DIRECTORY ==
 SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
 # =======================
@@ -49,7 +54,9 @@ LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 LIB_LIST+=$(LIB_TB_UART_DISPLAY_CTRL)
 # ================
 
-
+# == PYTHON SCRIPTS PATH ==
+FILE_OPTI_SCRIPT=~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py
+# =========================
 
 all: print_generic_rules
 	@echo ""
@@ -73,10 +80,23 @@ all: print_generic_rules
 	@echo "make run_tb_uart_display_ctrl TEST=[TEST_NB]"
 	@echo "==============="
 	@echo ""
+	@echo "== PYTHON SCRIPTS =="
+	@echo "make genarate_collect_opti_files TEST=XXX"
+	@echo "make generate_collect_all_opti_files"
+	@echo "===================="
+	@echo ""
 	@echo "== SCENARII LIST =="
 	@echo "$(SCN_LIST)"
 	@echo "==================="
 
+
+# == COLLECT DIRECTORY ==
+create_collect_dir:
+	cd $(HDL_SIMU_PATH); \
+	if [ ! -d  $(UART_COLLECT_DIR) ]; then \
+	  mkdir $(UART_COLLECT_DIR); \
+	fi
+# =======================
 
 SCN_LIB_DIR=scn_lib_uart_display_ctrl
 LIB_TB_TOP=lib_tb_uart_display_ctrl
@@ -182,6 +202,7 @@ compile_tb_uart_vhd_files:
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_uart_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
 
 compile_testbench_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UART_DISPLAY_CTRL)
@@ -200,6 +221,9 @@ SCN_LIST+=UART_DISPLAY_CTRL_02.py
 SCN_LIST+=UART_DISPLAY_CTRL_03.py
 SCN_LIST+=UART_DISPLAY_CTRL_04.py
 SCN_LIST+=UART_DISPLAY_CTRL_05.py
+
+
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_00
 # =======================
 
 # == LIB ARGS ==
@@ -211,6 +235,14 @@ LIB_ARGS=-L lib_max7219_controller -L lib_uart_display_ctrl
 run_tb_uart_display_ctrl:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
 # ==============
+
+
+# TEST must be pass as argument
+generate_collect_opti_files:
+	python $(FILE_OPTI_SCRIPT) $(UART_COLLECT_PATH)/$(TEST)_collect.txt  $(UART_COLLECT_PATH)/$(TEST)_collect_opti.txt
+
+generate_collect_all_opti_files:
+	$(foreach list, $(UART_DISPLAY_CTRL_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(UART_COLLECT_PATH)/$(list)_collect.txt $(UART_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric

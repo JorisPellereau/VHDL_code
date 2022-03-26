@@ -44,6 +44,10 @@ module tb_top
 
    wire        s_load_ram_sel; // 0 : Load via SET injector - 1 : Load via LOAD RAM Injector
 
+
+   wire [`C_NB_UART_CHECKER - 1 : 0] s_rx_uart;
+   wire [`C_NB_UART_CHECKER - 1 : 0] s_tx_uart;
+
    // == MAX7219 SPI CHECKER ==
    wire        s_spi_frame_received;
    wire        s_spi_load_received;
@@ -164,8 +168,8 @@ module tb_top
    
    assign clk_data_collector[0]   = clk;
    assign rst_n_data_collector[0] = rst_n;
-
-   assign s_data_collector[0] = 0
+   assign s_data_collector[0]     = s_tx_uart[0]; 
+   
 
    data_collector #(
 		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
@@ -180,8 +184,7 @@ module tb_top
 
    // == HDL SPEFICIC TESTBENCH MODULES ==
 
-   wire [`C_NB_UART_CHECKER - 1 : 0] s_rx_uart;
-   wire [`C_NB_UART_CHECKER - 1 : 0] s_tx_uart;
+   
    
 				     
    uart_checker_wrapper #(
@@ -220,7 +223,10 @@ module tb_top
 		      
 		      .G_NB_UART_CHECKER        (`C_NB_UART_CHECKER),
 		      .G_UART_DATA_WIDTH        (`C_UART_DATA_WIDTH),
-		      .G_UART_BUFFER_ADDR_WIDTH (`C_UART_DATA_WIDTH)
+		      .G_UART_BUFFER_ADDR_WIDTH (`C_UART_DATA_WIDTH),
+
+		      .G_NB_COLLECTOR          (`C_NB_DATA_COLLECTOR), 	     
+		      .G_DATA_COLLECTOR_WIDTH  (`C_DATA_COLLECTOR_DATA_WIDTH)
 		      )
    
    tb_class_inst = new (s_wait_event_if, 
@@ -242,11 +248,15 @@ module tb_top
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",     3);
 
       // Check Level Alias
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SPI_DATA_RECEIVED",  0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX7219_DATA",       0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SPI_DATA_RECEIVED",  1);
 	
       // init_uart_custom_class
       tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if,   "UART_RPi");
       tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if_2, "UART_RPi_TEST");
+
+      // INIT DATA COLLECTOR MODULE
+      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "UART_DISPLAY_CTRL_INPUT_COLLECTOR_0");
                   
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
