@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-09
--- Last update: 2021-05-09
+-- Last update: 2022-03-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ architecture behv of dyn_ram_mngr is
   signal s_wdata_dyn : std_logic_vector(G_RAM_DATA_WIDTH_DYN - 1 downto 0);
 
   signal s_cnt_rx_data : integer range 0 to 258;  -- 255 + 1 + 1 + 1Data received from UART
-  signal s_start_ptr : integer;
+  signal s_start_ptr   : integer;
   signal s_last_ptr    : integer;
   --signal s_cnt_2       : integer range 0 to 2;    -- Counter 2
   signal s_data_rdy    : std_logic;     -- Data ready to transmit to RAM
@@ -129,7 +129,7 @@ begin  -- architecture behv
       s_data_rdy          <= '0';
       s_load_dyn_ram_done <= '0';
       s_last_ptr          <= 0;
-      s_start_ptr <= 0;
+      s_start_ptr         <= 0;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
 
@@ -149,6 +149,7 @@ begin  -- architecture behv
             s_wr_ptr    <= unsigned(s_wr_ptr) + 1;
           else
             s_init_dyn_ram_done <= '1';
+            s_wr_ptr            <= (others => '0');
           end if;
 
         end if;
@@ -167,7 +168,7 @@ begin  -- architecture behv
         if(s_cnt_rx_data = 0) then
           if(i_rx_done = '1') then
             s_wr_ptr      <= i_rx_data;          -- Get Start Pointer
-            s_start_ptr <= conv_integer(unsigned(i_rx_data));
+            s_start_ptr   <= conv_integer(unsigned(i_rx_data));
             s_cnt_rx_data <= s_cnt_rx_data + 1;  -- Inc Internal Counter
           end if;
 

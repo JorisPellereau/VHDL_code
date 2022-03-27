@@ -66,7 +66,7 @@ class macros_uart_display_ctrl_class:
         self.resp_load_static_done    = "LOAD_STATIC_DONE"
         self.resp_load_static_not_rdy = "LOAD_STATIC_NOT_RDY"
         
-        self.resp_load_scroller_rdy   = "LOAD_SCROLL_RDY"
+        self.resp_load_scroll_rdy   = "LOAD_SCROLL_RDY"
         self.resp_load_scroll_done    = "LOAD_SCROLL_DONE"
         self.resp_load_scroll_not_rdy = "LOAD_SCROLL_NOT_RDY"
         
@@ -91,6 +91,12 @@ class macros_uart_display_ctrl_class:
         self.scan_limit_init_data   = 0x07
         self.shutdown_init_data     = 0x01
         self.display_test_init_data = 0
+
+        self.decode_mode_current_data  = 0x00        
+        self.intensity_current_data    = 0x00
+        self.scan_limit_current_data   = 0x00
+        self.shutdown_current_data     = 0x00
+        self.display_test_current_data = 0
 
 
         # == Create MAX7219 MODELS CLASS ==
@@ -174,6 +180,15 @@ class macros_uart_display_ctrl_class:
                                                    self.shutdown_init_data,
                                                    self.display_test_init_data)
 
+
+    def check_matrix_config(self, data_list):
+        self.scn.print_comment("Check SPI Configuration and wait for Config Done")
+        self.max7219_models_class.check_spi_config(data_list[1],
+                                                   data_list[2],
+                                                   data_list[3],
+                                                   data_list[4],
+                                                   data_list[0])
+
     # Send UART Command from a str type
     def uart_tx_start_cmd(self, cmd_str):
         data_to_send = self.str_cmd_2_hex_data_cmd(cmd_str)
@@ -191,7 +206,7 @@ class macros_uart_display_ctrl_class:
 
     
     # Send UART_CMD and check resp by UART
-    def send_uart_cmd_and_check_resp(self, uart_data, main_cmd = False):
+    def send_uart_cmd_and_check_resp(self, uart_data, main_cmd = False, not_rdy = False, check_spi = False, wait_time = 1000):
 
         # Send a Command
         if(type(uart_data) == str):
@@ -208,8 +223,24 @@ class macros_uart_display_ctrl_class:
                 elif(uart_data == self.uart_cmd_init_ram_scroller):
                     self.uart_rx_wait_data_resp_cmd(self.resp_ram_scroller_done)
 
-                elif(uart_data == self.uart_cmd_update_matrix_config):
+
+                # == UPDATE MATRIX CONFIG ==
+                elif(uart_data == self.uart_cmd_update_matrix_config and check_spi == False):
                     self.uart_rx_wait_data_resp_cmd(self.resp_update_matrix_done)
+                    
+                # Check SPI Frame and UART with non-blocking command                    
+                elif(uart_data == self.uart_cmd_update_matrix_config and check_spi == True):
+                    #print("check_spi == true")
+                    self.check_matrix_config([self.display_test_current_data,
+                                              self.decode_mode_current_data,
+                                              self.intensity_current_data,
+                                              self.scan_limit_current_data,
+                                              self.shutdown_current_data])
+
+                    self.scn.WAIT(wait_time, "us")
+                    data_to_read = self.str_cmd_2_hex_data_cmd(self.resp_update_matrix_done) 
+                    self.scn.RX_READ(self.uart_rpi_alias, data_to_read)
+                # ==========================
 
                 elif(uart_data == self.uart_cmd_load_matrix_config):
                     self.uart_rx_wait_data_resp_cmd(self.resp_load_matrix_rdy)
@@ -233,7 +264,32 @@ class macros_uart_display_ctrl_class:
         elif(type(uart_data) == list):
             self.uart_tx_start_data(uart_data)
 
+            # Send Data of Command LOAD_MATRIX_CONFIG
+            if(main_cmd == self.uart_cmd_load_matrix_config):
+                self.uart_rx_wait_data_resp_cmd(self.resp_load_matrix_done)
+                # Update internal registers
+                self.decode_mode_current_data  = uart_data[1]
+                self.intensity_current_data    = uart_data[2]
+                self.scan_limit_current_data   = uart_data[3]
+                self.shutdown_current_data     = uart_data[4]
+                self.display_test_current_data = uart_data[0]
 
+            # Send Data of LOAD_PATTERN_STATIC
+            elif(main_cmd == self.uart_cmd_load_pattern_static):
+                self.uart_rx_wait_data_resp_cmd(self.resp_load_static_done)
 
-        
-            
+            # Send Data of LOAD_PATTERN_SCROLL
+            elif(main_cmd == self.uart_cmd_load_pattern_scroll):
+                self.uart_rx_wait_data_resp_cmd(self.resp_load_scroll_done)
+
+            # Send Data of Run Pattern STATIC
+            elif(main_cmd == self.uart_cmd_run_pattern_static):
+                self.uart_rx_wait_data_resp_cmd(self.resp_static_ptrn_done)
+
+            # Send Data of Run Pattern SCROLLER
+            elif(main_cmd == self.uart_cmd_run_pattern_scroller):
+                self.uart_rx_wait_data_resp_cmd(self.resp_scroll_ptrn_done)
+
+            # Send Data of LOAD_SCROLLER_TEMPO
+            elif(main_cmd == self.uart_cmd_run_scroller_tempo):
+                self.uart_rx_wait_data_resp_cmd(self.resp_load_tempo_done)

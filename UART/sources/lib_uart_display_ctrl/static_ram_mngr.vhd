@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-07
--- Last update: 2021-05-09
+-- Last update: 2022-03-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -58,7 +58,6 @@ entity static_ram_mngr is
     i_load_static_ram      : in  std_logic;
     o_load_static_ram_done : out std_logic;
 
-
     i_rx_data : in std_logic_vector(G_UART_DATA_WIDTH - 1 downto 0);
     i_rx_done : in std_logic
 
@@ -94,7 +93,7 @@ begin  -- architecture behv
   p_ram_mngt : process (clk, rst_n) is
   begin  -- process p_ram_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_init_ram_ongoing     <= '0';
+      s_init_ram_ongoing        <= '0';
       s_load_static_ram_ongoing <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
@@ -147,6 +146,7 @@ begin  -- architecture behv
             s_wr_ptr       <= unsigned(s_wr_ptr) + 1;
           else
             s_init_static_ram_done <= '1';
+            s_wr_ptr               <= (others => '0');
           end if;
 
         end if;
@@ -171,7 +171,7 @@ begin  -- architecture behv
         elsif(s_cnt_rx_data > 0 and s_cnt_rx_data < 129) then
 
           if(i_rx_done = '1') then
-            s_wdata_static(7 downto 0)  <= i_rx_data; -- BIG ENDIAN
+            s_wdata_static(7 downto 0)  <= i_rx_data;  -- BIG ENDIAN
             s_wdata_static(15 downto 8) <= s_wdata_static(7 downto 0);  -- shift
 
             if(s_cnt_2 < 2 - 1) then
@@ -211,16 +211,12 @@ begin  -- architecture behv
     end if;
   end process p_ram_access_mngt;
 
-
-
   -- Outputs affectation
-  o_me_static    <= s_me_static;
-  o_we_static    <= s_we_static;
-  o_addr_static  <= s_wr_ptr;           -- TBD en cas de read ?
-  o_wdata_static <= s_wdata_static;
-
+  o_me_static            <= s_me_static;
+  o_we_static            <= s_we_static;
+  o_addr_static          <= s_wr_ptr;   -- TBD en cas de read ?
+  o_wdata_static         <= s_wdata_static;
   o_init_static_ram_done <= s_init_static_ram_done;
-
   o_load_static_ram_done <= s_load_static_ram_done;
 
 end architecture behv;
