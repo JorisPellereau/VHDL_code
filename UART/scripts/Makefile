@@ -24,6 +24,8 @@ UART_COLLECT_DIR=UART_COLLECT
 UART_COLLECT_PATH=$(HDL_SIMU_PATH)/$(UART_COLLECT_DIR)
 # ============================
 
+UART_MEMORY_DUMP_DIR=MEMORY_DUMP
+
 # == SOURCES DIRECTORY ==
 SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
 # =======================
@@ -95,6 +97,12 @@ create_collect_dir:
 	cd $(HDL_SIMU_PATH); \
 	if [ ! -d  $(UART_COLLECT_DIR) ]; then \
 	  mkdir $(UART_COLLECT_DIR); \
+	fi
+
+create_memory_dump_dir:
+	cd $(HDL_SIMU_PATH); \
+	if [ ! -d  $(UART_MEMORY_DUMP_DIR) ]; then \
+	  mkdir $(UART_MEMORY_DUMP_DIR); \
 	fi
 # =======================
 
@@ -224,6 +232,8 @@ SCN_LIST+=UART_DISPLAY_CTRL_05.py
 
 
 UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_00
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_01
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_02
 # =======================
 
 # == LIB ARGS ==

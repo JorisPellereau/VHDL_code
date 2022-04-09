@@ -215,30 +215,49 @@ add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/s_discard
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/s_cmd_check
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/s_raz_cnt
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/clk
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/rst_n
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_config_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_load_config
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_load_config_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_update_config
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_update_config_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_display_test
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_decod_mode
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_intensity
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_scan_limit
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_shutdown
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_rx_data
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_rx_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_load_config_ongoing
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_update_config_ongoing
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_update_config_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_cnt_5
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_load_config_done
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_display_test
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_decod_mode
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_intensity
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_scan_limit
-add wave -noupdate -expand -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_shutdown
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/clk
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/rst_n
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_config_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_load_config
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_load_config_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_update_config
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_update_config_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_display_test
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_decod_mode
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_intensity
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_scan_limit
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/o_shutdown
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_rx_data
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/i_rx_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_load_config_ongoing
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_update_config_ongoing
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_update_config_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_cnt_5
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_load_config_done
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_display_test
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_decod_mode
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_intensity
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_scan_limit
+add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_shutdown
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/reset_n
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/clock
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx
+add wave -noupdate -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_fsm
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/latch_done_s
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_s
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_r_edge
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data_s
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_s
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit_duration
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tick_data
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_data
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_stop_bit
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done_s
+add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/parity_value
 add wave -noupdate -divider <NULL>
 add wave -noupdate -label v_ram_STATIC /tb_top/i_dut/i_max7219_display_controller_0/max7219_cmd_decod_inst_0/tdpram_inst_0/v_ram
 add wave -noupdate -label v_ram_SCROLLER /tb_top/i_dut/i_max7219_display_controller_0/max7219_scroller_ctrl_inst_0/tdpram_inst_0/v_ram
@@ -289,7 +308,7 @@ add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapp
 add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_data
 add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {561109500 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1019670000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 296
 configure wave -valuecolwidth 100
@@ -305,4 +324,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {5611095 ns}
+WaveRestoreZoom {898490156 ps} {1140849844 ps}

@@ -62,7 +62,7 @@ class macros_uart_display_ctrl_class:
         self.resp_load_matrix_rdy  = "LOAD_MATRIX_RDY"
         self.resp_load_matrix_done = "LOAD_MATRIX_DONE"
         
-        self.resp_load_static_rdy     = "LOAD_STATIC_RDY",
+        self.resp_load_static_rdy     = "LOAD_STATIC_RDY"
         self.resp_load_static_done    = "LOAD_STATIC_DONE"
         self.resp_load_static_not_rdy = "LOAD_STATIC_NOT_RDY"
         
@@ -71,7 +71,7 @@ class macros_uart_display_ctrl_class:
         self.resp_load_scroll_not_rdy = "LOAD_SCROLL_NOT_RDY"
         
         self.resp_static_ptrn_rdy     = "STATIC_PTRN_RDY"
-        self.resp_static_ptrn_done    = "STATIC_PTRN_DONE",
+        self.resp_static_ptrn_done    = "STATIC_PTRN_DONE"
         self.resp_static_ptrn_not_rdy = "STATIC_PTRN_NOT_RDY"
         
         self.resp_scroll_ptrn_rdy   = "SCROLL_PTRN_RDY"
@@ -105,7 +105,9 @@ class macros_uart_display_ctrl_class:
                                                                                   spi_load_received_alias  = self.spi_load_received_alias,
                                                                                   spi_data_alias           = self.spi_data_alias)
 
-
+        # == CONSTANTS ==
+        self.static_memory_rtl_path = "/tb_top/i_dut/i_max7219_display_controller_0/max7219_cmd_decod_inst_0/tdpram_inst_0/v_ram"
+        
     # Convert a str to data commend - return a list
     def str_cmd_2_hex_data_cmd(self, cmd, verbose = False):
 
@@ -195,8 +197,8 @@ class macros_uart_display_ctrl_class:
         self.scn.TX_START(self.uart_rpi_alias, data_to_send)
 
     # Send UART Check from a str type
-    def uart_rx_wait_data_resp_cmd(self, cmd_str):        
-        data_to_read = self.str_cmd_2_hex_data_cmd(cmd_str)            
+    def uart_rx_wait_data_resp_cmd(self, cmd_str):
+        data_to_read = self.str_cmd_2_hex_data_cmd(cmd_str)
         self.scn.RX_WAIT_DATA(self.uart_rpi_alias, data_to_read)
 
 
