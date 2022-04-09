@@ -5,6 +5,7 @@
 
 import sys
 import os
+import random
 
 # Path of Python SCN scripts generator
 scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/scn_generator'
@@ -67,10 +68,9 @@ for j in range(0, 4):
                                         not_rdy   = False,
                                         check_spi = False,
                                         wait_time = 1000)
-    
-    static_ram_data    = [0 for i in range(2*64+1)]
-    static_ram_data[0] = wr_ptr_list[j] # Write Pointer
 
+    static_ram_data    = [0 for i in range(2*64+1)]
+    static_ram_data[0] = wr_ptr_list[j]
     scn_macros.send_uart_cmd_and_check_resp(uart_data = static_ram_data,
                                             main_cmd  = "LOAD_PATTERN_STATIC",
                                             not_rdy   = False,
@@ -84,65 +84,47 @@ for j in range(0, 4):
                      memory_to_check = memory_to_check,
                      digit_number    = 4)
 
+
+scn.print_step("LOAD STATIC RAM - test all write_ptr possibility with RANDOM Data")
+
+wr_ptr_list = [i for i in range(256)]
+
+# Loop on all Write PTR
+for j in range(0, 256):
+
+    scn_macros.send_uart_cmd_and_check_resp(uart_data = "LOAD_PATTERN_STATIC",
+                                        main_cmd  = False,
+                                        not_rdy   = False,
+                                        check_spi = False,
+                                        wait_time = 1000)
+    
+    random.seed(j)
+    static_ram_data    = [random.randrange(0, 256) for i in range(2*64+1)]
+    static_ram_data[0] = wr_ptr_list[j] # Write Pointer
+
+    scn_macros.send_uart_cmd_and_check_resp(uart_data = static_ram_data,
+                                            main_cmd  = "LOAD_PATTERN_STATIC",
+                                            not_rdy   = False,
+                                            check_spi = False,
+                                            wait_time = 1000)
+    
+
+    # Convert UART Data to data to check (16bits)
+    for data_nb_i in range(0, 64):
+        if((j + data_nb_i) >= 256):
+            offset = -256
+        else:
+            offset = 0
+            
+        memory_to_check[j + data_nb_i + offset] = ((static_ram_data[1 + data_nb_i*2] & 0xFF) << 8) + static_ram_data[1 + data_nb_i*2 + 1]
+    # Check that memory is filled with data
+    scn.CHECK_MEMORY(memory_rtl_path = memory_rtl_path,
+                     memory_to_check = memory_to_check,
+                     digit_number    = 4)
+    
+    
 scn.DATA_COLLECTOR_STOP("UART_DISPLAY_CTRL_INPUT_COLLECTOR_0", 0)
 scn.DATA_COLLECTOR_CLOSE("UART_DISPLAY_CTRL_INPUT_COLLECTOR_0", 0)
 
 
 scn.END_TEST()
-
-
-
-
-
-
-
-
-# scn.print_line("//-- STEP 1\n")
-# scn.print_line("//-- Injection of Correct command\n")
-# scn.print_line("\n")
-
-
-# scn.print_line("//-- Send : LOAD_MATRIX_CONFIG\n")
-# data_to_send = str_cmd_2_hex_data_cmd("LOAD_MATRIX_CONFIG")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_MATRIX_RDY")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-# scn.generic_tb_cmd.WAIT(10, "us")
-
-
-# scn.print_line("//-- Send : Data for config Matrix\n")
-# # Display Test
-# # Decod Mode
-# # Intensity
-# # Scan Limit
-# # Shutdown
-# data_to_send = [0x01, 0x02, 0x03, 0x04, 0x05]
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("LOAD_MATRIX_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-# scn.generic_tb_cmd.WAIT(10, "us")
-
-
-
-
-# scn.print_line("//-- STEP 2\n")
-# scn.print_line("//-- Injection of Correct command\n")
-# scn.print_line("\n")
-
-
-# scn.print_line("//-- Send : UPDATE_MATRIX_CONFIG\n")
-# data_to_send = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_CONFIG")
-# scn.generic_tb_uart_cmd.TX_START("UART_RPi", data_to_send)
-
-
-# data_to_read = str_cmd_2_hex_data_cmd("UPDATE_MATRIX_DONE")
-# scn.generic_tb_uart_cmd.RX_WAIT_DATA("UART_RPi", data_to_read)
-
-# scn.generic_tb_cmd.WAIT(10, "us")
-
