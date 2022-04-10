@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-09
--- Last update: 2022-03-27
+-- Last update: 2022-04-10
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ begin  -- architecture behv
             s_cnt_rx_data <= s_cnt_rx_data + 1;  -- Inc Internal Counter
           end if;
 
-        elsif(s_cnt_rx_data > 1 and s_cnt_rx_data < (s_last_ptr - s_start_ptr) + 3) then
+        elsif(s_cnt_rx_data > 1 and s_cnt_rx_data < ((s_last_ptr - s_start_ptr) + 3)) then
 
           if(i_rx_done = '1') then
             s_wdata_dyn <= i_rx_data;
