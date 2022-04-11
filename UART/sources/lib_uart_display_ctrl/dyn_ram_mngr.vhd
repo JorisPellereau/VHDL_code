@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-09
--- Last update: 2022-04-10
+-- Last update: 2022-04-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -82,11 +82,14 @@ architecture behv of dyn_ram_mngr is
   signal s_we_dyn    : std_logic;
   signal s_wdata_dyn : std_logic_vector(G_RAM_DATA_WIDTH_DYN - 1 downto 0);
 
-  signal s_cnt_rx_data : integer range 0 to 258;  -- 255 + 1 + 1 + 1Data received from UART
-  signal s_start_ptr   : integer;
-  signal s_last_ptr    : integer;
-  --signal s_cnt_2       : integer range 0 to 2;    -- Counter 2
-  signal s_data_rdy    : std_logic;     -- Data ready to transmit to RAM
+  signal s_cnt_rx_data      : integer range 0 to 258;  -- 255 + 1 + 1 + 1Data received from UART
+  signal s_max_rx_data      : integer range 0 to 258;  -- Max counter possible for rx_data
+  signal s_compute_max_data : std_logic;  -- Flag for the computation of MAX data
+  signal s_compute_max_en   : std_logic;
+
+  signal s_start_ptr : integer range 0 to 255;
+  signal s_last_ptr  : integer range 0 to 255;
+  signal s_data_rdy  : std_logic;       -- Data ready to transmit to RAM
 
 begin  -- architecture behv
 
@@ -130,9 +133,11 @@ begin  -- architecture behv
       s_load_dyn_ram_done <= '0';
       s_last_ptr          <= 0;
       s_start_ptr         <= 0;
+      s_compute_max_data  <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-
+      s_compute_max_data <= '0';        -- A pulse
+      s_data_rdy         <= '0';
       -- INIT Y RAM MNGT
       if(s_init_ram_ongoing = '1' and s_init_dyn_ram_done = '0') then
 
@@ -142,7 +147,7 @@ begin  -- architecture behv
           s_we_dyn    <= '1';
           s_wdata_dyn <= (others => '0');
         else
-          if(s_wr_ptr < x"FF") then     -- TBD pas generic
+          if(s_wr_ptr < x"FF") then
             s_me_dyn    <= '1';
             s_we_dyn    <= '1';
             s_wdata_dyn <= (others => '0');
@@ -164,75 +169,76 @@ begin  -- architecture behv
       -- LOAD Y RAM MNGT
       if(s_load_dyn_ram_ongoing = '1' and s_load_dyn_ram_done = '0') then
 
+        -- All action of RX_DONE
+        if(i_rx_done = '1') then
 
-        if(s_cnt_rx_data = 0) then
-          if(i_rx_done = '1') then
+          if(s_cnt_rx_data = 0) then
             s_wr_ptr      <= i_rx_data;          -- Get Start Pointer
             s_start_ptr   <= conv_integer(unsigned(i_rx_data));
             s_cnt_rx_data <= s_cnt_rx_data + 1;  -- Inc Internal Counter
-          end if;
 
-        elsif(s_cnt_rx_data = 1) then
+          elsif(s_cnt_rx_data = 1) then
+            s_last_ptr         <= conv_integer(unsigned(i_rx_data));
+            s_cnt_rx_data      <= s_cnt_rx_data + 1;  -- Inc Internal Counter
+            s_compute_max_data <= '1';
 
-          if(i_rx_done = '1') then
-            s_last_ptr    <= conv_integer(unsigned(i_rx_data));
-            s_cnt_rx_data <= s_cnt_rx_data + 1;  -- Inc Internal Counter
-          end if;
-
-        elsif(s_cnt_rx_data > 1 and s_cnt_rx_data < ((s_last_ptr - s_start_ptr) + 3)) then
-
-          if(i_rx_done = '1') then
-            s_wdata_dyn <= i_rx_data;
-
-
-            --if(s_cnt_2 < 2 - 1) then
-            --  s_cnt_2 <= s_cnt_2 + 1;
-            --else
-            s_data_rdy <= '1';
-            s_me_dyn   <= '1';
-            s_we_dyn   <= '1';
-            --  s_cnt_2     <= 0;
-            --end if;
-
-
+          elsif(s_cnt_rx_data < s_max_rx_data) then
+            s_wdata_dyn   <= i_rx_data;          -- Get data from UART
+            s_data_rdy    <= '1';
+            s_me_dyn      <= '1';
+            s_we_dyn      <= '1';
             s_cnt_rx_data <= s_cnt_rx_data + 1;  -- Inc
-          else
-            s_data_rdy <= '0';
-            s_me_dyn   <= '0';
-            s_we_dyn   <= '0';
+
           end if;
 
-          if(s_data_rdy = '1') then
-            s_wr_ptr <= unsigned(s_wr_ptr) + 1;
-          end if;
-
-        else
+        -- When counter is reach whenever Tclk event when max computation occurs
+        elsif(s_cnt_rx_data >= s_max_rx_data and s_compute_max_en = '1') then
           s_load_dyn_ram_done <= '1';
-          s_cnt_rx_data       <= 0;
-          --s_cnt_2                <= 0;
-          s_data_rdy          <= '0';
+        end if;
 
+        -- Delay Wr ptr one clock Later
+        if(s_data_rdy = '1') then
+          s_wr_ptr <= unsigned(s_wr_ptr) + 1;
         end if;
 
       else
         s_load_dyn_ram_done <= '0';
-
+        s_cnt_rx_data       <= 0;
       end if;
 
     end if;
   end process p_ram_access_mngt;
 
+  p_max_cnt_mngt : process (clk, rst_n) is
+  begin  -- process p_max_cnt_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_max_rx_data    <= 0;
+      s_compute_max_en <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      if(s_compute_max_data = '1') then
+
+        -- Case last_ptr >= start_ptr
+        if(s_last_ptr >= s_start_ptr) then
+          s_max_rx_data <= s_last_ptr - s_start_ptr + 3;
+
+        -- Case start_ptr > s_last_ptr
+        else
+          s_max_rx_data <= 256 - s_start_ptr + s_last_ptr + 3;
+        end if;
+        s_compute_max_en <= '1';        -- MAX Compute enabled
+      end if;
+
+    elsif(s_load_dyn_ram_done = '1') then
+      s_compute_max_en <= '0';          -- RAZ
+    end if;
+  end process p_max_cnt_mngt;
 
   -- Outputs Affectation
-  o_me_dyn    <= s_me_dyn;
-  o_we_dyn    <= s_we_dyn;
-  o_addr_dyn  <= s_wr_ptr;              -- TBD en cas de read ?
-  o_wdata_dyn <= s_wdata_dyn;
-
+  o_me_dyn            <= s_me_dyn;
+  o_we_dyn            <= s_we_dyn;
+  o_addr_dyn          <= s_wr_ptr;
+  o_wdata_dyn         <= s_wdata_dyn;
   o_init_dyn_ram_done <= s_init_dyn_ram_done;
-
   o_load_dyn_ram_done <= s_load_dyn_ram_done;
-
-
 
 end architecture behv;

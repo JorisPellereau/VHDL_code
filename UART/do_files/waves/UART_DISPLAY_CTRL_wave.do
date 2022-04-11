@@ -177,31 +177,34 @@ add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_c
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_cnt_rx_data
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_cnt_2
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_data_rdy
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/clk
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/rst_n
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rdata_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_me_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_we_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_addr_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_wdata_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_init_dyn_ram
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_init_dyn_ram_done
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_load_dyn_ram
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_load_dyn_ram_done
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_data
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_done
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wr_ptr
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_ram_ongoing
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_dyn_ram_done
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_ongoing
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_done
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_me_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_we_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wdata_dyn
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_cnt_rx_data
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_start_ptr
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_last_ptr
-add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_data_rdy
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/clk
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/rst_n
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rdata_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_me_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_we_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_addr_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_wdata_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_init_dyn_ram
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_init_dyn_ram_done
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_load_dyn_ram
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_load_dyn_ram_done
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_data
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_done
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wr_ptr
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_ram_ongoing
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_dyn_ram_done
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_ongoing
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_done
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_me_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_we_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wdata_dyn
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_cnt_rx_data
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_data
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_en
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_start_ptr
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_last_ptr
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_data_rdy
+add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_max_rx_data
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/clk
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/rst_n
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/i_data
@@ -294,21 +297,21 @@ add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controll
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/s_cnt_half_period
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/s_load_px
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/s_end_frame
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/clk
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_BUFFER_ADDR_WIDTH
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_DATA_WIDTH
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_NB_UART_CHECKER
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/parity_rcvd
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/rx_data
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/rx_done
-add wave -noupdate -expand -group {UART CHECKER IF} -subitemconfig {{/tb_top/i_uart_checker_wrapper/uart_checker_if/s_buffer_rx_soft[0]} -expand} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_buffer_rx_soft
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_rd_ptr_soft
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_wr_ptr_soft
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/start_tx
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_data
-add wave -noupdate -expand -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_done
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/clk
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_BUFFER_ADDR_WIDTH
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_DATA_WIDTH
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/G_NB_UART_CHECKER
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/parity_rcvd
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/rx_data
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/rx_done
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_buffer_rx_soft
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_rd_ptr_soft
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/s_wr_ptr_soft
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/start_tx
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_data
+add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1019670000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {9211339230 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 296
 configure wave -valuecolwidth 100
@@ -324,4 +327,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {898490156 ps} {1140849844 ps}
+WaveRestoreZoom {0 ps} {15304443 ns}
