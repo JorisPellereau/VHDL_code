@@ -77,6 +77,13 @@ all: print_generic_rules
 	@echo "make compile_all_uart_display_ctrl"
 	@echo "=========================="
 	@echo ""
+	@echo ""
+	@echo "=== RUN CODE COVERAGE ==="
+	@echo ""
+	@echo "- Compile UART Display ctrl code cov tb"
+	@echo "make ghdl_gcc_compile_uart_display_ctrl_tb"
+	@echo ""
+	@echo "========================="
 	@echo "== RUN TESTS =="
 	@echo "- Run Test of UART display controller"
 	@echo "make run_tb_uart_display_ctrl TEST=[TEST_NB]"
@@ -246,6 +253,30 @@ run_tb_uart_display_ctrl:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
 # ==============
 
+
+# == CODE COVERAGE ==
+
+# Compile 
+ghdl_gcc_compile_uart_display_ctrl_tb:
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_others)" GHDL_WORK_LIB_NAME=$(LIB_OTHERS) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_INTERFACE) \
+	P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_static)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_STATIC) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_scroller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_SCROLLER) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_controller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_CONTROLLER) \
+	P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+
+clean_code_cov_uart_display_ctrl:
+	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/UART_DISPLAY_CTRL_CODE_COVERAGE/*
+
+# TEST_GROUP must be passed as argument
+# SIMU_TIME must be passed as argument
+run_uart_display_ctrl_code_coverage: clean_code_cov_uart_display_ctrl ghdl_gcc_compile_uart_display_ctrl_tb
+
+# ===================
 
 # TEST must be pass as argument
 generate_collect_opti_files:
