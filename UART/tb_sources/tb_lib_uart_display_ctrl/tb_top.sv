@@ -160,6 +160,7 @@ module tb_top
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] = s_max7219_data;
    assign s_check_level_if.check_signals[1] = s_spi_data_received;
+   assign s_check_level_if.check_signals[2] = i_dut.s_max_tempo_cnt_scroller; // MAX Tempo scroller internal signal   
    
    // =====================================================
 
@@ -248,8 +249,9 @@ module tb_top
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",     3);
 
       // Check Level Alias
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX7219_DATA",       0);
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SPI_DATA_RECEIVED",  1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX7219_DATA",            0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SPI_DATA_RECEIVED",       1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX_TEMPO_CNT_SCROLLER",  2);
 	
       // init_uart_custom_class
       tb_class_inst.tb_modules_custom_inst.init_uart_custom_class(uart_checker_if,   "UART_RPi");

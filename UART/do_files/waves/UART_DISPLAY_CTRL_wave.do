@@ -177,34 +177,34 @@ add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_c
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_cnt_rx_data
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_cnt_2
 add wave -noupdate -group STATIC_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_static_ram_mngr/s_data_rdy
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/clk
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/rst_n
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rdata_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_me_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_we_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_addr_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_wdata_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_init_dyn_ram
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_init_dyn_ram_done
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_load_dyn_ram
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_load_dyn_ram_done
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_data
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_done
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wr_ptr
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_ram_ongoing
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_dyn_ram_done
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_ongoing
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_done
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_me_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_we_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wdata_dyn
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_cnt_rx_data
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_data
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_en
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_start_ptr
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_last_ptr
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_data_rdy
-add wave -noupdate -expand -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_max_rx_data
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/clk
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/rst_n
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rdata_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_me_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_we_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_addr_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_wdata_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_init_dyn_ram
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_init_dyn_ram_done
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_load_dyn_ram
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/o_load_dyn_ram_done
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_data
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/i_rx_done
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wr_ptr
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_ram_ongoing
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_init_dyn_ram_done
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_ongoing
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_load_dyn_ram_done
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_me_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_we_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_wdata_dyn
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_cnt_rx_data
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_data
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_compute_max_en
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_start_ptr
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_last_ptr
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_data_rdy
+add wave -noupdate -group SCROLLER_RAM_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_dyn_ram_mngr_0/s_max_rx_data
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/clk
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/rst_n
 add wave -noupdate -group {UART CMD DECOD} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_uart_cmd_decod_0/i_data
@@ -242,34 +242,72 @@ add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_displa
 add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_intensity
 add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_scan_limit
 add wave -noupdate -group MATRIX_CONFIG_MNGR /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_matrix_config_mngr_0/s_shutdown
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/reset_n
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/clock
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx
-add wave -noupdate -expand -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_fsm
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/latch_done_s
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_s
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_r_edge
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data_s
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_s
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit_duration
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tick_data
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_data
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_stop_bit
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done_s
-add wave -noupdate -expand -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/parity_value
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/clk
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/rst_n
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_run_static_pattern
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_static_pattern_done
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_static_pattern_rdy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_static_discard
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_run_scroller_pattern
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_scroller_pattern_done
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_scroller_pattern_rdy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_run_scroller_discard
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_rx_data
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_rx_done
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_static_dyn
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_new_display
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_en_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_ptr_equality_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_start_ptr_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_last_ptr_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_static_busy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_scroller_busy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_ram_start_ptr_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_msg_length_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/i_load_tempo_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_load_tempo_scroller_done
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/o_max_tempo_cnt_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_run_static_pattern_rdy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_run_static_ongoing
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_run_scroller_pattern_rdy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_run_scroller_ongoing
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_start_ptr_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_last_ptr_static
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_cnt_1
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_ram_start_ptr_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_msg_length
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_max_tempo_cnt_scroller
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_load_tempo_scroller_rdy
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_load_tempo_scroller_ongoing
+add wave -noupdate -group {RUN PATTERN MNGT} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_run_pattern_mngt_0/s_cnt_3
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/reset_n
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/clock
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx
+add wave -noupdate -group {TX UART} -radix hexadecimal /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_fsm
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/latch_done_s
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_s
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/start_tx_r_edge
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_data_s
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_s
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit_duration
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tick_data
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_data
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_bit
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/cnt_stop_bit
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/tx_done_s
+add wave -noupdate -group {TX UART} /tb_top/i_dut/i_uart_max7219_display_ctrl_0/i_tx_uart_0/parity_value
 add wave -noupdate -divider <NULL>
 add wave -noupdate -label v_ram_STATIC /tb_top/i_dut/i_max7219_display_controller_0/max7219_cmd_decod_inst_0/tdpram_inst_0/v_ram
 add wave -noupdate -label v_ram_SCROLLER /tb_top/i_dut/i_max7219_display_controller_0/max7219_scroller_ctrl_inst_0/tdpram_inst_0/v_ram
 add wave -noupdate -divider <NULL>
-add wave -noupdate -expand -group {UART Checker} /tb_top/i_uart_checker_wrapper/s_rx_done_r_edge
-add wave -noupdate -expand -group {UART Checker} -expand /tb_top/i_uart_checker_wrapper/o_tx
-add wave -noupdate -expand -group {UART Checker} -expand /tb_top/i_uart_checker_wrapper/i_rx
-add wave -noupdate -expand -group {UART Checker} /tb_top/i_uart_checker_wrapper/rst_n
-add wave -noupdate -expand -group {UART Checker} /tb_top/i_uart_checker_wrapper/clk
+add wave -noupdate -group {UART Checker} /tb_top/i_uart_checker_wrapper/s_rx_done_r_edge
+add wave -noupdate -group {UART Checker} -expand /tb_top/i_uart_checker_wrapper/o_tx
+add wave -noupdate -group {UART Checker} -expand /tb_top/i_uart_checker_wrapper/i_rx
+add wave -noupdate -group {UART Checker} /tb_top/i_uart_checker_wrapper/rst_n
+add wave -noupdate -group {UART Checker} /tb_top/i_uart_checker_wrapper/clk
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/clk
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/rst_n
 add wave -noupdate -group {MAX7219 I/F} /tb_top/i_dut/i_max7219_display_controller_0/max7219_if_inst_0/i_start
@@ -310,11 +348,20 @@ add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_
 add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/start_tx
 add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_data
 add wave -noupdate -group {UART CHECKER IF} /tb_top/i_uart_checker_wrapper/uart_checker_if/tx_done
+add wave -noupdate -divider {SCREEN MATRIX}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[0]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[1]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[2]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[3]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[4]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[5]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[6]}
+add wave -noupdate -radix ascii {/tb_top/i_max7219_checker_wrapper_0/s_line_row_i[7]}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {9211339230 ps} 0}
+WaveRestoreCursors {{Cursor 1} {10386259863 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 296
-configure wave -valuecolwidth 100
+configure wave -namecolwidth 173
+configure wave -valuecolwidth 572
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -327,4 +374,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {15304443 ns}
+WaveRestoreZoom {6904097859 ps} {13441242142 ps}

@@ -30,8 +30,8 @@
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 2
-`define C_CHECK_SIZE     2
+`define C_CHECK_ALIAS_NB 3
+`define C_CHECK_SIZE     3
 `define C_CHECK_WIDTH    32
 
 // UART TESTBENCH Configuration

@@ -195,7 +195,8 @@ class max7219_models_class:
                                             new_display_alias,
                                             ptr_equality_alias,
                                             clk_alias,
-                                            spi_timeout = [10, "ms"]):
+                                            spi_timeout = [10, "ms"],
+                                            bypass_set_inputs = False):
 
         offset  = 0 # Offset for wrapping addr
         
@@ -211,20 +212,21 @@ class max7219_models_class:
                 ram_addr_list.append(ram_start_addr + i - 256)
             else:
                 ram_addr_list.append(ram_start_addr + i)
-                
-        self.scn.print_line("//-- Set STATIC inputs - One Value to transmit\n")
-        self.scn.SET(static_dyn_alias, 0)
-        self.scn.SET(start_ptr_static_alias, ram_start_addr)        
-        self.scn.SET(last_ptr_static_alias, ram_stop_addr)
+
+        if(bypass_set_inputs == False):
+            self.scn.print_line("//-- Set STATIC inputs - One Value to transmit\n")
+            self.scn.SET(static_dyn_alias, 0)
+            self.scn.SET(start_ptr_static_alias, ram_start_addr)        
+            self.scn.SET(last_ptr_static_alias, ram_stop_addr)
 
             
-        self.scn.WTFS(clk_alias)
-
-        self.scn.print_line("//-- Send NEW STATIC Display\n")
-        self.scn.WTFS(clk_alias)
-        self.scn.SET(new_display_alias, 1)
-        self.scn.WTFS(clk_alias)
-        self.scn.SET(new_display_alias, 0)
+            self.scn.WTFS(clk_alias)
+            
+            self.scn.print_line("//-- Send NEW STATIC Display\n")
+            self.scn.WTFS(clk_alias)
+            self.scn.SET(new_display_alias, 1)
+            self.scn.WTFS(clk_alias)
+            self.scn.SET(new_display_alias, 0)
                 
         
 
@@ -246,10 +248,16 @@ class max7219_models_class:
                     self.scn.WTRS(self.spi_load_received_alias, spi_timeout[0], spi_timeout[1])
             elif(cmd_type == "wait_cmd"):
                 self.scn.print_comment("wait_cmd - Wait value : %d (load_en : %d - spi_data : %d)" %( ((load_en << 12) + spi_data), load_en, spi_data))
-        # Wait for PTR equality after the end of transmission
-        self.scn.WTRS(ptr_equality_alias, 10, "ms")            
+
+        if(bypass_set_inputs == False):
+            # Wait for PTR equality after the end of transmission
+            self.scn.WTRS(ptr_equality_alias, 10, "ms")            
             
         self.scn.print_line("//-- end")
+
+
+
+   
     
         # == LOCAL FUNCTIONS ==
 

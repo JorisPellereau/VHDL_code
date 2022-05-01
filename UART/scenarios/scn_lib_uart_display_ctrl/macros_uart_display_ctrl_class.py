@@ -31,6 +31,8 @@ class macros_uart_display_ctrl_class:
 
         self.uart_rpi_alias           = "UART_RPi"
 
+        self.s_max_tempo_cnt_scroller_alias = "S_MAX_TEMPO_CNT_SCROLLER"
+
         # == UART Commands  ==
         self.uart_cmd_init_ram_static      = "INIT_RAM_STATIC"
         self.uart_cmd_init_ram_scroller    = "INIT_RAM_SCROLLER"    
@@ -253,9 +255,12 @@ class macros_uart_display_ctrl_class:
                 elif(uart_data == self.uart_cmd_load_pattern_scroll):
                     self.uart_rx_wait_data_resp_cmd(self.resp_load_scroll_rdy)
 
-                elif(uart_data == self.uart_cmd_run_pattern_static):
+                elif(uart_data == self.uart_cmd_run_pattern_static and check_spi == False):
                     self.uart_rx_wait_data_resp_cmd(self.resp_static_ptrn_rdy)
 
+                elif(uart_data == self.uart_cmd_run_pattern_static and check_spi == True):
+                    None
+                    #self.check_static_pattern(start_ptr = , stop_ptr)
                 elif(uart_data == self.uart_cmd_run_pattern_scroller):
                     self.uart_rx_wait_data_resp_cmd(self.resp_scroll_ptrn_rdy)
 
@@ -295,3 +300,30 @@ class macros_uart_display_ctrl_class:
             # Send Data of LOAD_SCROLLER_TEMPO
             elif(main_cmd == self.uart_cmd_run_scroller_tempo):
                 self.uart_rx_wait_data_resp_cmd(self.resp_load_tempo_done)
+
+
+
+    # Convert a pattern to STATIC data to be send by UART
+    def pattern_to_uart_static_data_list(self, pattern_list):
+
+        uart_static_data_list = []
+        list_tmp = self.max7219_models_class.sort_mem_list_static(pattern_list)
+        for i in range(0, len(list_tmp)):            
+            uart_static_data_list.append((list_tmp[i] >> 8) & 0xFF)
+            uart_static_data_list.append((list_tmp[i] & 0xFF))
+            
+        return uart_static_data_list
+    
+    # Check STATIC SPI Transactions
+    def check_static_pattern(self, start_ptr, stop_ptr):
+        self.max7219_models_class.send_multiple_spi_request_and_check(ram_start_addr         = start_ptr,
+                                                                      ram_stop_addr          = stop_ptr,
+                                                                      spi_check_expected     = "OK", 
+                                                                      start_ptr_static_alias = None,
+                                                                      last_ptr_static_alias  = None,
+                                                                      static_dyn_alias       = None,
+                                                                      new_display_alias      = None,
+                                                                      ptr_equality_alias     = None,
+                                                                      clk_alias              = None,
+                                                                      spi_timeout            = [10, "ms"],
+                                                                      bypass_set_inputs      = True)
