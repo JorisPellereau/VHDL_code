@@ -43,6 +43,7 @@ LIB_MAX7219_INTERFACE=lib_max7219_interface
 
 # == TESTBENCH LIBRARIES ==
 LIB_TB_UART_DISPLAY_CTRL+=lib_tb_uart_display_ctrl
+LIB_CODE_COVERAGE=lib_code_coverage
 # =========================
 
 # ==  LIB LIST ==
@@ -54,7 +55,28 @@ LIB_LIST+=$(LIB_MAX7219_SCROLLER)
 LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
 LIB_LIST+=$(LIB_MAX7219_INTERFACE)
 LIB_LIST+=$(LIB_TB_UART_DISPLAY_CTRL)
+LIB_LIST+=$(LIB_CODE_COVERAGE)
+LIB_LIST+=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE)
 # ================
+
+# ================ GHDL CONFIGURATION ================ #
+GHDL_COV_DIR_LIST+=UART_DISPLAY_CTRL_CODE_COVERAGE
+
+
+# == COVERAGE LIBRARIES ==
+LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE=lib_tb_top_uart_display_ctrl_coverage
+# ========================
+
+# == GHDL LIB LIST ==
+GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
+GHDL_LIB_LIST+=$(LIB_MAX7219_STATIC)
+GHDL_LIB_LIST+=$(LIB_MAX7219_SCROLLER)
+GHDL_LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
+GHDL_LIB_LIST+=$(LIB_UART)
+GHDL_LIB_LIST+=$(LIB_UART_DISPLAY_CTRL)
+GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
+GHDL_LIB_LIST+=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE)
+# ===================
 
 # == PYTHON SCRIPTS PATH ==
 FILE_OPTI_SCRIPT=~/Documents/GitHub/Verilog/Testbench/scripts/python_scripts/file_optimisation.py
@@ -177,7 +199,11 @@ src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/clk_gen.s
 src_tb_lib_uart_display_ctrl_v+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.sv
 # ==================================
 
+# == Coverage Testbench File List ==
+src_tb_coverage_uart_display_ctrl+=$(src_code_cov_tb_vhd)
+src_tb_coverage_uart_display_ctrl+=$(TB_SRC_DIR)/tb_lib_uart_display_ctrl/tb_top.vhd
 
+# ==================================
 
 ## == COMPILE DESIGN == ##
 
@@ -236,11 +262,18 @@ SCN_LIST+=UART_DISPLAY_CTRL_02.py
 SCN_LIST+=UART_DISPLAY_CTRL_03.py
 SCN_LIST+=UART_DISPLAY_CTRL_04.py
 SCN_LIST+=UART_DISPLAY_CTRL_05.py
+SCN_LIST+=UART_DISPLAY_CTRL_06.py
+SCN_LIST+=UART_DISPLAY_CTRL_07.py
 
 
 UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_00
 UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_01
 UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_02
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_03
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_04
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_05
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_06
+UART_DISPLAY_CTRL_TEST_LIST+=UART_DISPLAY_CTRL_07
 # =======================
 
 # == LIB ARGS ==
@@ -266,16 +299,33 @@ ghdl_gcc_compile_uart_display_ctrl_tb:
 	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
 	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_scroller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_SCROLLER) \
 	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
-	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_controller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_CONTROLLER) \
+	echo $(P_ARGS)
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_controller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_CONTROLLER) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_lib_uart)" GHDL_WORK_LIB_NAME=$(LIB_UART) COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_uart_display_ctrl)" GHDL_WORK_LIB_NAME=$(LIB_UART_DISPLAY_CTRL) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_tb_coverage_uart_display_ctrl)" GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE) GHDL_TOP_UNIT=tb_top \
 	P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+
+# SIMU_TIME must be passed as argument
+GHDL_RUN_ARGS_CONTROLLER+=--vcd=/home/linux-jp/SIMULATION_VHDL/run_code_cov_uart_display_ctrl.vcd
+ghdl_gcc_run_uart_display_ctrl_tb:
+	make export_simu_time TEST_GROUP=UART_DISPLAY_CTRL
+	echo $(SIMU_TIME)
+	make ghdl_gcc_run COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME) GHDL_GCC_RUN_ARGS=$(GHDL_RUN_ARGS_CONTROLLER)
+
+ghdl_gcc_gen_code_cov_controller_tb:
+	make ghdl_gcc_lcov COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_genhtml COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
 
 clean_code_cov_uart_display_ctrl:
 	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/UART_DISPLAY_CTRL_CODE_COVERAGE/*
 
 # TEST_GROUP must be passed as argument
 # SIMU_TIME must be passed as argument
-run_uart_display_ctrl_code_coverage: clean_code_cov_uart_display_ctrl ghdl_gcc_compile_uart_display_ctrl_tb
-
+run_uart_display_ctrl_code_coverage: clean_code_cov_uart_display_ctrl ghdl_gcc_compile_uart_display_ctrl_tb ghdl_gcc_run_uart_display_ctrl_tb ghdl_gcc_gen_code_cov_controller_tb
+	make ghdl_gcc_open_coverage_html COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
 # ===================
 
 # TEST must be pass as argument
