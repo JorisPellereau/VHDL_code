@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-09
--- Last update: 2022-04-11
+-- Last update: 2022-05-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -228,8 +228,9 @@ begin  -- architecture behv
         s_compute_max_en <= '1';        -- MAX Compute enabled
       end if;
 
-    elsif(s_load_dyn_ram_done = '1') then
-      s_compute_max_en <= '0';          -- RAZ
+      if(s_load_dyn_ram_done = '1') then
+        s_compute_max_en <= '0';        -- RAZ
+      end if;
     end if;
   end process p_max_cnt_mngt;
 
