@@ -1,1 +1,59 @@
 # Makefile for SonarQube Utilization
+
+SONAR_EXE=/opt/SonarQube/sonarqube-8.9.8.54436/bin/linux-x86-64/sonar.sh
+IP=0.0.0.0:9000/sonarqube
+
+
+print_sonarqube_rules:
+	@echo "== MakefileSonaque rules =="
+	@echo ""
+	@echo "- Set Sonarqube Config"
+	@echo "make set_sonarqube_config"
+	@echo ""
+	@echo "- Run SonarQube in console Mode"
+	@echo "make run_sonarqube_console"
+	@echo ""
+	@echo "- Start Sonarqube"
+	@echo "make start_sonarqube"
+	@echo ""
+	@echo "- Stop SonarQube"
+	@echo "make stop_sonarqube"
+	@echo ""
+	@echo "- Status SonarQube"
+	@echo "make status_sonarqube"
+	@echo ""
+	@echo "- Open web browser SonarQube"
+	@echo "make open_sonarqube_web"
+	@echo ""
+
+
+
+set_sonarqube_config:
+	sudo sysctl -w vm.max_map_count=524288
+	sudo sysctl -w fs.file-max=131072
+	ulimit -n 131072
+
+start_sonarqube: set_sonarqube_config
+		 $(SONAR_EXE) start
+
+stop_sonarqube: set_sonarqube_config
+		$(SONAR_EXE) stop
+
+status_sonarqube: set_sonarqube_config
+		  $(SONAR_EXE) status
+
+run_sonarqube_console:
+	$(SONAR_EXE) console
+
+open_sonarqube_web:
+	firefox $(IP)
+
+
+
+# Run sonar
+run_rc_sonnar:
+	rc-scanner \
+	  -Dsonar.projectKey=Test3 \
+	    -Dsonar.sources=$(VHDL_LIB_PATH) \
+	      -Dsonar.host.url=http://$(IP) \
+	        -Dsonar.login=638c9c0ae80196255780142e57b08e685784bc37

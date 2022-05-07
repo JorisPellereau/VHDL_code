@@ -90,7 +90,8 @@ scn.print_step("LOAD STATIC RAM - test all write_ptr possibility with RANDOM Dat
 wr_ptr_list = [i for i in range(256)]
 
 # Loop on all Write PTR
-for j in range(0, 256):
+nb_loop = 10 # 256
+for j in range(0, nb_loop):
 
     scn_macros.send_uart_cmd_and_check_resp(uart_data = "LOAD_PATTERN_STATIC",
                                         main_cmd  = False,

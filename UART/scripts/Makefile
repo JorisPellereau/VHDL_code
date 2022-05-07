@@ -338,3 +338,4 @@ generate_collect_all_opti_files:
 
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
