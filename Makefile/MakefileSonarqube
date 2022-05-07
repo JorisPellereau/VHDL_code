@@ -1,8 +1,12 @@
 # Makefile for SonarQube Utilization
 
+# == CONSTANTS ==
 SONAR_EXE=/opt/SonarQube/sonarqube-8.9.8.54436/bin/linux-x86-64/sonar.sh
 IP=0.0.0.0:9000/sonarqube
 
+# == Directory PATH ==
+SONARQUBE_PROJECT_DIR=$(HDL_SIMU_PATH)/$(PROJECT_NAME)/SONARQUBE
+# ====================
 
 print_sonarqube_rules:
 	@echo "== MakefileSonaque rules =="
@@ -27,6 +31,11 @@ print_sonarqube_rules:
 	@echo ""
 
 
+create_sonarqube_dir:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME); \
+	if [ ! -d SONARQUBE ]; then \
+	  mkdir SONARQUBE; \
+	fi
 
 set_sonarqube_config:
 	sudo sysctl -w vm.max_map_count=524288
@@ -51,9 +60,12 @@ open_sonarqube_web:
 
 
 # Run sonar
+# SONAR_SRC_LIST must ba pass as argument
 run_rc_sonnar:
+	cd $(SONARQUBE_PROJECT_DIR); \
+	$(foreach list, $(SONAR_SRC_LIST), cp $(list) .); \
 	rc-scanner \
 	  -Dsonar.projectKey=Test3 \
-	    -Dsonar.sources=$(VHDL_LIB_PATH) \
+	    -Dsonar.sources=. \
 	      -Dsonar.host.url=http://$(IP) \
 	        -Dsonar.login=638c9c0ae80196255780142e57b08e685784bc37

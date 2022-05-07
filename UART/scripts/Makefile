@@ -336,6 +336,10 @@ generate_collect_all_opti_files:
 	$(foreach list, $(UART_DISPLAY_CTRL_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(UART_COLLECT_PATH)/$(list)_collect.txt $(UART_COLLECT_PATH)/$(list)_collect_opti.txt;) \
 
 
+# == SONAR ==
+sonar_vhdl_file:
+	make run_rc_sonnar SONAR_SRC_LIST="$(src_vhd_lib_uart_display_ctrl)"
+# ===========
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
