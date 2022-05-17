@@ -425,3 +425,57 @@ class max7219_models_class:
    
                 
     # =====================
+
+
+    def max7219_scroller_model(self, ram_start_addr, msg_length):
+        
+        shift_nb                   = 8*self.matrix_nb + msg_length #ram_data_len # - 1 ?
+        spi_trans_4_screen_refresh = 8*self.matrix_nb
+        spi_transaction_nb         = spi_trans_4_screen_refresh*shift_nb
+        offset                     = 0
+        
+        # data_to_check[0] == Di_M7        
+        # data_to_check[1] == Di_M6
+        # data_to_check[0] == Di_M7
+        data_to_check = np.zeros([shift_nb, 8, self.matrix_nb], int)
+
+        # Init Matrix with Addr of each digit on bits 11 to 8
+        # Digit 0 First
+        for i in range(0, 8):
+            data_to_check[:, i, :] = (i + 1) << 8 #
+                    
+        # Init data_to_check with 
+        # Loop on Number of shift
+        for shift_i in range(0, shift_nb):
+
+            if(shift_i < msg_length):#ram_data_len):
+
+                # Manage wrapp addr
+                if((ram_start_addr + shift_i) >= 256):
+                    #print("shift_i : %d" %(shift_i))
+                    offset = 256
+                    
+                data_to_check[shift_i, 7, 0] = data_to_check[shift_i, 7, 0] | self.scroller_memory[ram_start_addr + shift_i - offset]
+               
+
+            
+            # Save current matrix
+            data_to_check_tmp = data_to_check
+            # Update data_to_check by shift it
+            if(shift_i < shift_nb - 1):
+                
+                data_to_check[shift_i + 1, 6, :] = (data_to_check[shift_i + 1, 6, :] & 0xF00) | (data_to_check_tmp[shift_i, 7, :] & 0xFF)# D7 => D6
+                data_to_check[shift_i + 1, 5, :] = (data_to_check[shift_i + 1, 5, :] & 0xF00) | (data_to_check_tmp[shift_i, 6, :] & 0xFF)# D6 => D5
+                data_to_check[shift_i + 1, 4, :] = (data_to_check[shift_i + 1, 4, :] & 0xF00) | (data_to_check_tmp[shift_i, 5, :] & 0xFF)# D5 => D4
+                data_to_check[shift_i + 1, 3, :] = (data_to_check[shift_i + 1, 3, :] & 0xF00) | (data_to_check_tmp[shift_i, 4, :] & 0xFF) # D4 => D3
+                data_to_check[shift_i + 1, 2, :] = (data_to_check[shift_i + 1, 2, :] & 0xF00) | (data_to_check_tmp[shift_i, 3, :] & 0xFF) # D3 => D2
+                data_to_check[shift_i + 1, 1, :] = (data_to_check[shift_i + 1, 1, :] & 0xF00) | (data_to_check_tmp[shift_i, 2, :] & 0xFF) # D2 => D1
+                data_to_check[shift_i + 1, 0, :] = (data_to_check[shift_i + 1, 0, :] & 0xF00) | (data_to_check_tmp[shift_i, 1, :] & 0xFF)# D1 => D0
+
+                # D0 Mi to D7 Mi-1
+                for matrix_i in range(1, self.matrix_nb):
+                    data_to_check[shift_i + 1, 7, matrix_i] = (data_to_check[shift_i + 1, 7, matrix_i] & 0xF00) | (data_to_check[shift_i, 0, matrix_i - 1] & 0xFF)
+
+
+        return data_to_check
+
