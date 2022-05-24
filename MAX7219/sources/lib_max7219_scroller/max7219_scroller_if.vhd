@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2020-08-26
--- Last update: 2022-02-22
+-- Last update: 2022-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ begin  -- architecture behv
 
       -- Set New Data on Segment_0 of G_MATRIX_NB - 1 (Last Matrix)
       if(i_seg_data_valid = '1') then
-        s_matrix_array(G_MATRIX_NB - 1)(63 downto 56) <= i_seg_data;
+        s_matrix_array(G_MATRIX_NB - 1)(7 downto 0) <= i_seg_data;--(63 downto 56) <= i_seg_data;
         s_new_data_flag                             <= '1';
       elsif(s_shift_matrix = '1') then
 
@@ -129,12 +129,14 @@ begin  -- architecture behv
           -- Segment 0 of Matrix i+1 go to Segment 7 of Matrix i
           -- D0 to D7
           if(i < G_MATRIX_NB - 1) then
-            s_matrix_array(i)(63 downto 56) <= s_matrix_array(i+1)(7 downto 0);
+            --s_matrix_array(i)(63 downto 56) <= s_matrix_array(i+1)(7 downto 0);
+            s_matrix_array(i)(7 downto 0) <= s_matrix_array(i+1)(63 downto 56);
           end if;
 
           -- Shift Segment
           -- D7 => D1 to D6 => D0
-          s_matrix_array(i)(55 downto 0) <= s_matrix_array(i)(63 downto 8);
+         -- s_matrix_array(i)(55 downto 0) <= s_matrix_array(i)(63 downto 8);
+          s_matrix_array(i)(63 downto 8) <= s_matrix_array(i)(55 downto 0);
         end loop;  -- i
 
       else                              --if(s_matrix_updated_flag = '1') then

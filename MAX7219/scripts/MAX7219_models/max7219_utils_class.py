@@ -32,7 +32,7 @@ class max7219_utils_class:
             # For n Matrix
             for j in range(0, matrix_nb):
                 # Digit i
-                out_data_list[(i + 1)*matrix_nb - j - 1] = ((7-i + 1) << 8) | data_list[j*matrix_nb + (7-i)] # Concat ADDR and DATA
+                out_data_list[(i + 1)*matrix_nb - j - 1] = ((i + 1) << 8) | data_list[j*matrix_nb + (7-i)] # Concat ADDR and DATA
                 if(j == matrix_nb - 1):
                     out_data_list[j + i*matrix_nb] = out_data_list[j + i*matrix_nb] + 0x1000 # Add Load Enable
                 
