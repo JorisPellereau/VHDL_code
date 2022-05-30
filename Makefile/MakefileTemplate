@@ -14,15 +14,13 @@
 # == Makefile Configuration ==
 SEL_STATION=LINUX
 ROOT=$(PWD)/..
-PROJECT_NAME=UART
+PROJECT_NAME=TBD
 WORK_DIR=UART_WORK
-SCN_LIB_DIR=scn_lib_uart_display_ctrl
-LIB_TB_TOP=lib_tb_uart_display_ctrl
 TRANSCRIPT_EN=OFF
 # ============================
 
 # == SOURCES DIRECTORY ==
-SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
+SRC_TBD_DIR=~/Documents/GitHub/VHDL_code/TBD
 # =======================
 
 # == DESIGN LIBRARIES ==
@@ -210,4 +208,59 @@ run_tb_uart_display_ctrl:
 # ==============
 
 
+# == CODE COVERAGE ==
+
+# Compile 
+ghdl_gcc_compile_uart_display_ctrl_tb:
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_others)" GHDL_WORK_LIB_NAME=$(LIB_OTHERS) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_interface)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_INTERFACE) \
+	P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_static)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_STATIC) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_scroller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_SCROLLER) \
+	COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	echo $(P_ARGS)
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_max7219_controller)" GHDL_WORK_LIB_NAME=$(LIB_MAX7219_CONTROLLER) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_lib_uart)" GHDL_WORK_LIB_NAME=$(LIB_UART) COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_vhd_lib_uart_display_ctrl)" GHDL_WORK_LIB_NAME=$(LIB_UART_DISPLAY_CTRL) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_code_cov_tb_vhd)" GHDL_WORK_LIB_NAME=$(LIB_CODE_COVERAGE) COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_analysis_vhd_src SRC_VHD="$(src_tb_coverage_uart_display_ctrl)" GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE) P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_elaboration_vhd_src GHDL_WORK_LIB_NAME=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE) GHDL_TOP_UNIT=tb_top \
+	P_ARGS_EN=ON COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE CODE_COV_EN=ON
+
+# SIMU_TIME must be passed as argument
+GHDL_RUN_ARGS_CONTROLLER+=--vcd=/home/linux-jp/SIMULATION_VHDL/run_code_cov_uart_display_ctrl.vcd
+ghdl_gcc_run_uart_display_ctrl_tb:
+	make export_simu_time TEST_GROUP=UART_DISPLAY_CTRL
+	echo $(SIMU_TIME)
+	make ghdl_gcc_run COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE GHDL_TOP_UNIT=tb_top TIME=$(SIMU_TIME) GHDL_GCC_RUN_ARGS=$(GHDL_RUN_ARGS_CONTROLLER)
+
+ghdl_gcc_gen_code_cov_controller_tb:
+	make ghdl_gcc_lcov COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+	make ghdl_gcc_genhtml COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+
+clean_code_cov_uart_display_ctrl:
+	rm -rRf $(HDL_SIMU_PATH)/$(GHDL_WORK_DIR)/UART_DISPLAY_CTRL_CODE_COVERAGE/*
+
+# TEST_GROUP must be passed as argument
+# SIMU_TIME must be passed as argument
+run_uart_display_ctrl_code_coverage: clean_code_cov_uart_display_ctrl ghdl_gcc_compile_uart_display_ctrl_tb ghdl_gcc_run_uart_display_ctrl_tb ghdl_gcc_gen_code_cov_controller_tb
+	make ghdl_gcc_open_coverage_html COVERAGE_DIR=UART_DISPLAY_CTRL_CODE_COVERAGE
+# ===================
+
+# TEST must be pass as argument
+generate_collect_opti_files:
+	python $(FILE_OPTI_SCRIPT) $(UART_COLLECT_PATH)/$(TEST)_collect.txt  $(UART_COLLECT_PATH)/$(TEST)_collect_opti.txt
+
+generate_collect_all_opti_files:
+	$(foreach list, $(UART_DISPLAY_CTRL_TEST_LIST), python $(FILE_OPTI_SCRIPT) $(UART_COLLECT_PATH)/$(list)_collect.txt $(UART_COLLECT_PATH)/$(list)_collect_opti.txt;) \
+
+
+# == SONAR ==
+sonar_vhdl_file:
+	make run_rc_sonnar SONAR_SRC_LIST="$(src_vhd_lib_uart_display_ctrl)"
+# ===========
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube

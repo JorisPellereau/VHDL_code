@@ -23,12 +23,14 @@ ifeq ($(SEL_STATION), VM)
   GENERIC_TB_CLASS_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_uart
   TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_data_collector
+  TB_DATA_CHECKER_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_data_checker
 else ifeq ($(SEL_STATION), LINUX)
   GENERIC_TB_VHD_SRC_DIR=~/Documents/GitHub/VHDL_code/Testbench
   GENERIC_TB_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   GENERIC_TB_CLASS_SRC_DIR=~/Documents/GitHub/Verilog/Testbench/sources
   TB_UART_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_uart
   TB_DATA_COLLECTOR_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_data_collector
+  TB_DATA_CHECKER_SRC_V_DIR=~/Documents/GitHub/Verilog/Testbench/sources/lib_tb_data_checker
 endif
 # =========================================
 
@@ -101,7 +103,7 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_duration_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_check_level/check_level_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_modules_custom_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
-
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_utils/tb_utils_class.sv
 
 # -- CUSTOM TB Files --
 # -- UART TB MODULES --
@@ -109,6 +111,10 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
 # -- DATA COLLECTOR V FILES LIST --
 src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/data_collector.sv
 src_tb_data_collector_v+=$(TB_DATA_COLLECTOR_SRC_V_DIR)/tb_data_collector_class.sv
+
+# -- DATA CHECKER V FILES LIST ==
+src_tb_data_checker_v+=$(TB_DATA_CHECKER_SRC_V_DIR)/data_checker.sv
+src_tb_data_checker_v+=$(TB_DATA_CHECKER_SRC_V_DIR)/tb_data_checker_class.sv
 
 # -- Code Coverage TB Files --
 src_code_cov_tb_vhd+=$(GENERIC_TB_VHD_SRC_DIR)/lib_code_coverage/pkg_code_coverage.vhd
