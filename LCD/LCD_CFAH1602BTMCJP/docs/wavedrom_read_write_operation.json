@@ -1,0 +1,38 @@
+{signal: [
+  {name: 'clk',         wave: 'p............', period : 1 },
+  {},
+  ['Write operation',
+   {name: 'i_start',     wave: '0.10..........', period : 1},
+  {name: 'o_RS',        wave: 'x..0......x...',   node : '...a'},
+  {name: 'o_RW',        wave: 'x..0......x...',   node : '...b.c..i.j'},
+  {name: 'o_EN',        wave: '0....1..0.....',   node : '.....d..e.k.n'},
+  {name: 'o_data[7:0]', wave: 'x....3.....x..',   node : '......h',               data: ['data']},
+  {                                               node : '......f.g'},
+  {                                               node : '.....l......m'},
+  {name: 'o_done',     wave: '0..........10.'},
+   ],
+   
+  {},
+  ['Read operation',
+  {name: 'o_RS',        wave: 'x..0.....x...'},
+  {name: 'o_RW',        wave: 'x..0.....x...'},
+  {name: 'o_EN',        wave: '0...1..0.....'},
+  {name: 'o_data[7:0]', wave: 'x....3...x...', data: ['data']},
+   ],
+  {},
+],
+   edge: [
+   'a-|b',
+   'b<->c tAS>=500ns',
+   'c-d',
+   'd<->e PW >= 230ns',
+   'e-g',
+   'h-f', 'e-i', 'd-l','n-m',
+   'f<->g tDSW >= 80ns',
+   'j<->i tAH >= 10ns',
+   'e<->k tH >= 10ns',
+   'l<->m tcycE >= 500ns'
+  ]
+   
+   
+   }
