@@ -47,6 +47,13 @@ module tb_top
    wire        s_bidir_sel;
    wire        s_done;
    
+   reg [7:0]   io_data;
+
+   logic [7:0]  s_wdata_emul;
+   logic [7:0] 	s_rdata_emul;
+   logic 	s_rdata_val_emul;
+   
+   
    
 
    
@@ -124,22 +131,31 @@ module tb_top
    // SET WAIT EVENT SIGNALS
    assign s_wait_event_if.wait_signals[0] = rst_n;
    assign s_wait_event_if.wait_signals[1] = clk;
+   assign s_wait_event_if.wait_signals[2] = s_done;
+   assign s_wait_event_if.wait_signals[3] = s_rdata_val_emul;
+   
    
    // SET SET_INJECTOR SIGNALS
-  /* assign s_display_screen_sel            = s_set_injector_if.set_signals_synch[0];
-   assign s_display_screen_matrix         = s_set_injector_if.set_signals_synch[1];
-   assign s_display_reg_matrix_n          = s_set_injector_if.set_signals_synch[2];*/
- 
+   assign s_wdata     = s_set_injector_if.set_signals_synch[0];
+   assign s_rs        = s_set_injector_if.set_signals_synch[1];
+   assign s_rw        = s_set_injector_if.set_signals_synch[2];
+   assign s_start     = s_set_injector_if.set_signals_synch[3];
+   
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
    
    // SET CHECK_SIGNALS
-/*   assign s_check_level_if.check_signals[0] = s_max7219_data;
-   assign s_check_level_if.check_signals[1] = s_spi_data_received;
-   assign s_check_level_if.check_signals[2] = i_dut.s_max_tempo_cnt_scroller; // MAX Tempo scroller internal signal   
-  */ 
+   assign s_check_level_if.check_signals[0] = s_lcd_wdata;
+   assign s_check_level_if.check_signals[1] = s_lcd_rdata;   
+   assign s_check_level_if.check_signals[2] = s_lcd_rw;
+   assign s_check_level_if.check_signals[3] = s_lcd_en;
+   assign s_check_level_if.check_signals[4] = s_lcd_rs;
+   assign s_check_level_if.check_signals[5] = s_bidir_sel;
+   assign s_check_level_if.check_signals[6] = s_done;
+  
    // =====================================================
 
    wire clk_data_collector   [`C_NB_DATA_COLLECTOR - 1:0];
@@ -190,19 +206,24 @@ module tb_top
    initial begin// : TB_SEQUENCER
     
       // Add Alias of Generic TB Modules
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_SEL",    0);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_SCREEN_MATRIX", 1);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "DISPLAY_REG_MATRIX_N",  2);      
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WDATA", 0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RS",    1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RW",    2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START", 3);
       
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                 0);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                   1);      
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_FRAME_RECEIVED",    2);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "SPI_LOAD_RECEIVED",     3);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                0);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                  1);      
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_DONE",               2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "O_RDATA_VAL_EMUL",     3);
 
       // Check Level Alias
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX7219_DATA",            0);
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_SPI_DATA_RECEIVED",       1);
-      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "S_MAX_TEMPO_CNT_SCROLLER",  2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_LCD_WDATA",  0);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_LCD_RDATA",  1);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_LCD_RW",     2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_LCD_EN",     3);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_LCD_RS",     4);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_BIDIR_SEL",  5);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_DONE",       6);
 	
       // INIT DATA COLLECTOR MODULE
       tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "LCD_CFAH_ITF_INPUT_COLLECTOR_0");
@@ -236,11 +257,30 @@ module tb_top
 	  .o_lcd_rs    (s_lcd_rs),
 	  .o_bidir_sel (s_bidir_sel),
 	  .o_done      (s_done)
-	  );
-   
-
-   
+	  );      
    // ===============
 
+   // IO dir assignment
+   assign io_data    = s_bidir_sel ? s_lcd_wdata : 8'bz;
+   assign s_lcd_data = io_data;
+
+
+   // LCD EMULATOR-CHECKER
+   LCD_CFAH_emul (
+		  .clk   (clk),
+		  .rst_n (rst_n),
+
+		  // Physical Interface
+		  .i_rs    (s_rs),
+		  .i_rw    (s_rw),
+		  .i_en    (s_en),
+		  .io_data (io_data),
+		  
+		  // Check Interface
+		  .i_wdata     (s_wdata_emul), // Wdata for read operation
+		  .o_rdata     (s_rdata_emul), // Data received
+		  .o_rdata_val (s_rdata_val_emul)
+		  );
+   
    
 endmodule // tb_top

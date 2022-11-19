@@ -35,9 +35,10 @@ LIB_TB_UNIT_LCD_CFAH_ITF+=lib_tb_lib_unit_lcd_cfah_itf/
 # =========================
 
 # ==  LIB LIST ==
+LIB_LIST+=work
 LIB_LIST+=$(LIB_PKG_UTILS)
 LIB_LIST+=$(LIB_CFAH1602)
-#LIB_LIST+=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE)
+LIB_LIST+=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 # ================
 
 # ================ GHDL CONFIGURATION ================ #
@@ -86,7 +87,7 @@ all: print_generic_rules
 	@echo ""
 	@echo "========================="
 	@echo "== RUN TESTS =="
-	@echo "- "
+	@echo "- run_tb_unit_lcd_cfah_itf"
 	@echo "make TEST=[TEST_NB]"
 	@echo "==============="
 	@echo ""
@@ -114,8 +115,8 @@ all: print_generic_rules
 # 	fi
 # =======================
 
-SCN_LIB_DIR=scn_lib_uart_display_ctrl
-LIB_TB_TOP=lib_tb_uart_display_ctrl
+SCN_LIB_DIR=scn_lib_unit_lcd_cfah_itf
+LIB_TB_TOP=lib_tb_unit_lcd_cfah_itf
 
 # == DESIGN VHD FILE LIST ==
 
@@ -126,7 +127,7 @@ src_lib_CFAH1602=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 # ==========================
 
 # == TESTBENCH V FILES LIST ==
-src_tb_v+=
+src_tb_v+=/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/TB_modules/LCD_CFAH_checker/LCD_CFAH_emul.sv
 # =================================
 
 
@@ -161,6 +162,7 @@ compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
 compile_tb_unit_lcd_cfah_sources:
+	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_unit_lcd_cfah_itf_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
 # == COMPILE ALL TESTBENCH files ==
@@ -168,23 +170,17 @@ compile_tb_unit_lcd_cfah_itf : compile_generic_tb_v_files compile_tb_unit_lcd_cf
 # =======================
 
 # Compile TB UNIT LCD CFAH Interface
-compile_all_unit_lcd_cfah_itf: compile_lcd_cfah compile_tb_unit_lcd_cfah_itf print_compile_logs_file
+compile_all_unit_lcd_cfah_itf: clean_all create_project_dir libs compile_lcd_cfah compile_tb_unit_lcd_cfah_itf print_compile_logs_file
 
 # == SCENARII LIST ==
-SCN_LIST+=UNIT_LCD_CFAH_ITF_00.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_01.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_02.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_03.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_04.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_05.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_06.py
-SCN_LIST+=UNIT_LCD_CFAH_ITF_07.py
+SCN_LIST+=LCD_CFAH_ITF_00.py
+
 
 
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L lib_max7219_controller -L lib_unit_lcd_cfah_itf
+LIB_ARGS=-L lib_pkg_utils
 # ==============
 
 

@@ -21,8 +21,8 @@
 
 
 // SET ALIAS Configuration
-`define C_SET_ALIAS_NB 3
-`define C_SET_SIZE     3
+`define C_SET_ALIAS_NB 4
+`define C_SET_SIZE     4
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration
@@ -30,8 +30,8 @@
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 3
-`define C_CHECK_SIZE     3
+`define C_CHECK_ALIAS_NB 7
+`define C_CHECK_SIZE     7
 `define C_CHECK_WIDTH    32
 
 // DATA COLLECTOR Configuration
