@@ -13,7 +13,7 @@ package pkg_lcd_cfah is
   constant C_tDDR_DURATION   : integer := 160;  -- 160 ns
 
   -- Convert a clock period in [ns] to a number of period
-  function clk_period_to_max(i_clk_period : integer, i_duration : integer)
+  function clk_period_to_max(i_clk_period : integer; i_duration : integer)
     return integer;
 
 end package pkg_lcd_cfah;
@@ -21,7 +21,7 @@ end package pkg_lcd_cfah;
 package body pkg_lcd_cfah is
 
   -- Convert a clock period in [ns] to a number of period
-  function clk_period_to_max(i_clk_period : integer, i_duration : integer)
+  function clk_period_to_max(i_clk_period : integer; i_duration : integer)
     return integer is
 
     -- Internal Variables

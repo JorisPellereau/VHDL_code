@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
 library lib_CFAH1602;
-use lib_CFAH1602.pkg_cfah.all;
+use lib_CFAH1602.pkg_lcd_cfah.all;
 
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
@@ -12,7 +12,7 @@ use lib_pkg_utils.pkg_utils.all;
 entity lcd_cfah_intf is
 
   generic (
-    G_CLK_PERIOD_NS      : integer   := 20,  -- Clock Period in ns
+    G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
     G_BIDIR_SEL_POLARITY : std_logic := '1'  -- BIDIR SEL Polarity
     );
   port (
@@ -76,12 +76,12 @@ begin  -- architecture rtl
         s_wdata   <= i_wdata;
 
       -- When counter Reach -> Reset
-      elsif(s_cnt = conv_unsigned((C_tAS_MAX + C_PWeh_MAX + C_tH_tAH_MAX - 1), s_cnt'length)) then
+      elsif(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX + C_PWeh_MAX + C_tH_tAH_MAX - 1), s_cnt'length)) then
         s_rs <= '0';
         s_rw <= '0';
 
       -- Counter Reach
-      elsif(s_cnt = conv_unsigned((C_CNT_MAX - 1), s_cnt'length)) then
+      elsif(unsigned(s_cnt) = conv_unsigned((C_CNT_MAX - 1), s_cnt'length)) then
         s_ongoing <= '0';
         s_wdata   <= (others => '0');
       end if;
@@ -100,7 +100,7 @@ begin  -- architecture rtl
 
                                         -- On start or Ongoing -> Inc counter
       if(i_start = '1' or s_ongoing = '1') then
-        if(s_cnt < conv_unsigned((C_CNT_MAX - 1), s_cnt'length)) then
+        if(unsigned(s_cnt) < conv_unsigned((C_CNT_MAX - 1), s_cnt'length)) then
           s_cnt <= unsigned(s_cnt) + 1;
         else
           o_done <= '1';
@@ -121,9 +121,9 @@ begin  -- architecture rtl
       s_en <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(s_cnt = conv_unsigned((C_tAS_MAX - 1), s_cnt'length)) then
+      if(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX - 1), s_cnt'length)) then
         s_en <= '1';
-      elsif(s_cnt = conv_unsigned((C_tAS_MAX + C_PWeh_MAX - 1), s_cnt'length)) then
+      elsif(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX + C_PWeh_MAX - 1), s_cnt'length)) then
         s_en <= '0';
       end if;
 
@@ -144,9 +144,9 @@ begin  -- architecture rtl
       else
 
         -- tAS Duration
-        if(s_cnt = conv_unsigned((C_tAS_MAX - 1), s_cnt'length)) then
+        if(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX - 1), s_cnt'length)) then
           o_lcd_wdata <= s_wdata;
-        elsif(s_cnt = conv_unsigned((C_tAS_MAX + C_PWeh_MAX + C_tH_tAH_MAX - 1), s_cnt'length)) then
+        elsif(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX + C_PWeh_MAX + C_tH_tAH_MAX - 1), s_cnt'length)) then
           o_lcd_wdata <= (others => '0');
         end if;
       end if;
@@ -166,7 +166,7 @@ begin  -- architecture rtl
       if(s_rw = '1') then
 
         -- Latch Rdata
-        if(s_cnt = conv_unsigned((C_tAS_MAX + C_PWeh_MAX - 1), s_cnt'length)) then
+        if(unsigned(s_cnt) = conv_unsigned((C_tAS_MAX + C_PWeh_MAX - 1), s_cnt'length)) then
           o_lcd_rdata <= i_lcd_data;    -- Latch Data for Reading       
         end if;
 
