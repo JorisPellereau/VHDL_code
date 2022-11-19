@@ -98,8 +98,9 @@ class macros_max_scroller_class:
                     print("shift_i : %d" %(shift_i))
                     offset = 256
                     
-                data_to_check[shift_i, 7, 0] = data_to_check[shift_i, 7, 0] | ram_data[ram_addr + shift_i - offset]
-               
+                data_to_check[shift_i, 0, 0] = data_to_check[shift_i, 0, 0] | ram_data[ram_addr + shift_i - offset]
+#                data_to_check[shift_i, 7, 0] = data_to_check[shift_i, 7, 0] | ram_data[ram_addr + shift_i - offset]
+                #data_to_check[shift_i, 7, 7] = data_to_check[shift_i, 7, 7] | ram_data[ram_addr + shift_i - offset]
 
             # Loop On 8 Digits
             for digit_i in range(0, 8):
@@ -119,13 +120,13 @@ class macros_max_scroller_class:
             # Update data_to_check by shift it
             if(shift_i < shift_nb - 1):
                 
-                data_to_check[shift_i + 1, 6, :] = (data_to_check[shift_i + 1, 6, :] & 0xF00) | (data_to_check_tmp[shift_i, 7, :] & 0xFF)# D7 => D6
-                data_to_check[shift_i + 1, 5, :] = (data_to_check[shift_i + 1, 5, :] & 0xF00) | (data_to_check_tmp[shift_i, 6, :] & 0xFF)# D6 => D5
-                data_to_check[shift_i + 1, 4, :] = (data_to_check[shift_i + 1, 4, :] & 0xF00) | (data_to_check_tmp[shift_i, 5, :] & 0xFF)# D5 => D4
+                data_to_check[shift_i + 1, 6, :] = (data_to_check[shift_i + 1, 6, :] & 0xF00) | (data_to_check_tmp[shift_i, 7, :] & 0xFF) # D7 => D6
+                data_to_check[shift_i + 1, 5, :] = (data_to_check[shift_i + 1, 5, :] & 0xF00) | (data_to_check_tmp[shift_i, 6, :] & 0xFF) # D6 => D5
+                data_to_check[shift_i + 1, 4, :] = (data_to_check[shift_i + 1, 4, :] & 0xF00) | (data_to_check_tmp[shift_i, 5, :] & 0xFF) # D5 => D4
                 data_to_check[shift_i + 1, 3, :] = (data_to_check[shift_i + 1, 3, :] & 0xF00) | (data_to_check_tmp[shift_i, 4, :] & 0xFF) # D4 => D3
                 data_to_check[shift_i + 1, 2, :] = (data_to_check[shift_i + 1, 2, :] & 0xF00) | (data_to_check_tmp[shift_i, 3, :] & 0xFF) # D3 => D2
                 data_to_check[shift_i + 1, 1, :] = (data_to_check[shift_i + 1, 1, :] & 0xF00) | (data_to_check_tmp[shift_i, 2, :] & 0xFF) # D2 => D1
-                data_to_check[shift_i + 1, 0, :] = (data_to_check[shift_i + 1, 0, :] & 0xF00) | (data_to_check_tmp[shift_i, 1, :] & 0xFF)# D1 => D0
+                data_to_check[shift_i + 1, 0, :] = (data_to_check[shift_i + 1, 0, :] & 0xF00) | (data_to_check_tmp[shift_i, 1, :] & 0xFF) # D1 => D0
 
                 # D0 Mi to D7 Mi-1
                 for matrix_i in range(1, matrix_nb):

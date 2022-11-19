@@ -70,26 +70,26 @@ module tb_top
 
 
    // == TESTBENCH GENERIC INTERFACE SIGNALS DECLARATIONS ==
-    wait_event_intf #( .WAIT_SIZE   (`C_WAIT_ALIAS_NB),
-                       .WAIT_WIDTH  (`C_WAIT_WIDTH)
-    ) 
-    s_wait_event_if();
-
-    set_injector_intf #( .SET_SIZE   (`C_SET_ALIAS_NB),
-			 .SET_WIDTH  (`C_SET_WIDTH)
-    )
-    s_set_injector_if();
- 
-    wait_duration_intf s_wait_duration_if();
+   wait_event_intf #( .WAIT_SIZE   (`C_WAIT_ALIAS_NB),
+                      .WAIT_WIDTH  (`C_WAIT_WIDTH)
+		      ) 
+   s_wait_event_if();
    
-    assign s_wait_duration_if.clk = clk;
+   set_injector_intf #( .SET_SIZE   (`C_SET_ALIAS_NB),
+			.SET_WIDTH  (`C_SET_WIDTH)
+			)
+   s_set_injector_if();
+   
+   wait_duration_intf s_wait_duration_if();
+   
+   assign s_wait_duration_if.clk = clk;
    
 
    check_level_intf #( .CHECK_SIZE   (`C_CHECK_ALIAS_NB),
 		       .CHECK_WIDTH  (`C_CHECK_WIDTH)
 		       )
    s_check_level_if();
-
+   
    data_collector_intf #(
 			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
 			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
@@ -98,26 +98,26 @@ module tb_top
    
 
 
-    // == HDL GENERIC TESTBENCH MODULES ==
+   // == HDL GENERIC TESTBENCH MODULES ==
 
-    // WAIT EVENT TB WRAPPER INST
-    wait_event_wrapper #(.CLK_PERIOD (`C_TB_CLK_PERIOD)
-    )
-    i_wait_event_wrapper (
-       .clk            (clk),
-       .rst_n          (rst_n),
-       .wait_event_if  (s_wait_event_if)			 
-    );
-
-
-    // SET INJECTOR TB WRAPPER INST
-    set_injector_wrapper #()
-    i_set_injector_wrapper (
-       .clk              (clk),
-       .rst_n            (rst_n),
-       .set_injector_if  (s_set_injector_if)			   
-    );
-
+   // WAIT EVENT TB WRAPPER INST
+   wait_event_wrapper #(.CLK_PERIOD (`C_TB_CLK_PERIOD)
+			)
+   i_wait_event_wrapper (
+			 .clk            (clk),
+			 .rst_n          (rst_n),
+			 .wait_event_if  (s_wait_event_if)			 
+			 );
+   
+   
+   // SET INJECTOR TB WRAPPER INST
+   set_injector_wrapper #()
+   i_set_injector_wrapper (
+			   .clk              (clk),
+			   .rst_n            (rst_n),
+			   .set_injector_if  (s_set_injector_if)			   
+			   );
+   
    
    // =====================================================
 

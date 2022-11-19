@@ -42,7 +42,7 @@ scn.DATA_COLLECTOR_START("MAX7219_SCROLLER_INPUT_COLLECTOR_0", 0)
 
 # == VARIABLES ==
 random.seed("MAX7219_SCROLLER_04")
-ram_data      = [random.randint(0, 255) for i in range(256)]
+ram_data      = [0x01]*256#random.randint(0, 255) for i in range(256)]
 msg_length    = 0x1
 ram_addr      = 0
 max_tempo_cnt = 0x000000FF

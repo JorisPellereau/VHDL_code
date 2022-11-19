@@ -6,7 +6,7 @@
 -- Author     : JorisP  <jorisp@jorisp-VirtualBox>
 -- Company    : 
 -- Created    : 2021-05-11
--- Last update: 2021-10-23
+-- Last update: 2022-05-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -141,8 +141,8 @@ begin  -- architecture behv
       G_RAM_DATA_WIDTH_SCROLLER => 8,
 
       -- MAX7219 I/F GENERICS
-      G_MAX_HALF_PERIOD => 2*25,        --4,
-      G_LOAD_DURATION   => 4,           --4,
+      G_MAX_HALF_PERIOD => 4,--25,--2*25,        --4 => 6.5MHZ -- 25 => 1MHz,
+      G_LOAD_DURATION   => 4,--40,           --4,
 
       -- MAX7219 STATIC CTRL GENERICS
       G_DECOD_MAX_CNT_32B => x"02FAF080"

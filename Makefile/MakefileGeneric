@@ -374,7 +374,11 @@ export_simu_time:
 
 # ==================================================
 
-
+# == Print Test List from a folder ==
+print_test:
+	@ls $(TEST_LIST) | grep [a-zA-Z0-9_]*.py$
+	
+# ===================================
 
 
 # == Add Color ==
