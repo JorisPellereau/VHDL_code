@@ -26,7 +26,7 @@ foreach inst $inst_list {
 
 foreach inst $ilist {
   # Remove /tb_top path
-  set inst2 [regsub {(/tb_top)} $inst ""]; # Remove Testbench TOP Inst
+  set inst2 [regsub $1 $inst ""]; # Remove Testbench TOP Inst
 
   # Convert path to command
   set inst_split [split $inst2 /]
