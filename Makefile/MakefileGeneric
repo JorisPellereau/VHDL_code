@@ -251,13 +251,13 @@ clean_all:
 prepare_libs:
 	if [ -d $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR) ]; then \
 	  cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	  $(foreach list, $(LIB_LIST), $(vlib) ./$(list);) \
+	  $(foreach list, $(LIB_LIST), $(vlib) ./$(list) >> $(COMPILE_LOGS_FILE);) \
 	fi
 
 create_libs:
 	if [ -d $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR) ]; then \
 	  cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	  $(foreach list, $(LIB_LIST), $(vmap) $(list) $(list);) \
+	  $(foreach list, $(LIB_LIST), $(vmap) $(list) $(list) >> $(COMPILE_LOGS_FILE);) \
 	fi
 
 

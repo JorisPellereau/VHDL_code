@@ -2,12 +2,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
-library lib_CFAH1602;
-use lib_CFAH1602.pkg_lcd_cfah.all;
-
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
 
+library lib_CFAH1602;
+use lib_CFAH1602.pkg_lcd_cfah.all;
 
 entity lcd_cfah_intf is
 

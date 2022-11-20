@@ -22,7 +22,7 @@ TRANSCRIPT_EN=OFF
 
 
 # == SOURCES DIRECTORY ==
-#SRC_MAX7219_DIR=~/Documents/GitHub/VHDL_code/MAX7219/sources
+
 # =======================
 
 # == DESIGN LIBRARIES ==
@@ -31,11 +31,15 @@ LIB_CFAH1602=lib_CFAH1602
 # ======================
 
 # == TESTBENCH LIBRARIES ==
-LIB_TB_UNIT_LCD_CFAH_ITF+=lib_tb_lib_unit_lcd_cfah_itf/
+LIB_TB_UNIT_LCD_CFAH_ITF+=lib_tb_lib_unit_lcd_cfah_itf
 # =========================
 
 # ==  LIB LIST ==
+<<<<<<< Updated upstream
 LIB_LIST+=work
+=======
+#LIB_LIST+=work
+>>>>>>> Stashed changes
 LIB_LIST+=$(LIB_PKG_UTILS)
 LIB_LIST+=$(LIB_CFAH1602)
 LIB_LIST+=$(LIB_TB_UNIT_LCD_CFAH_ITF)
@@ -50,14 +54,7 @@ LIB_LIST+=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 # ========================
 
 # == GHDL LIB LIST ==
-# GHDL_LIB_LIST+=$(LIB_MAX7219_INTERFACE)
-# GHDL_LIB_LIST+=$(LIB_MAX7219_STATIC)
-# GHDL_LIB_LIST+=$(LIB_MAX7219_SCROLLER)
-# GHDL_LIB_LIST+=$(LIB_MAX7219_CONTROLLER)
-# GHDL_LIB_LIST+=$(LIB_UART)
-# GHDL_LIB_LIST+=$(LIB_UART_DISPLAY_CTRL)
-# GHDL_LIB_LIST+=$(LIB_CODE_COVERAGE)
-# GHDL_LIB_LIST+=$(LIB_TB_TOP_UART_DISPLAY_CTRL_COVERAGE)
+# GHDL_LIB_LIST+=
 # ===================
 
 # == PYTHON SCRIPTS PATH ==
@@ -122,7 +119,7 @@ LIB_TB_TOP=lib_tb_unit_lcd_cfah_itf
 
 src_lib_pkg_utils=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_utils/pkg_utils.vhd
 src_lib_CFAH1602=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah.vhd
-src_lib_CFAH1602=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 
 # ==========================
 
@@ -145,10 +142,11 @@ src_tb_lib_unit_lcd_cfah_itf_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_itf/tb_top.sv
 ## == COMPILE DESIGN == ##
 
 compile_pkg_utils:
-	make compile_design_vhd_files SRC_VHD="$(src_lib_pkg_utils)" VHD_DESIGN_LIB="$(LIB_PKG_UTILS)"
+	make compile_design_vhd_files SRC_VHD="$(src_lib_pkg_utils)" VHD_DESIGN_LIB=$(LIB_PKG_UTILS)
 
 compile_lcd_cfah_itf:
-	make compile_design_vhd_files SRC_VHD="$(src_lib_CFAH1602)" VHD_DESIGN_LIB="$(LIB_CFAH1602)"
+	make compile_design_vhd_files SRC_VHD="$(src_lib_pkg_utils)" VHD_DESIGN_LIB=lib_CFAH1602
+	make compile_design_vhd_files SRC_VHD="$(src_lib_CFAH1602)"  VHD_DESIGN_LIB=lib_CFAH1602
 
 
 # == Compile Design Library here ==
