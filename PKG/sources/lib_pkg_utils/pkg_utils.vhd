@@ -21,7 +21,7 @@ package body pkg_utils is
 
     -- Integer on MAX 32 Bits
     for i in 0 to 32 loop
-      if(2**i_int < i_int) then
+      if(2**v_cnt < i_int) then
         v_cnt := v_cnt + 1;             --Inc
       end if;
     end loop;  -- i

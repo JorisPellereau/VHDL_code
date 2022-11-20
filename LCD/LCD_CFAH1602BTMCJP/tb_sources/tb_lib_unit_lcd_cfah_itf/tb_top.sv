@@ -47,7 +47,7 @@ module tb_top
    wire        s_bidir_sel;
    wire        s_done;
    
-   reg [7:0]   io_data;
+   wire [7:0]   io_data;
 
    logic [7:0]  s_wdata_emul;
    logic [7:0] 	s_rdata_emul;
@@ -266,21 +266,21 @@ module tb_top
 
 
    // LCD EMULATOR-CHECKER
-   LCD_CFAH_emul (
-		  .clk   (clk),
-		  .rst_n (rst_n),
-
-		  // Physical Interface
-		  .i_rs    (s_rs),
-		  .i_rw    (s_rw),
-		  .i_en    (s_en),
-		  .io_data (io_data),
-		  
-		  // Check Interface
-		  .i_wdata     (s_wdata_emul), // Wdata for read operation
-		  .o_rdata     (s_rdata_emul), // Data received
-		  .o_rdata_val (s_rdata_val_emul)
-		  );
+   LCD_CFAH_emul i_LCD_CFAH_emul (
+				  .clk   (clk),
+				  .rst_n (rst_n),
+				  
+				  // Physical Interface
+				  .i_rs    (s_rs),
+				  .i_rw    (s_rw),
+				  .i_en    (s_en),
+				  .io_data (io_data),
+				  
+				  // Check Interface
+				  .i_wdata     (s_wdata_emul), // Wdata for read operation
+				  .o_rdata     (s_rdata_emul), // Data received
+				  .o_rdata_val (s_rdata_val_emul)
+				  );
    
    
 endmodule // tb_top

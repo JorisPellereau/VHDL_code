@@ -31,15 +31,11 @@ LIB_CFAH1602=lib_CFAH1602
 # ======================
 
 # == TESTBENCH LIBRARIES ==
-LIB_TB_UNIT_LCD_CFAH_ITF+=lib_tb_lib_unit_lcd_cfah_itf
+LIB_TB_UNIT_LCD_CFAH_ITF=lib_tb_lib_unit_lcd_cfah_itf
 # =========================
 
 # ==  LIB LIST ==
-<<<<<<< Updated upstream
-LIB_LIST+=work
-=======
-#LIB_LIST+=work
->>>>>>> Stashed changes
+LIB_LSIT+=work
 LIB_LIST+=$(LIB_PKG_UTILS)
 LIB_LIST+=$(LIB_CFAH1602)
 LIB_LIST+=$(LIB_TB_UNIT_LCD_CFAH_ITF)
@@ -113,7 +109,7 @@ all: print_generic_rules
 # =======================
 
 SCN_LIB_DIR=scn_lib_unit_lcd_cfah_itf
-LIB_TB_TOP=lib_tb_unit_lcd_cfah_itf
+LIB_TB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
 # == DESIGN VHD FILE LIST ==
 
@@ -158,6 +154,7 @@ compile_lcd_cfah : compile_pkg_utils compile_lcd_cfah_itf
 
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
 compile_tb_unit_lcd_cfah_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
@@ -178,7 +175,7 @@ SCN_LIST+=LCD_CFAH_ITF_00.py
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L lib_pkg_utils
+LIB_ARGS=-L lib_pkg_utils -L lib_CFAH1602
 # ==============
 
 

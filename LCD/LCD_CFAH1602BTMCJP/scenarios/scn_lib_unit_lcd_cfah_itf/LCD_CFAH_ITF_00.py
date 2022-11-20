@@ -31,13 +31,12 @@ scn.print_step("Wait for Reset")
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
-
 scn.SET("I_WDATA", 0xAA)
 scn.SET("I_RS", 0)
 scn.SET("I_RW", 0)
-scn.WTF("CLK")
+scn.WTFS("CLK")
 scn.SET("I_START", 1)
-scn.WTF("CLK")
+scn.WTFS("CLK")
 scn.SET("I_START", 0)
 
 scn.WTR("O_DONE", 10, "ms")

@@ -8,7 +8,7 @@ use lib_pkg_utils.pkg_utils.all;
 library lib_CFAH1602;
 use lib_CFAH1602.pkg_lcd_cfah.all;
 
-entity lcd_cfah_intf is
+entity lcd_cfah_itf is
 
   generic (
     G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
@@ -32,9 +32,9 @@ entity lcd_cfah_intf is
     o_bidir_sel : out std_logic;                     -- Bidir Selector
     o_done      : out std_logic);                    -- Done flag
 
-end entity lcd_cfah_intf;
+end entity lcd_cfah_itf;
 
-architecture rtl of lcd_cfah_intf is
+architecture rtl of lcd_cfah_itf is
 
   -- CONSTANTS
   constant C_tAS_MAX    : integer := clk_period_to_max(G_CLK_PERIOD_NS, C_tAS_DURATION);  -- Max Counter value of tAS Duration
@@ -55,7 +55,6 @@ architecture rtl of lcd_cfah_intf is
   signal s_cnt_tcycen_done : std_logic;                     -- Counter done
 
 begin  -- architecture rtl
-
 
   -- purpose: RS and RW - Ongoing flag and reset mangement
   p_rs_rw_mngt : process (clk, rst_n) is
@@ -190,4 +189,6 @@ begin  -- architecture rtl
   -- Outputs affectation
   o_lcd_rs <= s_rs;
   o_lcd_rw <= s_rw;
+  o_lcd_en <= s_en;
+  
 end architecture rtl;
