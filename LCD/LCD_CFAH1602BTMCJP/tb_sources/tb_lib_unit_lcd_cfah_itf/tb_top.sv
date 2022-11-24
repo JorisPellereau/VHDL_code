@@ -140,7 +140,7 @@ module tb_top
    assign s_rs        = s_set_injector_if.set_signals_synch[1];
    assign s_rw        = s_set_injector_if.set_signals_synch[2];
    assign s_start     = s_set_injector_if.set_signals_synch[3];
-   
+   assign s_wdata_emul = s_set_injector_if.set_signals_synch[4];
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
@@ -210,6 +210,8 @@ module tb_top
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RS",    1);
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RW",    2);
       tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START", 3);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA_EMUL", 4);
+      
       
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                0);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",                  1);      
@@ -271,9 +273,9 @@ module tb_top
 				  .rst_n (rst_n),
 				  
 				  // Physical Interface
-				  .i_rs    (s_rs),
-				  .i_rw    (s_rw),
-				  .i_en    (s_en),
+				  .i_rs    (s_lcd_rs),
+				  .i_rw    (s_lcd_rw),
+				  .i_en    (s_lcd_en),
 				  .io_data (io_data),
 				  
 				  // Check Interface

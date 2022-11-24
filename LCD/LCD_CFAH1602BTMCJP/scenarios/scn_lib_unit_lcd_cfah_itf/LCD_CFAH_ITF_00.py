@@ -6,6 +6,7 @@
 
 import sys
 import os
+import random
 # Path of Python SCN scripts generator
 scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/scn_generator'
 sys.path.append(scn_generator_class)
@@ -14,9 +15,12 @@ sys.path.append(scn_generator_class)
 import scn_class
 
 
+sys.path.append("/home/linux-jp/Documents/GitHub/VHDL_code/LCD/LCD_CFAH1602BTMCJP/scripts/python_scripts/")
+import macros_tb_unit_lcd_cfah_itf
 
 # Create SCN Class
-scn = scn_class.scn_class()
+scn       = scn_class.scn_class()
+macros_tb = macros_tb_unit_lcd_cfah_itf.macros_tb_unit_lcd_cfah_itf(scn)
 
 # == Collect Path ==
 #collect_path = "/home/linux-jp/SIMULATION_VHDL/UART_COLLECT/{0}_collect.txt".format(os.path.basename(__file__)[:-3])
@@ -31,16 +35,21 @@ scn.print_step("Wait for Reset")
 
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
-scn.SET("I_WDATA", 0xAA)
-scn.SET("I_RS", 0)
-scn.SET("I_RW", 0)
-scn.WTFS("CLK")
-scn.SET("I_START", 1)
-scn.WTFS("CLK")
-scn.SET("I_START", 0)
 
-scn.WTR("O_DONE", 10, "ms")
+macros_tb.lcd_wr_byte(rs    = 0,
+                      wdata = 0xAA)
 
+macros_tb.lcd_rd_byte(rs    = 0,
+                      rdata = 0xBB)
+
+
+
+nb_wr = 10
+for i in range(0, nb_wr):
+    macros_tb.lcd_wr_byte(rs    = 0,
+                          wdata = random.randrange(0, 256))
+
+    
 
     
 #scn.DATA_COLLECTOR_STOP("UART_DISPLAY_CTRL_INPUT_COLLECTOR_0", 0)

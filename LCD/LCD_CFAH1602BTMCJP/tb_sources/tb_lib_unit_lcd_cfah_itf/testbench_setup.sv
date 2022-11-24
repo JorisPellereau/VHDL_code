@@ -21,8 +21,8 @@
 
 
 // SET ALIAS Configuration
-`define C_SET_ALIAS_NB 4
-`define C_SET_SIZE     4
+`define C_SET_ALIAS_NB 5
+`define C_SET_SIZE     5
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration
