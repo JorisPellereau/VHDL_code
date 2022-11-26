@@ -28,7 +28,7 @@ class macros_tb_unit_lcd_cfah_itf:
             self.scn.WTFS("CLK")
             self.scn.SET("I_START", 0)
             
-            self.scn.WTRS("O_DONE", 1, "us")
+            self.scn.WTRS("O_DONE", 500, "ns")
 
 
         def lcd_rd_byte(self, rs, rdata):
@@ -43,6 +43,6 @@ class macros_tb_unit_lcd_cfah_itf:
             self.scn.WTFS("CLK")
             self.scn.SET("I_START", 0)
             
-            self.scn.WTRS("O_DONE", 1, "us")
+            self.scn.WTRS("O_DONE",500, "ns")
             #self.scn.WTRS("O_RDATA_VAL_EMUL", 1, "us")
             self.scn.CHK("O_LCD_RDATA", rdata, "OK")

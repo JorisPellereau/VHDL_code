@@ -16,30 +16,37 @@ add wave -noupdate -group LCD_emul_checker /tb_top/i_LCD_CFAH_emul/time_en_r_edg
 add wave -noupdate -group LCD_emul_checker /tb_top/i_LCD_CFAH_emul/time_en_r_edge_p
 add wave -noupdate -group LCD_emul_checker /tb_top/i_LCD_CFAH_emul/time_en_f_edge
 add wave -noupdate -divider DUT
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/clk
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/rst_n
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_wdata
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_data
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_rs
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_rw
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_start
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_wdata
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_rdata
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_rw
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_en
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_rs
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_bidir_sel
-add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_done
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cnt
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_wdata
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rdata
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_ongoing
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rs
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rw
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_en
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cnt_tcycen_done
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_CNT_MAX
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_MAX_RS_RW_cnt
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_PWeh_MAX
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_tAS_MAX
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_tcycE_MAX
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_tDDR_MAX
+add wave -noupdate -expand -group Constants /tb_top/i_dut/C_tH_tAH_MAX
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/clk
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/rst_n
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/i_wdata
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/i_lcd_data
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/i_rs
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/i_rw
+add wave -noupdate -expand -group i_dut -expand -group Inputs /tb_top/i_dut/i_start
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_lcd_wdata
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_lcd_rdata
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_lcd_rw
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_lcd_en
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_lcd_rs
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_bidir_sel
+add wave -noupdate -expand -group i_dut -expand -group Outputs /tb_top/i_dut/o_done
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_cnt
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_wdata
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_rdata
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_ongoing
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_rs
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_rw
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_en
+add wave -noupdate -expand -group i_dut -expand -group Internal /tb_top/i_dut/s_cnt_tcycen_done
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {396428 ps} 0}
+WaveRestoreCursors {{Cursor 1} {390000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -53,6 +60,6 @@ configure wave -gridoffset 0
 configure wave -gridperiod 1
 configure wave -griddelta 40
 configure wave -timeline 0
-configure wave -timelineunits us
+configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {472500 ps}
+WaveRestoreZoom {1178481 ps} {1590607 ps}

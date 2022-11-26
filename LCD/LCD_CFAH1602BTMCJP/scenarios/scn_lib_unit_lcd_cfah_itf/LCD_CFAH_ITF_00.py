@@ -36,18 +36,23 @@ scn.print_step("Wait for Reset")
 scn.WTR("RST_N")
 scn.WAIT(100, "ns")
 
-macros_tb.lcd_wr_byte(rs    = 0,
+macros_tb.lcd_wr_byte(rs    = 1,
                       wdata = 0xAA)
 
-macros_tb.lcd_rd_byte(rs    = 0,
+scn.WAIT(500, "ns")
+
+macros_tb.lcd_rd_byte(rs    = 1,
                       rdata = 0xBB)
 
+scn.WAIT(500, "ns")
 
-
-nb_wr = 10
-for i in range(0, nb_wr):
-    macros_tb.lcd_wr_byte(rs    = 0,
+nb_rd_wr_access = 100
+for i in range(0, nb_rd_wr_access):
+    macros_tb.lcd_wr_byte(rs    = random.randrange(0, 2),
                           wdata = random.randrange(0, 256))
+
+    macros_tb.lcd_rd_byte(rs    = random.randrange(0, 2),
+                          rdata = random.randrange(0, 256))
 
     
 

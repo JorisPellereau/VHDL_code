@@ -27,7 +27,7 @@ package body pkg_lcd_cfah is
     -- Internal Variables
     variable v_results : integer := 0;
   begin
-    v_results := C_tAS_DURATION / i_clk_period;
+    v_results := i_duration / i_clk_period;
     if(v_results = 0) then
       v_results := 1;                   -- One TCLK minimum
     end if;
