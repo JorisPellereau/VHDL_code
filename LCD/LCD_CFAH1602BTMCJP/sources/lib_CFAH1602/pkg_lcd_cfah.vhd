@@ -12,6 +12,12 @@ package pkg_lcd_cfah is
   constant C_tH_tAH_DURATION : integer := 10;   -- 10 ns
   constant C_tDDR_DURATION   : integer := 160;  -- 160 ns
 
+  -- Initialization Constants
+  -- More than 4.1ms
+  constant C_INIT_WAIT_1 : integer := 4200000;  -- [ns] - Duration of First Wait for initialization
+  constant C_INIT_WAIT_2 : integer := 100000;  -- [ns] - Duration of 2nd wait for initialization
+
+  -- == FUNCTIONS ==
   -- Convert a clock period in [ns] to a number of period
   function clk_period_to_max(i_clk_period : integer; i_duration : integer)
     return integer;

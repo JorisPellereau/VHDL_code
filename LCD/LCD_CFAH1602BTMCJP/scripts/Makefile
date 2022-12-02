@@ -117,6 +117,7 @@ src_lib_pkg_utils=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_generator.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lch_cfah_polling_busy.vhd
 # ==========================
 
 # == TESTBENCH V FILES LIST ==
