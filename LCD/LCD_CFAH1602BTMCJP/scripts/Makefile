@@ -118,6 +118,8 @@ src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_generator.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lch_cfah_polling_busy.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lch_cfah_init.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_top.vhd
 # ==========================
 
 # == TESTBENCH V FILES LIST ==
