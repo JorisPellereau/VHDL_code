@@ -70,6 +70,7 @@ architecture rtl of pr_115_lcd_top is
 
   signal s_lcd_wdata : std_logic_vector(7 downto 0);
   signal s_lcd_rdata : std_logic_vector(7 downto 0);
+  signal s_bidir_sel : std_logic;
 
 begin  -- architecture rtl
 
@@ -131,8 +132,8 @@ begin  -- architecture rtl
       );
 
   -- BIDIR Management
-  io_lcd_data = s_lcd_wdata when s_bidir_sel = '1' else 'z';
-  s_lcd_rdata = io_lcd_data;
+  io_lcd_data <= s_lcd_wdata when s_bidir_sel = '1' else (others => 'Z');
+  s_lcd_rdata <= io_lcd_data;
 
 
 

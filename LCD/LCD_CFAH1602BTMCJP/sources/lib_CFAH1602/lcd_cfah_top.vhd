@@ -94,6 +94,7 @@ architecture rtl of lcd_cfah_top is
   signal s_wr_data                 : std_logic;
   signal s_rd_data                 : std_logic;
   signal s_data_bus                : std_logic_vector(7 downto 0);
+  signal s_data_bus_cmd_buffer     : std_logic_vector(7 downto 0);
   signal s_lcd_rdata_cmd_generator : std_logic_vector(7 downto 0);
   signal s_done_cmd_generator      : std_logic;
 
@@ -184,7 +185,8 @@ begin  -- architecture rtl
   s_set_ddram_addr       <= '0';
   s_wr_data              <= '0';
   s_rd_data              <= '0';
-  s_data_bus             <= (others => '0');
+  s_data_bus_cmd_buffer  <= (others => '0');
+
   -- LCD Command buffer
   i_lcd_cfah_cmd_buffer_0 : lcd_cfah_cmd_buffer
     generic map(
@@ -211,7 +213,7 @@ begin  -- architecture rtl
       i_read_busy_flag       => s_read_busy_flag,
       i_wr_data              => s_wr_data,
       i_rd_data              => s_rd_data,
-      i_data_bus             => s_data_bus,
+      i_data_bus             => s_data_bus_cmd_buffer,
       i_cmd_done             => s_done_cmd_generator,
       o_cmd_done             => s_done_cmd_buffer,
 
