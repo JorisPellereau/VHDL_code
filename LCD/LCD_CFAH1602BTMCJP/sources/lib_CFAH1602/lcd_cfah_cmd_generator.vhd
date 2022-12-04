@@ -147,13 +147,13 @@ begin  -- architecture rtl
   -- LCD DATA Bus Set decoder
   s_lcd_wdata <= x"01" when i_clear_display = '1' else
                  x"02"                         when i_return_home = '1' else
-                 (4 downto 0 => '0') & i_id_sh when i_entry_mode_set = '1' else
+                 "000001" & i_id_sh            when i_entry_mode_set = '1' else
                  "00001" & i_dcb               when i_display_ctrl = '1' else
                  x"1" & i_sc_rl & "00"         when i_cursor_display_shift = '1' else
                  "001" & i_dl_n_f & "00"       when i_function_set = '1' else
                  "01" & i_data_bus(5 downto 0) when i_set_gcram_addr = '1' else
                  '1' & i_data_bus(6 downto 0)  when i_set_ddram_addr = '1' else
                  i_data_bus                    when i_wr_data = '1' else
-                 (others     => '0');   -- Read busy flag and i_rd_data command
+                 (others => '0');       -- Read busy flag and i_rd_data command
 
 end architecture rtl;

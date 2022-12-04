@@ -16,7 +16,7 @@
 `timescale 1ps/1ps
 
 
-`include "/home/linux-jp/Documents/GitHub/VHDL_code/LCD/LCD_CFAH1602BTMCJP/tb_sources/tb_lib_unit_lcd_cfah_itf/testbench_setup.sv"
+`include "/home/linux-jp/Documents/GitHub/VHDL_code/LCD/LCD_CFAH1602BTMCJP/tb_sources/tb_lib_unit_lcd_cfah_top/testbench_setup.sv"
 `include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 
@@ -53,7 +53,10 @@ module tb_top
    logic [7:0] 	s_rdata_emul;
    logic 	s_rdata_val_emul;
    
+   logic [2:0] 	s_dl_n_f;
+   logic [2:0] 	s_dcb;
    
+   logic 	s_lcd_on_off;
    
 
    
@@ -136,14 +139,14 @@ module tb_top
    
    
    // SET SET_INJECTOR SIGNALS
-   assign s_wdata     = s_set_injector_if.set_signals_synch[0];
-   assign s_rs        = s_set_injector_if.set_signals_synch[1];
-   assign s_rw        = s_set_injector_if.set_signals_synch[2];
-   assign s_start     = s_set_injector_if.set_signals_synch[3];
-   assign s_wdata_emul = s_set_injector_if.set_signals_synch[4];
+   assign s_lcd_on_off  = s_set_injector_if.set_signals_synch[0];
+   assign s_dl_n_f      = s_set_injector_if.set_signals_synch[1];
+   assign s_dcb         = s_set_injector_if.set_signals_synch[2];
+   // assign s_start     = s_set_injector_if.set_signals_synch[3];
+   // assign s_wdata_emul = s_set_injector_if.set_signals_synch[4];
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
-   assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[1]  = 3'b111;
    assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
    assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
    
@@ -206,11 +209,11 @@ module tb_top
    initial begin// : TB_SEQUENCER
     
       // Add Alias of Generic TB Modules
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_WDATA", 0);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RS",    1);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_RW",    2);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START", 3);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA_EMUL", 4);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_ON", 0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DL_N_F", 1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DCB",    2);
+      //tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START", 3);
+      //tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA_EMUL", 4);
       
       
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                0);
@@ -238,34 +241,34 @@ module tb_top
    // ========================
 
    // == DUT ==
-   // lcd_cfah_itf #(
-   // 		  .G_CLK_PERIOD_NS      (),
-   // 		  .G_BIDIR_SEL_POLARITY ()
-   // 		  )
-   // i_dut (
-   // 	  .clk   (clk),
-   // 	  .rst_n (rst_n),
+   lcd_cfah_top # (
+		   .G_CLK_PERIOD_NS      (20),    
+		   .G_BIDIR_SEL_POLARITY (4'd2)
+		   )
+   i_dut (
+	  .clk   (clk),
+	  .rst_n (rst_n),
 	  
-   // 	  .i_wdata    (s_wdata),
-   // 	  .i_lcd_data (s_lcd_data),
-   // 	  .i_rs       (s_rs),
-   // 	  .i_rw       (s_rw),
-   // 	  .i_start    (s_start),
-	  	      
-   // 	  .o_lcd_wdata (s_lcd_wdata),
-   // 	  .o_lcd_rdata (s_lcd_rdata),
-   // 	  .o_lcd_rw    (s_lcd_rw),
-   // 	  .o_lcd_en    (s_lcd_en),
-   // 	  .o_lcd_rs    (s_lcd_rs),
-   // 	  .o_bidir_sel (s_bidir_sel),
-   // 	  .o_done      (s_done)
-   // 	  );      
+	  .i_lcd_on (s_lcd_on_off),
+	  .i_dl_n_f (s_dl_n_f),
+	  .i_dcb    (s_dcb),
+
+	  .i_lcd_data  (s_lcd_data),
+	  .o_lcd_wdata (s_lcd_wdata),
+	  .o_lcd_rw    (s_lcd_rw),
+	  .o_lcd_en    (s_lcd_en),
+	  .o_lcd_rs    (s_lcd_rs),
+	  .o_lcd_on    (s_lcd_on),
+	  .o_bidir_sel (s_bidir_sel)	  
+	  );
    // ===============
 
    // IO dir assignment
    assign io_data    = s_bidir_sel ? s_lcd_wdata : 8'bz;
    assign s_lcd_data = io_data;
 
+//   assign s_dl_n_f = 3'b111;
+   
 
    // LCD EMULATOR-CHECKER
    LCD_CFAH_emul i_LCD_CFAH_emul (

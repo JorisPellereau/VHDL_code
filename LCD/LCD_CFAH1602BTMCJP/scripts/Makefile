@@ -32,10 +32,11 @@ LIB_CFAH1602=lib_CFAH1602
 
 # == TESTBENCH LIBRARIES ==
 LIB_TB_UNIT_LCD_CFAH_ITF=lib_tb_lib_unit_lcd_cfah_itf
+LIB_TB_UNIT_LCD_CFAH_TOP=lib_tb_unit_lcd_cfah_top
 # =========================
 
 # ==  LIB LIST ==
-LIB_LSIT+=work
+LIB_LIST+=work
 LIB_LIST+=$(LIB_PKG_UTILS)
 LIB_LIST+=$(LIB_CFAH1602)
 LIB_LIST+=$(LIB_TB_UNIT_LCD_CFAH_ITF)
@@ -108,7 +109,7 @@ all: print_generic_rules
 # 	fi
 # =======================
 
-SCN_LIB_DIR=scn_lib_unit_lcd_cfah_itf
+
 LIB_TB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
 # == DESIGN VHD FILE LIST ==
@@ -117,8 +118,9 @@ src_lib_pkg_utils=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_generator.vhd
-src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lch_cfah_polling_busy.vhd
-src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lch_cfah_init.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_polling_busy.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_buffer.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_init.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_top.vhd
 # ==========================
 
@@ -128,9 +130,16 @@ src_tb_v+=/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/TB_modules/L
 
 
 # == Specific Testbench File List ==
+
+# -- TB Unit itf
 src_tb_lib_unit_lcd_cfah_itf_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_itf/testbench_setup.sv
 src_tb_lib_unit_lcd_cfah_itf_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_itf/clk_gen.sv
 src_tb_lib_unit_lcd_cfah_itf_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_itf/tb_top.sv
+
+# -- TB Unit top
+src_tb_lib_unit_lcd_cfah_top_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_top/testbench_setup.sv
+src_tb_lib_unit_lcd_cfah_top_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_top/clk_gen.sv
+src_tb_lib_unit_lcd_cfah_top_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_top/tb_top.sv
 # ==================================
 
 # == Coverage Testbench File List ==
@@ -143,13 +152,13 @@ src_tb_lib_unit_lcd_cfah_itf_v+=$(TB_SRC_DIR)/tb_lib_unit_lcd_cfah_itf/tb_top.sv
 compile_pkg_utils:
 	make compile_design_vhd_files SRC_VHD="$(src_lib_pkg_utils)" VHD_DESIGN_LIB=$(LIB_PKG_UTILS)
 
-compile_lcd_cfah_itf:
+compile_lcd_cfah:
 	make compile_design_vhd_files SRC_VHD="$(src_lib_pkg_utils)" VHD_DESIGN_LIB=lib_CFAH1602
 	make compile_design_vhd_files SRC_VHD="$(src_lib_CFAH1602)"  VHD_DESIGN_LIB=lib_CFAH1602
 
 
 # == Compile Design Library here ==
-compile_lcd_cfah : compile_pkg_utils compile_lcd_cfah_itf
+compile_design_lcd_cfah : compile_pkg_utils compile_lcd_cfah
 # ================================
 
 
@@ -158,22 +167,32 @@ compile_lcd_cfah : compile_pkg_utils compile_lcd_cfah_itf
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
+	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_TOP)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_data_collector_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_TOP)
 
 compile_tb_unit_lcd_cfah_sources:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_unit_lcd_cfah_itf_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 
+compile_tb_unit_lcd_cfah_top:
+	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_TOP)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_unit_lcd_cfah_top_v)" TB_LIB_TOP=$(LIB_TB_UNIT_LCD_CFAH_TOP)
+
 # == COMPILE ALL TESTBENCH files ==
+# -- TB UNIT ITF
 compile_tb_unit_lcd_cfah_itf : compile_generic_tb_v_files compile_tb_unit_lcd_cfah_sources
+
+# -- TB UNIT Top
+compile_tb_unit_lcd_cfah_top: compile_generic_tb_v_files compile_tb_unit_lcd_cfah_top
 # =======================
 
 # Compile TB UNIT LCD CFAH Interface
-compile_all_unit_lcd_cfah_itf: clean_all create_project_dir libs compile_lcd_cfah compile_tb_unit_lcd_cfah_itf print_compile_logs_file
-
+compile_all_unit_lcd_cfah_itf: clean_all create_project_dir libs compile_design_lcd_cfah compile_tb_unit_lcd_cfah_itf print_compile_logs_file
+compile_all_unit_lcd_cfah_top: clean_all create_project_dir libs compile_design_lcd_cfah compile_tb_unit_lcd_cfah_top print_compile_logs_file 
 # == SCENARII LIST ==
 SCN_LIST+=LCD_CFAH_ITF_00.py
 
-
+SCL_LSIT+=LCD_CFAH_TOP_00.py
 
 # =======================
 
@@ -184,7 +203,10 @@ LIB_ARGS=-L lib_pkg_utils -L lib_CFAH1602
 
 # == RUN TEST ==
 run_tb_unit_lcd_cfah_itf:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON LIB_TB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF) SCN_LIB_DIR=scn_lib_unit_lcd_cfah_itf
+
+run_tb_unit_lcd_cfah_top:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON LIB_TB_TOP=$(LIB_TB_UNIT_LCD_CFAH_TOP) SCN_LIB_DIR=scn_lib_unit_lcd_cfah_top
 # ==============
 
 

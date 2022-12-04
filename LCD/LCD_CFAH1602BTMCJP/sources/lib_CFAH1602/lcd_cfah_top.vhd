@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2022-12-03
+-- Last update: 2022-12-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,6 +41,7 @@ entity lcd_cfah_top is
 
     i_lcd_on : in std_logic;                     -- LCD On control
     i_dl_n_f : in std_logic_vector(2 downto 0);  -- Function SET bis control
+    i_dcb    : in std_logic_vector(2 downto 0);  -- Display ON/OFF Control bits
 
     -- LCD I/F
     i_lcd_data  : in  std_logic_vector(7 downto 0);  -- Data from LCD
@@ -53,6 +54,7 @@ entity lcd_cfah_top is
 
     );
 
+
 end entity lcd_cfah_top;
 
 
@@ -64,8 +66,9 @@ architecture rtl of lcd_cfah_top is
   signal s_lcd_on_r_edge : std_logic;   -- LCD ON Rising edge
   signal s_o_lcd_on      : std_logic;   -- Output LCD ON
 
-  signal s_init_done : std_logic;
-
+  signal s_init_ongoing    : std_logic;
+  signal s_init_done       : std_logic;
+  signal s_start_init      : std_logic;
   signal s_cmd_bus         : std_logic_vector(10 downto 0);
   signal s_lcd_rdy         : std_logic;  -- LCD Ready
   signal s_start_poll      : std_logic;  -- Start polling busy
@@ -76,10 +79,13 @@ architecture rtl of lcd_cfah_top is
   signal s_return_home             : std_logic;
   signal s_entry_mode_set          : std_logic;
   signal s_id_sh                   : std_logic_vector(1 downto 0);
+  signal s_id_sh_cmd_buffer        : std_logic_vector(1 downto 0);
   signal s_display_ctrl            : std_logic;
   signal s_dcb                     : std_logic_vector(2 downto 0);
+  signal s_dcb_cmd_buffer          : std_logic_vector(2 downto 0);
   signal s_cursor_display_shift    : std_logic;
   signal s_sc_rl                   : std_logic_vector(1 downto 0);
+  signal s_sc_rl_cmd_buffer        : std_logic_vector(1 downto 0);
   signal s_function_set            : std_logic;
   signal s_dl_n_f                  : std_logic_vector(2 downto 0);
   signal s_set_gcram_addr          : std_logic;
@@ -91,13 +97,17 @@ architecture rtl of lcd_cfah_top is
   signal s_lcd_rdata_cmd_generator : std_logic_vector(7 downto 0);
   signal s_done_cmd_generator      : std_logic;
 
-  signal s_wdata        : std_logic_vector(7 downto 0);
+  signal s_lcd_wdata : std_logic_vector(7 downto 0);
+
   signal s_rw           : std_logic;
   signal s_rs           : std_logic;
   signal s_lcd_data     : std_logic_vector(7 downto 0);
   signal s_start        : std_logic;
   signal s_lcd_rdata    : std_logic_vector(7 downto 0);  -- LCD RDATA
   signal s_lcd_itf_done : std_logic;
+
+  signal s_lcd_rdata_cmd_buffer : std_logic_vector(7 downto 0);  -- LCD RDATA from cmd buffer block
+
 begin  -- architecture rtl
 
   -- purpose: Pipe Inputs
@@ -134,7 +144,7 @@ begin  -- architecture rtl
   -- LCD INIT Block
   i_lcd_cfah_init_0 : lcd_cfah_init
     generic map (
-      G_CLK_PERIOD => G_CLK_PERIOD
+      G_CLK_PERIOD => G_CLK_PERIOD_NS
       )
     port map (
       clk                => clk,
@@ -146,6 +156,7 @@ begin  -- architecture rtl
       o_display_ctrl     => s_display_ctrl,
       o_entry_mode_set   => s_entry_mode_set,
       o_clear_display    => s_clear_display,
+      o_init_ongoing     => s_init_ongoing,
       o_init_done        => s_init_done
       );
 
@@ -163,6 +174,17 @@ begin  -- architecture rtl
       );
 
 
+  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else (others => '0');
+  s_id_sh_cmd_buffer <= "00";
+
+  -- Current not used cmd
+  s_return_home          <= '0';
+  s_cursor_display_shift <= '0';
+  s_set_gcram_addr       <= '0';
+  s_set_ddram_addr       <= '0';
+  s_wr_data              <= '0';
+  s_rd_data              <= '0';
+  s_data_bus             <= (others => '0');
   -- LCD Command buffer
   i_lcd_cfah_cmd_buffer_0 : lcd_cfah_cmd_buffer
     generic map(
@@ -172,15 +194,17 @@ begin  -- architecture rtl
       clk   => clk,
       rst_n => rst_n,
 
+      i_init_ongoing => s_init_ongoing,
+
       -- Commands from specific block
       i_clear_display        => s_clear_display,
       i_return_home          => s_return_home,
       i_entry_mode_set       => s_entry_mode_set,
-      i_id_sh                => s_id_sh,
+      i_id_sh                => s_id_sh_cmd_buffer,
       i_display_ctrl         => s_display_ctrl,
-      i_dcb                  => s_dcb,
+      i_dcb                  => s_dcb_cmd_buffer,
       i_cursor_display_shift => s_cursor_display_shift,
-      i_sc_rl                => s_sc_rl,
+      i_sc_rl                => s_sc_rl_cmd_buffer,
       i_function_set         => s_function_set,
       i_set_gcram_addr       => s_set_gcram_addr,
       i_set_ddram_addr       => s_set_ddram_addr,
@@ -190,6 +214,9 @@ begin  -- architecture rtl
       i_data_bus             => s_data_bus,
       i_cmd_done             => s_done_cmd_generator,
       o_cmd_done             => s_done_cmd_buffer,
+
+      i_lcd_rdata => s_lcd_rdata_cmd_generator,
+      o_lcd_rdata => s_lcd_rdata_cmd_buffer,
 
       -- Outputs to Commands Generator
       o_cmd_req  => s_cmd_req,
@@ -251,7 +278,7 @@ begin  -- architecture rtl
     port map (
       clk        => clk,
       rst_n      => rst_n,
-      i_wdata    => s_wdata,
+      i_wdata    => s_lcd_wdata,
       i_lcd_data => s_lcd_data,
       i_rs       => s_rs,
       i_rw       => s_rw,

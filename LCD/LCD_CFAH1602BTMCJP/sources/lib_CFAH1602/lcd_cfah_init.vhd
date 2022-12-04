@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-02
--- Last update: 2022-12-03
+-- Last update: 2022-12-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,7 +48,8 @@ entity lcd_cfah_init is
     o_entry_mode_set   : out std_logic;  -- Entry Mode set command
     o_clear_display    : out std_logic;  -- Clear Display
 
-    o_init_done : out std_logic         -- Initialization Done
+    o_init_ongoing : out std_logic;     -- Init. ongoing
+    o_init_done    : out std_logic      -- Initialization Done
     );
 
 end entity lcd_cfah_init;
@@ -57,7 +58,7 @@ end entity lcd_cfah_init;
 architecture rtl of lcd_cfah_init is
 
   -- Internal SIGNALS
-  signal s_first_init_ongoing        : std_logic;  -- First Initialization ongoing
+  signal s_init_ongoing              : std_logic;  -- First Initialization ongoing
   signal s_duration_cnt              : std_logic_vector(log2(C_LCD_WAIT_POWER_ON) - 1 downto 0);  -- Duration for initialization sequence counter
   signal s_duration_max              : std_logic_vector(log2(C_LCD_WAIT_POWER_ON) - 1 downto 0);  -- Max duration
   signal s_duration_cnt_reach        : std_logic;
@@ -91,18 +92,22 @@ begin  -- architecture rtl
   s_duration_cnt_reach_r_edge <= s_duration_cnt_reach and not s_duration_cnt_reach_p;
 
   -- purpose: First Init Ongoing mngt
-  p_first_init_ongoing : process (clk, rst_n) is
+  p_init_ongoing : process (clk, rst_n) is
   begin  -- process p_first_init_ongoing
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_first_init_ongoing <= '0';
+      s_init_ongoing <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(s_lcd_on_r_edge = '1') then
-        s_first_init_ongoing <= '1';
+      if(s_lcd_on_r_edge = '1' or i_start_init = '1') then
+        s_init_ongoing <= '1';
+
+      -- When done reset ongoing flag
+      elsif(s_init_done = '1') then
+        s_init_ongoing <= '0';
       end if;
 
     end if;
-  end process p_first_init_ongoing;
+  end process p_init_ongoing;
 
 
   -- purpose: Function Set counter Management
@@ -114,17 +119,22 @@ begin  -- architecture rtl
       s_init_done  <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      if(i_cmd_done = '1') then
+      if(i_cmd_done = '1' and s_init_ongoing = '1') then
         if(unsigned(s_cnt_cmd) < (7-1)) then
-          s_cnt_cmd    <= unsigned(s_cnt_cmd, s_cnt_cmd'length) + 1;
+          s_cnt_cmd    <= unsigned(s_cnt_cmd) + 1;
           s_cnt_cmd_up <= '1';
         else
           s_init_done <= '1';
-          s_cnt_cmd    <= (others => '0');
+          s_cnt_cmd   <= (others => '0');
         end if;
 
       else
         s_cnt_cmd_up <= '0';
+      end if;
+
+      -- Reset Done flag when lcd is on again and if not ongoing process
+      if(s_lcd_on_r_edge = '1' and s_init_ongoing = '0') then
+        s_init_done <= '0';
       end if;
 
     end if;
@@ -141,29 +151,37 @@ begin  -- architecture rtl
 
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      -- Generation of function after end of counter or after counter cmd up
-      if(s_duration_cnt_reach_r_edge = '1' or s_cnt_cmd_up = '1') then
+      -- Generation of function after end of counter 
+      if(s_duration_cnt_reach_r_edge = '1' and s_init_ongoing = '1') then
 
-        case s_cnt_cmd is
-          when unsigned(0, s_cnt_cmd'length) =>
+        case unsigned(s_cnt_cmd) is
+          when conv_unsigned(0, s_cnt_cmd'length) =>
             o_function_set_cmd <= '1';
 
-          when unsigned(1, s_cnt_cmd'length) =>
+          when conv_unsigned(1, s_cnt_cmd'length) =>
             o_function_set_cmd <= '1';
 
-          when unsigned(2, s_cnt_cmd'length) =>
+          when conv_unsigned(2, s_cnt_cmd'length) =>
             o_function_set_cmd <= '1';
 
-          when unsigned(3, s_cnt_cmd'length) =>
+          when others => null;
+        end case;
+
+      -- Following command are send only when cnt_cmd in incremented and when
+      -- correcponding counter value is reach
+      elsif(s_cnt_cmd_up = '1' and s_init_ongoing = '1') then
+
+        case unsigned(s_cnt_cmd) is
+          when conv_unsigned(3, s_cnt_cmd'length) =>
             o_function_set_cmd <= '1';
 
-          when unsigned(4, s_cnt_cmd'length) =>
+          when conv_unsigned(4, s_cnt_cmd'length) =>
             o_display_ctrl <= '1';
 
-          when unsigned(5, s_cnt_cmd'length) =>
+          when conv_unsigned(5, s_cnt_cmd'length) =>
             o_clear_display <= '1';
 
-          when unsigned(6, s_cnt_cmd'length) =>
+          when conv_unsigned(6, s_cnt_cmd'length) =>
             o_entry_mode_set <= '1';
           when others => null;
         end case;
@@ -175,6 +193,7 @@ begin  -- architecture rtl
         o_clear_display    <= '0';
 
       end if;
+
     end if;
   end process p_cmd_mngt;
 
@@ -193,8 +212,8 @@ begin  -- architecture rtl
         s_duration_cnt_reach <= '0';
 
       -- Inc counter until Max reach
-      elsif(s_duration_cnt < unsigned(s_duration_max)) then
-        s_duration_cnt       <= unsigned(s_duration_cnt, s_duration_cnt'length) + 1;
+      elsif(unsigned(s_duration_cnt) < unsigned(s_duration_max)) then
+        s_duration_cnt       <= unsigned(s_duration_cnt) + 1;
         s_duration_cnt_reach <= '0';
 
       -- Max reach - Counter stop
@@ -218,17 +237,17 @@ begin  -- architecture rtl
 
       -- On rising Edge -> Update MAX for initialization
       if(s_lcd_on_r_edge = '1') then
-        s_duration_max <= unsigned(C_LCD_WAIT_POWER_ON, s_duration_max'length);
+        s_duration_max <= std_logic_vector(conv_unsigned(clk_period_to_max(G_CLK_PERIOD, C_LCD_WAIT_POWER_ON), s_duration_max'length));
         s_start_cnt    <= '1';
 
       elsif(s_cnt_cmd_up = '1') then
 
         if(unsigned(s_cnt_cmd) = 1) then
-          s_duration_max <= unsigned(C_INIT_WAIT_1, s_duration_max'length);
+          s_duration_max <= std_logic_vector(conv_unsigned(clk_period_to_max(G_CLK_PERIOD, C_INIT_WAIT_1), s_duration_max'length));
           s_start_cnt    <= '1';
 
         elsif(unsigned(s_cnt_cmd) = 2) then
-          s_duration_max <= unsigned(C_INIT_WAIT_2, s_duration_max'length);
+          s_duration_max <= std_logic_vector(conv_unsigned(clk_period_to_max(G_CLK_PERIOD, C_INIT_WAIT_2), s_duration_max'length));
           s_start_cnt    <= '1';
         end if;
 
@@ -239,8 +258,8 @@ begin  -- architecture rtl
     end if;
   end process p_duration_max_mngt;
 
-
   -- Outputs Affectation
-  o_init_done <= s_init_done;
+  o_init_done    <= s_init_done;
+  o_init_ongoing <= s_init_ongoing;
 
 end architecture rtl;

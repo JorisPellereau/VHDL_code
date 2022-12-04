@@ -14,16 +14,12 @@ entity lcd_cfah_polling_busy is
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous Reset
 
-    i_new_cmd_req : in std_logic;       -- New Command req
-    i_start_poll  : in std_logic;       -- Start Polling
-
-    i_done          : in std_logic;     -- Command done
-    i_lcd_busy_flag : in std_logic;     -- Read data bit 7
-
-   
+    i_new_cmd_req    : in  std_logic;   -- New Command req
+    i_start_poll     : in  std_logic;   -- Start Polling
+    i_done           : in  std_logic;   -- Command done
+    i_lcd_busy_flag  : in  std_logic;   -- Read data bit 7
     o_read_busy_flag : out std_logic;   -- Read Busy Flag command
-
-    o_lcd_rdy : out std_logic           -- LCD Ready when rise
+    o_lcd_rdy        : out std_logic    -- LCD Ready when rise
     );
 
 end entity lcd_cfah_polling_busy;
@@ -44,7 +40,7 @@ begin  -- architecture rtl
       if(i_start_poll = '1') then
         s_poll_ongoing <= '1';
 
-      elsif(i_done = '1' and i_lcd_busy_flag = '0') then
+      elsif(i_done = '1' and i_lcd_busy_flag = '0' and s_poll_ongoing = '1') then
         s_poll_ongoing <= '0';
       end if;
     end if;

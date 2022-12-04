@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-02
--- Last update: 2022-12-02
+-- Last update: 2022-12-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -38,10 +38,11 @@ entity lcd_cfah_cmd_buffer is
 
   generic (
     G_NB_CMD : integer := 11);          -- Number of possible Command
-
   port (
     clk   : in std_logic;               -- Clock
     rst_n : in std_logic;               -- Asynchronous Reset
+
+    i_init_ongoing : in std_logic;
 
     -- Commands from specific block
     i_clear_display : in std_logic;     -- Clear Display Cmd request
@@ -64,9 +65,11 @@ entity lcd_cfah_cmd_buffer is
     i_rd_data        : in std_logic;    -- Read Data from RAM Command Req
     i_data_bus       : in std_logic_vector(7 downto 0);  -- Write data bus
 
-
     i_cmd_done : in  std_logic;         -- Command Done
     o_cmd_done : out std_logic;         -- Command Done
+
+    i_lcd_rdata : in  std_logic_vector(7 downto 0);  -- LCD RDATA from cmd_generator
+    o_lcd_rdata : out std_logic_vector(7 downto 0);  -- Re pipe rdata
 
     -- Outputs to Commands Generator
     o_cmd_req  : out std_logic;         -- Command Request
@@ -78,7 +81,7 @@ entity lcd_cfah_cmd_buffer is
 
     -- BUSY SCROLLER I/F
     i_lcd_rdy    : in  std_logic;       -- LCD Ready
-    o_start_poll : out std_logic;       -- Start Polling command
+    o_start_poll : out std_logic        -- Start Polling command
 
     );
 
@@ -111,12 +114,13 @@ begin  -- architecture rtl
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_cmd_latch <= '0';
+
       if(i_clear_display = '1') then
         s_cmd(0)    <= '1';
         s_cmd_latch <= '1';
       end if;
 
-      if(i_return_home <= '0') then
+      if(i_return_home = '1') then
         s_cmd(1)    <= '1';
         s_cmd_latch <= '1';
       end if;
@@ -128,7 +132,7 @@ begin  -- architecture rtl
       end if;
 
       if(i_display_ctrl = '1') then
-        s_cmd(3)    <= '1');
+        s_cmd(3)    <= '1';
         s_dcb       <= i_dcb;
         s_cmd_latch <= '1';
       end if;
@@ -170,7 +174,7 @@ begin  -- architecture rtl
       s_cmd(10) <= i_read_busy_flag;    -- Latch one time this command
 
       if(s_cmd_req = '1') then
-        s_cmd_req <= (others => '0');
+        s_cmd <= (others => '0');
       end if;
 
     end if;
@@ -186,7 +190,7 @@ begin  -- architecture rtl
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- If not Rdy -> Run busy polling
-      if(s_cmd_latch = '1' and i_lcd_rdy = '0') then
+      if(s_cmd_latch = '1' and i_lcd_rdy = '0' and i_init_ongoing = '0') then
         o_start_poll <= '1';
 
       -- Run Command when ready
@@ -196,7 +200,11 @@ begin  -- architecture rtl
       -- Specific Command - When activate -> generate req
       elsif(i_read_busy_flag = '1') then
         s_cmd_req <= '1';
-        
+
+      -- during Init when a new command is received -> Generate a req
+      elsif(s_cmd_latch = '1' and i_init_ongoing = '1') then
+        s_cmd_req <= '1';
+
       else
         o_start_poll <= '0';
         s_cmd_req    <= '0';
@@ -206,10 +214,13 @@ begin  -- architecture rtl
 
 
   -- Output affectation
-  o_cmd_req <= s_cmd_req;               -- Command Req
-
+  o_cmd_req  <= s_cmd_req;              -- Command Req
+  o_data_bus <= s_data_bus;
+  o_dcb      <= s_dcb;
+  o_id_sh    <= s_id_sh;
+  o_sc_rl    <= s_sc_rl;
   -- Command
-  o_cmd <= s_cmd;
+  o_cmd      <= s_cmd;
 
 
   -- purpose: Command done Management - Pipe input to output
@@ -221,5 +232,16 @@ begin  -- architecture rtl
       o_cmd_done <= i_cmd_done;
     end if;
   end process p_done_mngt;
+
+
+  -- purpose: LCD RDATA Pipe
+  p_lcd_rdata_pipe : process (clk, rst_n) is
+  begin  -- process p_lcd_rdata_pipe
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      o_lcd_rdata <= (others => '0');
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      o_lcd_rdata <= i_lcd_rdata;
+    end if;
+  end process p_lcd_rdata_pipe;
 
 end architecture rtl;
