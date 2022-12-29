@@ -121,6 +121,8 @@ src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_generator.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_polling_busy.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_buffer.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_init.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_lines_buffer.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_update_display.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_top.vhd
 # ==========================
 
@@ -191,9 +193,8 @@ compile_all_unit_lcd_cfah_itf: clean_all create_project_dir libs compile_design_
 compile_all_unit_lcd_cfah_top: clean_all create_project_dir libs compile_design_lcd_cfah compile_tb_unit_lcd_cfah_top print_compile_logs_file 
 # == SCENARII LIST ==
 SCN_LIST+=LCD_CFAH_ITF_00.py
-
-SCL_LSIT+=LCD_CFAH_TOP_00.py
-
+SCN_LIST+=LCD_CFAH_TOP_00.py
+SCN_LIST+=LCD_CFAH_TOP_01.py
 # =======================
 
 # == LIB ARGS ==

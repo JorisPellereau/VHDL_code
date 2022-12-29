@@ -21,18 +21,21 @@
 
 
 // SET ALIAS Configuration
-`define C_SET_ALIAS_NB 5
-`define C_SET_SIZE     5
+`define C_SET_ALIAS_NB 20
+`define C_SET_SIZE     20
 `define C_SET_WIDTH    32
 
 // WAIT EVENT Configuration
-`define C_WAIT_ALIAS_NB 4
+`define C_WAIT_ALIAS_NB 5
 `define C_WAIT_WIDTH    1
 
 // CHECK LEVEL Configuration
 `define C_CHECK_ALIAS_NB 7
 `define C_CHECK_SIZE     7
 `define C_CHECK_WIDTH    32
+
+// LCD EMUL Configuration
+`define C_LCD_BUFFER_SIZE 512
 
 // DATA COLLECTOR Configuration
 `define C_NB_DATA_COLLECTOR         1

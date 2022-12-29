@@ -4,6 +4,9 @@ use ieee.std_logic_1164.all;
 
 package pkg_lcd_cfah is
 
+  -- TYPES
+  type t_lines_array is array (0 to 31) of std_logic_vector(7 downto 0);  -- Line Array
+
   -- == LCD CFAH Timing Duration ==
   constant C_tAS_DURATION    : integer := 40;   -- 40 ns
   constant C_PWeh_DURATION   : integer := 230;  -- 230 ns
@@ -18,6 +21,49 @@ package pkg_lcd_cfah is
   -- More than 4.1ms
   constant C_INIT_WAIT_1 : integer := 4200000;  -- [ns] - Duration of First Wait for initialization
   constant C_INIT_WAIT_2 : integer := 100000;  -- [ns] - Duration of 2nd wait for initialization
+
+
+  -- == CHARACTER ROM ADDR ==
+  constant C_A_CHAR_ADDR : std_logic_vector(7 downto 0) := x"41";  -- A
+  constant C_B_CHAR_ADDR : std_logic_vector(7 downto 0) := x"42";  -- B
+  constant C_C_CHAR_ADDR : std_logic_vector(7 downto 0) := x"43";  -- C
+  constant C_D_CHAR_ADDR : std_logic_vector(7 downto 0) := x"44";  -- D
+  constant C_E_CHAR_ADDR : std_logic_vector(7 downto 0) := x"45";  -- E
+  constant C_F_CHAR_ADDR : std_logic_vector(7 downto 0) := x"46";  -- F
+  constant C_G_CHAR_ADDR : std_logic_vector(7 downto 0) := x"47";  -- G
+  constant C_H_CHAR_ADDR : std_logic_vector(7 downto 0) := x"48";  -- H
+  constant C_I_CHAR_ADDR : std_logic_vector(7 downto 0) := x"49";  -- I
+  constant C_J_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4A";  -- J
+  constant C_K_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4B";  -- K
+  constant C_L_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4C";  -- L
+  constant C_M_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4D";  -- M
+  constant C_N_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4E";  -- N
+  constant C_O_CHAR_ADDR : std_logic_vector(7 downto 0) := x"4F";  -- O
+  constant C_P_CHAR_ADDR : std_logic_vector(7 downto 0) := x"50";  -- P
+  constant C_Q_CHAR_ADDR : std_logic_vector(7 downto 0) := x"51";  -- Q
+  constant C_R_CHAR_ADDR : std_logic_vector(7 downto 0) := x"52";  -- R
+  constant C_S_CHAR_ADDR : std_logic_vector(7 downto 0) := x"53";  -- S
+  constant C_T_CHAR_ADDR : std_logic_vector(7 downto 0) := x"54";  -- T
+  constant C_U_CHAR_ADDR : std_logic_vector(7 downto 0) := x"55";  -- U
+  constant C_V_CHAR_ADDR : std_logic_vector(7 downto 0) := x"56";  -- V
+  constant C_W_CHAR_ADDR : std_logic_vector(7 downto 0) := x"57";  -- W
+  constant C_X_CHAR_ADDR : std_logic_vector(7 downto 0) := x"58";  -- X
+  constant C_Y_CHAR_ADDR : std_logic_vector(7 downto 0) := x"59";  -- Y
+  constant C_Z_CHAR_ADDR : std_logic_vector(7 downto 0) := x"5A";  -- Z
+
+  constant C_UNDSCR_CHAR_ADDR : std_logic_vector(7 downto 0) := x"5F";  -- _
+
+
+  -- Lines Buffer Constants
+  constant C_LINES_ARRAY_INIT : t_lines_array := (0      => C_B_CHAR_ADDR,  -- Position 0_0 :
+                                                  1      => C_O_CHAR_ADDR,
+                                                  2      => C_N_CHAR_ADDR,
+                                                  3      => C_J_CHAR_ADDR,
+                                                  4      => C_O_CHAR_ADDR,
+                                                  5      => C_U_CHAR_ADDR,
+                                                  6      => C_R_CHAR_ADDR,
+                                                  7      => C_UNDSCR_CHAR_ADDR,
+                                                  others => (others => '0'));
 
   -- == FUNCTIONS ==
   -- Convert a clock period in [ns] to a number of period
@@ -38,13 +84,14 @@ package pkg_lcd_cfah is
       i_lcd_on     : in std_logic;      -- LCD ON
       i_start_init : in std_logic;      -- Start Initialization
 
-      i_cmd_done         : in  std_logic;  -- Command done
-      o_function_set_cmd : out std_logic;  -- Function Set command
-      o_display_ctrl     : out std_logic;  -- Display Control Command
-      o_entry_mode_set   : out std_logic;  -- Entry Mode set command
-      o_clear_display    : out std_logic;  -- Clear Display
-      o_init_ongoing     : out std_logic;  -- Init. ongoing
-      o_init_done        : out std_logic   -- Initialization Done
+      i_cmd_done              : in  std_logic;  -- Command done
+      o_function_set_cmd      : out std_logic;  -- Function Set command
+      o_display_ctrl          : out std_logic;  -- Display Control Command
+      o_entry_mode_set        : out std_logic;  -- Entry Mode set command
+      o_clear_display         : out std_logic;  -- Clear Display
+      o_init_ongoing          : out std_logic;  -- Init. ongoing
+      o_power_on_init_ongoing : out std_logic;  -- Power On init ongoing
+      o_init_done             : out std_logic   -- Initialization Done
       );
   end component lcd_cfah_init;
 
@@ -89,8 +136,8 @@ package pkg_lcd_cfah is
 
 
       o_read_busy_flag : out std_logic;  -- Read Busy Flag command
-
-      o_lcd_rdy : out std_logic         -- LCD Ready when rise
+      o_poll_ongoing   : out std_logic;  -- Polling ongoing
+      o_lcd_rdy        : out std_logic   -- LCD Ready when rise
       );
 
   end component lcd_cfah_polling_busy;
@@ -206,9 +253,33 @@ package pkg_lcd_cfah is
       clk   : in std_logic;                    -- Clock
       rst_n : in std_logic;                    -- Asynchronous Reset
 
-      i_lcd_on : in std_logic;          -- LCD On control
+      -- LCD LINES BUFFER I/F
+      i_char_wdata     : in std_logic_vector(7 downto 0);  -- Data character
+      i_char_wdata_val : in std_logic;                     -- Data valid
+      i_char_position  : in std_logic_vector(3 downto 0);  -- Character number
+      i_line_sel       : in std_logic;                     -- Line Selection
+
+      -- LCD CGRAM BUFFER I/F
+      -- i_cgram_addr : in std_logic_vector(2 downto 0);  -- CGRAM Addr
+      -- i_cgram_data : in std_logic_vector(7 downto 0);  -- CGRAM Data
+      -- i_cgram_val  : in std_logic;                     -- CGRAM Data valid
+
+      -- LCD Config Bus
       i_dl_n_f : in std_logic_vector(2 downto 0);  -- Function SET bis control
       i_dcb    : in std_logic_vector(2 downto 0);  -- Display ON/OFF Control bits
+
+      -- LCD Commands and Controls
+      i_lcd_on            : in std_logic;  -- LCD On control
+      i_start_init        : in std_logic;  -- Start Initialization command
+      i_display_ctrl_cmd  : in std_logic;  -- Display Control Command
+      i_clear_display_cmd : in std_logic;  -- Clear Display Command
+
+      i_update_lcd        : in std_logic;  -- Update LCD
+      i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
+      i_lcd_line_sel      : in std_logic;
+      i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
+
+      o_control_done : out std_logic;   -- Command done
 
       -- LCD I/F
       i_lcd_data  : in  std_logic_vector(7 downto 0);  -- Data from LCD
@@ -222,6 +293,65 @@ package pkg_lcd_cfah is
       );
 
   end component lcd_cfah_top;
+
+  component lcd_cfah_update_display is
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      i_update_lcd        : in std_logic;  -- Update LCD Command
+      i_lcd_all_char      : in std_logic;  -- All Char or One char selection
+      i_lcd_line_sel      : in std_logic;  -- Line 0 or 1 selection
+      i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character position selection
+
+      -- Command Done
+      i_cmd_done : in std_logic;        -- Command done from Command buffer
+
+      -- LCD Commands
+      o_set_ddram_addr     : out std_logic;  -- SET DDRAM ADDR Command
+      o_wr_data            : out std_logic;  -- Write data to RAM command
+      o_ddram_data_or_addr : out std_logic_vector(7 downto 0);  -- Data or Addr bus
+
+      -- LINE BUFFER I/F
+      i_rdata       : in  std_logic_vector(7 downto 0);  -- Line RDATA
+      i_rdata_val   : in  std_logic;                     -- Line RDATA Valid
+      o_rd_req      : out std_logic;                     -- Read Request
+      o_rd_char_pos : out std_logic_vector(3 downto 0);  -- Char Position
+      o_rd_line_sel : out std_logic;                     -- Line selection
+
+      o_update_ongoing : out std_logic;  -- Update ongoing flag
+
+      -- LCD Update done flag
+      o_update_done : out std_logic     -- LCD Update Done
+
+      );
+
+  end component lcd_cfah_update_display;
+
+
+  component lcd_cfah_lines_buffer is
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous reset
+
+      i_wdata         : in std_logic_vector(7 downto 0);  -- Data character
+      i_wdata_val     : in std_logic;                     -- Data valid
+      i_char_position : in std_logic_vector(3 downto 0);  -- Character number
+      i_line_sel      : in std_logic;                     -- Line Selection
+
+      i_rd_req           : in  std_logic;  -- Read Request
+      i_rd_char_position : in  std_logic_vector(3 downto 0);  -- Character number
+      i_rd_line_sel      : in  std_logic;  -- Line selection for Read port
+      o_rdata            : out std_logic_vector(7 downto 0);  -- Rdata
+      o_rdata_val        : out std_logic;  -- Rdata valid
+
+      o_read_busy : out std_logic       -- Busy
+
+      );
+
+  end component lcd_cfah_lines_buffer;
 
 
   -- == END COMPONENTS ==

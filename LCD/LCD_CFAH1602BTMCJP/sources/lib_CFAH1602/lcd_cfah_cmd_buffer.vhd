@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-02
--- Last update: 2022-12-04
+-- Last update: 2022-12-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -173,7 +173,8 @@ begin  -- architecture rtl
 
       s_cmd(10) <= i_read_busy_flag;    -- Latch one time this command
 
-      if(s_cmd_req = '1') then
+      -- Reset Only when not READ_BUSY Command is here
+      if(s_cmd_req = '1' and s_cmd(10) = '0') then
         s_cmd <= (others => '0');
       end if;
 
@@ -219,8 +220,9 @@ begin  -- architecture rtl
   o_dcb      <= s_dcb;
   o_id_sh    <= s_id_sh;
   o_sc_rl    <= s_sc_rl;
-  -- Command
-  o_cmd      <= s_cmd;
+  
+  -- Command - Mask with only read busy flag during polling busy
+  o_cmd      <= s_cmd and "10000000000" when s_cmd(10) = '1' else s_cmd;
 
 
   -- purpose: Command done Management - Pipe input to output

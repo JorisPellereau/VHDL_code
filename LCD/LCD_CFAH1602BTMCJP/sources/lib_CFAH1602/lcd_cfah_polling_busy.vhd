@@ -19,6 +19,7 @@ entity lcd_cfah_polling_busy is
     i_done           : in  std_logic;   -- Command done
     i_lcd_busy_flag  : in  std_logic;   -- Read data bit 7
     o_read_busy_flag : out std_logic;   -- Read Busy Flag command
+    o_poll_ongoing   : out std_logic;   -- Polling ongoing
     o_lcd_rdy        : out std_logic    -- LCD Ready when rise
     );
 
@@ -58,7 +59,7 @@ begin  -- architecture rtl
         o_read_busy_flag <= '1';
 
       -- Next access if always busy
-      elsif(i_done = '1' and i_lcd_busy_flag = '0' and s_poll_ongoing = '1') then
+      elsif(i_done = '1' and i_lcd_busy_flag = '1' and s_poll_ongoing = '1') then
         o_read_busy_flag <= '1';
 
       else
@@ -81,8 +82,12 @@ begin  -- architecture rtl
         o_lcd_rdy <= '0';
       elsif(i_done = '1' and i_lcd_busy_flag = '0' and s_poll_ongoing = '1') then
         o_lcd_rdy <= '1';
+      else
+        o_lcd_rdy <= '0';
       end if;
     end if;
   end process p_lcd_rdy_mngt;
+
+  o_poll_ongoing <= s_poll_ongoing;
 
 end architecture rtl;

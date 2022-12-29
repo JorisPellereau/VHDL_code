@@ -9,7 +9,7 @@
 add wave -divider DUT; # Add Divider
 
 # Variables
-set tb_top_inst /tb_top;
+#set tb_top_inst /tb_top;
 set pattern_dut [concat /$1/$2/*];              # Create PATH
 set inst_top [concat /$1/$2/];                  # Create DUT TOP Inst
 set inst_list [find instances -r $pattern_dut]; # Get Instances path
@@ -42,6 +42,11 @@ foreach inst $ilist {
   set cmd [concat "add wave" $inst_join_group -group Outputs -out $inst/*]
   if {[catch {eval $cmd} cmd_error]} {
     puts "No Ouputs port in $cmd"
+  }
+
+  set cmd [concat "add wave" $inst_join_group -group InOuts -inout $inst/*]
+  if {[catch {eval $cmd} cmd_error]} {
+    puts "No Inout port in $cmd"
   }
   
   set cmd [concat "add wave" $inst_join_group -group Internal -internal $inst/*]

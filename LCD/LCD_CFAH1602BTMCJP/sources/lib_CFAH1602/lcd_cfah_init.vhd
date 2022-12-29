@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-02
--- Last update: 2022-12-04
+-- Last update: 2022-12-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -48,8 +48,9 @@ entity lcd_cfah_init is
     o_entry_mode_set   : out std_logic;  -- Entry Mode set command
     o_clear_display    : out std_logic;  -- Clear Display
 
-    o_init_ongoing : out std_logic;     -- Init. ongoing
-    o_init_done    : out std_logic      -- Initialization Done
+    o_init_ongoing          : out std_logic;  -- Init. ongoing
+    o_power_on_init_ongoing : out std_logic;  -- Power On init ongoing
+    o_init_done             : out std_logic   -- Initialization Done
     );
 
 end entity lcd_cfah_init;
@@ -58,7 +59,9 @@ end entity lcd_cfah_init;
 architecture rtl of lcd_cfah_init is
 
   -- Internal SIGNALS
-  signal s_init_ongoing              : std_logic;  -- First Initialization ongoing
+  signal s_init_ongoing  : std_logic;   -- First Initialization ongoing
+  signal s_power_on_init : std_logic;  -- Initialization after a power_on ongoing
+
   signal s_duration_cnt              : std_logic_vector(log2(C_LCD_WAIT_POWER_ON) - 1 downto 0);  -- Duration for initialization sequence counter
   signal s_duration_max              : std_logic_vector(log2(C_LCD_WAIT_POWER_ON) - 1 downto 0);  -- Max duration
   signal s_duration_cnt_reach        : std_logic;
@@ -67,13 +70,24 @@ architecture rtl of lcd_cfah_init is
   signal s_start_cnt                 : std_logic;  -- Start Counter
 
   signal s_cnt_cmd       : std_logic_vector(3 downto 0);  -- Command Counter
+  signal s_cnt_cmd_max   : std_logic_vector(3 downto 0);  -- Max Command counter
   signal s_cnt_cmd_up    : std_logic;   -- Counter inc
   signal s_lcd_on        : std_logic;   -- LCD On pipe one time
   signal s_lcd_on_r_edge : std_logic;   -- LCD On Rising Edge detection
   signal s_init_done     : std_logic;   -- Init. Done
-
+  signal s_start_init    : std_logic;   -- Start init pipe
 
 begin  -- architecture rtl
+
+  -- purpose: Pipe inputs
+  p_pipe_inputs : process (clk, rst_n) is
+  begin  -- process p_pipe_inputs
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_start_init <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+      s_start_init <= i_start_init;
+    end if;
+  end process p_pipe_inputs;
 
   -- purpose: Pipe Signals
   p_pipe_signals : process (clk, rst_n) is
@@ -109,6 +123,46 @@ begin  -- architecture rtl
     end if;
   end process p_init_ongoing;
 
+-- purpose: Power on Init ongoing management
+
+  p_power_on_init_ongoing_mngt : process (clk, rst_n) is
+  begin  -- process p_power_on_init_ongoing_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_power_on_init <= '0';
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- Set to one only when a lcd_on command is ongoing
+      if(s_lcd_on_r_edge = '1') then
+        s_power_on_init <= '1';
+
+      -- When done reset ongoing flag
+      elsif(s_init_done = '1') then
+        s_power_on_init <= '0';
+      end if;
+
+    end if;
+  end process p_power_on_init_ongoing_mngt;
+
+
+  -- purpose: MAX Counter of command management 
+  p_cnt_cmd_max_mngt : process (clk, rst_n) is
+  begin  -- process p_cnt_cmd_max_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_cnt_cmd_max <= x"6";            -- By Default 6 Command max (7-1)
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- Set Max Command for an initialization after an LCD ON Request
+      if(s_lcd_on_r_edge = '1') then
+        s_cnt_cmd_max <= x"6";          -- By Default 6 Command max (7-1)
+
+      -- If start init do only 4 commands : Function_set - Display_off -
+      -- Display_clear - Entry_mode_set
+      elsif(i_start_init = '1') then
+        s_cnt_cmd_max <= x"3"; -- 4 command -1
+      end if;
+
+    end if;
+  end process p_cnt_cmd_max_mngt;
 
   -- purpose: Function Set counter Management
   p_cmd_cnt_mngt : process (clk, rst_n) is
@@ -120,7 +174,7 @@ begin  -- architecture rtl
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       if(i_cmd_done = '1' and s_init_ongoing = '1') then
-        if(unsigned(s_cnt_cmd) < (7-1)) then
+        if(unsigned(s_cnt_cmd) < unsigned(s_cnt_cmd_max)) then
           s_cnt_cmd    <= unsigned(s_cnt_cmd) + 1;
           s_cnt_cmd_up <= '1';
         else
@@ -152,7 +206,7 @@ begin  -- architecture rtl
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Generation of function after end of counter 
-      if(s_duration_cnt_reach_r_edge = '1' and s_init_ongoing = '1') then
+      if(s_duration_cnt_reach_r_edge = '1' and s_init_ongoing = '1' and s_power_on_init = '1') then
 
         case unsigned(s_cnt_cmd) is
           when conv_unsigned(0, s_cnt_cmd'length) =>
@@ -169,7 +223,7 @@ begin  -- architecture rtl
 
       -- Following command are send only when cnt_cmd in incremented and when
       -- correcponding counter value is reach
-      elsif(s_cnt_cmd_up = '1' and s_init_ongoing = '1') then
+      elsif(s_cnt_cmd_up = '1' and s_init_ongoing = '1' and s_power_on_init = '1') then
 
         case unsigned(s_cnt_cmd) is
           when conv_unsigned(3, s_cnt_cmd'length) =>
@@ -182,6 +236,23 @@ begin  -- architecture rtl
             o_clear_display <= '1';
 
           when conv_unsigned(6, s_cnt_cmd'length) =>
+            o_entry_mode_set <= '1';
+          when others => null;
+        end case;
+
+      -- On specific init
+      elsif((s_start_init = '1' or s_cnt_cmd_up = '1') and s_power_on_init = '0') then
+        case unsigned(s_cnt_cmd) is
+          when conv_unsigned(0, s_cnt_cmd'length) =>
+            o_function_set_cmd <= '1';
+
+          when conv_unsigned(1, s_cnt_cmd'length) =>
+            o_display_ctrl <= '1';
+
+          when conv_unsigned(2, s_cnt_cmd'length) =>
+            o_clear_display <= '1';
+
+          when conv_unsigned(3, s_cnt_cmd'length) =>
             o_entry_mode_set <= '1';
           when others => null;
         end case;
@@ -240,7 +311,8 @@ begin  -- architecture rtl
         s_duration_max <= std_logic_vector(conv_unsigned(clk_period_to_max(G_CLK_PERIOD, C_LCD_WAIT_POWER_ON), s_duration_max'length));
         s_start_cnt    <= '1';
 
-      elsif(s_cnt_cmd_up = '1') then
+      -- Use only when power on init
+      elsif(s_cnt_cmd_up = '1' and s_power_on_init = '1') then
 
         if(unsigned(s_cnt_cmd) = 1) then
           s_duration_max <= std_logic_vector(conv_unsigned(clk_period_to_max(G_CLK_PERIOD, C_INIT_WAIT_1), s_duration_max'length));
@@ -259,7 +331,11 @@ begin  -- architecture rtl
   end process p_duration_max_mngt;
 
   -- Outputs Affectation
-  o_init_done    <= s_init_done;
-  o_init_ongoing <= s_init_ongoing;
+  o_init_done <= s_init_done;
 
+  -- Flag generated only during power on init because no polling is necessary
+  -- During "regular init" we have to poll busy status between each command
+  o_init_ongoing <= s_init_ongoing;-- when s_power_on_init = '1' else '0';
+
+  o_power_on_init_ongoing <= s_power_on_init;
 end architecture rtl;
