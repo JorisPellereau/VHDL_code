@@ -51,19 +51,54 @@ package pkg_lcd_cfah is
   constant C_Y_CHAR_ADDR : std_logic_vector(7 downto 0) := x"59";  -- Y
   constant C_Z_CHAR_ADDR : std_logic_vector(7 downto 0) := x"5A";  -- Z
 
-  constant C_UNDSCR_CHAR_ADDR : std_logic_vector(7 downto 0) := x"5F";  -- _
-
+  constant C_UNDSCR_CHAR_ADDR       : std_logic_vector(7 downto 0) := x"5F";  -- _
+  constant C_SINGLE_QUOTE_CHAR_ADDR : std_logic_vector(7 downto 0) := x"27";  -- '
+  constant C_SPACE_CHAR_ADDR        : std_logic_vector(7 downto 0) := x"20";
 
   -- Lines Buffer Constants
-  constant C_LINES_ARRAY_INIT : t_lines_array := (0      => C_B_CHAR_ADDR,  -- Position 0_0 :
-                                                  1      => C_O_CHAR_ADDR,
-                                                  2      => C_N_CHAR_ADDR,
-                                                  3      => C_J_CHAR_ADDR,
-                                                  4      => C_O_CHAR_ADDR,
-                                                  5      => C_U_CHAR_ADDR,
-                                                  6      => C_R_CHAR_ADDR,
-                                                  7      => C_UNDSCR_CHAR_ADDR,
-                                                  others => (others => '0'));
+  constant C_LINES_ARRAY_INIT : t_lines_array := (0 => C_B_CHAR_ADDR,  -- Position 0_0 :
+                                                  1 => C_O_CHAR_ADDR,
+                                                  2 => C_N_CHAR_ADDR,
+                                                  3 => C_J_CHAR_ADDR,
+                                                  4 => C_O_CHAR_ADDR,
+                                                  5 => C_U_CHAR_ADDR,
+                                                  6 => C_R_CHAR_ADDR,
+
+                                                  7 => C_SPACE_CHAR_ADDR,
+
+                                                  8 => C_J_CHAR_ADDR,
+                                                  9 => C_E_CHAR_ADDR,
+
+                                                  10 => C_SPACE_CHAR_ADDR,
+
+                                                  11 => C_C_CHAR_ADDR,
+                                                  12 => C_R_CHAR_ADDR,
+                                                  13 => C_O_CHAR_ADDR,
+                                                  14 => C_I_CHAR_ADDR,
+                                                  15 => C_S_CHAR_ADDR,
+
+                                                  16 => C_Q_CHAR_ADDR,
+                                                  17 => C_U_CHAR_ADDR,
+                                                  18 => C_E_CHAR_ADDR,
+
+                                                  19 => C_SPACE_CHAR_ADDR,
+
+                                                  20 => C_C_CHAR_ADDR,
+                                                  21 => C_SINGLE_QUOTE_CHAR_ADDR,
+                                                  22 => C_E_CHAR_ADDR,
+                                                  23 => C_S_CHAR_ADDR,
+                                                  24 => C_T_CHAR_ADDR,
+
+                                                  25 => C_SPACE_CHAR_ADDR,
+
+                                                  26     => C_B_CHAR_ADDR,
+                                                  27     => C_O_CHAR_ADDR,
+                                                  28     => C_N_CHAR_ADDR,
+                                                  29     => x"7E",
+                                                  30     => x"EF",
+                                                  31     => x"7F",
+                                                  others => C_SPACE_CHAR_ADDR
+                                                  );
 
   -- == FUNCTIONS ==
   -- Convert a clock period in [ns] to a number of period

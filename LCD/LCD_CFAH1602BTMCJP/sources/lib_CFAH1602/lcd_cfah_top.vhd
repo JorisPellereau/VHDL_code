@@ -282,8 +282,11 @@ begin  -- architecture rtl
       );
 
 
-  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else (others => '0');
-  s_id_sh_cmd_buffer <= "00";
+  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else "000"; -- Enable
+                                                                    -- display
+                                                                    -- by default
+  s_id_sh_cmd_buffer <= "01"; -- shift to right (I/D == 0) and S == 1 (display
+                              -- shift
 
   -- Current not used cmd
   s_return_home          <= '0';

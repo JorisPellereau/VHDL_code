@@ -50,15 +50,14 @@ architecture rtl of lcd_cfah_itf is
   constant C_MAX_LCD_WDATA_cnt : integer := C_tAS_MAX + C_PWeh_MAX + C_tH_tAH_MAX;  -- MAX WDATA Counter
 
   -- INTERNAL Signals
-  signal s_cnt             : std_logic_vector(log2(C_tAS_MAX + C_tcycE_MAX) - 1 downto 0);  -- Counter tAS + tcycE
-  signal s_wdata           : std_logic_vector(7 downto 0);  -- Input data
-  signal s_rdata           : std_logic_vector(7 downto 0);  -- Rdata from LCD
-  signal s_ongoing         : std_logic;  -- Access ongoing
-  signal s_rs              : std_logic;  -- RS
-  signal s_rw              : std_logic;  -- RW
-  signal s_en              : std_logic;  -- EN
-  signal s_done            : std_logic;  -- End of transfert R/W
-  
+  signal s_cnt     : std_logic_vector(log2(C_tAS_MAX + C_tcycE_MAX) - 1 downto 0);  -- Counter tAS + tcycE
+  signal s_wdata   : std_logic_vector(7 downto 0);  -- Input data  
+  signal s_ongoing : std_logic;         -- Access ongoing
+  signal s_rs      : std_logic;         -- RS
+  signal s_rw      : std_logic;         -- RW
+  signal s_en      : std_logic;         -- EN
+  signal s_done    : std_logic;         -- End of transfert R/W
+
 begin  -- architecture rtl
 
   -- purpose: RS and RW - Ongoing flag and reset mangement
@@ -103,10 +102,10 @@ begin  -- architecture rtl
       s_done <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
-      s_done <= '0'; -- Pulse
-      
+      s_done <= '0';                    -- Pulse
+
       -- On start or Ongoing -> Inc counter
-      if(s_ongoing = '1' and s_done = '0') then          -- or i_start = '1'
+      if(s_ongoing = '1' and s_done = '0') then  -- or i_start = '1'
         if(unsigned(s_cnt) < conv_unsigned((C_CNT_MAX - 1), s_cnt'length)) then
           s_cnt <= unsigned(s_cnt) + 1;
         else
@@ -164,8 +163,7 @@ begin  -- architecture rtl
   -- purpose: LCD Read data management
   p_lcd_rdata_mngt : process (clk, rst_n) is
   begin  -- process p_lcd_rdata_mngt
-    if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_rdata     <= (others => '0');
+    if rst_n = '0' then                 -- asynchronous reset (active low)    
       o_lcd_rdata <= (others => '0');
     elsif clk'event and clk = '1' then  -- rising clock edge
 
@@ -193,8 +191,12 @@ begin  -- architecture rtl
         o_bidir_sel <= G_BIDIR_SEL_POLARITY;
 
       -- Write access to LCD
-      else
+      elsif(s_ongoing = '1' and s_rw = '0') then
         o_bidir_sel <= not G_BIDIR_SEL_POLARITY;
+
+      -- Read Access by default
+      else
+        o_bidir_sel <= G_BIDIR_SEL_POLARITY;
       end if;
     end if;
   end process p_bidir_sel;

@@ -195,6 +195,7 @@ compile_all_unit_lcd_cfah_top: clean_all create_project_dir libs compile_design_
 SCN_LIST+=LCD_CFAH_ITF_00.py
 SCN_LIST+=LCD_CFAH_TOP_00.py
 SCN_LIST+=LCD_CFAH_TOP_01.py
+SCN_LIST+=LCD_CFAH_TOP_02.py
 # =======================
 
 # == LIB ARGS ==
