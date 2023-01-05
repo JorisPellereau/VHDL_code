@@ -48,8 +48,8 @@ add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_char_wdata
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_char_position
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_line_sel
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_addr
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_data
-add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_val
+add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_wdata
+add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_wdata_val
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_dl_n_f
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_dcb
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_on
@@ -60,6 +60,9 @@ add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_update_lcd
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_all_char
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_line_sel
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_char_position
+add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_update_cgram
+add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_all_char
+add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_cgram_char_position
 add wave -noupdate -expand -group i_dut -group Inputs /tb_top/i_dut/i_lcd_data
 add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_control_done
 add wave -noupdate -expand -group i_dut -group Outputs /tb_top/i_dut/o_lcd_wdata
@@ -80,7 +83,6 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_lcd_rdy
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_start_poll
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_done_cmd_buffer
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cmd_req
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_clear_display
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_return_home
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_entry_mode_set
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_id_sh
@@ -96,7 +98,8 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_dl_n_f
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_set_gcram_addr
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_set_ddram_addr
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_read_busy_flag
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_wr_data
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_wr_data_cmd_buffer
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_wr_data_ddram
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rd_data
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_data_bus
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_data_bus_cmd_buffer
@@ -117,14 +120,25 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_char_rd_
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_char_rdata
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_char_rdata_val
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_ddram_data_or_addr
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_update_ongoing
-add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_update_done
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_lcd_update_ongoing
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_lcd_update_done
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_poll_ongoing
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_clear_display_from_init
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_clear_display_to_cmd_buffer
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cmd_done_to_update_display
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_done_cmd_to_init
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_power_on_init_ongoing
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_init_ongoing_to_cmd_buffer
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rd_req_cgram
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_rd_cgram_addr
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_rdata
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_rdata_val
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_rd_busy
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_wr_data_cgram
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_data_or_addr
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_update_ongoing
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_update_done
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cmd_done_to_update_cgram
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/clk
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/i_cmd_req
@@ -154,6 +168,32 @@ add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/o_start
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/s_busy
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/s_lcd_wdata
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/clk
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_font_type
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_update_cgram
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_cgram_all_char
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_cgram_char_position
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_cmd_done
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_cgram_rdata
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/i_cgram_rdata_val
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_set_cgram_addr
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_wr_data
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_cgram_data_or_addr
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_rd_req
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_cgram_addr
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_update_ongoing
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_update_cgram_0/o_update_done
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_cgram_all_char
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_cgram_char_position
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_start
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_wr_data_cnt
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_wr_data_cnt_max
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_en_rd_req
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_en_rd_req_p
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_update_ongoing
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_update_done
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_update_cgram_0 -group Internal /tb_top/i_dut/i_lcd_cfah_update_cgram_0/s_wr_cnt_up
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_lines_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_lines_buffer_0/clk
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_lines_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_lines_buffer_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_lines_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_lines_buffer_0/i_wdata
@@ -240,7 +280,6 @@ add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Outputs /
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_itf_0/o_done
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_cnt
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_wdata
-add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_rdata
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_ongoing
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_rs
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_itf_0 -group Internal /tb_top/i_dut/i_lcd_cfah_itf_0/s_rw
@@ -283,6 +322,19 @@ add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_buffer_0 -group In
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cmd_buffer_0/s_data_bus
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cmd_buffer_0/s_cmd_latch
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cmd_buffer_0/s_cmd_req
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/clk
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/i_cgram_wdata
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/i_cgram_wdata_val
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/i_cgram_addr
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/i_rd_req
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/i_rd_cgram_addr
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/o_cgram_rdata
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/o_cgram_rdata_val
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Outputs /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/o_read_busy
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/s_cgram_buffer
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/s_read_busy
+add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cgram_buffer_0 -group Internal /tb_top/i_dut/i_lcd_cfah_cgram_buffer_0/s_rd_req_p
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_polling_busy_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_polling_busy_0/clk
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_polling_busy_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_polling_busy_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_polling_busy_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_polling_busy_0/i_new_cmd_req
@@ -310,4 +362,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {290776500 ps}
+WaveRestoreZoom {0 ps} {1349764500 ps}

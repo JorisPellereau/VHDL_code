@@ -65,9 +65,9 @@ module tb_top
    wire [3:0]	s_char_position;
    wire 	s_line_sel;
 
-   wire [2:0] 	s_cgram_addr;
-   wire [7:0]	s_cgram_data;
-   wire 	s_cgram_val;
+   wire [6:0] 	s_cgram_addr;
+   wire [4:0]	s_cgram_wdata;
+   wire 	s_cgram_wdata_val;
 
    wire 	s_start_init;
    wire 	s_display_ctrl_cmd;
@@ -78,7 +78,12 @@ module tb_top
    wire 	s_lcd_line_sel;
    wire [3:0] 	s_lcd_char_position;
 
-   wire 	s_control_done;   
+   wire 	s_control_done;
+
+   wire 	s_cgram_update;
+   wire 	s_cgram_all_char;
+   wire [2:0] 	s_cgram_char_position;
+   
    
    // == DATA Collector Signals ==
    wire [`C_DATA_COLLECTOR_DATA_WIDTH - 1:0] s_data_collector [`C_NB_DATA_COLLECTOR - 1:0];
@@ -158,25 +163,28 @@ module tb_top
    assign s_wait_event_if.wait_signals[3] = s_rdata_val_emul;   
    
    // SET SET_INJECTOR SIGNALS
-   assign s_lcd_on_off         = s_set_injector_if.set_signals_synch[0];
-   assign s_dl_n_f             = s_set_injector_if.set_signals_synch[1];
-   assign s_dcb                = s_set_injector_if.set_signals_synch[2];
-   assign s_start_init         = s_set_injector_if.set_signals_synch[3];
-   assign s_display_ctrl_cmd   = s_set_injector_if.set_signals_synch[4];
-   assign s_clear_display      = s_set_injector_if.set_signals_synch[5];
-   assign s_update_lcd         = s_set_injector_if.set_signals_synch[6];
-   assign s_lcd_all_char       = s_set_injector_if.set_signals_synch[7];
-   assign s_lcd_line_sel       = s_set_injector_if.set_signals_synch[8];
-   assign s_lcd_char_position  = s_set_injector_if.set_signals_synch[9];
-   assign s_char_wdata         = s_set_injector_if.set_signals_synch[10];
-   assign s_char_wdata_val     = s_set_injector_if.set_signals_synch[11];
-   assign s_char_position      = s_set_injector_if.set_signals_synch[12];
-   assign s_line_sel           = s_set_injector_if.set_signals_synch[13];
-   assign s_cgram_addr         = s_set_injector_if.set_signals_synch[14];
-   assign s_cgram_data         = s_set_injector_if.set_signals_synch[15];
-   assign s_cgram_val          = s_set_injector_if.set_signals_synch[16];
-   assign s_busy_flag_duration = s_set_injector_if.set_signals_synch[17];
-   assign s_wdata_sel          = s_set_injector_if.set_signals_synch[18];
+   assign s_lcd_on_off          = s_set_injector_if.set_signals_synch[0];
+   assign s_dl_n_f              = s_set_injector_if.set_signals_synch[1];
+   assign s_dcb                 = s_set_injector_if.set_signals_synch[2];
+   assign s_start_init          = s_set_injector_if.set_signals_synch[3];
+   assign s_display_ctrl_cmd    = s_set_injector_if.set_signals_synch[4];
+   assign s_clear_display       = s_set_injector_if.set_signals_synch[5];
+   assign s_update_lcd          = s_set_injector_if.set_signals_synch[6];
+   assign s_lcd_all_char        = s_set_injector_if.set_signals_synch[7];
+   assign s_lcd_line_sel        = s_set_injector_if.set_signals_synch[8];
+   assign s_lcd_char_position   = s_set_injector_if.set_signals_synch[9];
+   assign s_char_wdata          = s_set_injector_if.set_signals_synch[10];
+   assign s_char_wdata_val      = s_set_injector_if.set_signals_synch[11];
+   assign s_char_position       = s_set_injector_if.set_signals_synch[12];
+   assign s_line_sel            = s_set_injector_if.set_signals_synch[13];
+   assign s_cgram_addr          = s_set_injector_if.set_signals_synch[14];
+   assign s_cgram_wdata         = s_set_injector_if.set_signals_synch[15];
+   assign s_cgram_wdata_val     = s_set_injector_if.set_signals_synch[16];
+   assign s_busy_flag_duration  = s_set_injector_if.set_signals_synch[17];
+   assign s_wdata_sel           = s_set_injector_if.set_signals_synch[18];
+   assign s_cgram_update        = s_set_injector_if.set_signals_synch[19];
+   assign s_cgram_all_char      = s_set_injector_if.set_signals_synch[20];
+   assign s_cgram_char_position = s_set_injector_if.set_signals_synch[21];
    
    // SET SET_INJECTOR INITIAL VALUES
    genvar i;
@@ -248,25 +256,28 @@ module tb_top
    initial begin// : TB_SEQUENCER
     
       // Add Alias of Generic TB Modules
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_ON",            0);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DL_N_F",            1);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DCB",               2);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START_INIT",        3);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DISPLAY_CTRL_CMD",  4);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CLEAR_DISPLAY",     5);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_UPDATE_LCD",        6);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_ALL_CHAR",      7);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_LINE_SEL",      8);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_CHAR_POSITION", 9);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_WDATA",        10);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_WDATA_VAL",    11);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_POSITION",     12);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LINE_SEL",          13);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_ADDR",        14);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_DATA",        15);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_VAL",         16);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "S_BUSY_FLAG_DURATION",17);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "S_WDATA_SEL",         18);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_ON",               0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DL_N_F",               1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DCB",                  2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_START_INIT",           3);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_DISPLAY_CTRL_CMD",     4);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CLEAR_DISPLAY",        5);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_UPDATE_LCD",           6);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_ALL_CHAR",         7);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_LINE_SEL",         8);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LCD_CHAR_POSITION",    9);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_WDATA",          10);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_WDATA_VAL",      11);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CHAR_POSITION",       12);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_LINE_SEL",            13);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_ADDR",          14);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_WDATA",         15);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_WDATA_VAL",     16);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "S_BUSY_FLAG_DURATION",  17);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "S_WDATA_SEL",           18);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_UPDATE",        19);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_ALL_CHAR",      20);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "I_CGRAM_CHAR_POSITION", 21);
       
       // WAIT Event Alias
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",            0);
@@ -307,9 +318,9 @@ module tb_top
 	  .i_char_position   (s_char_position),
 	  .i_line_sel        (s_line_sel),
 
-	  /*.i_cgram_addr  (s_cgram_addr),
-	  .i_cgram_data  (s_cgram_data),
-	  .i_cgram_val   (s_cgram_val),*/
+	  .i_cgram_addr       (s_cgram_addr),
+	  .i_cgram_wdata      (s_cgram_wdata),
+	  .i_cgram_wdata_val  (s_cgram_wdata_val),
 	  
 	  .i_start_init         (s_start_init),    
 	  .i_display_ctrl_cmd   (s_display_ctrl_cmd),
@@ -320,6 +331,10 @@ module tb_top
 	  .i_lcd_line_sel       (s_lcd_line_sel),
 	  .i_lcd_char_position  (s_lcd_char_position),
 
+	  .i_update_cgram        (s_cgram_update),
+	  .i_cgram_all_char      (s_cgram_all_char),
+	  .i_cgram_char_position (s_cgram_char_position),
+	  
 	  .o_control_done (s_control_done),
 	  	  
 	  .i_lcd_on (s_lcd_on_off),
@@ -340,8 +355,6 @@ module tb_top
    assign io_data    = s_bidir_sel ? s_lcd_wdata : 8'bz;
    assign s_lcd_data = io_data;
 
-//   assign s_dl_n_f = 3'b111;
-   
 
    // LCD EMULATOR-CHECKER
    LCD_CFAH_emul #(

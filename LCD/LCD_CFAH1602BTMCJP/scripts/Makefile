@@ -115,14 +115,17 @@ LIB_TB_TOP=$(LIB_TB_UNIT_LCD_CFAH_ITF)
 # == DESIGN VHD FILE LIST ==
 
 src_lib_pkg_utils=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_utils/pkg_utils.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah_types_and_func.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/pkg_lcd_cfah.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_itf.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_generator.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_polling_busy.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cmd_buffer.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_cgram_buffer.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_init.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_lines_buffer.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_update_display.vhd
+src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_update_cgram.vhd
 src_lib_CFAH1602+=$(SRC_DIR)/lib_CFAH1602/lcd_cfah_top.vhd
 # ==========================
 
@@ -192,10 +195,11 @@ compile_tb_unit_lcd_cfah_top: compile_generic_tb_v_files compile_tb_unit_lcd_cfa
 compile_all_unit_lcd_cfah_itf: clean_all create_project_dir libs compile_design_lcd_cfah compile_tb_unit_lcd_cfah_itf print_compile_logs_file
 compile_all_unit_lcd_cfah_top: clean_all create_project_dir libs compile_design_lcd_cfah compile_tb_unit_lcd_cfah_top print_compile_logs_file 
 # == SCENARII LIST ==
-SCN_LIST+=LCD_CFAH_ITF_00.py
-SCN_LIST+=LCD_CFAH_TOP_00.py
-SCN_LIST+=LCD_CFAH_TOP_01.py
-SCN_LIST+=LCD_CFAH_TOP_02.py
+SCN_LIST+=LCD_CFAH_ITF_00
+SCN_LIST+=LCD_CFAH_TOP_00
+SCN_LIST+=LCD_CFAH_TOP_01
+SCN_LIST+=LCD_CFAH_TOP_02
+SCN_LIST+=LCD_CFAH_TOP_03
 # =======================
 
 # == LIB ARGS ==

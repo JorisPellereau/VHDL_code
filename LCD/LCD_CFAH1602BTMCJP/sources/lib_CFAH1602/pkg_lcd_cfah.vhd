@@ -2,10 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 
-package pkg_lcd_cfah is
+-- Import Types and Fucntions
+library lib_CFAH1602;
+use lib_CFAH1602.pkg_lcd_cfah_types_and_func.all;
 
-  -- TYPES
-  type t_lines_array is array (0 to 31) of std_logic_vector(7 downto 0);  -- Line Array
+
+package pkg_lcd_cfah is
 
   -- == LCD CFAH Timing Duration ==
   constant C_tAS_DURATION    : integer := 40;   -- 40 ns
@@ -100,10 +102,102 @@ package pkg_lcd_cfah is
                                                   others => C_SPACE_CHAR_ADDR
                                                   );
 
-  -- == FUNCTIONS ==
-  -- Convert a clock period in [ns] to a number of period
-  function clk_period_to_max(i_clk_period : integer; i_duration : integer)
-    return integer;
+
+  -- CGRAM Character patterns
+  constant C_CGRAM_5x8_PATTERN_HEART_EMPTY_0 : t_cgram_pattern_5x8_array := (0 => "0" & x"0",
+                                                                             1 => "0" & x"A",
+                                                                             2 => "1" & x"5",
+                                                                             3 => "1" & x"1",
+                                                                             4 => "0" & x"A",
+                                                                             5 => "0" & x"4",
+                                                                             6 => "0" & x"0",
+                                                                             7 => "0" & x"0");
+
+  constant C_CGRAM_5x8_PATTERN_HEART_EMPTY_1 : t_cgram_pattern_5x8_array := (0 => "0" & x"0",
+                                                                             1 => "0" & x"A",
+                                                                             2 => "1" & x"5",
+                                                                             3 => "1" & x"1",
+                                                                             4 => "1" & x"1",
+                                                                             5 => "0" & x"A",
+                                                                             6 => "0" & x"4",
+                                                                             7 => "0" & x"0");
+
+  constant C_CGRAM_5x8_PATTERN_HEART_EMPTY_2 : t_cgram_pattern_5x8_array := (0 => "0" & x"0",
+                                                                             1 => "0" & x"A",
+                                                                             2 => "1" & x"F",
+                                                                             3 => "1" & x"B",
+                                                                             4 => "0" & x"E",
+                                                                             5 => "0" & x"4",
+                                                                             6 => "0" & x"0",
+                                                                             7 => "0" & x"0");
+
+  constant C_CGRAM_5x8_PATTERN_HEART_FULL_0 : t_cgram_pattern_5x8_array := (0 => "0" & x"0",
+                                                                            1 => "0" & x"A",
+                                                                            2 => "1" & x"F",
+                                                                            3 => "1" & x"F",
+                                                                            4 => "0" & x"E",
+                                                                            5 => "0" & x"4",
+                                                                            6 => "0" & x"0",
+                                                                            7 => "0" & x"0");
+
+  constant C_CGRAM_5x8_PATTERN_ET_0 : t_cgram_pattern_5x8_array := (0 => "0" & x"E",
+                                                                    1 => "0" & x"A",
+                                                                    2 => "0" & x"E",
+                                                                    3 => "0" & x"4",
+                                                                    4 => "1" & x"F",
+                                                                    5 => "0" & x"4",
+                                                                    6 => "0" & x"A",
+                                                                    7 => "1" & x"B");
+
+
+  constant C_CGRAM_5x8_PATTERN_ET_1 : t_cgram_pattern_5x8_array := (0 => "0" & x"4",
+                                                                    1 => "0" & x"E",
+                                                                    2 => "1" & x"F",
+                                                                    3 => "0" & x"4",
+                                                                    4 => "0" & x"4",
+                                                                    5 => "0" & x"E",
+                                                                    6 => "0" & x"A",
+                                                                    7 => "1" & x"B");
+
+
+  constant C_CGRAM_5x8_PATTERN_ET_2 : t_cgram_pattern_5x8_array := (0 => "1" & x"5",
+                                                                    1 => "0" & x"A",
+                                                                    2 => "0" & x"A",
+                                                                    3 => "0" & x"E",
+                                                                    4 => "0" & x"E",
+                                                                    5 => "0" & x"A",
+                                                                    6 => "0" & x"A",
+                                                                    7 => "1" & x"5");
+
+
+  constant C_CGRAM_5x8_PATTERN_ET_3 : t_cgram_pattern_5x8_array := (0 => "0" & x"E",
+                                                                    1 => "1" & x"1",
+                                                                    2 => "0" & x"E",
+                                                                    3 => "0" & x"4",
+                                                                    4 => "1" & x"5",
+                                                                    5 => "0" & x"E",
+                                                                    6 => "0" & x"A",
+                                                                    7 => "1" & x"1");
+
+  constant C_CGRAM_INIT : t_cgram_array := create_cgram_init(C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3,
+                                                             C_CGRAM_5x8_PATTERN_ET_3);
+
+  constant C_CGRAM_INIT_2 : t_cgram_array_2 := (0 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                1 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                2 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                3 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                4 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                5 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                6 => C_CGRAM_5x8_PATTERN_ET_3,
+                                                7 => C_CGRAM_5x8_PATTERN_ET_3);
+
+
 
 
   -- == COMPONENTS     ==
@@ -295,9 +389,9 @@ package pkg_lcd_cfah is
       i_line_sel       : in std_logic;                     -- Line Selection
 
       -- LCD CGRAM BUFFER I/F
-      -- i_cgram_addr : in std_logic_vector(2 downto 0);  -- CGRAM Addr
-      -- i_cgram_data : in std_logic_vector(7 downto 0);  -- CGRAM Data
-      -- i_cgram_val  : in std_logic;                     -- CGRAM Data valid
+      i_cgram_addr      : in std_logic_vector(6 downto 0);  -- CGRAM Addr
+      i_cgram_wdata     : in std_logic_vector(4 downto 0);  -- CGRAM Data
+      i_cgram_wdata_val : in std_logic;                     -- CGRAM Data valid
 
       -- LCD Config Bus
       i_dl_n_f : in std_logic_vector(2 downto 0);  -- Function SET bis control
@@ -389,25 +483,71 @@ package pkg_lcd_cfah is
   end component lcd_cfah_lines_buffer;
 
 
+  component lcd_cfah_cgram_buffer is
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous reset
+
+      i_cgram_wdata     : in std_logic_vector(4 downto 0);  -- Data character
+      i_cgram_wdata_val : in std_logic;                     -- Data valid   
+      i_cgram_addr      : in std_logic_vector(6 downto 0);  --CGRAM ADDR
+
+      i_rd_req        : in std_logic;                     -- Read Request
+      i_rd_cgram_addr : in std_logic_vector(6 downto 0);  -- Character Address
+
+      o_cgram_rdata     : out std_logic_vector(4 downto 0);  -- Rdata
+      o_cgram_rdata_val : out std_logic;                     -- Rdata valid
+
+      o_read_busy : out std_logic       -- Busy
+      );
+
+  end component lcd_cfah_cgram_buffer;
+
+
+  component lcd_cfah_update_cgram is
+
+    port (
+      clk   : in std_logic;             -- Clock
+      rst_n : in std_logic;             -- Asynchronous Reset
+
+      i_font_type : in std_logic;  -- Font type Configuration (5*8 or 5*10)
+
+      i_update_cgram        : in std_logic;  -- Update CGRAM Command
+      i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
+      i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection
+
+      -- Command Done
+      i_cmd_done : in std_logic;        -- Command done from Command buffer
+
+      -- LCD Commands
+      o_set_cgram_addr     : out std_logic;  -- SET CGRAM ADDR Command
+      o_wr_data            : out std_logic;  -- Write data to RAM command
+      o_cgram_data_or_addr : out std_logic_vector(7 downto 0);  -- Data or Addr bus
+
+      -- LINE BUFFER I/F
+      i_cgram_rdata     : in  std_logic_vector(4 downto 0);  -- CGRAM one line RDATA
+      i_cgram_rdata_val : in  std_logic;  -- CGRAM one Line RDATA Valid
+      o_rd_req          : out std_logic;  -- Read Request
+      o_cgram_addr      : out std_logic_vector(6 downto 0);  -- Char Position
+
+      o_update_ongoing : out std_logic;  -- CGRAM Update ongoing flag
+
+      -- CGRAM Update done flag
+      o_update_done : out std_logic     -- CGRAM Update Done
+
+      );
+
+  end component lcd_cfah_update_cgram;
+
+
   -- == END COMPONENTS ==
 
 end package pkg_lcd_cfah;
 
 package body pkg_lcd_cfah is
 
-  -- Convert a clock period in [ns] to a number of period
-  function clk_period_to_max(i_clk_period : integer; i_duration : integer)
-    return integer is
 
-    -- Internal Variables
-    variable v_results : integer := 0;
-  begin
-    v_results := i_duration / i_clk_period;
-    if(v_results = 0) then
-      v_results := 1;                   -- One TCLK minimum
-    end if;
-    return v_results;
-  end function clk_period_to_max;
 
 
 end package body pkg_lcd_cfah;

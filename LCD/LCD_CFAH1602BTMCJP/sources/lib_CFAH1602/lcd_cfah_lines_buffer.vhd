@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-10
--- Last update: 2022-12-24
+-- Last update: 2023-01-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,6 +25,9 @@ use ieee.std_logic_arith.all;
 
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
+
+library lib_CFAH1602;
+use lib_CFAH1602.pkg_lcd_cfah_types_and_func.all;
 
 library lib_CFAH1602;
 use lib_CFAH1602.pkg_lcd_cfah.all;

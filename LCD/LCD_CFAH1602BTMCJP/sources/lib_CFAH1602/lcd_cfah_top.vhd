@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2022-12-29
+-- Last update: 2023-01-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,9 +46,9 @@ entity lcd_cfah_top is
     i_line_sel       : in std_logic;                     -- Line Selection
 
     -- LCD CGRAM BUFFER I/F
-    -- i_cgram_addr : in std_logic_vector(2 downto 0);  -- CGRAM Addr
-    -- i_cgram_data : in std_logic_vector(7 downto 0);  -- CGRAM Data
-    -- i_cgram_val  : in std_logic;                     -- CGRAM Data valid
+    i_cgram_addr      : in std_logic_vector(6 downto 0);  -- CGRAM Addr
+    i_cgram_wdata     : in std_logic_vector(4 downto 0);  -- CGRAM Data
+    i_cgram_wdata_val : in std_logic;                     -- CGRAM Data valid
 
     -- LCD Config Bus
     i_dl_n_f : in std_logic_vector(2 downto 0);  -- Function SET bis control
@@ -64,6 +64,10 @@ entity lcd_cfah_top is
     i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
     i_lcd_line_sel      : in std_logic;
     i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
+
+    i_update_cgram        : in std_logic;  -- Update CGRAM Command
+    i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
+    i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection
 
     o_control_done : out std_logic;     -- Command done
 
@@ -115,7 +119,8 @@ architecture rtl of lcd_cfah_top is
   signal s_set_gcram_addr          : std_logic;
   signal s_set_ddram_addr          : std_logic;
   signal s_read_busy_flag          : std_logic;
-  signal s_wr_data                 : std_logic;
+  signal s_wr_data_cmd_buffer      : std_logic;
+  signal s_wr_data_ddram           : std_logic;
   signal s_rd_data                 : std_logic;
   signal s_data_bus                : std_logic_vector(7 downto 0);
   signal s_data_bus_cmd_buffer     : std_logic_vector(7 downto 0);
@@ -140,8 +145,8 @@ architecture rtl of lcd_cfah_top is
   signal s_char_rdata            : std_logic_vector(7 downto 0);
   signal s_char_rdata_val        : std_logic;
   signal s_ddram_data_or_addr    : std_logic_vector(7 downto 0);
-  signal s_update_ongoing        : std_logic;
-  signal s_update_done           : std_logic;
+  signal s_lcd_update_ongoing    : std_logic;
+  signal s_lcd_update_done       : std_logic;
 
   signal s_poll_ongoing                : std_logic;
   signal s_clear_display_from_init     : std_logic;
@@ -151,6 +156,17 @@ architecture rtl of lcd_cfah_top is
   signal s_done_cmd_to_init           : std_logic;
   signal s_power_on_init_ongoing      : std_logic;
   signal s_init_ongoing_to_cmd_buffer : std_logic;
+
+  signal s_rd_req_cgram             : std_logic;
+  signal s_rd_cgram_addr            : std_logic_vector(6 downto 0);
+  signal s_cgram_rdata              : std_logic_vector(4 downto 0);
+  signal s_cgram_rdata_val          : std_logic;
+  signal s_cgram_rd_busy            : std_logic;
+  signal s_wr_data_cgram            : std_logic;
+  signal s_cgram_data_or_addr       : std_logic_vector(7 downto 0);
+  signal s_cgram_update_ongoing     : std_logic;
+  signal s_cgram_update_done        : std_logic;
+  signal s_cmd_done_to_update_cgram : std_logic;
 
 begin  -- architecture rtl
 
@@ -241,6 +257,7 @@ begin  -- architecture rtl
 
   -- Command done return only when polling is done
   s_cmd_done_to_update_display <= s_done_cmd_buffer and not s_poll_ongoing;
+  s_cmd_done_to_update_cgram   <= s_done_cmd_buffer and not s_poll_ongoing;
 
   -- UPDATE DISPLAY Management block
   i_lcd_cfah_update_display_0 : lcd_cfah_update_display
@@ -253,15 +270,15 @@ begin  -- architecture rtl
       i_lcd_char_position  => i_lcd_char_position,
       i_cmd_done           => s_cmd_done_to_update_display,
       o_set_ddram_addr     => s_set_ddram_addr,
-      o_wr_data            => s_wr_data,
+      o_wr_data            => s_wr_data_ddram,
       o_ddram_data_or_addr => s_ddram_data_or_addr,
       i_rdata              => s_char_rdata,
       i_rdata_val          => s_char_rdata_val,
       o_rd_req             => s_char_read_req,
       o_rd_char_pos        => s_char_rd_char_position,
       o_rd_line_sel        => s_char_rd_line_sel,
-      o_update_ongoing     => s_update_ongoing,
-      o_update_done        => s_update_done
+      o_update_ongoing     => s_lcd_update_ongoing,
+      o_update_done        => s_lcd_update_done
       );
 
   -- Line Buffer
@@ -282,22 +299,65 @@ begin  -- architecture rtl
       );
 
 
-  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else "000"; -- Enable
-                                                                    -- display
-                                                                    -- by default
-  s_id_sh_cmd_buffer <= "01"; -- shift to right (I/D == 0) and S == 1 (display
-                              -- shift
+  -- CGRAM Custom Character Buffer
+  i_lcd_cfah_cgram_buffer_0 : lcd_cfah_cgram_buffer
+    port map (
+      clk               => clk,
+      rst_n             => rst_n,
+      i_cgram_wdata     => i_cgram_wdata,
+      i_cgram_wdata_val => i_cgram_wdata_val,
+      i_cgram_addr      => i_cgram_addr,
+      i_rd_req          => s_rd_req_cgram,
+      i_rd_cgram_addr   => s_rd_cgram_addr,
+      o_cgram_rdata     => s_cgram_rdata,
+      o_cgram_rdata_val => s_cgram_rdata_val,
+      o_read_busy       => s_cgram_rd_busy
+      );
+
+
+  i_lcd_cfah_update_cgram_0 : lcd_cfah_update_cgram
+    port map (
+      clk                   => clk,
+      rst_n                 => rst_n,
+      i_font_type           => s_dl_n_f(0),  -- Font type of function set command
+      i_update_cgram        => i_update_cgram,
+      i_cgram_all_char      => i_cgram_all_char,
+      i_cgram_char_position => i_cgram_char_position,
+      i_cmd_done            => s_cmd_done_to_update_cgram,
+      o_set_cgram_addr      => s_set_gcram_addr,
+      o_wr_data             => s_wr_data_cgram,
+      o_cgram_data_or_addr  => s_cgram_data_or_addr,
+      i_cgram_rdata         => s_cgram_rdata,
+      i_cgram_rdata_val     => s_cgram_rdata_val,
+      o_rd_req              => s_rd_req_cgram,
+      o_cgram_addr          => s_rd_cgram_addr,
+      o_update_ongoing      => s_cgram_update_ongoing,
+      o_update_done         => s_cgram_update_done
+      );
+
+
+  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else "000";  -- Enable
+                                                                     -- display
+                                        -- by default
+  s_id_sh_cmd_buffer <= "01";  -- shift to right (I/D == 0) and S == 1 (display
+  -- shift
 
   -- Current not used cmd
   s_return_home          <= '0';
   s_cursor_display_shift <= '0';
-  s_set_gcram_addr       <= '0';
-  s_rd_data              <= '0';
-  s_sc_rl_cmd_buffer     <= (others => '0');
+
+  s_rd_data          <= '0';
+  s_sc_rl_cmd_buffer <= (others => '0');
 
   -- MUX DATA BUS to CMD BUFFER
-  s_data_bus_cmd_buffer <= s_ddram_data_or_addr when s_update_ongoing = '1' else
+  s_data_bus_cmd_buffer <= s_ddram_data_or_addr when s_lcd_update_ongoing = '1' else
+                           s_cgram_data_or_addr when s_cgram_update_ongoing = '1' else
                            (others => '0');
+
+  -- MUX WR DATA Command to CMD BUFFER
+  s_wr_data_cmd_buffer <= s_wr_data_ddram when s_lcd_update_ongoing = '1' else
+                          s_wr_data_cgram when s_cgram_update_ongoing = '1' else
+                          '0';
 
   -- From init block or from outside
   s_display_ctrl_to_cmd_buffer  <= s_display_ctrl or i_display_ctrl_cmd;
@@ -332,7 +392,7 @@ begin  -- architecture rtl
       i_set_gcram_addr       => s_set_gcram_addr,
       i_set_ddram_addr       => s_set_ddram_addr,
       i_read_busy_flag       => s_read_busy_flag,
-      i_wr_data              => s_wr_data,
+      i_wr_data              => s_wr_data_cmd_buffer,
       i_rd_data              => s_rd_data,
       i_data_bus             => s_data_bus_cmd_buffer,
       i_cmd_done             => s_done_cmd_generator,
@@ -420,6 +480,6 @@ begin  -- architecture rtl
   o_lcd_on <= s_o_lcd_on;
 
   -- Done from Block or from s_done_cmd_buffer if a single command is generated
-  o_control_done <= s_update_done or s_init_done_r_edge or (s_done_cmd_buffer and not s_update_ongoing and not s_init_ongoing and not s_poll_ongoing);
+  o_control_done <= s_lcd_update_done or s_init_done_r_edge or s_cgram_update_done or (s_done_cmd_buffer and not s_lcd_update_ongoing and not s_init_ongoing and not s_poll_ongoing and not s_cgram_update_ongoing);
 
 end architecture rtl;

@@ -31,17 +31,26 @@ class macros_tb_unit_lcd_cfah_top:
                 self.scn.print_comment(" =================================")
 
         # Load Data to CGRAM buffer
-        def lcd_load_cgram_buffer(self, cgram_data_list):
-                self.scn.print_comment(" == MACRO lcd_load_cgram_buffer ==")
-
-
+        def lcd_load_cgram_buffer(self, cgram_data_list= [0]*64):
                 
+                self.scn.print_comment(" == MACRO lcd_load_cgram_buffer ==")
+                for i in range(0, len(cgram_data_list)):
+                        self.scn.WTFS("CLK")
+                        self.scn.SET("I_CGRAM_ADDR",      i)
+                        self.scn.SET("I_CGRAM_WDATA",     cgram_data_list[i])
+                        self.scn.SET("I_CGRAM_WDATA_VAL", 1)                        
+                        self.scn.WTFS("CLK")
+                        self.scn.SET("I_CGRAM_ADDR",      0)
+                        self.scn.SET("I_CGRAM_WDATA",     0)
+                        self.scn.SET("I_CGRAM_WDATA_VAL", 0)
                 self.scn.print_comment(" =================================")
 
 
+   
         # Run an LCD command
         def lcd_start_cmd(self, lcd_on = 0, clear_display_cmd = 0, display_ctrl_cmd = 0, dcb = 0,
-                          update_lcd = 0, lcd_all_char = 0, lcd_line_sel = 0, lcd_char_position = 0, lcd_init = 0):
+                          update_lcd = 0, lcd_all_char = 0, lcd_line_sel = 0, lcd_char_position = 0, lcd_init = 0,
+                          update_cgram = 0, cgram_all_char = 0, cgram_char_position = 0):
                 
                 self.scn.print_comment(" == MACRO lcd_start_cmd ==")
 
@@ -55,6 +64,8 @@ class macros_tb_unit_lcd_cfah_top:
                         str_input = "I_UPDATE_LCD"
                 elif(lcd_init == 1):
                         str_input = "I_START_INIT"
+                elif(update_cgram == 1):
+                         str_input = "I_CGRAM_UPDATE"
                         
                 self.scn.WTFS("CLK")
                 self.scn.SET(str_input, 1)
@@ -62,12 +73,19 @@ class macros_tb_unit_lcd_cfah_top:
                 self.scn.SET("I_LCD_ALL_CHAR",      lcd_all_char) if update_lcd == 1 else None
                 self.scn.SET("I_LCD_LINE_SEL",      lcd_line_sel) if update_lcd == 1 else None
                 self.scn.SET("I_LCD_CHAR_POSITION", lcd_char_position) if update_lcd == 1 else None
+                
+                self.scn.SET("I_CGRAM_ALL_CHAR",      cgram_all_char) if update_cgram == 1 else None
+                self.scn.SET("I_CGRAM_CHAR_POSITION", cgram_char_position) if update_cgram == 1 else None
+                        
                 self.scn.WTFS("CLK")
                 self.scn.SET(str_input, 0)
                 self.scn.SET("I_DCB",               0) if (display_ctrl_cmd == 1 or lcd_init == 1) else None
                 self.scn.SET("I_LCD_ALL_CHAR",      0) if update_lcd == 1 else None
                 self.scn.SET("I_LCD_LINE_SEL",      0) if update_lcd == 1 else None
                 self.scn.SET("I_LCD_CHAR_POSITION", 0) if update_lcd == 1 else None
+                
+                self.scn.SET("I_CGRAM_ALL_CHAR",      0) if update_cgram == 1 else None
+                self.scn.SET("I_CGRAM_CHAR_POSITION", 0) if update_cgram == 1 else None
                 
                 self.scn.print_comment(" =================================")
 
