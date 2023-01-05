@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-01-02
--- Last update: 2023-01-03
+-- Last update: 2023-01-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ begin  -- architecture rtl
 
       else
         if(i_rd_req = '1') then
-          o_cgram_rdata     <= s_cgram_buffer(conv_integer(unsigned(i_cgram_addr)));
+          o_cgram_rdata     <= s_cgram_buffer(conv_integer(unsigned(i_rd_cgram_addr)));
           o_cgram_rdata_val <= '1';
         else
           o_cgram_rdata     <= (others => '0');

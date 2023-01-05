@@ -51,6 +51,9 @@ scn.print_step("Set configuration of LCD Emulation Block")
 # ==============================================
 scn.SET("S_BUSY_FLAG_DURATION", wait_duration)
 
+
+# == FIRST Config For font == 0
+
 # ==============================================
 scn.print_step("Set Static configuration")
 # ==============================================
@@ -60,19 +63,73 @@ scn.WAIT(400, "ns")
 # ==============================================
 scn.print_step("SET CGRAM Buffer")
 # ==============================================
-cgram_data_list = [i for i in range(64)]
+cgram_data_list = [i+1 for i in range(8)] + [i+2 for i in range(8)] + [i+3 for i in range(8)] + [i+4 for i in range(8)] + \
+    [i+5 for i in range(8)] + [i+6 for i in range(8)] + [i+7 for i in range(8)] + [i+8 for i in range(8)]
+
 macros_tb.lcd_load_cgram_buffer(cgram_data_list)
 scn.WAIT(1, "us")
 
+# ==============================================
+scn.print_step("SET LCD INIT")
+# ==============================================
+macros_tb.lcd_start_cmd(lcd_init = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
 
 # ==============================================
-scn.print_step("Update CGRAM - One pattern : pattern_0")
+scn.print_step("Update CGRAM - Update pattern one by one")
 # ==============================================
-cgram_data_list = [i for i in range(64)]
-macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 0, cgram_char_position = 0)
+
+for pattern_i in range(0, 8):
+    macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 0, cgram_char_position = pattern_i)
+    scn.WTRS("O_CONTROL_DONE", 40, "ms")
+    scn.WAIT(1, "us")
+
+
+
+
+
+
+# == FIRST Config For font == 1
+dl_n_f = 0b111 # 8bits - 2 Lines - 5*11 dots
+# ==============================================
+scn.print_step("Set Static configuration")
+# ==============================================
+macros_tb.lcd_set_static_config(dl_n_f)
+scn.WAIT(400, "ns")
+
+# ==============================================
+scn.print_step("SET CGRAM Buffer")
+# ==============================================
+cgram_data_list = [0]*64
+cgram_data_list[0:11]  = [1]*11
+cgram_data_list[16:27] = [2]*11
+cgram_data_list[32:43] = [3]*11
+cgram_data_list[48:59] = [4]*11
+
+macros_tb.lcd_load_cgram_buffer(cgram_data_list)
+scn.WAIT(1, "us")
+
+# ==============================================
+scn.print_step("SET LCD INIT")
+# ==============================================
+macros_tb.lcd_start_cmd(lcd_init = 1)
 scn.WTRS("O_CONTROL_DONE", 40, "ms")
 scn.WAIT(1, "us")
 
 
 
+
+# ==============================================
+scn.print_step("Update CGRAM - Update pattern one by one")
+# ==============================================
+
+for pattern_i in range(0, 8):
+    macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 0, cgram_char_position = pattern_i)
+    scn.WTRS("O_CONTROL_DONE", 40, "ms")
+    scn.WAIT(1, "us")
+
+
+
+    
 scn.END_TEST()

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-02
--- Last update: 2023-01-03
+-- Last update: 2023-01-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ begin  -- architecture rtl
       -- If start init do only 4 commands : Function_set - Display_off -
       -- Display_clear - Entry_mode_set
       elsif(i_start_init = '1') then
-        s_cnt_cmd_max <= x"3"; -- 4 command -1
+        s_cnt_cmd_max <= x"3";          -- 4 command -1
       end if;
 
     end if;
@@ -187,12 +187,13 @@ begin  -- architecture rtl
 
       else
         s_cnt_cmd_up <= '0';
+        s_init_done  <= '0';
       end if;
 
       -- Reset Done flag when lcd is on again and if not ongoing process
-      if(s_lcd_on_r_edge = '1' and s_init_ongoing = '0') then
-        s_init_done <= '0';
-      end if;
+      -- if(s_lcd_on_r_edge = '1' and s_init_ongoing = '0') then
+      --   s_init_done <= '0';
+      -- end if;
 
     end if;
   end process p_cmd_cnt_mngt;
@@ -338,7 +339,7 @@ begin  -- architecture rtl
 
   -- Flag generated only during power on init because no polling is necessary
   -- During "regular init" we have to poll busy status between each command
-  o_init_ongoing <= s_init_ongoing;-- when s_power_on_init = '1' else '0';
+  o_init_ongoing <= s_init_ongoing;     -- when s_power_on_init = '1' else '0';
 
   o_power_on_init_ongoing <= s_power_on_init;
 end architecture rtl;

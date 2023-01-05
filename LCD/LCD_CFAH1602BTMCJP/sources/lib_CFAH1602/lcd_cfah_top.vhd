@@ -108,9 +108,11 @@ architecture rtl of lcd_cfah_top is
   signal s_entry_mode_set          : std_logic;
   signal s_id_sh                   : std_logic_vector(1 downto 0);
   signal s_id_sh_cmd_buffer        : std_logic_vector(1 downto 0);
+  signal s_id_sh_to_cmd_generator  : std_logic_vector(1 downto 0);
   signal s_display_ctrl            : std_logic;
   signal s_dcb                     : std_logic_vector(2 downto 0);
   signal s_dcb_cmd_buffer          : std_logic_vector(2 downto 0);
+  signal s_dcb_to_cmd_generator    : std_logic_vector(2 downto 0);
   signal s_cursor_display_shift    : std_logic;
   signal s_sc_rl                   : std_logic_vector(1 downto 0);
   signal s_sc_rl_cmd_buffer        : std_logic_vector(1 downto 0);
@@ -168,22 +170,26 @@ architecture rtl of lcd_cfah_top is
   signal s_cgram_update_done        : std_logic;
   signal s_cmd_done_to_update_cgram : std_logic;
 
+  signal s_display_ctrl_cmd : std_logic;
+
+
 begin  -- architecture rtl
 
   -- purpose: Pipe Inputs
   p_pipe_inputs : process (clk, rst_n) is
   begin  -- process p_pipe_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_lcd_on <= '0';
-      s_dl_n_f <= (others => '0');
+      s_lcd_on           <= '0';
+      s_display_ctrl_cmd <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_lcd_on <= i_lcd_on;
-      s_dl_n_f <= i_dl_n_f;             -- Static
+      s_lcd_on           <= i_lcd_on;
+      s_display_ctrl_cmd <= i_display_ctrl_cmd;
     end if;
   end process p_pipe_inputs;
 
   -- Rising Edge detection
   s_lcd_on_r_edge <= i_lcd_on and not s_lcd_on;
+
 
 
   -- purpose: Pipes internal signals
@@ -198,6 +204,32 @@ begin  -- architecture rtl
 
   -- Rising edge detection
   s_init_done_r_edge <= s_init_done and not s_init_done_p;
+
+
+  -- purpose: Latch Config Bits on command
+  p_latch_config_bits : process (clk, rst_n) is
+  begin  -- process p_latch_config_bits
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_dl_n_f <= (others => '0');
+      s_dcb    <= (others => '0');
+      s_id_sh  <= (others => '0');
+
+    elsif clk'event and clk = '1' then  -- rising clock edge
+
+      -- Update Function Set Command configuration bits
+      if(i_lcd_on = '1' or i_start_init = '1') then
+        s_dl_n_f <= i_dl_n_f;
+      end if;
+
+      -- Update on command
+      if(i_display_ctrl_cmd = '1') then
+        s_dcb <= i_dcb;
+      end if;
+      
+      s_id_sh <= "01";  -- shift to right (I/D == 0) and S == 1 (display
+      
+    end if;
+  end process p_latch_config_bits;
 
   -- purpose: LCD On Management
   p_lcd_on_mngt : process (clk, rst_n) is
@@ -336,10 +368,10 @@ begin  -- architecture rtl
       );
 
 
-  s_dcb_cmd_buffer   <= i_dcb when s_init_ongoing = '0' else "000";  -- Enable
+  s_dcb_cmd_buffer   <= s_dcb when s_init_ongoing = '0' else "000";  -- Enable
                                                                      -- display
-                                        -- by default
-  s_id_sh_cmd_buffer <= "01";  -- shift to right (I/D == 0) and S == 1 (display
+                                                                     -- by default
+  s_id_sh_cmd_buffer <= s_id_sh;
   -- shift
 
   -- Current not used cmd
@@ -360,7 +392,7 @@ begin  -- architecture rtl
                           '0';
 
   -- From init block or from outside
-  s_display_ctrl_to_cmd_buffer  <= s_display_ctrl or i_display_ctrl_cmd;
+  s_display_ctrl_to_cmd_buffer  <= s_display_ctrl or s_display_ctrl_cmd;
   s_clear_display_to_cmd_buffer <= s_clear_display_from_init or i_clear_display_cmd;
 
 
@@ -404,8 +436,8 @@ begin  -- architecture rtl
       -- Outputs to Commands Generator
       o_cmd_req  => s_cmd_req,
       o_cmd      => s_cmd_bus,
-      o_id_sh    => s_id_sh,
-      o_dcb      => s_dcb,
+      o_id_sh    => s_id_sh_to_cmd_generator,
+      o_dcb      => s_dcb_to_cmd_generator,
       o_sc_rl    => s_sc_rl,
       o_data_bus => s_data_bus,
 
@@ -425,9 +457,9 @@ begin  -- architecture rtl
       i_clear_display        => s_cmd_bus(0),
       i_return_home          => s_cmd_bus(1),
       i_entry_mode_set       => s_cmd_bus(2),
-      i_id_sh                => s_id_sh,
+      i_id_sh                => s_id_sh_to_cmd_generator,
       i_display_ctrl         => s_cmd_bus(3),
-      i_dcb                  => s_dcb,
+      i_dcb                  => s_dcb_to_cmd_generator,
       i_cursor_display_shift => s_cmd_bus(4),
       i_sc_rl                => s_sc_rl,
       i_function_set         => s_cmd_bus(5),

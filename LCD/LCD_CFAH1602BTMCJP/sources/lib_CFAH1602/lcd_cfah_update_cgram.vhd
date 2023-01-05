@@ -260,10 +260,14 @@ begin  -- architecture rtl
           -- Case 1 char to read
           else
 
+            -- CHAR Postion + Counter
+            -- When font type == 1 => Only 4 patterns usefull so only bit 1 and
+            -- 0 are used
             if(i_font_type = '1') then
-              o_cgram_addr <= "0" & i_cgram_char_position(1 downto 0) & "0000";
+              o_cgram_addr <= conv_std_logic_vector((conv_integer(unsigned(s_cgram_char_position(1 downto 0)))*11 + conv_integer(unsigned(s_wr_data_cnt))), o_cgram_addr'length);  --"0" & s_cgram_char_position(1 downto 0) & "0000";
             else
-              o_cgram_addr <= "0" & i_cgram_char_position & "000";
+              o_cgram_addr <= conv_std_logic_vector((conv_integer(unsigned(s_cgram_char_position))*8 + conv_integer(unsigned(s_wr_data_cnt))), o_cgram_addr'length);
+            --"0" & s_cgram_char_position & "000";
             end if;
 
           end if;
