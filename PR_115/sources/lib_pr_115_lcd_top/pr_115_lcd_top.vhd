@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-04
--- Last update: 2023-01-06
+-- Last update: 2023-01-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,10 +31,12 @@ library lib_CFAH1602;
 use lib_CFAH1602.pkg_lcd_cfah.all;
 
 entity pr_115_lcd_top is
-
+  generic(
+    G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity
+    );
   port (
-    clk   : in std_logic;               -- Clock 50MHz
-    rst_n : in std_logic;               -- Asynchronous Reset
+    clk   : in std_logic;                     -- Clock 50MHz
+    rst_n : in std_logic;                     -- Asynchronous Reset
 
     -- LCD Control from Button of PR-115 Board
     i_lcd_on : in std_logic;
@@ -282,8 +284,8 @@ begin  -- architecture rtl
   -- LCD CFAH TOP Instanciation
   i_lcd_cfah_top_0 : lcd_cfah_top
     generic map(
-      G_CLK_PERIOD_NS      => 20,
-      G_BIDIR_SEL_POLARITY => '0'
+      G_CLK_PERIOD_NS       => 20,
+      G_BIDIR_POLARITY_READ => G_BIDIR_POLARITY_READ
       )
     port map (
       clk   => clk,
@@ -309,6 +311,11 @@ begin  -- architecture rtl
       i_start_init        => s_start_init_p2,
       i_display_ctrl_cmd  => s_display_ctrl_cmd_p2_r_edge,
       i_clear_display_cmd => s_clear_display_cmd_p2,
+
+      i_return_home_cmd => '0',
+
+      i_cursor_or_display_shift_cmd => '0',
+      i_sc_rl                       => "00",
 
       -- LCD CGRAM Update
       i_update_cgram        => s_update_cgram_p2_r_edge,
@@ -337,7 +344,7 @@ begin  -- architecture rtl
   o_lcd_on <= s_o_lcd_on;
 
   -- BIDIR Management -- Write access when not G_POL
-  io_lcd_data <= s_lcd_wdata when s_bidir_sel = '1' else (others => 'Z');
+  io_lcd_data <= s_lcd_wdata when s_bidir_sel = not G_BIDIR_POLARITY_READ else (others => 'Z');
   s_lcd_rdata <= io_lcd_data;
 
   o_green_leds(8)          <= '1';

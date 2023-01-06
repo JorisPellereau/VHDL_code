@@ -236,12 +236,12 @@ package pkg_lcd_cfah is
   component lcd_cfah_itf is
 
     generic (
-      G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
-      G_BIDIR_SEL_POLARITY : std_logic := '0'  -- BIDIR SEL Polarity
+      G_CLK_PERIOD_NS       : integer   := 20;  -- Clock Period in ns
+      G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity
       );
     port (
-      clk   : in std_logic;                    -- Clock
-      rst_n : in std_logic;                    -- Asynchronous Reset
+      clk   : in std_logic;                     -- Clock
+      rst_n : in std_logic;                     -- Asynchronous Reset
 
       i_wdata    : in std_logic_vector(7 downto 0);  -- Data to write
       i_lcd_data : in std_logic_vector(7 downto 0);  -- Data from LCD
@@ -384,12 +384,12 @@ package pkg_lcd_cfah is
 
   component lcd_cfah_top is
     generic (
-      G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
-      G_BIDIR_SEL_POLARITY : std_logic := '0'  -- BIDIR SEL Polarity
+      G_CLK_PERIOD_NS       : integer   := 20;  -- Clock Period in ns
+      G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity
       );
     port (
-      clk   : in std_logic;                    -- Clock
-      rst_n : in std_logic;                    -- Asynchronous Reset
+      clk   : in std_logic;                     -- Clock
+      rst_n : in std_logic;                     -- Asynchronous Reset
 
       -- LCD LINES BUFFER I/F
       i_char_wdata     : in std_logic_vector(7 downto 0);  -- Data character
@@ -411,6 +411,10 @@ package pkg_lcd_cfah is
       i_start_init        : in std_logic;  -- Start Initialization command
       i_display_ctrl_cmd  : in std_logic;  -- Display Control Command
       i_clear_display_cmd : in std_logic;  -- Clear Display Command
+      i_return_home_cmd   : in std_logic;  -- Return Home Command
+
+      i_cursor_or_display_shift_cmd : in std_logic;  -- Cursor/display shift command
+      i_sc_rl                       : in std_logic_vector(1 downto 0);  --Control bits of shift command
 
       i_update_lcd        : in std_logic;  -- Update LCD
       i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection

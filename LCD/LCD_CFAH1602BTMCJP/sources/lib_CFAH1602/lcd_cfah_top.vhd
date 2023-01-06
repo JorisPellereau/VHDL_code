@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-01-06
+-- Last update: 2023-01-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,12 +32,12 @@ use lib_CFAH1602.pkg_lcd_cfah.all;
 
 entity lcd_cfah_top is
   generic (
-    G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
-    G_BIDIR_SEL_POLARITY : std_logic := '0'  -- BIDIR SEL Polarity
+    G_CLK_PERIOD_NS       : integer   := 20;  -- Clock Period in ns
+    G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity
     );
   port (
-    clk   : in std_logic;                    -- Clock
-    rst_n : in std_logic;                    -- Asynchronous Reset
+    clk   : in std_logic;                     -- Clock
+    rst_n : in std_logic;                     -- Asynchronous Reset
 
     -- LCD LINES BUFFER I/F
     i_char_wdata     : in std_logic_vector(7 downto 0);  -- Data character
@@ -59,6 +59,10 @@ entity lcd_cfah_top is
     i_start_init        : in std_logic;  -- Start Initialization command
     i_display_ctrl_cmd  : in std_logic;  -- Display Control Command
     i_clear_display_cmd : in std_logic;  -- Clear Display Command
+    i_return_home_cmd   : in std_logic;  -- Return Home Command
+
+    i_cursor_or_display_shift_cmd : in std_logic;  -- Cursor/display shift command
+    i_sc_rl                       : in std_logic_vector(1 downto 0);  --Control bits of shift command
 
     i_update_lcd        : in std_logic;  -- Update LCD
     i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
@@ -180,11 +184,15 @@ begin  -- architecture rtl
   p_pipe_inputs : process (clk, rst_n) is
   begin  -- process p_pipe_inputs
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_lcd_on           <= '0';
-      s_display_ctrl_cmd <= '0';
+      s_lcd_on               <= '0';
+      s_display_ctrl_cmd     <= '0';
+      s_return_home          <= '0';
+      s_cursor_display_shift <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
-      s_lcd_on           <= i_lcd_on;
-      s_display_ctrl_cmd <= i_display_ctrl_cmd;
+      s_lcd_on               <= i_lcd_on;
+      s_display_ctrl_cmd     <= i_display_ctrl_cmd;
+      s_return_home          <= i_return_home_cmd;
+      s_cursor_display_shift <= i_cursor_or_display_shift_cmd;
     end if;
   end process p_pipe_inputs;
 
@@ -211,10 +219,11 @@ begin  -- architecture rtl
   p_latch_config_bits : process (clk, rst_n) is
   begin  -- process p_latch_config_bits
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      s_dl_n_f <= (others => '0');
-      s_dcb    <= (others => '0');
-      s_id_sh  <= (others => '0');
-
+      s_dl_n_f           <= (others => '0');
+      s_dcb              <= (others => '0');
+      s_id_sh            <= (others => '0');
+      s_sc_rl_cmd_buffer <= (others => '0');
+      s_rd_data          <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- Update Function Set Command configuration bits
@@ -226,9 +235,17 @@ begin  -- architecture rtl
       if(i_display_ctrl_cmd = '1') then
         s_dcb <= i_dcb;
       end if;
-      
+
+      -- Latch s_sc_rl_cmd_buffer on command
+      if(i_cursor_or_display_shift_cmd = '1') then
+        s_sc_rl_cmd_buffer <= i_sc_rl;
+      end if;
+
       s_id_sh <= "01";  -- shift to right (I/D == 0) and S == 1 (display
-      
+
+      -- Current not used cmd
+      s_rd_data <= '0';
+
     end if;
   end process p_latch_config_bits;
 
@@ -281,7 +298,7 @@ begin  -- architecture rtl
       i_new_cmd_req    => s_cmd_req,
       i_start_poll     => s_start_poll,
       i_done           => s_done_cmd_buffer,
-      i_lcd_busy_flag  => s_lcd_rdata_cmd_buffer(7),  -- TBD
+      i_lcd_busy_flag  => s_lcd_rdata_cmd_buffer(7),
       o_read_busy_flag => s_read_busy_flag,
       o_poll_ongoing   => s_poll_ongoing,
       o_lcd_rdy        => s_lcd_rdy
@@ -373,14 +390,9 @@ begin  -- architecture rtl
                                                                      -- display
                                                                      -- by default
   s_id_sh_cmd_buffer <= s_id_sh;
-  -- shift
 
-  -- Current not used cmd
-  s_return_home          <= '0';
-  s_cursor_display_shift <= '0';
 
-  s_rd_data          <= '0';
-  s_sc_rl_cmd_buffer <= (others => '0');
+
 
   -- MUX DATA BUS to CMD BUFFER
   s_data_bus_cmd_buffer <= s_ddram_data_or_addr when s_lcd_update_ongoing = '1' else
@@ -487,8 +499,8 @@ begin  -- architecture rtl
   -- LCD Physical Interface
   i_lcd_cfah_itf_0 : lcd_cfah_itf
     generic map (
-      G_CLK_PERIOD_NS      => G_CLK_PERIOD_NS,
-      G_BIDIR_SEL_POLARITY => G_BIDIR_SEL_POLARITY
+      G_CLK_PERIOD_NS       => G_CLK_PERIOD_NS,
+      G_BIDIR_POLARITY_READ => G_BIDIR_POLARITY_READ
       )
     port map (
       clk        => clk,

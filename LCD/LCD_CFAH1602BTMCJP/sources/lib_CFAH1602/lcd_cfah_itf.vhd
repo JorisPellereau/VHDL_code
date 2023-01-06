@@ -15,11 +15,11 @@ entity lcd_cfah_itf is
 
   generic (
     G_CLK_PERIOD_NS      : integer   := 20;  -- Clock Period in ns
-    G_BIDIR_SEL_POLARITY : std_logic := '0'  -- BIDIR SEL Polarity
+    G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity for READ                                            
     );
   port (
-    clk   : in std_logic;                    -- Clock
-    rst_n : in std_logic;                    -- Asynchronous Reset
+    clk   : in std_logic;               -- Clock
+    rst_n : in std_logic;               -- Asynchronous Reset
 
     i_wdata    : in std_logic_vector(7 downto 0);  -- Data to write
     i_lcd_data : in std_logic_vector(7 downto 0);  -- Data from LCD
@@ -186,20 +186,20 @@ begin  -- architecture rtl
   p_bidir_sel : process (clk, rst_n) is
   begin  -- process p_bidir_sel
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      o_bidir_sel <= G_BIDIR_SEL_POLARITY;
+      o_bidir_sel <= G_BIDIR_POLARITY_READ;
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       --READ Access from LCD
       if(s_ongoing = '1' and s_rw = '1') then
-        o_bidir_sel <= G_BIDIR_SEL_POLARITY;
+        o_bidir_sel <= G_BIDIR_POLARITY_READ;
 
       -- Write access to LCD
       elsif(s_ongoing = '1' and s_rw = '0') then
-        o_bidir_sel <= not G_BIDIR_SEL_POLARITY;
+        o_bidir_sel <= not G_BIDIR_POLARITY_READ;
 
       -- Read Access by default
       else
-        o_bidir_sel <= G_BIDIR_SEL_POLARITY;
+        o_bidir_sel <= G_BIDIR_POLARITY_READ;
       end if;
     end if;
   end process p_bidir_sel;
