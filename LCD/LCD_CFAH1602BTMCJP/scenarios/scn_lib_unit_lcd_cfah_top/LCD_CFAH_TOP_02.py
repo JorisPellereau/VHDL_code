@@ -63,6 +63,14 @@ scn.print_step("Enable LCD power and wait for the end of command")
 macros_tb.lcd_start_cmd(lcd_on = 1)
 scn.WTRS("O_CONTROL_DONE", 40, "ms")
 
+
+# ==============================================
+scn.print_step("UPDATE CGRAM with initial pattern")
+# ==============================================
+macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
+
 # ==============================================
 scn.print_step("Update ALL LCD")
 # ==============================================

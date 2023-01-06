@@ -58,28 +58,28 @@ package body pkg_lcd_cfah_types_and_func is
 
     -- Assign each pattern to the correct position of cgram_buffer
     v_cgram_array(0 to 7) := (i_cgram_pattern_5x8_0(0), i_cgram_pattern_5x8_0(1), i_cgram_pattern_5x8_0(2), i_cgram_pattern_5x8_0(3),
-                              i_cgram_pattern_5x8_0(4), i_cgram_pattern_5x8_0(5), i_cgram_pattern_5x8_0(7), i_cgram_pattern_5x8_0(7));
+                              i_cgram_pattern_5x8_0(4), i_cgram_pattern_5x8_0(5), i_cgram_pattern_5x8_0(6), i_cgram_pattern_5x8_0(7));
 
     v_cgram_array(8 to 15) := (i_cgram_pattern_5x8_1(0), i_cgram_pattern_5x8_1(1), i_cgram_pattern_5x8_1(2), i_cgram_pattern_5x8_1(3),
-                               i_cgram_pattern_5x8_1(4), i_cgram_pattern_5x8_1(5), i_cgram_pattern_5x8_1(7), i_cgram_pattern_5x8_1(7));
+                               i_cgram_pattern_5x8_1(4), i_cgram_pattern_5x8_1(5), i_cgram_pattern_5x8_1(6), i_cgram_pattern_5x8_1(7));
 
     v_cgram_array(16 to 23) := (i_cgram_pattern_5x8_2(0), i_cgram_pattern_5x8_2(1), i_cgram_pattern_5x8_2(2), i_cgram_pattern_5x8_2(3),
-                                i_cgram_pattern_5x8_2(4), i_cgram_pattern_5x8_2(5), i_cgram_pattern_5x8_2(7), i_cgram_pattern_5x8_2(7));
+                                i_cgram_pattern_5x8_2(4), i_cgram_pattern_5x8_2(5), i_cgram_pattern_5x8_2(6), i_cgram_pattern_5x8_2(7));
 
     v_cgram_array(24 to 31) := (i_cgram_pattern_5x8_3(0), i_cgram_pattern_5x8_3(1), i_cgram_pattern_5x8_3(2), i_cgram_pattern_5x8_3(3),
-                                i_cgram_pattern_5x8_3(4), i_cgram_pattern_5x8_3(5), i_cgram_pattern_5x8_3(7), i_cgram_pattern_5x8_3(7));
+                                i_cgram_pattern_5x8_3(4), i_cgram_pattern_5x8_3(5), i_cgram_pattern_5x8_3(6), i_cgram_pattern_5x8_3(7));
 
     v_cgram_array(32 to 39) := (i_cgram_pattern_5x8_4(0), i_cgram_pattern_5x8_4(1), i_cgram_pattern_5x8_4(2), i_cgram_pattern_5x8_4(3),
-                                i_cgram_pattern_5x8_4(4), i_cgram_pattern_5x8_4(5), i_cgram_pattern_5x8_4(7), i_cgram_pattern_5x8_4(7));
+                                i_cgram_pattern_5x8_4(4), i_cgram_pattern_5x8_4(5), i_cgram_pattern_5x8_4(6), i_cgram_pattern_5x8_4(7));
 
     v_cgram_array(40 to 47) := (i_cgram_pattern_5x8_5(0), i_cgram_pattern_5x8_5(1), i_cgram_pattern_5x8_5(2), i_cgram_pattern_5x8_5(3),
-                                i_cgram_pattern_5x8_5(4), i_cgram_pattern_5x8_5(5), i_cgram_pattern_5x8_5(7), i_cgram_pattern_5x8_5(7));
+                                i_cgram_pattern_5x8_5(4), i_cgram_pattern_5x8_5(5), i_cgram_pattern_5x8_5(6), i_cgram_pattern_5x8_5(7));
 
     v_cgram_array(48 to 55) := (i_cgram_pattern_5x8_6(0), i_cgram_pattern_5x8_6(1), i_cgram_pattern_5x8_6(2), i_cgram_pattern_5x8_6(3),
-                                i_cgram_pattern_5x8_6(4), i_cgram_pattern_5x8_6(5), i_cgram_pattern_5x8_6(7), i_cgram_pattern_5x8_6(7));
+                                i_cgram_pattern_5x8_6(4), i_cgram_pattern_5x8_6(5), i_cgram_pattern_5x8_6(6), i_cgram_pattern_5x8_6(7));
 
     v_cgram_array(56 to 63) := (i_cgram_pattern_5x8_7(0), i_cgram_pattern_5x8_7(1), i_cgram_pattern_5x8_7(2), i_cgram_pattern_5x8_7(3),
-                                i_cgram_pattern_5x8_7(4), i_cgram_pattern_5x8_7(5), i_cgram_pattern_5x8_7(7), i_cgram_pattern_5x8_7(7));
+                                i_cgram_pattern_5x8_7(4), i_cgram_pattern_5x8_7(5), i_cgram_pattern_5x8_7(6), i_cgram_pattern_5x8_7(7));
 
 
     return v_cgram_array;
