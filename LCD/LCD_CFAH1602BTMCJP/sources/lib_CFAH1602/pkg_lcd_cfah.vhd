@@ -89,16 +89,25 @@ package pkg_lcd_cfah is
                                                   21 => C_SINGLE_QUOTE_CHAR_ADDR,
                                                   22 => C_E_CHAR_ADDR,
                                                   23 => C_S_CHAR_ADDR,
-                                                  24 => C_T_CHAR_ADDR,
+                                        -- 24 => C_T_CHAR_ADDR,
 
-                                                  25 => C_SPACE_CHAR_ADDR,
+                                        -- 25 => C_SPACE_CHAR_ADDR,
 
-                                                  26     => C_B_CHAR_ADDR,
-                                                  27     => C_O_CHAR_ADDR,
-                                                  28     => C_N_CHAR_ADDR,
-                                                  29     => x"7E",
-                                                  30     => x"EF",
-                                                  31     => x"7F",
+                                        -- 26     => C_B_CHAR_ADDR,
+                                        -- 27     => C_O_CHAR_ADDR,
+                                        -- 28     => C_N_CHAR_ADDR,
+                                        -- 29     => x"7E",
+                                        -- 30     => x"EF",
+                                        -- 31     => x"7F",
+
+                                                  24     => x"00",
+                                                  25     => x"01",
+                                                  26     => x"02",
+                                                  27     => x"03",
+                                                  28     => x"04",
+                                                  29     => x"05",
+                                                  30     => x"06",
+                                                  31     => x"07",
                                                   others => C_SPACE_CHAR_ADDR
                                                   );
 
@@ -179,23 +188,23 @@ package pkg_lcd_cfah is
                                                                     6 => "0" & x"A",
                                                                     7 => "1" & x"1");
 
-  constant C_CGRAM_INIT : t_cgram_array := create_cgram_init(C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
-                                                             C_CGRAM_5x8_PATTERN_ET_3,
+  constant C_CGRAM_INIT : t_cgram_array := create_cgram_init(C_CGRAM_5x8_PATTERN_HEART_EMPTY_0,
+                                                             C_CGRAM_5x8_PATTERN_HEART_EMPTY_1,
+                                                             C_CGRAM_5x8_PATTERN_HEART_EMPTY_2,
+                                                             C_CGRAM_5x8_PATTERN_HEART_FULL_0,
+                                                             C_CGRAM_5x8_PATTERN_ET_0,
+                                                             C_CGRAM_5x8_PATTERN_ET_1,
+                                                             C_CGRAM_5x8_PATTERN_ET_2,
                                                              C_CGRAM_5x8_PATTERN_ET_3);
 
-  constant C_CGRAM_INIT_2 : t_cgram_array_2 := (0 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                1 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                2 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                3 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                4 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                5 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                6 => C_CGRAM_5x8_PATTERN_ET_3,
-                                                7 => C_CGRAM_5x8_PATTERN_ET_3);
+  -- constant C_CGRAM_INIT_2 : t_cgram_array_2 := (0 => C_CGRAM_5x8_PATTERN_HEART_EMPTY_0,
+  --                                               1 => C_CGRAM_5x8_PATTERN_HEART_EMPTY_1,
+  --                                               2 => C_CGRAM_5x8_PATTERN_HEART_EMPTY_2,
+  --                                               3 => C_CGRAM_5x8_PATTERN_HEART_FULL_0,
+  --                                               4 => C_CGRAM_5x8_PATTERN_ET_0,
+  --                                               5 => C_CGRAM_5x8_PATTERN_ET_1,
+  --                                               6 => C_CGRAM_5x8_PATTERN_ET_2,
+  --                                               7 => C_CGRAM_5x8_PATTERN_ET_3);
 
 
 
@@ -407,6 +416,11 @@ package pkg_lcd_cfah is
       i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
       i_lcd_line_sel      : in std_logic;
       i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
+
+      -- CGRAM Update command
+      i_update_cgram        : in std_logic;  -- Update CGRAM Command
+      i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
+      i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection
 
       o_control_done : out std_logic;   -- Command done
 

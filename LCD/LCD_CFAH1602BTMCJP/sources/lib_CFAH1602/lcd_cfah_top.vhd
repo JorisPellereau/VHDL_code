@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-01-05
+-- Last update: 2023-01-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -65,6 +65,7 @@ entity lcd_cfah_top is
     i_lcd_line_sel      : in std_logic;
     i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
 
+    -- CGRAM Update command
     i_update_cgram        : in std_logic;  -- Update CGRAM Command
     i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
     i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection

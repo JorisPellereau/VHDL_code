@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-04
--- Last update: 2022-12-29
+-- Last update: 2023-01-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -49,6 +49,8 @@ entity pr_115_lcd_top is
     i_lcd_all_char      : in std_logic;  -- LCD All char sel
     i_lcd_line_sel      : in std_logic;  -- LCD Line sel
     i_lcd_char_position : in std_logic_vector(3 downto 0);  -- LCD Char position
+
+    i_update_cgram : in std_logic;      -- Update CGRAM Command
 
     -- GREEN LEDS
     o_green_leds : out std_logic_vector(8 downto 0);  -- GREEN LEDS controls
@@ -125,6 +127,17 @@ architecture rtl of pr_115_lcd_top is
 
   signal s_display_ctrl_cmd_p2_p      : std_logic;
   signal s_display_ctrl_cmd_p2_r_edge : std_logic;
+
+  signal s_cgram_addr      : std_logic_vector(6 downto 0);
+  signal s_cgram_wdata     : std_logic_vector(4 downto 0);
+  signal s_cgram_wdata_val : std_logic;
+
+  signal s_update_cgram           : std_logic;
+  signal s_update_cgram_p1        : std_logic;
+  signal s_update_cgram_p2        : std_logic;
+  signal s_update_cgram_p2_p      : std_logic;
+  signal s_update_cgram_p2_r_edge : std_logic;
+
 begin  -- architecture rtl
 
   -- Resynchronization on asynchronous inputs (Button)
@@ -173,6 +186,12 @@ begin  -- architecture rtl
 
       s_update_lcd_p2_p       <= '0';
       s_display_ctrl_cmd_p2_p <= '0';
+
+      s_update_cgram      <= '0';
+      s_update_cgram_p1   <= '0';
+      s_update_cgram_p2   <= '0';
+      s_update_cgram_p2_p <= '0';
+
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_lcd_on    <= not i_lcd_on;
@@ -191,7 +210,7 @@ begin  -- architecture rtl
       s_start_init_p1 <= s_start_init;
       s_start_init_p2 <= s_start_init_p1;
 
-      s_display_ctrl_cmd    <= i_display_ctrl_cmd;
+      s_display_ctrl_cmd    <= not i_display_ctrl_cmd;
       s_display_ctrl_cmd_p1 <= s_display_ctrl_cmd;
       s_display_ctrl_cmd_p2 <= s_display_ctrl_cmd_p1;
 
@@ -218,6 +237,11 @@ begin  -- architecture rtl
 
       s_update_lcd_p2_p       <= s_update_lcd_p2;
       s_display_ctrl_cmd_p2_p <= s_display_ctrl_cmd_p2;
+
+      s_update_cgram      <= not i_update_cgram;
+      s_update_cgram_p1   <= s_update_cgram;
+      s_update_cgram_p2   <= s_update_cgram_p1;
+      s_update_cgram_p2_p <= s_update_cgram_p2;
     end if;
   end process p_resynch_inputs_mngt;
 
@@ -229,12 +253,20 @@ begin  -- architecture rtl
       s_char_wdata_val <= '0';
       s_char_position  <= (others => '0');
       s_line_sel       <= '0';
+
+      s_cgram_addr      <= (others => '0');
+      s_cgram_wdata     <= (others => '0');
+      s_cgram_wdata_val <= '0';
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       s_char_wdata     <= (others => '0');
       s_char_wdata_val <= '0';
       s_char_position  <= (others => '0');
       s_line_sel       <= '0';
+
+      s_cgram_addr      <= (others => '0');
+      s_cgram_wdata     <= (others => '0');
+      s_cgram_wdata_val <= '0';
 
     end if;
   end process p_force_useless_inputs;
@@ -243,6 +275,9 @@ begin  -- architecture rtl
   s_update_lcd_p2_r_edge <= s_update_lcd_p2 and not s_update_lcd_p2_p;
 
   s_display_ctrl_cmd_p2_r_edge <= s_display_ctrl_cmd_p2 and not s_display_ctrl_cmd_p2_p;
+
+  s_update_cgram_p2_r_edge <= s_update_cgram_p2 and not s_update_cgram_p2_p;
+
 
   -- LCD CFAH TOP Instanciation
   i_lcd_cfah_top_0 : lcd_cfah_top
@@ -261,9 +296,9 @@ begin  -- architecture rtl
       i_line_sel       => s_line_sel,
 
       -- LCD CGRAM BUFFER I/F
-      -- i_cgram_addr : in std_logic_vector(2 downto 0);  -- CGRAM Addr
-      -- i_cgram_data : in std_logic_vector(7 downto 0);  -- CGRAM Data
-      -- i_cgram_val  : in std_logic;                     -- CGRAM Data valid
+      i_cgram_addr      => s_cgram_addr,
+      i_cgram_wdata     => s_cgram_wdata,
+      i_cgram_wdata_val => s_cgram_wdata_val,
 
       -- Input control
       i_lcd_on => s_lcd_on_p2,
@@ -275,6 +310,12 @@ begin  -- architecture rtl
       i_display_ctrl_cmd  => s_display_ctrl_cmd_p2_r_edge,
       i_clear_display_cmd => s_clear_display_cmd_p2,
 
+      -- LCD CGRAM Update
+      i_update_cgram        => s_update_cgram_p2_r_edge,
+      i_cgram_all_char      => '1',
+      i_cgram_char_position => "000",
+
+      -- LCD Display Update
       i_update_lcd        => s_update_lcd_p2_r_edge,
       i_lcd_all_char      => s_update_lcd_p2_r_edge,  --'1',       --s_lcd_all_char_p2,
       i_lcd_line_sel      => '0',       --s_lcd_line_sel_p2,

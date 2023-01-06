@@ -115,7 +115,6 @@ begin  -- architecture rtl
           -- 5*11 selected -> 4 Patterns of 11 data
           if(i_font_type = '1') then
             s_wr_data_cnt_max <= std_logic_vector(conv_unsigned(44, s_wr_data_cnt_max'length));
--- TBD - 1 ??
 
           -- 5*8 selected -> 8 patterns of 8 data
           else
@@ -153,14 +152,6 @@ begin  -- architecture rtl
             s_start <= '1';
 
           end if;
-
-
-
-          -- if((unsigned(s_wr_data_cnt(3 downto 0)) = conv_unsigned(11-1, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(conv_integer(unsigned(s_wr_data_cnt_max)) - 1, s_wr_data_cnt'length))) then
-          --   s_start <= '1';
-          -- else
-          --   s_start <= '0';
-          -- end if;
 
         -- 5*8 Dots => 8 Patterns - Modulo 8-1
         else
@@ -216,25 +207,7 @@ begin  -- architecture rtl
               o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 0);
 
             end if;
--- TBD
-            -- 1st Pattern of 5*11 dots
-            -- if(unsigned(s_wr_data_cnt) < conv_unsigned(10, s_wr_data_cnt'length)) then
-            --   o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 0);
 
-            -- 2nd Pattern of 5*11 dots - + 64 in order to have the bit 6 at
-            -- one (set_CGRAM address command purpose
-            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(10-1, s_wr_data_cnt'length))) then
-            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 6 + 64, o_cgram_data_or_addr'length);
-
-            -- 3rd Pattern of 5*11 dots
-            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(21-1, s_wr_data_cnt'length))) then
-            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 10 + 64, o_cgram_data_or_addr'length);
-
-            -- 4th Pattern of 5*11 dots
-            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(32-1, s_wr_data_cnt'length))) then
-            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 15 + 64, o_cgram_data_or_addr'length);
-
-            -- end if;
 
           -- 5*8 selected
           else
@@ -300,12 +273,6 @@ begin  -- architecture rtl
 
           end if;
 
-
-          -- Reset Read signal every 11 char - TBD
-          -- if(unsigned(s_wr_data_cnt(3 downto 0)) = conv_unsigned(11-1, s_wr_data_cnt'length)) then
-          --   s_en_rd_req <= '0';
-          -- end if;
-
         -- 5*8 => 8 patterns - Every 8 => Reset en rd req signal
         else
           -- Reset Read signal every 8 char
@@ -364,8 +331,6 @@ begin  -- architecture rtl
 
               end if;
 
-            --"0" & s_wr_data_cnt(3 downto 0); -- TBD
---o_cgram_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt(3 downto 0))) + 6*conv_integer(unsigned(s_wr_data_cnt(5 downto 4))), o_cgram_addr'length);
             -- 5*8 dot patterns -> Value of the counter is the address of the
             -- CGRAM buffer
             else
@@ -379,10 +344,11 @@ begin  -- architecture rtl
             -- When font type == 1 => Only 4 patterns usefull so only bit 1 and
             -- 0 are used
             if(i_font_type = '1') then
-              o_cgram_addr <= conv_std_logic_vector((conv_integer(unsigned(s_cgram_char_position(1 downto 0)))*11 + conv_integer(unsigned(s_wr_data_cnt))), o_cgram_addr'length);  --"0" & s_cgram_char_position(1 downto 0) & "0000";
+              o_cgram_addr <= conv_std_logic_vector((conv_integer(unsigned(s_cgram_char_position(1 downto 0)))*11 + conv_integer(unsigned(s_wr_data_cnt))), o_cgram_addr'length);
+
             else
               o_cgram_addr <= conv_std_logic_vector((conv_integer(unsigned(s_cgram_char_position))*8 + conv_integer(unsigned(s_wr_data_cnt))), o_cgram_addr'length);
-            --"0" & s_cgram_char_position & "000";
+
             end if;
 
           end if;
