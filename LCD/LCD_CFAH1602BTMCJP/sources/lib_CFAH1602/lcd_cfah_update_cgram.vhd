@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-01-03
--- Last update: 2023-01-05
+-- Last update: 2023-01-06
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ begin  -- architecture rtl
       if(i_update_cgram = '1') then
         s_cgram_all_char      <= i_cgram_all_char;
         s_cgram_char_position <= i_cgram_char_position;
-        s_start               <= '1';
+        s_start               <= '1';   -- 1st start
 
         -- If one -> 64 Char to update
         if(i_cgram_all_char = '1') then
@@ -115,6 +115,7 @@ begin  -- architecture rtl
           -- 5*11 selected -> 4 Patterns of 11 data
           if(i_font_type = '1') then
             s_wr_data_cnt_max <= std_logic_vector(conv_unsigned(44, s_wr_data_cnt_max'length));
+-- TBD - 1 ??
 
           -- 5*8 selected -> 8 patterns of 8 data
           else
@@ -135,10 +136,41 @@ begin  -- architecture rtl
 
       -- Set a new start after 8 access
       elsif(s_cgram_all_char = '1' and i_cmd_done = '1') then
-        if(unsigned(s_wr_data_cnt) = conv_unsigned(8, s_wr_data_cnt'length)) then
-          s_start <= '1';
+
+        -- 5*11 Dot => 4 Patterns
+        if(i_font_type = '1') then
+
+          -- Every 11 data written
+          -- 1st Pattern of 5*11 dots
+          if(unsigned(s_wr_data_cnt) = conv_unsigned(33-1, s_wr_data_cnt'length)) then
+            s_start <= '1';
+
+          elsif((unsigned(s_wr_data_cnt) = conv_unsigned(22-1, s_wr_data_cnt'length))) then
+            s_start <= '1';
+
+          -- 3rd Pattern of 5*11 dots
+          elsif((unsigned(s_wr_data_cnt) = conv_unsigned(11-1, s_wr_data_cnt'length))) then
+            s_start <= '1';
+
+          end if;
+
+
+
+          -- if((unsigned(s_wr_data_cnt(3 downto 0)) = conv_unsigned(11-1, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(conv_integer(unsigned(s_wr_data_cnt_max)) - 1, s_wr_data_cnt'length))) then
+          --   s_start <= '1';
+          -- else
+          --   s_start <= '0';
+          -- end if;
+
+        -- 5*8 Dots => 8 Patterns - Modulo 8-1
         else
-          s_start <= '0';
+
+          -- Every 8 data written 
+          if((unsigned(s_wr_data_cnt(2 downto 0)) = conv_unsigned(8-1, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(conv_integer(unsigned(s_wr_data_cnt_max)) - 1, s_wr_data_cnt'length))) then
+            s_start <= '1';
+          else
+            s_start <= '0';
+          end if;
         end if;
 
       else
@@ -168,7 +200,41 @@ begin  -- architecture rtl
 
           -- 5*11 selected
           if(i_font_type = '1') then
-            o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 4) & "0000";
+            --o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 4) & "0000";
+
+
+            if((unsigned(s_wr_data_cnt) >= conv_unsigned(33-1, s_wr_data_cnt'length))) then
+              o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 15 + 64, o_cgram_data_or_addr'length);
+
+            elsif((unsigned(s_wr_data_cnt) >= conv_unsigned(22-1, s_wr_data_cnt'length))) then
+              o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 10 + 64, o_cgram_data_or_addr'length);
+
+            elsif((unsigned(s_wr_data_cnt) >= conv_unsigned(11-1, s_wr_data_cnt'length))) then
+              o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 5 + 64, o_cgram_data_or_addr'length);
+
+            elsif(unsigned(s_wr_data_cnt) < conv_unsigned(11-1, s_wr_data_cnt'length)) then
+              o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 0);
+
+            end if;
+-- TBD
+            -- 1st Pattern of 5*11 dots
+            -- if(unsigned(s_wr_data_cnt) < conv_unsigned(10, s_wr_data_cnt'length)) then
+            --   o_cgram_data_or_addr <= "01" & s_wr_data_cnt(5 downto 0);
+
+            -- 2nd Pattern of 5*11 dots - + 64 in order to have the bit 6 at
+            -- one (set_CGRAM address command purpose
+            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(10-1, s_wr_data_cnt'length))) then
+            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 6 + 64, o_cgram_data_or_addr'length);
+
+            -- 3rd Pattern of 5*11 dots
+            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(21-1, s_wr_data_cnt'length))) then
+            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 10 + 64, o_cgram_data_or_addr'length);
+
+            -- 4th Pattern of 5*11 dots
+            -- elsif((unsigned(s_wr_data_cnt) > conv_unsigned(32-1, s_wr_data_cnt'length))) then
+            --   o_cgram_data_or_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 15 + 64, o_cgram_data_or_addr'length);
+
+            -- end if;
 
           -- 5*8 selected
           else
@@ -218,10 +284,36 @@ begin  -- architecture rtl
         s_en_rd_req <= '1';
       elsif(s_cgram_all_char = '1' and i_cmd_done = '1') then
 
-        -- Reset signal for 2nd line
-        if(unsigned(s_wr_data_cnt) = conv_unsigned(16-1, s_wr_data_cnt'length)) then
-          s_en_rd_req <= '0';
+        -- 5*11 => 4 Patterns
+        if(i_font_type = '1') then
+
+          -- 1st Pattern of 5*11 dots
+          if(unsigned(s_wr_data_cnt) = conv_unsigned(33-1, s_wr_data_cnt'length)) then
+            s_en_rd_req <= '0';
+
+          elsif((unsigned(s_wr_data_cnt) = conv_unsigned(22-1, s_wr_data_cnt'length))) then
+            s_en_rd_req <= '0';
+
+          -- 3rd Pattern of 5*11 dots
+          elsif((unsigned(s_wr_data_cnt) = conv_unsigned(11-1, s_wr_data_cnt'length))) then
+            s_en_rd_req <= '0';
+
+          end if;
+
+
+          -- Reset Read signal every 11 char - TBD
+          -- if(unsigned(s_wr_data_cnt(3 downto 0)) = conv_unsigned(11-1, s_wr_data_cnt'length)) then
+          --   s_en_rd_req <= '0';
+          -- end if;
+
+        -- 5*8 => 8 patterns - Every 8 => Reset en rd req signal
+        else
+          -- Reset Read signal every 8 char
+          if(unsigned(s_wr_data_cnt(2 downto 0)) = conv_unsigned(8-1, s_wr_data_cnt'length)) then
+            s_en_rd_req <= '0';
+          end if;
         end if;
+
 
       -- Reset flag when all done  
       elsif(s_update_done = '1') then
@@ -251,8 +343,31 @@ begin  -- architecture rtl
           -- All Char read -> Char pos get [3:0] of counter
           if(s_cgram_all_char = '1') then
 
+            -- 5*11 Patterns -> 
             if(i_font_type = '1') then
-              o_cgram_addr <= "0" & s_wr_data_cnt(5 downto 4) & "0000";
+
+              -- 1st Pattern of 5*11 dots
+              if(unsigned(s_wr_data_cnt) < conv_unsigned(11, s_wr_data_cnt'length)) then
+                o_cgram_addr <= "0" & s_wr_data_cnt(5 downto 0);
+
+              -- 2nd Pattern of 5*11 dots
+              elsif((unsigned(s_wr_data_cnt) >= conv_unsigned(11, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(22, s_wr_data_cnt'length))) then
+                o_cgram_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 5, o_cgram_addr'length);
+
+              -- 3rd Pattern of 5*11 dots
+              elsif((unsigned(s_wr_data_cnt) >= conv_unsigned(22, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(33, s_wr_data_cnt'length))) then
+                o_cgram_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 10, o_cgram_addr'length);
+
+              -- 4th Pattern of 5*11 dots
+              elsif((unsigned(s_wr_data_cnt) >= conv_unsigned(33, s_wr_data_cnt'length)) and (unsigned(s_wr_data_cnt) < conv_unsigned(44, s_wr_data_cnt'length))) then
+                o_cgram_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt)) + 15, o_cgram_addr'length);
+
+              end if;
+
+            --"0" & s_wr_data_cnt(3 downto 0); -- TBD
+--o_cgram_addr <= conv_std_logic_vector(conv_integer(unsigned(s_wr_data_cnt(3 downto 0))) + 6*conv_integer(unsigned(s_wr_data_cnt(5 downto 4))), o_cgram_addr'length);
+            -- 5*8 dot patterns -> Value of the counter is the address of the
+            -- CGRAM buffer
             else
               o_cgram_addr <= "0" & s_wr_data_cnt(5 downto 0);
             end if;

@@ -87,9 +87,11 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_return_h
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_entry_mode_set
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_id_sh
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_id_sh_cmd_buffer
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_id_sh_to_cmd_generator
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_display_ctrl
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_dcb
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_dcb_cmd_buffer
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_dcb_to_cmd_generator
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cursor_display_shift
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_sc_rl
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_sc_rl_cmd_buffer
@@ -139,6 +141,7 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_da
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_update_ongoing
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cgram_update_done
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_cmd_done_to_update_cgram
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/s_display_ctrl_cmd
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/clk
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_lcd_cfah_cmd_generator_0 -group Inputs /tb_top/i_dut/i_lcd_cfah_cmd_generator_0/i_cmd_req
@@ -362,4 +365,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {1349764500 ps}
+WaveRestoreZoom {0 ps} {464530500 ps}

@@ -118,8 +118,6 @@ scn.WTRS("O_CONTROL_DONE", 40, "ms")
 scn.WAIT(1, "us")
 
 
-
-
 # ==============================================
 scn.print_step("Update CGRAM - Update pattern one by one")
 # ==============================================
@@ -130,6 +128,68 @@ for pattern_i in range(0, 8):
     scn.WAIT(1, "us")
 
 
+scn.WAIT(50, "us")
 
-    
+
+# == FONT Config 0 and update all CGRAM ==
+dl_n_f = 0b110 # 8bits - 2 Lines - 5*8 dots
+# ==============================================
+scn.print_step("Set Static configuration")
+# ==============================================
+macros_tb.lcd_set_static_config(dl_n_f)
+scn.WAIT(400, "ns")
+
+# ==============================================
+scn.print_step("SET CGRAM Buffer")
+# ==============================================
+cgram_data_list = [0xA]*64
+
+
+macros_tb.lcd_load_cgram_buffer(cgram_data_list)
+scn.WAIT(1, "us")
+
+# ==============================================
+scn.print_step("SET LCD INIT")
+# ==============================================
+macros_tb.lcd_start_cmd(lcd_init = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
+
+
+macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
+
+
+
+# == FONT Config 0 and update all CGRAM ==
+dl_n_f = 0b111 # 8bits - 2 Lines - 5*11 dots
+# ==============================================
+scn.print_step("Set Static configuration")
+# ==============================================
+macros_tb.lcd_set_static_config(dl_n_f)
+scn.WAIT(400, "ns")
+
+# ==============================================
+scn.print_step("SET CGRAM Buffer")
+# ==============================================
+cgram_data_list = [0xC]*64
+
+
+macros_tb.lcd_load_cgram_buffer(cgram_data_list)
+scn.WAIT(1, "us")
+
+# ==============================================
+scn.print_step("SET LCD INIT")
+# ==============================================
+macros_tb.lcd_start_cmd(lcd_init = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
+
+
+macros_tb.lcd_start_cmd(update_cgram = 1, cgram_all_char = 1)
+scn.WTRS("O_CONTROL_DONE", 40, "ms")
+scn.WAIT(1, "us")
+
+
 scn.END_TEST()
