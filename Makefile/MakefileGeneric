@@ -95,8 +95,10 @@ endif
 # -- Current TB Files --
 src_gen_tb_v+=$(GENERIC_TB_CLASS_SRC_DIR)/lib_tb_wait_event/tb_wait_event_class.sv
 src_gen_tb_v+=$(GENERIC_TB_CLASS_SRC_DIR)/lib_tb_check_level/tb_check_level_class.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_intf.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_duration_wrapper.sv
