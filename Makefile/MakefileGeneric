@@ -60,6 +60,10 @@ NO_WLF=OFF
 GUI=ON
 # =============================
 
+# == VCOM ARGS Custom ==
+VCOM_ARGS+=
+# ======================
+
 # == Config Selection ==
 ifeq ($(GUI), OFF)
 	VSIM_ARGS+=-c
@@ -99,9 +103,15 @@ src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_intf.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_tb.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_event.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector_intf.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector_tb.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_set_injector/set_injector_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_duration_intf.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_duration.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_wait_event/wait_duration_wrapper.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_check_level/check_level_intf.sv
+src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_check_level/check_level.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_check_level/check_level_wrapper.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_modules_custom_class.sv
 src_gen_tb_v+=$(GENERIC_TB_SRC_DIR)/lib_tb_sequencer/tb_tasks.sv
@@ -269,7 +279,7 @@ libs:  prepare_libs create_libs
 # == COMPILE VHD-V Files ==
 compile_tb_vhd_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list,$(SRC_TB_VHD),$(vcom) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
+	$(foreach list,$(SRC_TB_VHD),$(vcom) $(VCOM_ARGS) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_tb_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
@@ -277,7 +287,7 @@ compile_tb_v_files:
 
 compile_design_vhd_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list,$(SRC_VHD),$(vcom) -work $(VHD_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
+	$(foreach list,$(SRC_VHD),$(vcom) $(VCOM_ARGS) -work $(VHD_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_design_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \

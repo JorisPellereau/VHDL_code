@@ -18,22 +18,24 @@ TRANSCRIPT_EN=OFF
 
 
 # == SOURCES DIRECTORY ==
-SRC_AXI4_LITE_DIR=~/Documents/GitHub/VHDL_code/TBD_a_completer
+SRC_AXI4_LITE_DIR=~/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite
 # =======================
 
 
 # == DESIGN LIBRARIES ==
-# -- ADD Here your design libraries
+LIB_AXI4_LITE=lib_axi4_lite
 # ======================
 
 
 # == TESTBENCH LIBRARIES ==
-# -- ADD Here your testbench library
+TB_LIB_AXI4_LITE=tb_lib_axi4_lite
 # =========================
 
 
 # ==  LIB LIST ==
-LIB_LIST+=
+LIB_LIST+=$(LIB_AXI4_LITE)
+LIB_LIST+=$(TB_LIB_AXI4_LITE)
+LIB_LIST+=work
 # ================
 
 
@@ -65,20 +67,23 @@ all: print_generic_rules
 
 
 # == DESIGN VHD FILE LIST ==
-# -- Add Here your design list
+axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/pkg_axi4_lite.vhd
+axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/pkg_axi4_lite_inst.vhd
+axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_list_slave_rec_to_itf.vhd
+axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_slave_reg_itf.vhd
 # ==========================
 
 
 # == TESTBENCH {0}  VERILOG Custom FILES LIST ==
-# -- Add Here your Specific verilog custom testbench file
+
 # =================================
 
 
 # == Specific Testbench File List ==
 # -- Complete Here the name of the library
-src_tb_lib_XXXXX_v+=$(TB_SRC_DIR)/tb_lib_XXXXX/testbench_setup.sv
-src_tb_lib_XXXXX_v+=$(TB_SRC_DIR)/tb_lib_XXXXX/clk_gen.sv
-src_tb_lib_XXXXX_v+=$(TB_SRC_DIR)/tb_lib_XXXXX/tb_top.sv
+src_tb_lib_axi4_lite_v+=$(TB_SRC_DIR)/tb_lib_axi4_lite/testbench_setup.sv
+src_tb_lib_axi4_lite_v+=$(TB_SRC_DIR)/tb_lib_axi4_lite/clk_gen.sv
+src_tb_lib_axi4_lite_v+=$(TB_SRC_DIR)/tb_lib_axi4_lite/tb_top.sv
 # ==================================
 
 
@@ -86,42 +91,48 @@ src_tb_lib_XXXXX_v+=$(TB_SRC_DIR)/tb_lib_XXXXX/tb_top.sv
 
 # -- Add here targets for design compilation
 
-# Compile Lib XXXXX
-compile_XXXXX:
-	make compile_design_vhd_files SRC_VHD="$(src_vhd_lib_XXXXX)" VHD_DESIGN_LIB=$(LIB_XXXXX)
+# Compile Lib axi4 Lite in vHDL 2008
+compile_lib_axi4_lite:
+	make compile_design_vhd_files SRC_VHD="$(axi4_lite_src_vhd)" VHD_DESIGN_LIB=$(LIB_AXI4_LITE) VCOM_ARGS=-2008
 
+
+#compile_design: compile_lib_axi4_lite
 # ====================== #
 
 
 ## == COMPILE TESTBENCH == ##
 
 # -- Add Here targets for testbenchs compilation
-compile_testbench_sources:
-	make compile_tb_v_files SRC_TB_V="$(src_tb_v)" TB_LIB_TOP=$(LIB_TB_XXXXX)
-	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_XXXXX_v)" TB_LIB_TOP=$(LIB_TB_XXXXX)
+compile_tb_lib_axi4_lite:
+	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE)
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_axi4_lite_v)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE)
 # ========================= #
 
+# == COMPILE ALL Targets ==
+compile_all_lib_axi4_lite: clean_all create_project_dir libs compile_lib_axi4_lite compile_tb_lib_axi4_lite print_compile_logs_file
+
+# =========================
 
 # == SCENARII LIST ==
 
 # -- Add here the list of scenarii
-SCN_LIST +=
+SCN_LIST +=AXI4_LITE_000.py
 
 # ===================
 
 
 # == LIB ARGS ==
 # -- Complete here the library use for running a test with vsim
-LIB_ARGS=-L lib_XXXX -L lib_YYYY
+LIB_ARGS=-L lib_axi4_lite
 # ==============
 
 
 # == RUN TEST ==
 # -- Add here targets for running tests
-run_tb_XXXXX:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON
+run_tb_lib_axi4_lite:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_axi4_lite LIB_TB_TOP=$(TB_LIB_AXI4_LITE) 
 # ==============
-
+# LIB_ARGS=$(LIB_ARGS)
 
 # == MAKEFILE Includes ==
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
