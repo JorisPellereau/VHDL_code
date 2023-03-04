@@ -1,0 +1,107 @@
+# Target for Compilation of OSVVM Libraries
+# Use OSVVM 2022-12 release
+
+# == OSVVM Sources LIB PATH ==
+OSVVM_LIB_PATH=$(OSVVM_PATH)/osvvm
+OSVVM_COMMON_LIB_PATH=$(OSVVM_PATH)/Common/src
+OSVVM_AXI4_COMMON_PATH=$(OSVVM_PATH)/AXI4/common/src
+OSVVM_AXI4_PATH=$(OSVVM_PATH)/AXI4/Axi4/src
+OSVVM_AXI4_LITE_PATH=$(OSVVM_PATH)/AXI4/Axi4Lite/src
+
+# == OSVVM LIB LIST ==
+OSVVM_LIB_LIST+=osvvm
+OSVVM_LIB_LIST+=osvvm_common
+
+
+
+# == OSVVM Files List ==
+osvvm_file_list+=$(OSVVM_LIB_PATH)/TextUtilPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ResolutionPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/NamePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/OsvvmGlobalPkg.vhd
+#osvvm_file_list+=$(OSVVM_LIB_PATH)/VendorCovApiPkg_Aldec.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/VendorCovApiPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/TranscriptPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/AlertLogPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/NameStorePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/MessageListPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/SortListPkg_int.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/RandomBasePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/RandomPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/RandomProcedurePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/CoveragePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ResizePkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ScoreboardGenericPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ScoreboardPkg_slv.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ScoreboardPkg_int.vhd
+#osvvm_file_list+=$(OSVVM_LIB_PATH)/ScoreboardPkg_slv_c.vhd
+#osvvm_file_list+=$(OSVVM_LIB_PATH)/ScoreboardPkg_int_c.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/MemorySupportPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/MemoryGenericPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/MemoryPkg.vhd
+#osvvm_file_list+=$(OSVVM_LIB_PATH)/MemoryPkg_c.vhd
+#osvvm_file_list+=$(OSVVM_LIB_PATH)/MemoryPkg_orig_c.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/TbUtilPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/ReportPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/OsvvmTypesPkg.vhd
+osvvm_file_list+=$(OSVVM_LIB_PATH)/OsvvmContext.vhd
+
+# == OSVVM Common File List ==
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/ModelParametersPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/FifoFillPkg_slv.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/StreamTransactionPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/StreamTransactionArrayPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/AddressBusTransactionPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/AddressBusTransactionArrayPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/AddressBusResponderTransactionPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/AddressBusResponderTransactionArrayPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/AddressBusVersionCompatibilityPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/InterruptHandler.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/InterruptHandlerComponentPkg.vhd
+osvvm_common_file_list+=$(OSVVM_COMMON_LIB_PATH)/OsvvmCommonContext.vhd
+
+
+# == OSVVM AXI4 Common File List ==
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4InterfaceCommonPkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4LiteInterfacePkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4InterfacePkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4CommonPkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4ModelPkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4OptionsPkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4OptionsArrayPkg.vhd
+osvvm_axi4_common_file_list+=$(OSVVM_AXI4_COMMON_PATH)/Axi4VersionCompatibilityPkg.vhd
+
+# == OSVVM AXI4Lite File List ==
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteComponentPkg.vhd
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteContext.vhd
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteManager.vhd
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteMonitor_dummy.vhd
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteSubordinate.vhd
+osvvm_axi4lite_file_list+=$(OSVVM_AXI4_LITE_PATH)/Axi4LiteMemory.vhd
+
+
+VCOM_ARGS_AXI4="-2008"
+
+# Compile OSVVM Library - osvvm library directory must be created
+compile_osvvm:
+	make compile_design_vhd_files SRC_VHD="$(osvvm_file_list)" VHD_DESIGN_LIB=osvvm VCOM_ARGS=$(VCOM_ARGS_AXI4)
+
+# Compile OSVVM_common Library - osvvm_common library directory must be created
+compile_osvvm_common:
+	make compile_design_vhd_files SRC_VHD="$(osvvm_common_file_list)" VHD_DESIGN_LIB=osvvm_common VCOM_ARGS=$(VCOM_ARGS_AXI4)
+
+# Compile OSVVM AXI4 Common file in a custom library - this library must be created first
+# OSVVM_AXI4_COMMON_LIB variable must be defined
+compile_osvvm_axi4_common:
+	make compile_design_vhd_files SRC_VHD="$(osvvm_axi4_common_file_list)" VHD_DESIGN_LIB=$(OSVVM_AXI4_COMMON_LIB) VCOM_ARGS=$(VCOM_ARGS_AXI4)
+
+
+# Compile OSVVM AXI4Lite File in a custom lirabry - this library must be created first
+# OSVVM_AXI4LITE_LIB variable must be defined
+compile_osvvm_axi4lite:
+	make compile_design_vhd_files SRC_VHD="$(osvvm_axi4lite_file_list)" VHD_DESIGN_LIB=$(OSVVM_AXI4LITE_LIB) VCOM_ARGS=$(VCOM_ARGS_AXI4)
+
+
+# == MAKEFILE Includes ==
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+# =======================

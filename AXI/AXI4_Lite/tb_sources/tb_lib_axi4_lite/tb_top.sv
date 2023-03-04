@@ -21,7 +21,26 @@ module tb_top
    wire set_injector_0;  // To complete
    wire check_level_0;
 
-
+   wire awvalid;
+   wire [`C_AXI4_LITE_ADDR_WIDTH-1:0] awaddr;
+   wire [2:0] 			      awprot;
+   wire 			      awready;
+   wire 			      wvalid;
+   wire [`C_AXI4_LITE_DATA_WIDTH-1:0] wdata;
+   wire [(`C_AXI4_LITE_DATA_WIDTH/8)-1:0] wstrb;
+   wire 				  wready;
+   wire 				  bready;
+   wire 				  bvalid;
+   wire [1:0] 				  bresp;
+   wire 				  arvalid;
+   wire [`C_AXI4_LITE_ADDR_WIDTH-1:0] 	  araddr;
+   wire [2:0] 				  arprot;
+   wire 				  arready;
+   wire 				  rready;
+   wire 				  rvalid;
+   wire [`C_AXI4_LITE_DATA_WIDTH-1:0] 	  rdata;
+   wire [1:0] 				  rresp;
+ 
 
   // == CLK GEN INST ==
    clk_gen #(
@@ -135,6 +154,50 @@ module tb_top
    end
 
 
+   // == OSVVM AXI4Lite Manager ==
+   osvvm_axi4lite_manager_wrapper #(
+				    .MODEL_ID_NAME ("MASTER_AXI4_Lite_0"),
+				    .G_AXI4_LITE_ADDR_WIDTH (`C_AXI4_LITE_ADDR_WIDTH),
+				    .G_AXI4_LITE_DATA_WIDTH (`C_AXI4_LITE_DATA_WIDTH),
+				    .tperiod_Clk            (10000),
+				    .DEFAULT_DELAY          (0),
+				    .tpd_Clk_AWAddr         (0),
+				    .tpd_Clk_AWProt         (0),
+				    .tpd_Clk_AWValid        (0),
+				    .tpd_Clk_WValid         (0),
+				    .tpd_Clk_WData          (0),
+				    .tpd_Clk_WStrb          (0),
+				    .tpd_Clk_BReady         (0),
+				    .tpd_Clk_ARValid        (0),
+				    .tpd_Clk_ARProt         (0),
+				    .tpd_Clk_ARAddr         (0),
+				    .tpd_Clk_RReady         (0)
+
+				    )
+   
+   i_osvvm_axi4lite_manager_wrapper (
+				     .clk     (clk),
+				     .rst_n   (rst_n),
+				     .awvalid (awvalid),
+				     .awaddr  (awaddr),
+				     .awprot  (awprot),
+				     .awready (awready),
+				     .wvalid  (wvalid),
+				     .wdata   (wdata),
+				     .wstrb   (wstrb),
+				     .wready  (wready),
+				     .bready  (bready),
+				     .bvalid  (bvalid),
+				     .bresp   (bresp),
+				     .arvalid (arvalid),
+				     .araddr  (araddr),
+				     .arprot  (arprot),
+				     .arready (arready),
+				     .rready  (rready),
+				     .rvalid  (rvalid),
+				     .rdata   (rdata),
+				     .rresp   (rresp)
+				     );
    // == DUT ==
 
 endmodule // tb_top

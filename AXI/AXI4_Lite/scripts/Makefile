@@ -19,6 +19,8 @@ TRANSCRIPT_EN=OFF
 
 # == SOURCES DIRECTORY ==
 SRC_AXI4_LITE_DIR=~/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite
+OSVVM_PATH=/opt/OsvvmLibraries
+SRC_OSVVM_WRAPPER_PATH=/home/linux-jp/Documents/GitHub/VHDL_code/Testbench/tb_lib_osvvm_axi4lite
 # =======================
 
 
@@ -29,12 +31,16 @@ LIB_AXI4_LITE=lib_axi4_lite
 
 # == TESTBENCH LIBRARIES ==
 TB_LIB_AXI4_LITE=tb_lib_axi4_lite
+TB_OSVVM_AXI4_LITE=tb_lib_osvvm_axi4lite
 # =========================
 
 
 # ==  LIB LIST ==
 LIB_LIST+=$(LIB_AXI4_LITE)
 LIB_LIST+=$(TB_LIB_AXI4_LITE)
+LIB_LIST+=$(TB_OSVVM_AXI4_LITE)
+LIB_LIST+=osvvm
+LIB_LIST+=osvvm_common
 LIB_LIST+=work
 # ================
 
@@ -73,6 +79,10 @@ axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_list_slave_rec_to_itf.vhd
 axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_slave_reg_itf.vhd
 # ==========================
 
+# == TESTBENCH VHDL Custom FILES LIST ==
+src_osvvm_axi4_lite_vhd+=$(SRC_OSVVM_WRAPPER_PATH)/osvvm_axi4lite_manager_wrapper.vhd
+# ======================================
+
 
 # == TESTBENCH {0}  VERILOG Custom FILES LIST ==
 
@@ -103,8 +113,11 @@ compile_lib_axi4_lite:
 ## == COMPILE TESTBENCH == ##
 
 # -- Add Here targets for testbenchs compilation
-compile_tb_lib_axi4_lite:
-	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE)
+OSVVM_AXI4_COMMON_LIB=$(TB_OSVVM_AXI4_LITE)
+OSVVM_AXI4LITE_LIB=$(TB_OSVVM_AXI4_LITE)
+compile_tb_lib_axi4_lite: compile_osvvm compile_osvvm_common compile_osvvm_axi4_common compile_osvvm_axi4lite
+	make compile_tb_v_files SRC_TB_V="$(src_gen_tb_v)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE) VCOM_ARGS=-2008
+	make compile_tb_vhd_files SRC_TB_VHD="$(src_osvvm_axi4_lite_vhd)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE) VCOM_ARGS=-2008
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_axi4_lite_v)" TB_LIB_TOP=$(TB_LIB_AXI4_LITE)
 # ========================= #
 
@@ -123,7 +136,7 @@ SCN_LIST +=AXI4_LITE_000.py
 
 # == LIB ARGS ==
 # -- Complete here the library use for running a test with vsim
-LIB_ARGS=-L lib_axi4_lite
+LIB_ARGS=-L lib_axi4_lite -L $(TB_OSVVM_AXI4_LITE)
 # ==============
 
 
@@ -136,6 +149,7 @@ run_tb_lib_axi4_lite:
 
 # == MAKEFILE Includes ==
 include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
+include ~/Documents/GitHub/VHDL_code/Makefile/MakefileOSVVM
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
 # =======================

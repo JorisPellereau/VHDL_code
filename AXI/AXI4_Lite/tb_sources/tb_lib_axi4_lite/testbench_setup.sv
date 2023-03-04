@@ -20,3 +20,6 @@
 `define C_CHECK_SIZE     1
 `define C_CHECK_WIDTH    1
 
+// AXI4Lite Master Configuration
+`define C_AXI4_LITE_ADDR_WIDTH 32
+`define C_AXI4_LITE_DATA_WIDTH 32
