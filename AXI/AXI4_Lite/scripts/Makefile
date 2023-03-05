@@ -77,6 +77,7 @@ axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/pkg_axi4_lite.vhd
 axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/pkg_axi4_lite_inst.vhd
 axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_list_slave_rec_to_itf.vhd
 axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_slave_reg_itf.vhd
+axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_slave_reg.vhd
 # ==========================
 
 # == TESTBENCH VHDL Custom FILES LIST ==

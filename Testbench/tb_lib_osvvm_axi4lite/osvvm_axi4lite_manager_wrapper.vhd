@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-03-04
+-- Last update: 2023-03-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -108,6 +108,7 @@ architecture rtl of osvvm_axi4lite_manager_wrapper is
     WriteAddress(Addr (G_AXI4_LITE_ADDR_WIDTH-1 downto 0)),
     WriteData (Data (G_AXI4_LITE_DATA_WIDTH-1 downto 0),
                Strb((G_AXI4_LITE_DATA_WIDTH/8)-1 downto 0)),
+--               WriteResponse (((G_AXI4_LITE_DATA_WIDTH/8)-1 downto 0)),
     ReadAddress (Addr (G_AXI4_LITE_ADDR_WIDTH-1 downto 0)),
     ReadData (Data (G_AXI4_LITE_DATA_WIDTH-1 downto 0))
     );
@@ -120,7 +121,9 @@ architecture rtl of osvvm_axi4lite_manager_wrapper is
 
 
   -- Interface with Tesbench Module
-  signal wr_req : std_logic;
+  signal wr_req   : std_logic                                             := '0';
+  signal axi_data : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0) := (others => '0');
+  signal axi_addr : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0) := (others => '0');
 
 begin  -- architecture rtl
 
@@ -147,7 +150,7 @@ begin  -- architecture rtl
       nReset => rst_n,
 
       -- AXI Manager Functional Interface
-      AxiBus => Axibus,
+      AxiBus => axibus,
 
       -- Testbench Transaction Interface
       TransRec => transrec
@@ -155,15 +158,43 @@ begin  -- architecture rtl
 
 
   -- AXIBUS to AXI IN/OUT
+  -- Write Address Channel
+  awvalid                   <= axibus.WriteAddress.Valid;
+  awaddr                    <= axibus.WriteAddress.Addr;
+  awprot                    <= axibus.WriteAddress.Prot;
+  axibus.WriteAddress.Ready <= awready;
+
+  -- Write Data Channel
+  wvalid                 <= axibus.WriteData.Valid;
+  wdata                  <= axibus.WriteData.Data;
+  wstrb                  <= axibus.WriteData.Strb;
+  axibus.WriteData.Ready <= wready;
+
+  -- Write Response Channel
+  bready                     <= axibus.WriteResponse.Ready;
+  axibus.WriteResponse.Valid <= bvalid;
+  axibus.WriteResponse.Resp  <= bresp;
+
+  -- Read Address Channel
+  arvalid                  <= axibus.ReadAddress.Valid;
+  araddr                   <= axibus.ReadAddress.Addr;
+  arprot                   <= axibus.ReadAddress.Prot;
+  axibus.ReadAddress.Ready <= arready;
+
+  -- Read Data Channel
+  rready                <= axibus.ReadData.Ready;
+  axibus.ReadData.Valid <= rvalid;
+  axibus.ReadData.Data  <= rdata;
+  axibus.ReadData.Resp  <= rresp;
 
   -- == AXI4Lite Procedure Control =
 
   p_axi4_write : process is
   begin  -- process p_axi4_write
     wait until rising_edge(wr_req);
---    if(wr_req = ) then
-      Write(transrec, X"0002_0000", X"0002_0101");
-  --  end if;
+    if(wr_req = '1') then
+      Write(transrec, axi_addr, axi_data);
+    end if;
 
   end process p_axi4_write;
 
