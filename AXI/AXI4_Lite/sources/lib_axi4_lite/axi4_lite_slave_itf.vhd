@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
--- Title      : AXI4 Lite Slave Refisters Interface
+-- Title      : AXI4 Lite Slave Interface
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : axi4_lite_slave_reg_itf.vhd
+-- File       : axi4_lite_slave_itf.vhd
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
@@ -23,7 +23,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity axi4_lite_slave_reg_itf is
+entity axi4_lite_slave_itf is
 
   generic (
     G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
@@ -73,9 +73,9 @@ entity axi4_lite_slave_reg_itf is
     slv_status : in std_logic           -- Slave status        
     );
 
-end entity axi4_lite_slave_reg_itf;
+end entity axi4_lite_slave_itf;
 
-architecture rtl of axi4_lite_slave_reg_itf is
+architecture rtl of axi4_lite_slave_itf is
 
   -- == INTERNAL Signals ==
   signal s_arvalid : std_logic;         -- Latch arvalid
