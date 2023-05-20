@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-03-05
+-- Last update: 2023-05-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -121,7 +121,29 @@ architecture rtl of osvvm_axi4lite_manager_wrapper is
 
 
   -- Interface with Tesbench Module
-  signal wr_req   : std_logic                                             := '0';
+  signal wr_req : std_logic := '0';
+  signal rd_req : std_logic := '0';
+
+  -- MASTER AXI4 Configuration
+  signal start_config      : std_logic := '0';
+  signal config_done       : std_logic := '0';
+  signal config_param_int  : integer   := 0;
+  signal config_param_bool : boolean   := false;
+  signal config_nb         : integer   := 0;  -- Configuration number
+  -- 0 : WRITE_ADDRESS_VALID_DELAY_CYCLES    - Value type : integer
+  -- 1 : WRITE_DATA_VALID_DELAY_CYCLES       - Value type : integer
+  -- 2 : WRITE_DATA_VALID_BURST_DELAY_CYCLES - Value type : integer
+  -- 3 : READ_ADDRESS_VALID_DELAY_CYCLES     - Value type : integer
+  -- 4 : WRITE_RESPONSE_READY_BEFORE_VALID   - Value type : boolean
+  -- 5 : READ_DATA_READY_BEFORE_VALID        - Value type : boolean
+  -- 6 : WRITE_RESPONSE_READY_DELAY_CYCLES   - Value type : integer
+  -- 7 : READ_DATA_READY_DELAY_CYCLES        - Value type : integer
+  -- 8 : WRITE_ADDRESS_READY_TIME_OUT        - Value type : integer
+  -- 9 : WRITE_DATA_READY_TIME_OUT           - Value type : integer
+  -- 10 : READ_ADDRESS_READY_TIME_OUT        - Value type : integer
+  -- 11 : WRITE_RESPONSE_VALID_TIME_OUT      - Value type : integer
+  -- 12 : READ_DATA_VALID_TIME_OUT           - Value type : integer
+
   signal axi_data : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0) := (others => '0');
   signal axi_addr : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0) := (others => '0');
 
@@ -189,6 +211,61 @@ begin  -- architecture rtl
 
   -- == AXI4Lite Procedure Control =
 
+
+  -- purpose: Set the configuration of AXI4 Manager
+  p_axi4_config : process is
+  begin  -- process p_axi4_config
+
+    wait until rising_edge(start_config);
+
+    case config_nb is
+
+      when 0 =>
+        SetAxi4Options(transrec, WRITE_ADDRESS_VALID_DELAY_CYCLES, config_param_int);
+
+      when 1 =>
+        SetAxi4Options(transrec, WRITE_DATA_VALID_DELAY_CYCLES, config_param_int);
+
+      when 2 =>
+        SetAxi4Options(transrec, WRITE_DATA_VALID_BURST_DELAY_CYCLES, config_param_int);
+
+      when 3 =>
+        SetAxi4Options(transrec, READ_ADDRESS_VALID_DELAY_CYCLES, config_param_int);
+
+      when 4 =>
+        SetAxi4Options(transrec, WRITE_RESPONSE_READY_BEFORE_VALID, config_param_bool);
+
+      when 5 =>
+        SetAxi4Options(transrec, READ_DATA_READY_BEFORE_VALID, config_param_bool);
+
+      when 6 =>
+        SetAxi4Options(transrec, WRITE_RESPONSE_READY_DELAY_CYCLES, config_param_int);
+
+      when 7 =>
+        SetAxi4Options(transrec, READ_DATA_READY_DELAY_CYCLES, config_param_int);
+
+      when 8 =>
+        SetAxi4Options(transrec, WRITE_ADDRESS_READY_TIME_OUT, config_param_int);
+
+      when 9 =>
+        SetAxi4Options(transrec, WRITE_DATA_READY_TIME_OUT, config_param_int);
+
+      when 10 =>
+        SetAxi4Options(transrec, READ_ADDRESS_READY_TIME_OUT, config_param_int);
+
+      when 11 =>
+        SetAxi4Options(transrec, WRITE_RESPONSE_VALID_TIME_OUT, config_param_int);
+
+      when 12 =>
+        SetAxi4Options(transrec, READ_DATA_VALID_TIME_OUT, config_param_int);
+
+
+      when others => null;
+    end case;
+    config_done <= not config_done;
+    
+  end process p_axi4_config;
+
   p_axi4_write : process is
   begin  -- process p_axi4_write
     wait until rising_edge(wr_req);
@@ -197,6 +274,14 @@ begin  -- architecture rtl
     end if;
 
   end process p_axi4_write;
+
+  p_axi4_read : process is
+  begin  -- process p_axi4_read
+    wait until rising_edge(rd_req);
+    if(rd_req = '1') then
+      ReadCheck(transrec, axi_addr, axi_data);
+    end if;
+  end process p_axi4_read;
 
 
 end architecture rtl;

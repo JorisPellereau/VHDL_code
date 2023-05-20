@@ -215,72 +215,44 @@ module tb_top
 				     );
    // == DUT ==
 
-   axi4_lite_slave_reg_itf #(.G_AXI4_LITE_ADDR_WIDTH  (`C_AXI4_LITE_ADDR_WIDTH),
-			     .G_AXI4_LITE_DATA_WIDTH  (`C_AXI4_LITE_DATA_WIDTH)
-			     )
+   axi4_lite_slave_test #(
+			  .G_AXI4_LITE_ADDR_WIDTH  (`C_AXI4_LITE_ADDR_WIDTH),
+			  .G_AXI4_LITE_DATA_WIDTH  (`C_AXI4_LITE_DATA_WIDTH),
+			  .G_REG_CONFIG            (),
+			  .G_REG_IN_NB             (),
+			  .G_REG_OUT_NB            ()			  
+			  )   
+   i_dut (	   
+		   .clk   (clk),
+		   .rst_n (rst_n),
+		   
+		   .awvalid (awvalid),
+		   .awaddr  (awaddr),
+		   .awprot  (awprot),
+		   .awready (awready),
+		   
+		   .wvalid (wvalid), 
+		   .wdata  (wdata), 
+		   .wstrb  (wstrb), 
+		   .wready (wready),
+		   
+		   .bready (bready), 
+		   .bvalid (bvalid), 
+		   .bresp  (bresp),
+		   
+		   .arvalid (arvalid),
+		   .araddr  (araddr),
+		   .arprot  (arprot),
+		   .arready (arready),
+		   
+		   .rready (rready), 
+		   .rvalid (rvalid), 
+		   .rdata  (rdata), 
+		   .rresp  (rresp), 
+		   
+		   .registers_in (0),
+		   .registers_out ()
+		   );
    
-   i_dut  (.clk   (clk),
-	   .rst_n (rst_n),
-	   
-	   .awvalid (awvalid),
-	   .awaddr  (awaddr),
-	   .awprot  (awprot),
-	   .awready (awready),
-	   
-	   .wvalid (wvalid), 
-	   .wdata  (wdata), 
-	   .wstrb  (wstrb), 
-	   .wready (wready),
-	   
-	   .bready (bready), 
-	   .bvalid (bvalid), 
-	   .bresp  (bresp),
-	   
-	   .arvalid (arvalid),
-	   .araddr  (araddr),
-	   .arprot  (arprot),
-	   .arready (arready),
-	   
-	   .rready (rready), 
-	   .rvalid (rvalid), 
-	   .rdata  (rdata), 
-	   .rresp  (rresp), 
-	   
-	   .slv_reg_wren    (slv_reg_wren), 
-	   .slv_reg_waddr   (slv_reg_waddr), 
-	   .slv_reg_wdata   (slv_reg_wdata), 
-	   .slv_reg_awready (slv_reg_awready), 
-	   .slv_reg_wready  (slv_reg_wready), 
-	   .slv_reg_bresp   (slv_reg_bresp),
-	   .slv_reg_bvalid  (slv_reg_bvalid),
-	   .master_bready   (master_bready), 
-	   .slv_reg_rden    (slv_reg_rden), 
-	   .slv_reg_raddr   (slv_reg_raddr), 
-	   .slv_reg_rdata   (slv_reg_rdata), 
-	   .slv_reg_arready (slv_reg_arready), 
-	   .slv_reg_rresp   (slv_reg_rresp) 
-	   );
-   
-   axi4_lite_slave_reg #(
-			 .G_AXI4_LITE_ADDR_WIDTH (`C_AXI4_LITE_ADDR_WIDTH),
-			 .G_AXI4_LITE_DATA_WIDTH (`C_AXI4_LITE_DATA_WIDTH)
-			 )
-   i_axi4_lite_slave_reg_0 (
-			    .clk   (clk),
-			    .rst_n (rst_n),
-			    .slv_reg_wren    (slv_reg_wren),
-			    .slv_reg_waddr   (slv_reg_waddr), 
-			    .slv_reg_wdata   (slv_reg_wdata),
-			    .slv_reg_awready (slv_reg_awready),
-			    .slv_reg_wready  (slv_reg_wready),
-			    .slv_reg_bresp   (slv_reg_bresp),
-			    .slv_reg_bvalid  (slv_reg_bvalid),
-			    .master_bready   (master_bready),
-			    .slv_reg_rden    (slv_reg_rden),
-			    .slv_reg_raddr   (slv_reg_raddr),
-			    .slv_reg_rdata   (slv_reg_rdata),
-			    .slv_reg_arready (slv_reg_arready),
-			    .slv_reg_rresp   (slv_reg_rresp)			   
-			    );
 
 endmodule // tb_top

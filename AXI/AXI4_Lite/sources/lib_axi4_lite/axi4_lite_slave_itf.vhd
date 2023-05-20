@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-05-18
+-- Last update: 2023-05-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ entity axi4_lite_slave_itf is
     -- Write Data Channel
     wvalid : in  std_logic;             -- Write Data Valid
     wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Write Data
-    wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0); -- Write Strobe
+    wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
     wready : out std_logic;             -- Write data Ready
 
     -- Write Response Channel
@@ -66,6 +66,7 @@ entity axi4_lite_slave_itf is
     slv_start  : out std_logic;         -- Start the access
     slv_rw     : out std_logic;         -- Read or write access
     slv_addr   : out std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Slave Addr
+    slv_wdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave Write Data
     slv_strobe : out std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
 
     slv_done   : in std_logic;          -- Slave access done
@@ -105,7 +106,7 @@ begin  -- architecture rtl
   begin  -- process p_arvalid_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_arvalid <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset s_arvalid on ack.
       if(arvalid = '1' and s_arready = '1') then
@@ -124,7 +125,7 @@ begin  -- architecture rtl
   begin  -- process p_araddr_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_araddr <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Latch araddr
       if(arvalid = '1' and s_arvalid = '0') then
@@ -140,7 +141,7 @@ begin  -- architecture rtl
   begin  -- process p_arready_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_arready <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset arready on ack
       if(arvalid = '1' and s_arready = '1') then
@@ -160,7 +161,7 @@ begin  -- architecture rtl
   begin  -- process p_rvalid_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_rvalid <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset s_rvalid on ack
       if(rready = '1' and s_rvalid = '1') then
@@ -176,7 +177,7 @@ begin  -- architecture rtl
   begin  -- process p_rdata_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       rdata <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Latch RDATA on done and during a read access
       if(slv_done = '1' and s_rd_ongoing = '1') then
@@ -191,7 +192,7 @@ begin  -- architecture rtl
   begin  -- process p_rresp_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       rresp <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       if(slv_done = '1' and s_rd_ongoing = '1' and slv_status = '0') then
         rresp <= (others => '0');
@@ -209,7 +210,7 @@ begin  -- architecture rtl
   begin  -- process p_rd_ongoing_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_rd_ongoing <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset the ongoing status when done
       if(slv_done = '1') then
@@ -232,7 +233,7 @@ begin  -- architecture rtl
   begin  -- process p_awvalid_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_awvalid <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset the signal on Ack
       if(awvalid = '1' and s_awready = '1') then
@@ -252,7 +253,7 @@ begin  -- architecture rtl
   begin  -- process p_awaddr_latch
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_awaddr <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Latch awaddr
       if(awvalid = '1' and s_awvalid = '0') then
@@ -267,7 +268,7 @@ begin  -- architecture rtl
   begin  -- process p_awready_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_awready <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset the signal on Ack
       if(awvalid = '1' and s_awready = '1') then
@@ -287,7 +288,7 @@ begin  -- architecture rtl
   begin  -- process p_wvalid_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_wvalid <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset the signal on ACK
       if(wvalid = '1' and s_wready = '1') then
@@ -307,7 +308,7 @@ begin  -- architecture rtl
   begin  -- process p_wdata_latch
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_wdata <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Latch wdata on rising edge of wvalid
       if(wvalid = '1' and s_wvalid = '0') then
@@ -322,7 +323,7 @@ begin  -- architecture rtl
   begin  -- process p_wstrb_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_wstrb <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Latch Write Strobe on rising edge of wvalid
       if(wvalid = '1' and s_wvalid = '0') then
@@ -337,7 +338,7 @@ begin  -- architecture rtl
   begin  -- process p_wready_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       s_wready <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Reset the signal on ACK
       if(wvalid = '1' and s_wready = '1') then
@@ -359,7 +360,7 @@ begin  -- architecture rtl
   begin  -- process P_slv_start_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       slv_start <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
       -- Generate slv_start during an access and when the araddr channel or
       -- write data channel is acknowledge
@@ -379,7 +380,7 @@ begin  -- architecture rtl
   begin  -- process p_slv_addr_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       slv_addr <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
       if(s_rd_ongoing = '1' and arvalid = '1' and s_arready = '1') then
         slv_addr <= s_araddr;
       else
@@ -394,7 +395,7 @@ begin  -- architecture rtl
   begin  -- process p_slv_rw_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       slv_rw <= '0';
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
       if(s_rd_ongoing = '1' and arvalid = '1' and s_arready = '1') then
         slv_rw <= '1';
       else
@@ -404,15 +405,30 @@ begin  -- architecture rtl
     end if;
   end process p_slv_rw_mngt;
 
+  -- purpose: Slave Write Data management
+  p_slv_wdata : process (clk, rst_n) is
+  begin  -- process p_slv_wdata
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      slv_wdata <= (others => '0');
+    elsif rising_edge(clk) then         -- rising clock edge
+
+      -- Set Write strobe for slave
+      if(s_wr_ongoing = '1' and wvalid = '1' and s_wready = '1') then
+        slv_wdata <= s_wdata;
+      end if;
+
+    end if;
+  end process p_slv_wdata;
+
 
   -- purpose: Slave Strobe management
   p_slv_strobe : process (clk, rst_n) is
   begin  -- process p_slv_strobe
     if rst_n = '0' then                 -- asynchronous reset (active low)
       slv_strobe <= (others => '0');
-    elsif clk'event and clk = '1' then  -- rising clock edge
+    elsif rising_edge(clk) then         -- rising clock edge
 
-      -- Latch Write strobe for slave
+      -- Set Write strobe for slave
       if(s_wr_ongoing = '1' and wvalid = '1' and s_wready = '1') then
         slv_strobe <= s_wstrb;
       end if;
