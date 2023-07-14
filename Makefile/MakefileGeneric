@@ -66,6 +66,10 @@ GUI=ON
 VCOM_ARGS+=
 # ======================
 
+# == VLOG ARGS Custom ==
+VLOG_ARGS+=
+# ======================
+
 # == Config Selection ==
 ifeq ($(GUI), OFF)
 	VSIM_ARGS+=-c
@@ -287,7 +291,7 @@ compile_tb_vhd_files:
 
 compile_tb_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list,$(SRC_TB_V),$(vlog) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
+	$(foreach list,$(SRC_TB_V),$(vlog) $(VLOG_ARGS) -work $(TB_LIB_TOP) $(list) >> $(COMPILE_LOGS_FILE);)\
 
 compile_design_vhd_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
@@ -295,7 +299,7 @@ compile_design_vhd_files:
 
 compile_design_v_files:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(foreach list,$(SRC_V),$(vlog) -work $(V_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
+	$(foreach list,$(SRC_V),$(vlog) $(VLOG_ARGS) -work $(V_DESIGN_LIB) $(list) >> $(COMPILE_LOGS_FILE);)\
 # ========================
 
 # == COMPILE ALL ==
