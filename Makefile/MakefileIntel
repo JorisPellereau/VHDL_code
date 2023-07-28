@@ -1,0 +1,344 @@
+# Makefile for QUARTUS from Intel utilization
+# Quartus Version : 20.1
+
+# Quartus Configuration
+QUARTUS_PATH?=
+SH=$(QUARTUS_PATH)/quartus_sh
+MAP=$(QUARTUS_PATH)/quartus_map
+FIT=$(QUARTUS_PATH)/quartus_fit
+TAN=$(QUARTUS_PATH)/quartus_tan
+ASM=$(QUARTUS_PATH)/quartus_asm
+STA=$(QUARTUS_PATH)/quartus_sta
+PGM=$(QUARTUS_PATH)/quartus_pgm
+
+
+Q_PROJECT_NAME?=
+Q_PROJECT_PATH?=
+REVISION?=
+FAMILY?=CYCLONEIV
+DEVICE?=EP4CE115F29C7
+TOP_ENTITY?=
+
+
+
+
+# == SH Configuration and ARGS ==
+
+SH_ARGS+=
+
+ifeq ($(EN_SH_SCRIPT), ON)
+     SH_ARGS+=-t $(SH_SCRIPT)
+endif
+
+SH_ARGS+=--prepare -r $(REVISION) -f $(FAMILY) -d $(DEVICE) -t $(TOP_ENTITY)
+
+
+
+# ===============================
+
+# == MAP CONFIGURATION and ARGS ==
+# MAP Arguments
+DESIGN_FILE?=
+EFFORT?=auto
+ENABLE_WYSIWYG_RESYNTHESIS?=OFF
+
+IGNORE_CARRY_BUFFER?=off
+IGNORE_CASCADE_BUFFERS?=off
+INCREMENTAL_COMPILATION?=full_incremental_compilation
+OPTIMIZE?=balanced
+SYNTH_SRC_LIST?=
+
+# MAP ARGS
+MAP_ARGS+=
+
+# Synthesis Source List
+MAP_ARGS+=$(foreach list, $(SYNTH_SRC_LIST), --source=$(list) )
+#MAP_ARGS+=--rev=$(REVISION)
+#MAP_ARGS+=--analysis_and_elaboration
+#MAP_ARGS+=--analyze_file=$(DESIGN_FILE)
+MAP_ARGS+=--effort=$(EFFORT)
+MAP_ARGS+=--enable_wysiwyg_resynthesis=$(ENABLE_WYSIWYG_RESYNTHESIS)
+MAP_ARGS+=--family=$(FAMILY)
+MAP_ARGS+=--ignore_carry_buffers=$(IGNORE_CARRY_BUFFER)
+MAP_ARGS+=--ignore_cascade_buffers=$(IGNORE_CASCADE_BUFFERS)
+MAP_ARGS+=--incremental_compilation=$(INCREMENTAL_COMPILATION)
+MAP_ARGS+=--optimize=$(OPTIMIZE)
+#MAP_ARGS+=--parallel
+MAP_ARGS+=--state_machine_encoding=one_hot
+
+# Enable GENERATE_FUNCTIONAL_SIM_NETLIST
+ifeq ($(GENERATE_FUNCTIONAL_SIM_NETLIST), ON)
+     MAP_ARGS+=--generate_functional_sim_netlist
+endif
+
+# Lib PATH Enable
+ifeq ($(EN_LIB_PATH), ON)
+     MAP_ARGS+=--lib_path=$(LIB_PATH)
+endif
+
+# Part Configuration
+ifeq ($(PART), ON)
+     MAP_ARGS+=--part=$(PART)
+endif
+
+# Partition Configuration
+ifeq ($(PARTITION), ON)
+     MAP_ARGS+=--partition=$(PARTITION_NAME)
+endif
+
+# Lower Priority
+ifeq ($(LOWER_PRIORITY), ON)
+     MAP_ARGS+=--lower_priority
+endif
+
+ifeq ($(UPDATE_WYSIWYG_PARAMETERS), ON)
+     MAP_ARGS+=--update_wysiwyg_parameters
+endif
+
+ifeq ($(VERILOG_MACRO), ON)
+    MAP_ARGS+=$(foreach list, $(VERILOG_MACRO_LIST), --verilog_macro="$(list)") 
+endif
+
+
+
+# ================================
+
+
+# == FIT Configuration and ARGS ==
+EARLY_TIMING_ESTIMATE?=realistic
+FIT_EFFORT?=auto
+FMAX?=50mhz
+INNER_NUM?=1
+ONE_FIT_ATTEMPT?=off
+OPTIMIZE_IO_REGISTER_FOR_TIMING?=on
+PACK_REGISTER?=auto
+SEED?=1
+TCO_TIME?=
+TDC?=ON
+TPD_TIME?=
+TSU_TIME?=
+
+FIT_ARGS+=
+#FIT_ARGS+=--rev=$(REVISION)
+#FIT_ARGS+=--early_timing_estimate=$(EARLY_TIMING_ESTIMATE)
+FIT_ARGS+=--effort=$(FIT_EFFORT)
+#FIT_ARGS+=--fmax=$(FMAX)
+FIT_ARGS+=--inner_num=$(INNER_NUM)
+FIT_ARGS+=--one_fit_attempt=$(ONE_FIT_ATTEMPT)
+FIT_ARGS+=--optimize_io_register_for_timing=$(OPTIMIZE_IO_REGISTER_FOR_TIMING)
+FIT_ARGS+=--pack_register=$(PACK_REGISTER)
+FIT_ARGS+=--seed=$(SEED)
+#FIT_ARGS+=--tco=$(TCO_TIME)
+FIT_ARGS+=--tdc=$(TDC)
+FIT_ARGS+=--part=$(DEVICE)
+#FIT_ARGS+=--tpd=$(TPD_TIME)
+#FIT_ARGS+=--tsu=$(TSU_TIME)
+
+# Check IOs Configuration
+ifeq ($(CHECK_IOS), ON)
+     FIT_ARGS+=--check_ios
+endif
+
+# Check Netlist Configuration
+ifeq ($(CHECK_NETLIST), ON)
+     FIT_ARGS+=--check_netlist		       
+endif
+
+# Incremental SignalTap Configuration
+ifeq ($(INCREMENTAL_SIGNALTAP), ON)
+     FIT_ARGS+=--incremental_signaltap
+endif
+
+# IO SMART Recompile Configuration
+ifeq ($(IO_SMART_RECOMPILE), ON)
+     FIT_ARGS+=--io_smart_recompile
+endif
+
+
+
+
+# Signal Probe Configuration
+ifeq ($(SIGNALPROBE),ON)
+     FIT_ARGS+=--signalprobe
+endif
+# ================================
+
+# == ASM Configuration and Args ==
+
+READ_SETTINGS_FILES=on
+ASM_ARGS+=
+
+ASM_ARGS+=--read_settings_files=$(READ_SETTINGS_FILES)
+
+# ================================
+
+# == STA Configuration and ARGS ==
+
+MODEL=slow
+MULTICORNER=on
+SDC_FILE=
+SPEED=
+TEMPERATURE_IN_C=25
+VOLTAGE=
+
+STA_ARGS+=
+
+STA_ARGS+=--do_report_timing
+STA_ARGS+=--model=$(MODEL)
+STA_ARGS+=--multicorner=$(MULTICORNER)
+STA_ARGS+=--post_map
+STA_ARGS+=--sdc=$(SDC_FILE)
+STA_ARGS+=--speed=$(SPEED)
+STA_ARGS+=--temperature=$(TEMPERATURE_IN_C)
+STA_ARGS+=--voltage=$(VOLTAGE)
+
+# Force Delay Annotation
+ifeq ($(FORCE_DAT), ON)
+     STA_ARGS+=--force_dat
+endif
+
+# Migrate assignments from Classic timing analyzer to SDC format
+ifeq ($(QSF2SDC),ON)
+     STA_ARGS+=--qsf2sdc
+endif
+
+# Convert TimeQuest timing analyzer SDC files to a PrimeTime SDC file
+ifeq ($(TQ2HC), ON)
+     STA_ARGS+=--tq2hc
+endif
+
+# Generate temporary files to convert the TimeQuest timing analyzer SDC file(s) to a PrimeTime SDC file.
+ifeq ($(TQ2PT), ON)
+     STA_ARGS+=--tq2pt
+endif
+
+
+# ================================
+
+# == TAN Configuration and ARGS ==
+CHECK_CONSTRAINTS=both
+COMBINED_MODEL=on
+DATASHEET_FILE_NAME=
+DO_MIN_ANALYSIS=on
+FAST_MODEL=on
+TAO_FILE_NAME=
+TCO_TIME_TAN=
+TH_TIME_TAN=
+TPD_TIME_TAN=
+TSU_TIME_TAN=
+
+TAN_ARGS+=
+TAN_ARGS+=--check_constraints=$(CHECK_CONSTRAINTS)
+TAN_ARGS+=--combined_model=$(COMBINED_MODEL)
+TAN_ARGS+=--create_timing_netlist
+TAN_ARGS+=--datasheet=$(DATASHEET_FILE_NAME)
+TAN_ARGS+=--do_min_analysis=$(DO_MIN_ANALYSIS)
+TAN_ARGS+=--fast_model=$(FAST_MODEL)
+TAN_ARGS+=--fmax=$(FMAX)
+TAN_ARGS+=--post_map
+TAN_ARGS+=--speed=$(SPEED)
+TAN_ARGS+=--toa=$(TAO_FILE_NAME)
+TAN_ARGS+=--tao_summary
+TAN_ARGS+=--tco=$(TCO_TIME_TAN)
+TAN_ARGS+=--th=$(TH_TIME_TAN)
+TAN_ARGS+=--tpd=$(TPD_TAN_ARGS)
+TAN_ARGS+=--tristate
+TAN_ARGS+=--tsu=$(TSU_TIME_TAN)
+
+# Option to run only delay annotation and skip full timing analysis
+ifeq ($(DELAY_ANNOTATION_ONLY), ON)
+     TAN_ARGS+=--delay_annotation_only
+endif
+
+# Generate file with the clocks, generated by Timing Analyzer from ATOMs, in the TCL format
+ifeq ($(DUMP_ATOM_GENERATED_CLOCK), ON)
+     TAN_ARGS+=--dump_atom_generated_clocks
+endif
+
+# Option to skip delay annotation
+ifeq ($(TIMING_ANALYSIS_ONLY), ON)
+     TAN_ARGS+=--timing_analysis_only
+endif
+
+# Option to assume zero interconnect delays (0 ns) when performing timing analysis.
+ifeq ($(ZERO_IC_DELAYS), ON)
+     TAN_ARGS+=--zero_ic_delays
+endif
+
+# ================================
+
+
+# == PGM Configuration and ARGS ==
+
+CABLE_NAME="cable_"
+PROGRAMMING_MODE=
+PROGRAMMING_OPERATION=
+
+PGM_ARGS+=
+PGM_ARGS+=--c=$(CABLE_NAME)
+PGM_ARGS+=--m=$(PROGRAMMING_MODE)
+PGM_ARGS+=--o=$(PROGRAMMING_OPERATION)
+
+# ================================
+
+
+# ==  COMMON OPTIONS ==
+# PARALLEL Configuration - Use All PROCESSORS
+ifeq ($(PARALLEL), ON)
+     MAP_ARGS+=--parallel
+     FIT_ARGS+=--parallel
+endif
+
+# =====================
+
+
+# == MakefileIntel RULES ==
+all:
+	@echo "== MakefileIntel Targets =="
+	@echo "==========================="
+
+
+
+qclean:
+	rm -rRf $(Q_PROJECT_PATH)/*
+
+# Quartus Shell - Use for the preparation of the project
+qsh:
+	cd $(Q_PROJECT_PATH);\
+	$(SH) $(SH_ARGS) $(Q_PROJECT_NAME)
+
+
+# Run Quartus Map - Analysis and Synthesis
+qmap:
+	cd $(Q_PROJECT_PATH);\
+	$(MAP) $(TOP_ENTITY) $(MAP_ARGS)
+
+# Run Quartus Fit - Place & Route
+qfit:
+	cd $(Q_PROJECT_PATH);\
+	$(FIT) $(TOP_ENTITY) $(FIT_ARGS)
+
+# Run Assembler - Generate Device Programming image
+qasm:
+	$(ASM) $(Q_PROJECT_NAME) $(ASM_ARGS)
+
+# Run Quarts sta - Timing Analyzer
+qsta:
+	$(STA) $(Q_PROJECT_NAME) $(STA_ARGS)
+
+# Run Quartus Tan - Timing Analyzer
+qtan:
+	$(TAN) $(Q_PROJECT_NAME) $(TAN_ARGS)
+
+
+# Run Quartus PGM - Altera Programming Device
+qpgm:
+	$(PGM) $(PGM_ARGS) $(Q_PROJECT_NAME)
+
+
+
+qall:
+	cd $(Q_PROJECT_PATH);\
+	$(SH) $(SH_ARGS) $(Q_PROJECT_NAME);\
+	$(MAP) $(TOP_ENTITY) $(MAP_ARGS);\
+	$(FIT) $(TOP_ENTITY) $(FIT_ARGS)

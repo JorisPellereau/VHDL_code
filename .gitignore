@@ -111,3 +111,5 @@ MAX7219/scripts/MAX7219_memory_generator/max7219_ram.mem
 *.sv#
 
 *.py#
+
+*.bkp
