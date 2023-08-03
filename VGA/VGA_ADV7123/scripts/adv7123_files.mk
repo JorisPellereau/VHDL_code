@@ -1,0 +1,1 @@
+ADV7123_FILE_LIST+=adv7123.vhd
