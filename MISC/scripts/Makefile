@@ -7,15 +7,15 @@
 # MakefileInel Configuration
 
 QUARTUS_PATH=/opt/Quartus/Quartus_20_1_1_nios_eds/quartus/bin
-Q_PROJECT_NAME=proj_bascule_d
+Q_PROJECT_NAME=synth_blocks
 Q_PROJECT_PATH=/home/linux-jp/QUARTUS_PROJECTS/tests
 
 REVISION=REV0
 FAMILY=CYCLONEIV
 DEVICE=EP4CE115F29C7
-TOP_ENTITY=bascule_d
+TOP_ENTITY=synth_blocks
 
-EN_SH_SCRIPT=OFF
+EN_SH_SCRIPT=ON
 SH_SCRIPT=/home/linux-jp/Documents/GitHub/VHDL_code/MISC/scripts/pin_assignments.tcl
 
 all: print_generic_rules
@@ -27,7 +27,10 @@ all: print_generic_rules
 sh_test:
 	make qsh
 
-DESIGN_FILE=/home/linux-jp/Documents/GitHub/VHDL_code/MISC/bascule_d.vhd
+sh_script_test:
+	make qsh_script
+
+DESIGN_FILE=/home/linux-jp/Documents/GitHub/VHDL_code/MISC/synth_blocks.vhd
 EFFORT=auto
 ENABLE_WYSIWYG_RESYNTHESIS=OFF
 FAMILY=CYCLONEIVE
@@ -58,17 +61,44 @@ TSU_TIME=10 ns
 fit_test:
 	make qfit
 
+READ_SETTINGS_FILES=off
+
+asm_test:
+	make qasm
 
 MODEL=slow
-MULTICORNER=on
-SDC_FILE=
-SPEED=50 mhz
+MULTICORNER=ON
+SDC_FILE=/home/linux-jp/Documents/GitHub/VHDL_code/MISC/scripts/synth_blocks.sdc
+SPEED=7
 TEMPERATURE_IN_C=25
-VOLTAGE=1200
+#
+VOLTAGE=7_slow_1200mv_85c
 
 sta_test:
 	make qsta
 
 
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileIntel
+CHECK_CONSTRAINTS=both
+COMBINED_MODEL=on
+DATASHEET_FILE_NAME=
+DO_MIN_ANALYSIS=on
+FAST_MODEL=on
+TAO_FILE_NAME=
+TCO_TIME_TAN=
+TH_TIME_TAN=
+TPD_TIME_TAN=
+TSU_TIME_TAN=
+
+tan_test:
+	make qtan
+
+
+all_flow:
+	rm -r /home/linux-jp/QUARTUS_PROJECTS/tests/*
+	make sh_test
+	make sh_script_test
+	make map_test
+	make fit_test
+
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileIntel
