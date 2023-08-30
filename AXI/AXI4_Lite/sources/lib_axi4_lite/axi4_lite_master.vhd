@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-29
+-- Last update: 2023-08-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -176,7 +176,8 @@ begin  -- architecture rtl
 
   -- Computes Next States
 
-  p_update_ns : process (current_state, Start, rnw, addr, strobe) is
+  p_update_ns : process (current_state, start_p, rnw, addr, strobe, arvalid_int, arready, rvalid,
+                       rready_int, awvalid_int, awready, wvalid_int, wready, bvalid, bready_int) is
   begin  -- process p_update_ns
     case current_state is
 
@@ -184,7 +185,7 @@ begin  -- architecture rtl
       when ST_IDLE =>
         if(start_p = '1' and rnw = '1') then
           next_state <= ST_RADDR;
-        elsif(start = '1' and rnw = '0') then
+        elsif(start_p = '1' and rnw = '0') then
           next_state <= ST_WADDR;
         else
           next_state <= ST_IDLE;
@@ -248,5 +249,7 @@ begin  -- architecture rtl
   awaddr <= addr_int         when current_state = ST_WADDR else (others => '0');
   araddr <= addr_int         when current_state = ST_RADDR else (others => '0');
   wdata  <= master_wdata_int when current_state = ST_WDATA else (others => '0');
+  awprot <= (others => '0'); -- Not Used
+  arprot <= (others => '0'); -- Not Used
 
 end architecture rtl;

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-29
+-- Last update: 2023-08-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,8 +22,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 library lib_seg7;
-
 library lib_axi4_lite;
+library lib_axi4_lite_7seg;
 
 entity axi4_lite_7segs is
   generic (
@@ -93,7 +93,7 @@ architecture rtl of axi4_lite_7segs is
 begin  -- architecture rtl
 
   -- Instanciation of AXI4 Lite Slave interface
-  i_axi4_lite_slave_itf_0 : axi4_lite_slave_itf
+  i_axi4_lite_slave_itf_0 : entity lib_axi4_lite.axi4_lite_slave_itf
 
     generic map (
       G_AXI4_LITE_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,
@@ -145,7 +145,7 @@ begin  -- architecture rtl
       );
 
   -- Instanciation of 8*7Segments controller
-i_axi4_lite_7segs_registers_0 : axi4_lite_7segs_registers
+i_axi4_lite_7segs_registers_0 : entity lib_axi4_lite_7seg.axi4_lite_7segs_registers
 
   generic map (
     G_AXI4_LITE_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,

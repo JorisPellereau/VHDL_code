@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-29
+-- Last update: 2023-08-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,6 +23,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library lib_axi4_lite_7seg;
+use lib_axi4_lite_7seg.axi4_lite_7segs_pkg.all;
+--
 entity axi4_lite_7segs_registers is
 
   generic (
@@ -42,7 +45,7 @@ entity axi4_lite_7segs_registers is
 
     slv_done   : out std_logic;         -- Slave access done
     slv_rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
-    slv_status : out std_logic;         -- Slave status
+    slv_status : out std_logic_vector(1 downto 0);         -- Slave status
 
     -- Registers Interface
     digits : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0)  -- Digits Value
@@ -103,10 +106,10 @@ begin  -- architecture rtl
   -- == Register Read Access ==
 
   -- purpose: Rdata register selection
-  p_rdata_register : process (slv_start, slv_rw, reg_rd_sel) is
-  begin  -- process p_rdata_register
+  --p_rdata_register : process (slv_start, slv_rw, reg_rd_sel) is
+  --begin  -- process p_rdata_register
 
-  end process p_rdata_register;
+--  end process p_rdata_register;
 
 
   -- ==========================
@@ -139,19 +142,19 @@ begin  -- architecture rtl
   p_slv_status_mngt : process (clk, rst_n) is
   begin  -- process p_slv_status_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      slv_status <= '0';
+      slv_status <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Ack for a write access into a regular register
       if(slv_start = '1' and slv_rw = '0') then
-        slv_status <= reg_wr_sel_error;
+        slv_status <= reg_wr_sel_error & '0';
 
       -- Ack for a read access into a regular register
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(3 downto 0) /= "0000") then
-        slv_status <= '1';
+        slv_status <= "10";
 
       else
-        slv_status <= '0';
+        slv_status <= "00";
       end if;
 
     end if;

@@ -18,27 +18,26 @@ module tb_top
    wire clk;
    wire rst_n;
 
-   wire set_injector_0;  // To complete
    wire check_level_0;
 
    // == DUT SIGNALS ==
    wire start;
-   wire [C_AXI_ADDR_WIDTH-1:0] addr;
+   wire [`C_AXI_ADDR_WIDTH-1:0] addr;
    wire rnw;
-   wire [(C_AXI_DATA_WIDTH/8) - 1 : 0] strobe;
-   wire [C_AXI_DATA_WIDTH - 1 :0] master_wdata;
+   wire [(`C_AXI_DATA_WIDTH/8) - 1 : 0] strobe;
+   wire [`C_AXI_DATA_WIDTH - 1 :0] master_wdata;
    wire 			  done;
-   wire [C_AXI_DATA_WIDTH - 1 :0] master_rdata;
+   wire [`C_AXI_DATA_WIDTH - 1 :0] master_rdata;
    wire [1:0] 			  access_status;
    
    wire 			  awvalid;
-   wire [C_AXI_ADDR_WIDTH - 1 : 0] awaddr;
+   wire [`C_AXI_ADDR_WIDTH - 1 : 0] awaddr;
    wire [2:0] 			   awprot;
    wire 			   awready;
 
    wire 			   wvalid;
-   wire [C_AXI_DATA_WIDTH-1:0] 	   wdata;
-   wire [(C_AXI_DATA_WIDTH/8) - 1 : 0] wstrb;
+   wire [`C_AXI_DATA_WIDTH-1:0] 	   wdata;
+   wire [(`C_AXI_DATA_WIDTH/8) - 1 : 0] wstrb;
    wire 			       wready;
 
    wire 			       bready;
@@ -46,13 +45,13 @@ module tb_top
    wire [1:0] 			       bresp;
 
    wire 			       arvalid;
-   wire [C_AXI_ADDR_WIDTH - 1 : 0]     araddr;
+   wire [`C_AXI_ADDR_WIDTH - 1 : 0]     araddr;
    wire [2:0] 			       arprot;
    wire 			       arready;
 
    wire 			       rready;
    wire 			       rvalid;
-   wire [CAXI_DATA_WIDTH-1:0] 	       rdata;
+   wire [`C_AXI_DATA_WIDTH-1:0]        rdata;
    wire [1:0] 			       rresp;
    
    wire [6:0] 			       seg0;
@@ -127,10 +126,18 @@ module tb_top
    assign s_wait_event_if.wait_signals[1] = clk;
    
    // SET SET_INJECTOR SIGNALS
-   assign set_injector_0            = s_set_injector_if.set_signals_synch[0];
-  
+   assign start          = s_set_injector_if.set_signals_synch[0];
+   assign addr           = s_set_injector_if.set_signals_synch[1];
+   assign rnw            = s_set_injector_if.set_signals_synch[2];
+   assign strobe         = s_set_injector_if.set_signals_synch[3];
+   assign master_wdata   = s_set_injector_if.set_signals_synch[4];
+      
    // SET SET_INJECTOR INITIAL VALUES
    assign s_set_injector_if.set_signals_asynch_init_value[0]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[1]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[2]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[3]  = 0;
+   assign s_set_injector_if.set_signals_asynch_init_value[4]  = 0;
   
    // SET CHECK_SIGNALS
    assign s_check_level_if.check_signals[0] = check_level_0;
@@ -166,7 +173,11 @@ module tb_top
 
    initial begin
       // Add Alias of Generic TB Modules
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "SET_INJECTOR_ALIAS_0",    0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START",           0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "ADDR",            1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RNW",             2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "STROBE",          3);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "MASTER_WDATA",    4);
         
       // ADD ALias of WAIT Module        
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",                 0);
@@ -192,51 +203,51 @@ module tb_top
    // == DUT ==
    // AXI4_LITE_MASTER <-> AXI4LITE_7 SEG
    axi4_lite_master #(
-		      .G_DATA_WIDTH (C_AXI_DATA_WIDTH),
-		      .G_ADDR_WIDTH (C_AXI_ADDR_WIDTH)
+		      .G_DATA_WIDTH (`C_AXI_DATA_WIDTH),
+		      .G_ADDR_WIDTH (`C_AXI_ADDR_WIDTH)
 		      )
    i_axi4_lite_master_0 (
 			 
 			 .clk  (clk),
 			 .rst_n (rst_n),
 			 
-			 start         (start),
-			 addr          (addr),
-			 rnw           (rnw),
-			 strobe        (strobe),
-			 master_wdata  (master_wdata),
-			 done          (done),
-			 master_rdata  (master_rdata),
-			 access_status (access_status),
+			 .start         (start),
+			 .addr          (addr),
+			 .rnw           (rnw),
+			 .strobe        (strobe),
+			 .master_wdata  (master_wdata),
+			 .done          (done),
+			 .master_rdata  (master_rdata),
+			 .access_status (access_status),
 
-			 awvalid (awvalid),
-			 awaddr  (awaddr),
-			 awprot  (awprot),
-			 awready (awready),
+			 .awvalid (awvalid),
+			 .awaddr  (awaddr),
+			 .awprot  (awprot),
+			 .awready (awready),
 
-			 wvalid (wvalid),
-			 wdata  (wdata),
-			 wstrb  (wstrb),
-			 wready (wready),
+			 .wvalid (wvalid),
+			 .wdata  (wdata),
+			 .wstrb  (wstrb),
+			 .wready (wready),
 			 
-			 bready (bready),
-			 bvalid (bvalid),
-			 bresp  (bresp),
+			 .bready (bready),
+			 .bvalid (bvalid),
+			 .bresp  (bresp),
 			 
-			 arvalid (arvalid),
-			 araddr  (araddr),
-			 arprot  (arprot),
-			 arready (arready),
+			 .arvalid (arvalid),
+			 .araddr  (araddr),
+			 .arprot  (arprot),
+			 .arready (arready),
 			 
-			 rready (rready),
-			 rvalid (rvalid),
-			 rdata  (rdata),
-			 rresp  (rresp)
+			 .rready (rready),
+			 .rvalid (rvalid),
+			 .rdata  (rdata),
+			 .rresp  (rresp)
 			 );
 
    axi4_lite_7segs #(
-		     .G_AXI4_LITE_ADDR_WIDTH (C_AXI_ADDR_WIDTH),
-		     .G_AXI4_LITE_DATA_WIDTH (C_AXI_DATA_WIDTH)
+		     .G_AXI4_LITE_ADDR_WIDTH (`C_AXI_ADDR_WIDTH),
+		     .G_AXI4_LITE_DATA_WIDTH (`C_AXI_DATA_WIDTH)
 		     )
    i_axi4_lite_7segs_0 (
 			.clk   (clk),
@@ -273,7 +284,7 @@ module tb_top
 			.o_seg4 (seg4),  // SEG 4
 			.o_seg5 (seg5),  // SEG 5
 			.o_seg6 (seg6),  // SEG 6
-			.o_seg7 (seg7),  // SEG 7
+			.o_seg7 (seg7)  // SEG 7
 			);
    
 

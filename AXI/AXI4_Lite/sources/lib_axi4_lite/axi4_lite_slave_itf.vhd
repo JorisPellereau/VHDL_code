@@ -6,11 +6,11 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-05-19
+-- Last update: 2023-08-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: AXI4 Lite Slave Refisters Interface
+-- Description: AXI4 Lite Slave Registers Interface
 -------------------------------------------------------------------------------
 -- Copyright (c) 2023 
 -------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ entity axi4_lite_slave_itf is
 
     slv_done   : in std_logic;          -- Slave access done
     slv_rdata  : in std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
-    slv_status : in std_logic           -- Slave status        
+    slv_status : in std_logic_vector(1 downto 0)  -- Slave status        
     );
 
 end entity axi4_lite_slave_itf;
@@ -96,6 +96,8 @@ architecture rtl of axi4_lite_slave_itf is
   signal s_wready : std_logic;          -- Internal wready
   signal s_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Latch WDATA
   signal s_wstrb  : std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
+
+  signal s_bvalid : std_logic;          -- BVALID Signal
 
 begin  -- architecture rtl
 
@@ -194,16 +196,27 @@ begin  -- architecture rtl
       rresp <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
 
-      if(slv_done = '1' and s_rd_ongoing = '1' and slv_status = '0') then
-        rresp <= (others => '0');
-
-      -- Response is slave error
-      elsif(slv_done = '1' and s_rd_ongoing = '1' and slv_status = '1') then
-        rresp <= "10";
+      if(slv_done = '1' and s_rd_ongoing = '1') then
+        rresp <= slv_status;
       end if;
+
     end if;
 
   end process p_rresp_mngt;
+
+  -- purpose: BRESP Management
+  -- When the access is done during a write access
+  -- update the bresp output
+  p_bresp_mngt : process (clk, rst_n) is
+  begin  -- process p_bresp_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      bresp <= (others => '0');
+    elsif rising_edge(clk) then         -- rising clock edge
+      if(slv_done = '1' and s_wr_ongoing = '1') then
+        bresp <= slv_status;
+      end if;
+    end if;
+  end process p_bresp_mngt;
 
   -- purpose: Read ongoing Management
   p_rd_ongoing_mngt : process (clk, rst_n) is
@@ -353,6 +366,44 @@ begin  -- architecture rtl
     end if;
   end process p_wready_mngt;
 
+  -- purpose: BVALID Management
+  p_bvalid_mngt : process (clk, rst_n) is
+  begin  -- process p_bvalid_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_bvalid <= '0';
+    elsif rising_edge(clk) then         -- rising clock edge
+
+      -- Ack of the signal -> reset it
+      if(s_bvalid = '1' and bready = '1') then
+        s_bvalid <= '0';
+
+      -- When the write access is terminated -> Set the signal
+      elsif(slv_done = '1' and s_wr_ongoing = '1') then
+        s_bvalid <= '1';
+      end if;
+
+    end if;
+  end process p_bvalid_mngt;
+
+  -- purpose: Write ongoing Management
+  p_wr_ongoing_mngt : process (clk, rst_n) is
+  begin  -- process p_wr_ongoing_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      s_wr_ongoing <= '0';
+    elsif rising_edge(clk) then         -- rising clock edge
+
+      -- Reset the ongoing status when done
+      if(slv_done = '1') then
+        s_wr_ongoing <= '0';
+
+        -- Set the ongoing flag on Adress write signals
+      elsif(awvalid = '1' and s_awvalid = '0') then
+        s_wr_ongoing <= '1';
+      end if;
+
+    end if;
+  end process p_wr_ongoing_mngt;
+
   -- == ACCESS to Slave Management ==
 
   -- purpose: Slave start Management
@@ -439,8 +490,10 @@ begin  -- architecture rtl
   -- ================================
 
   -- OUTPUTS Affectation
-  awready <= s_wready;
+  awready <= s_awready;
+  wready  <= s_wready;
   arready <= s_arready;
   rvalid  <= s_rvalid;
+  bvalid  <= s_bvalid;
 
 end architecture rtl;

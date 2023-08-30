@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-29
+-- Last update: 2023-08-30
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-library lib_seg7;
+--library lib_seg7;
 
 entity seg7x8 is
 
@@ -42,51 +42,60 @@ end entity seg7x8;
 
 architecture rtl of seg7x8 is
 
+  -- == COMPONENTS ==
+  component seg7_lut is
+
+    port (
+      i_digit : in  std_logic_vector(3 downto 0);  -- Input Digit
+      o_seg   : out std_logic_vector(6 downto 0)   -- Output Segments
+      );
+  end component;
+
 begin  -- architecture rtl
 
-  i_seg7_lut_0 : entity lib_seg7.seg7_lut
+  i_seg7_lut_0 : seg7_lut
     port map(
       i_digit => i_digits(3 downto 0),
       o_seg   => o_seg0
       );
 
-  i_seg7_lut_1 : entity lib_seg7.seg7_lut
+  i_seg7_lut_1 : seg7_lut
     port map(
       i_digit => i_digits(7 downto 4),
       o_seg   => o_seg1
       );
 
-  i_seg7_lut_2 : entity lib_seg7.seg7_lut
+  i_seg7_lut_2 : seg7_lut
     port map(
       i_digit => i_digits(11 downto 8),
       o_seg   => o_seg2
       );
 
-  i_seg7_lut_3 : entity lib_seg7.seg7_lut
+  i_seg7_lut_3 : seg7_lut
     port map(
       i_digit => i_digits(15 downto 12),
       o_seg   => o_seg3
       );
 
-  i_seg7_lut_4 : entity lib_seg7.seg7_lut
+  i_seg7_lut_4 : seg7_lut
     port map(
       i_digit => i_digits(19 downto 16),
       o_seg   => o_seg4
       );
 
-  i_seg7_lut_5 : entity lib_seg7.seg7_lut
+  i_seg7_lut_5 : seg7_lut
     port map(
       i_digit => i_digits(23 downto 20),
       o_seg   => o_seg5
       );
 
-  i_seg7_lut_6 : entity lib_seg7.seg7_lut
+  i_seg7_lut_6 : seg7_lut
     port map(
       i_digit => i_digits(27 downto 24),
       o_seg   => o_seg6
       );
 
-  i_seg7_lut_7 : entity lib_seg7.seg7_lut
+  i_seg7_lut_7 : seg7_lut
     port map(
       i_digit => i_digits(31 downto 28),
       o_seg   => o_seg7
