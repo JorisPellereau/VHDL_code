@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-28
--- Last update: 2023-08-29
+-- Last update: 2023-09-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -74,6 +74,7 @@ architecture rtl of vjtag_intf is
   signal data_in_int  : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data in latch
 
   signal shift_data : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Shift regiser
+  signal start_int  : std_logic;        -- Start internal
 
 begin  -- architecture rtl
 
@@ -136,11 +137,23 @@ begin  -- architecture rtl
     end if;
   end process p_rnw_mngt;
 
+  -- purpose: Start Management
+  p_start_mngt : process (clk_jtag, rst_n_jtag) is
+  begin  -- process p_start_mngt
+    if rst_n_jtag = '0' then            -- asynchronous reset (active low)
+      start_int <= '0';
+    elsif rising_edge(clk_jtag) then    -- rising clock edge
+      if(sdr = '1' and select_DR4 = '1') then
+        start_int <= tdi;
+      end if;
+    end if;
+  end process p_start_mngt;
+
   -- purpose: On data_in_val latch data_in_int
   p_data_in_latch : process (clk_jtag, rst_n_jtag) is
   begin  -- process p_data_in_latch
     if rst_n_jtag = '0' then            -- asynchronous reset (active low)
-      data_in_int <= x"12345678";--(others => '0');
+      data_in_int <= x"12345678";       --(others => '0');
     elsif rising_edge(clk_jtag) then    -- rising clock edge
 
       -- Latch vector on valid
@@ -166,5 +179,6 @@ begin  -- architecture rtl
   addr     <= addr_int;
   data_out <= data_out_int;
   rnw      <= rnw_int;
+  start    <= start_int;
 
 end architecture rtl;
