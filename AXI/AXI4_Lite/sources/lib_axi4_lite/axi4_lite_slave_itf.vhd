@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-08-30
+-- Last update: 2023-09-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -396,7 +396,7 @@ begin  -- architecture rtl
       if(slv_done = '1') then
         s_wr_ongoing <= '0';
 
-        -- Set the ongoing flag on Adress write signals
+      -- Set the ongoing flag on Adress write signals
       elsif(awvalid = '1' and s_awvalid = '0') then
         s_wr_ongoing <= '1';
       end if;
@@ -432,8 +432,15 @@ begin  -- architecture rtl
     if rst_n = '0' then                 -- asynchronous reset (active low)
       slv_addr <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
+
+      -- Case Read access : set slv_addr with the value of araddr
       if(s_rd_ongoing = '1' and arvalid = '1' and s_arready = '1') then
         slv_addr <= s_araddr;
+
+      -- Case Write access : set slv_addr with the value of awaddr
+      elsif(s_wr_ongoing = '1' and awvalid = '1' and s_awready = '1') then
+        slv_addr <= s_awaddr;
+
       else
         slv_addr <= (others => '0');
       end if;

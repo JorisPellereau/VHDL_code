@@ -244,6 +244,15 @@ architecture rtl of jtag_7seg_top is
 
   end component axi4_lite_7segs;
 
+  component bit_extender is
+    generic (
+      G_PULSE_WIDTH : positive := 10);  -- Extended Pulse Width
+    port (
+      clk_sys   : in  std_logic;        -- Clock system
+      rst_n     : in  std_logic;        -- Asynchronous Reset
+      pulse_in  : in  std_logic;        -- Input pulse to extend
+      pulse_out : out std_logic);       -- Output Extended Pulse
+  end component bit_extender;
 
 
   -- == INTERNAL Signals ==
@@ -270,7 +279,7 @@ architecture rtl of jtag_7seg_top is
   signal master_wdata   : std_logic_vector(31 downto 0);
   signal master_rdata   : std_logic_vector(31 downto 0);
   signal access_status  : std_logic_vector(1 downto 0);
-  signal done_clk_jtag           : std_logic; -- Done in clk_jtag (tck clock domain)
+ 
 
   -- Write Address Channel signals
   signal awvalid : std_logic;                          -- Address Write Valid
@@ -307,7 +316,14 @@ architecture rtl of jtag_7seg_top is
 
   signal start_clk_r_edge : std_logic;  -- Rising Edge of start
 
-  signal done_clk : std_logic; -- Done signal in clk clock domain
+  signal done_clk      : std_logic;     -- Done signal in clk clock domain
+  signal done_extended : std_logic;  -- Done signal extended in clk clock domain
+
+
+  signal done_extended_clk_jtag_p1     : std_logic;  -- Done extended resynchronize in clk_jtag clock domain
+  signal done_extended_clk_jtag_p2     : std_logic;  -- Done extended resynchronize in clk_jtag clock domain
+  signal done_extended_clk_jtag        : std_logic;  -- Done extended resynchronize in clk_jtag clock domain
+  signal done_extended_clk_jtag_r_edge : std_logic;  -- rising edge
 
 begin  -- architecture rtl
 
@@ -360,7 +376,7 @@ begin  -- architecture rtl
       addr        => addr,
       data_out    => master_wdata,
       data_in     => master_rdata,
-      data_in_val => done_clk_jtag,
+      data_in_val => done_extended_clk_jtag_r_edge,
       rnw         => rnw,
       start       => start_clk_jtag
       );
@@ -380,9 +396,43 @@ begin  -- architecture rtl
   end process p_resynch_start;
 
   -- Rising edge detection of start
-  start_clk_r_edge <= start_clk and not start_clk_p2;
+  start_clk_r_edge <= start_clk_p2 and not start_clk;
 
   strobe <= (others => '0');            -- Not Used
+
+
+  -- purpose: Resynchronization in tck clock domain of the signal done_extended
+  p_ressynch_done_extended : process (tck, rst_n_synch) is
+  begin  -- process p_ressynch_done_extended
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      done_extended_clk_jtag_p1 <= '0';
+      done_extended_clk_jtag_p2 <= '0';
+      done_extended_clk_jtag    <= '0';
+    elsif rising_edge(tck) then         -- rising clock edge
+      done_extended_clk_jtag_p1 <= done_extended;
+      done_extended_clk_jtag_p2 <= done_extended_clk_jtag_p1;
+      done_extended_clk_jtag    <= done_extended_clk_jtag_p2;
+    end if;
+  end process p_ressynch_done_extended;
+
+
+  done_extended_clk_jtag_r_edge <= done_extended_clk_jtag_p2 and not done_extended_clk_jtag;
+
+
+  -- Instanciation of bit extender
+  -- Extender the pulse done_clk in x width in order to be detected in the
+  -- slower clock domain clk_jtag
+  i_bit_extender_0 : bit_extender
+    generic map(
+      G_PULSE_WIDTH => 2*5
+      )
+    port map (
+      clk_sys   => clk,
+      rst_n     => rst_n_synch,
+      pulse_in  => done_clk,
+      pulse_out => done_extended
+      );
+
   -- Instanciation of AXI4 LITE MASTER
   i_axi4_lite_master_0 : axi4_lite_master
     generic map(
