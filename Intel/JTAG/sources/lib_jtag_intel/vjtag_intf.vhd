@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-28
--- Last update: 2023-09-02
+-- Last update: 2023-09-05
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ begin  -- architecture rtl
     elsif rising_edge(clk_jtag) then    -- rising clock edge
 
       -- Perform Shift only when DR2 is selected and in sdr state
-      -- Get data from TDI - shift on MSBits
+      -- Get data from TDI - The LSBIT is send first
       if(sdr = '1' and select_DR2 = '1') then
         data_out_int <= tdi & data_out_int(G_DATA_WIDTH-1 downto 1);
       end if;
