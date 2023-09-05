@@ -11,6 +11,11 @@
 #         - Ajout MakefileGeneric
 # ========================================== #
 
+# -- INCLUDES --
+include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
+include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/generic_modules_files.mk
+# --------------
+
 # == Makefile Configuration ==
 SEL_STATION=LINUX
 ROOT=$(PWD)/..
@@ -218,6 +223,6 @@ compile_s:
 disasemble:
 	$(OBJDUMP) -S -D -g test.o
 
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
-include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
+#include ~/Documents/GitHub/VHDL_code/Makefile/MakefileSonarqube
