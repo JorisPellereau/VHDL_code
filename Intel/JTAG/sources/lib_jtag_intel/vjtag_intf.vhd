@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-28
--- Last update: 2023-09-05
+-- Last update: 2023-09-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -45,6 +45,7 @@ entity vjtag_intf is
     ir_in : in  std_logic_vector(G_IR_WIDTH - 1 downto 0);  -- IR IN Vector
     sdr   : in  std_logic;              -- SDR state from Virtual JTAG
     udr   : in  std_logic;              -- UDR state from Virtual JTAG
+    cdr   : in  std_logic;              -- CDR statue from Virtual JTAG
 
     addr        : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr
     data_out    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data out
@@ -59,6 +60,8 @@ architecture rtl of vjtag_intf is
 
   -- == CONSTANTS ==
   constant C_BYPASS_REG : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := (others => '1');  -- Bypass value
+
+  constant C_DATA_IN_RST_VALUE : std_logic_vector(G_DATA_WIDTH - 1 downto 0) := (0 => '0', others => '1');
 
   -- == Internal Signals ==
   signal select_DR0 : std_logic;        -- DR 0 - Bypass
@@ -94,12 +97,22 @@ begin  -- architecture rtl
   begin  -- process p_addr_mngt
     if rst_n_jtag = '0' then            -- asynchronous reset (active low)
       addr_int <= (others => '0');
+      addr     <= (others => '0');
     elsif rising_edge(clk_jtag) then    -- rising clock edge
 
       -- Perform Shift only when DR1 is selected and in sdr state
-      -- Get data from TDI - shift on MSBits
+      -- Get data from TDI
       if(sdr = '1' and select_DR1 = '1') then
         addr_int <= tdi & addr_int(G_ADDR_WIDTH-1 downto 1);
+
+      -- Reset the addr_int on UDR pulse
+      elsif(udr = '1') then
+        addr_int <= (others => '0');
+      end if;
+
+      -- Update ADDR on UDR pulse
+      if(udr = '1' and select_DR1 = '1') then
+        addr <= addr_int;
       end if;
 
     end if;
@@ -110,14 +123,22 @@ begin  -- architecture rtl
   begin  -- process p_data_out_mngt
     if rst_n_jtag = '0' then            -- asynchronous reset (active low)
       data_out_int <= (others => '0');
+      data_out     <= (others => '0');
     elsif rising_edge(clk_jtag) then    -- rising clock edge
 
       -- Perform Shift only when DR2 is selected and in sdr state
       -- Get data from TDI - The LSBIT is send first
       if(sdr = '1' and select_DR2 = '1') then
         data_out_int <= tdi & data_out_int(G_DATA_WIDTH-1 downto 1);
+
+      elsif(udr = '1') then
+        data_out_int <= (others => '0');
       end if;
 
+      -- Update data_out on UDR pulse and when the DR2 register is selected
+      if(udr = '1'and select_DR2 = '1') then
+        data_out <= data_out_int;
+      end if;
     end if;
   end process p_data_out_mngt;
 
@@ -127,11 +148,17 @@ begin  -- architecture rtl
   begin  -- process p_rnw_mngt
     if rst_n_jtag = '0' then            -- asynchronous reset (active low)
       rnw_int <= '0';
+      rnw     <= '0';
     elsif rising_edge(clk_jtag) then    -- rising clock edge
 
       -- Update rnw during SDR state
       if(sdr = '1' and select_DR3 = '1') then
         rnw_int <= tdi;
+      end if;
+
+      -- Update rnw on UDR pulse
+      if(udr = '1' and select_DR3 = '1') then
+        rnw <= rnw_int;
       end if;
 
     end if;
@@ -142,22 +169,33 @@ begin  -- architecture rtl
   begin  -- process p_start_mngt
     if rst_n_jtag = '0' then            -- asynchronous reset (active low)
       start_int <= '0';
+      start     <= '0';
     elsif rising_edge(clk_jtag) then    -- rising clock edge
+
       if(sdr = '1' and select_DR4 = '1') then
         start_int <= tdi;
       end if;
+
+      -- Update Start on UDR pulse
+      if(udr = '1' and select_DR4 = '1') then
+        start <= start_int;
+      -- Reset it otherwise in order to generate a pulse start
+      else
+        start <= '0';
+      end if;
+
     end if;
   end process p_start_mngt;
 
   -- purpose: On data_in_val latch data_in_int
   p_data_in_latch : process (clk_jtag, rst_n_jtag) is
   begin  -- process p_data_in_latch
-    if rst_n_jtag = '0' then            -- asynchronous reset (active low)
-      data_in_int <= x"12345678";       --(others => '0');
-    elsif rising_edge(clk_jtag) then    -- rising clock edge
+    if rst_n_jtag = '0' then               -- asynchronous reset (active low)
+      data_in_int <= C_DATA_IN_RST_VALUE;  --(others => '0');
+    elsif rising_edge(clk_jtag) then       -- rising clock edge
 
-      -- Latch vector on valid
-      if(data_in_val = '1') then
+      -- Latch vector on CDR signal
+      if(cdr = '1') then
         data_in_int <= data_in;
       end if;
 
@@ -165,6 +203,10 @@ begin  -- architecture rtl
       -- Shift MSBit to LSBit
       if(sdr = '1' and select_DR5 = '1') then
         data_in_int <= '0' & data_in_int(G_DATA_WIDTH -1 downto 1);
+
+      -- Reset the value of the register
+      elsif(udr = '1' and select_DR5 = '1') then
+        data_in_int <= C_DATA_IN_RST_VALUE;
       end if;
 
     end if;
@@ -173,12 +215,7 @@ begin  -- architecture rtl
 
 
   -- TDO Continuity
+  -- LSBits is shifted first
   tdo <= data_in_int(0) when select_DR5 = '1' else '0';
-
-  -- == OUTPUTS Affectation ==
-  addr     <= addr_int;
-  data_out <= data_out_int;
-  rnw      <= rnw_int;
-  start    <= start_int;
 
 end architecture rtl;
