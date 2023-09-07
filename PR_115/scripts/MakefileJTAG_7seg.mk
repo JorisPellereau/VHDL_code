@@ -10,16 +10,18 @@
 # ========================================== #
 
 # -- INCLUDES --
-include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
-include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/generic_modules_files.mk
+#include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
+#include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/generic_modules_files.mk
 # --------------
 
+#GEN_MAKEFILE=/home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
+
 # -- MODELSIM Configuration --
-vsim=/opt/Modelsim/modelsim_ase/bin/vsim
-vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
-vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
-vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
-vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
+#vsim=/opt/Modelsim/modelsim_ase/bin/vsim
+#vlib=/opt/Modelsim/modelsim_ase/linuxaloem/vlib
+#vmap=/opt/Modelsim/modelsim_ase/linuxaloem/vmap
+#vcom=/opt/Modelsim/modelsim_ase/linuxaloem/vcom
+#vlog=/opt/Modelsim/modelsim_ase/linuxaloem/vlog
 # ----------------------------
 
 # -- PROJECT Configuration --
@@ -30,6 +32,9 @@ PROJECT_NAME=JTAG_7SEG_TOP
 # -- SCENARII Configuration --
 SCN_LIB_DIR=
 # ----------------------------
+
+# -- IP VITRUAL JTAG MENTOR SCRIPT
+mentor_script=/home/linux-jp/Documents/GitHub/Quartus_Projects/PR_115_board/JTAG/JTAG_7SEG/ip_jtag/altera_vjtag/simulation/mentor/msim_setup.tcl
 
 # -- SIMULATION Configuration --
 RTL_Testbench_path=~/RTL_Testbench
@@ -67,17 +72,17 @@ LIB_LIST+=lib_jtag_intel
 LIB_LIST+=lib_axi4_lite
 LIB_LIST+=lib_axi4_lite_7seg
 LIB_LIST+=lib_jtag_7seg_top
-
+#LIB_LIST+=work
 # ================
 
 
 
-all: 
-	@echo "# =========================== #"
-	@echo "# Makefile for JTAG_7SEG_TOP blocks tests"
-	@echo "# =========================== #"
-	@echo ""
-	@echo ""
+#all: 
+#	@echo "# =========================== #"
+#	@echo "# Makefile for JTAG_7SEG_TOP blocks tests"
+#	@echo "# =========================== #"
+#	@echo ""
+#	@echo ""
 
 
 
@@ -86,26 +91,34 @@ all:
 #include TBD_files.mk
 #lib_TBD_path=TBD_path
 
-SRC_UTILS_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_utils
-SRC_AXI4_LITE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite
-SRC_LIB_7SEG=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_seg7
-SRC_AXI4_LITE_7SEG_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_7seg
-SRC_PULSE_EXTENDER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/UTILS/sources/lib_pulse_extender
+SRC_UTILS_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_utils/
+SRC_AXI4_LITE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite/
+SRC_LIB_7SEG=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_seg7/
+SRC_AXI4_LITE_7SEG_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_7seg/
+SRC_PULSE_EXTENDER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/UTILS/sources/lib_pulse_extender/
+SRC_JTAG_INTF_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/Intel/JTAG/sources/lib_jtag_intel/
+SRC_JTAG_7SEG_TOP_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_jtag_7seg_top/
+SRC_RESET_GEN_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/RESET/sources/
 
-util_src_vhd +=$(SRC_UTILS_DIR)/pkg_utils.vhd
+util_src_vhd += pkg_utils.vhd
 
-axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_slave_itf.vhd
-axi4_lite_src_vhd +=$(SRC_AXI4_LITE_DIR)/axi4_lite_master.vhd
+rst_gen_src_vhd += reset_gen.vhd
 
-seg_src_vhd +=$(SRC_LIB_7SEG)/seg7_lut.vhd
-seg_src_vhd +=$(SRC_LIB_7SEG)/seg7x8.vhd
+axi4_lite_src_vhd += axi4_lite_slave_itf.vhd
+axi4_lite_src_vhd += axi4_lite_master.vhd
 
-axi4_lite_7seg_src_vhd += $(SRC_AXI4_LITE_7SEG_DIR)/axi4_lite_7segs_pkg.vhd
-axi4_lite_7seg_src_vhd += $(SRC_AXI4_LITE_7SEG_DIR)/axi4_lite_7segs_registers.vhd
-axi4_lite_7seg_src_vhd += $(SRC_AXI4_LITE_7SEG_DIR)/axi4_lite_7segs.vhd
+seg_src_vhd += seg7_lut.vhd
+seg_src_vhd += seg7x8.vhd
 
-src_pulse_extender_vhd += $(SRC_PULSE_EXTENDER_DIR)/bit_extender.vhd
+axi4_lite_7seg_src_vhd += axi4_lite_7segs_pkg.vhd
+axi4_lite_7seg_src_vhd += axi4_lite_7segs_registers.vhd
+axi4_lite_7seg_src_vhd += axi4_lite_7segs.vhd
 
+src_pulse_extender_vhd += bit_extender.vhd
+
+src_jtag_intf_vhd += vjtag_intf.vhd
+
+src_jtag_7seg_top_vhd += jtag_7seg_top.vhd
 # ==========================
 
 # == TESTBENCH UART V FILES LIST ==
@@ -114,20 +127,26 @@ src_pulse_extender_vhd += $(SRC_PULSE_EXTENDER_DIR)/bit_extender.vhd
 
 
 # == Specific Testbench File List ==
-src_tb_lib_jtag_7seg_top_v+=$(TB_SRC_DIR)/tb_lib_jtag_7seg_top/testbench_setup.sv
-src_tb_lib_jtag_7seg_top_v+=$(TB_SRC_DIR)/tb_lib_jtag_7seg_top/clk_gen.sv
-src_tb_lib_jtag_7seg_top_v+=$(TB_SRC_DIR)/tb_lib_jtag_7seg_top/tb_top.sv
+src_tb_lib_jtag_7seg_top_v+=testbench_setup.sv
+src_tb_lib_jtag_7seg_top_v+=clk_gen.sv
+src_tb_lib_jtag_7seg_top_v+=tb_top.sv
 # ==================================
 
 
 ## == COMPILE DESIGN == ##
 compile_jtag_7seg_top:
-	make compile_design_vhd_files SRC_VHD="$(util_src_vhd)" VHD_DESIGN_LIB=lib_pkg_utils VHD_FILE_PATH=$(SRC_UTILS_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP
-	make compile_design_vhd_files SRC_VHD="$(seg_src_vhd)" VHD_DESIGN_LIB=lib_seg7 VHD_FILE_PATH=$(SRC_LIB_7SEG) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP
-	make compile_design_vhd_files SRC_VHD="$(axi4_lite_src_vhd)" VHD_DESIGN_LIB=lib_axi4_lite VHD_FILE_PATH=$(SRC_AXI4_LITE_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP
-	make compile_design_vhd_files SRC_VHD="$(axi4_lite_7seg_src_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_7seg VHD_FILE_PATH=$(SRC_AXI4_LITE_7SEG_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP
-	make compile_design_vhd_files SRC_VHD="$(src_pulse_extender_vhd)" VHD_DESIGN_LIB=lib_pulse_extender VHD_FILE_PATH=$(SRC_PULSE_EXTENDER_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP
+	make compile_design_vhd_files SRC_VHD="$(util_src_vhd)" VHD_DESIGN_LIB=lib_pkg_utils VHD_FILE_PATH=$(SRC_UTILS_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(rst_gen_src_vhd)" VHD_DESIGN_LIB=lib_jtag_7seg_top VHD_FILE_PATH=$(SRC_RESET_GEN_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(seg_src_vhd)" VHD_DESIGN_LIB=lib_seg7 VHD_FILE_PATH=$(SRC_LIB_7SEG) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(axi4_lite_src_vhd)" VHD_DESIGN_LIB=lib_axi4_lite VHD_FILE_PATH=$(SRC_AXI4_LITE_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(axi4_lite_7seg_src_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_7seg VHD_FILE_PATH=$(SRC_AXI4_LITE_7SEG_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_pulse_extender_vhd)" VHD_DESIGN_LIB=lib_pulse_extender VHD_FILE_PATH=$(SRC_PULSE_EXTENDER_DIR) WORK_DIR=JTAG_7SEG_TOP_WORK PROJECT_NAME=JTAG_7SEG_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_jtag_intf_vhd)" VHD_DESIGN_LIB=lib_jtag_intel VHD_FILE_PATH=$(SRC_JTAG_INTF_DIR); \
+	make compile_design_vhd_files SRC_VHD="$(src_jtag_7seg_top_vhd)" VHD_DESIGN_LIB=lib_jtag_7seg_top VHD_FILE_PATH=$(SRC_JTAG_7SEG_TOP_DIR); \
 
+compile_altera_vjag:
+	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
+	$(vsim) -c -do $(DO_FILES_DIR)/mentor.do -do exit;\
 
 # ========================
 
@@ -143,7 +162,8 @@ compile_tb_jtag_7seg_top:
 # =======================
 
 # == COMPILE ALL ==
-compile_all_jtag_7seg_top : clean_all create_simulation_dir libs compile_jtag_7seg_top compile_generic_tb_v_files_7seg
+compile_all_jtag_7seg_top : clean_all create_simulation_dir compile_altera_vjag libs compile_jtag_7seg_top  compile_generic_tb_v_files_7seg compile_tb_jtag_7seg_top print_compile_logs_file
+#compile_generic_tb_v_files_7seg
 
 
 #compile_generic_tb_v_files compile_tb_jtag_7seg_top print_compile_logs_file
@@ -154,12 +174,20 @@ SCN_LIST+=TBD_000.py
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L
+# work_lib : library create by mentor.do file. It contains altera_jtag module
+# altera_mf_ver : library create by mentor.do file. It contains sld_altera_jtag module
+LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender -L lib_jtag_intel -L lib_axi4_lite -L lib_axi4_lite_7seg -L lib_jtag_7seg_top -L lib_seg7 -L work_lib -L altera_mf_ver
 # ==============
 
-
+#VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_ir_width=32
+VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_n_scan=2
+VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_total_length=12
+# SCNA TYPE : 0001
+# DR TYPE : 0010
+VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_sim_action="((1,1,1,6),(1,2,5,6))"
+#RUN_ARGS+= -do $(DO_FILES_DIR)/mentor.do
 # == RUN TEST ==
-run_tb_TBD:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_TBD LIB_TB_TOP=tb_lib_TBD
+run_tb_jtag_7seg_top:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_jtag_7seg_top LIB_TB_TOP=tb_lib_jtag_7seg_top 
 # ==============
 

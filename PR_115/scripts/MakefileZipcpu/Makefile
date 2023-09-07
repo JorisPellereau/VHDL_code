@@ -12,8 +12,8 @@
 # ========================================== #
 
 # -- INCLUDES --
-include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
-include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/generic_modules_files.mk
+#include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileGeneric
+#include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/generic_modules_files.mk
 # --------------
 
 # == Makefile Configuration ==

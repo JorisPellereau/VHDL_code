@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-01
--- Last update: 2023-09-02
+-- Last update: 2023-09-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,12 +21,17 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
 
 entity jtag_7seg_top is
-
+  generic (
+    SEL_ALTERA_VJTAG : boolean := false  -- Selection of the VJTAG component
+    );
   port (
-    clk   : in std_logic;               -- Clock System
-    rst_n : in std_logic;               -- Asynchronous Reset
+    clk   : in std_logic;                -- Clock System
+    rst_n : in std_logic;                -- Asynchronous Reset
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -36,7 +41,13 @@ entity jtag_7seg_top is
     o_seg4 : out std_logic_vector(6 downto 0);  -- SEG 4
     o_seg5 : out std_logic_vector(6 downto 0);  -- SEG 5
     o_seg6 : out std_logic_vector(6 downto 0);  -- SEG 6
-    o_seg7 : out std_logic_vector(6 downto 0)   -- SEG 7
+    o_seg7 : out std_logic_vector(6 downto 0);  -- SEG 7
+
+    -- RED LEDS
+    ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
+
+    -- GREEN LEDS
+    ledg : out std_logic_vector(8 downto 0)  -- GREEN LEDS
     );
 
 end entity jtag_7seg_top;
@@ -51,6 +62,7 @@ architecture rtl of jtag_7seg_top is
       o_rst_n : out std_logic);         -- Output synchronous Reset
   end component;
 
+  -- Component Altera VJTAG with 6 IR length
   component altera_vjtag is
     port (
       tdi                : out std_logic;  -- tdi
@@ -69,6 +81,25 @@ architecture rtl of jtag_7seg_top is
       );
   end component altera_vjtag;
 
+  -- Component altera VJTAG with 24 IR length
+  component altera_vjtag_24ir is
+    port (
+      tdi                : out std_logic;  -- tdi
+      tdo                : in  std_logic                     := 'X';  -- tdo
+      ir_in              : out std_logic_vector(23 downto 0);         -- ir_in
+      ir_out             : in  std_logic_vector(23 downto 0) := (others => 'X');  -- ir_out
+      virtual_state_cdr  : out std_logic;  -- virtual_state_cdr
+      virtual_state_sdr  : out std_logic;  -- virtual_state_sdr
+      virtual_state_e1dr : out std_logic;  -- virtual_state_e1dr
+      virtual_state_pdr  : out std_logic;  -- virtual_state_pdr
+      virtual_state_e2dr : out std_logic;  -- virtual_state_e2dr
+      virtual_state_udr  : out std_logic;  -- virtual_state_udr
+      virtual_state_cir  : out std_logic;  -- virtual_state_cir
+      virtual_state_uir  : out std_logic;  -- virtual_state_uir
+      tck                : out std_logic   -- clk
+      );
+  end component altera_vjtag_24ir;
+
   component vjtag_intf is
 
     generic (
@@ -84,6 +115,7 @@ architecture rtl of jtag_7seg_top is
       ir_in : in  std_logic_vector(G_IR_WIDTH - 1 downto 0);  -- IR IN Vector
       sdr   : in  std_logic;            -- SDR state from Virtual JTAG
       udr   : in  std_logic;            -- UDR state from Virtual JTAG
+      cdr   : in  std_logic;
 
       addr        : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr
       data_out    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data out
@@ -268,7 +300,7 @@ architecture rtl of jtag_7seg_top is
   signal udr   : std_logic;
   signal uir   : std_logic;
   signal cir   : std_logic;
-  signal ir_in : std_logic_vector(5 downto 0);
+  signal ir_in : std_logic_vector(23 downto 0);
 
   signal rst_n_synch : std_logic;
 
@@ -279,7 +311,7 @@ architecture rtl of jtag_7seg_top is
   signal master_wdata   : std_logic_vector(31 downto 0);
   signal master_rdata   : std_logic_vector(31 downto 0);
   signal access_status  : std_logic_vector(1 downto 0);
- 
+
 
   -- Write Address Channel signals
   signal awvalid : std_logic;                          -- Address Write Valid
@@ -325,6 +357,15 @@ architecture rtl of jtag_7seg_top is
   signal done_extended_clk_jtag        : std_logic;  -- Done extended resynchronize in clk_jtag clock domain
   signal done_extended_clk_jtag_r_edge : std_logic;  -- rising edge
 
+  signal cnt_sdr    : unsigned(8 downto 0);  -- SDR Counter
+  signal sdr_p      : std_logic;             -- SDR pipe one time
+  signal sdr_r_edge : std_logic;             -- SDR Rising edge detection
+  signal sdr_f_edge : std_logic;             -- SDR Falling edge detection
+
+  signal ledr_int : std_logic_vector(17 downto 0);  -- RED LEDS
+
+  signal shift_reg : std_logic_vector(31 downto 0);  -- Get TDI data
+
 begin  -- architecture rtl
 
   -- Instanciation of Reset generation
@@ -338,25 +379,47 @@ begin  -- architecture rtl
 
   -- Instanciation of VIRTUAL JTAG Controller
   -- Generated from Quartus II
-  i_altera_vjtag_0 : altera_vjtag
-    port map (
-      tdo                => tdo,
-      tck                => tck,
-      tdi                => tdi,
-      ir_in              => ir_in,
-      ir_out             => open,
-      virtual_state_cdr  => cdr,
-      virtual_state_e1dr => e1dr,
-      virtual_state_e2dr => e2dr,
-      virtual_state_pdr  => pdr,
-      virtual_state_sdr  => sdr,
-      virtual_state_udr  => udr,
-      virtual_state_uir  => uir,
-      virtual_state_cir  => cir
-      );
+  g_altera_vjtag : if(SEL_ALTERA_VJTAG = false) generate
+    i_altera_vjtag_0 : altera_vjtag
+      port map (
+        tdo                => tdo,
+        tck                => tck,
+        tdi                => tdi,
+        ir_in              => ir_in(5 downto 0),
+        ir_out             => open,
+        virtual_state_cdr  => cdr,
+        virtual_state_e1dr => e1dr,
+        virtual_state_e2dr => e2dr,
+        virtual_state_pdr  => pdr,
+        virtual_state_sdr  => sdr,
+        virtual_state_udr  => udr,
+        virtual_state_uir  => uir,
+        virtual_state_cir  => cir
+        );
+  end generate;
 
-  -- Instanciation of VRITUAL JTAG Interface
-  -- TCK JTAG has a maximal frequency of 10MHz and may vary
+  g_altera_vjtag_24ir : if(SEL_ALTERA_VJTAG = true) generate
+    i_altera_vjtag_24ir_0 : altera_vjtag_24ir
+      port map (
+        tdo                => tdo,
+        tck                => tck,
+        tdi                => tdi,
+        ir_in              => ir_in,
+        ir_out             => open,
+        virtual_state_cdr  => cdr,
+        virtual_state_e1dr => e1dr,
+        virtual_state_e2dr => e2dr,
+        virtual_state_pdr  => pdr,
+        virtual_state_sdr  => sdr,
+        virtual_state_udr  => udr,
+        virtual_state_uir  => uir,
+        virtual_state_cir  => cir
+        );
+
+  end generate;
+
+-- Instanciation of VRITUAL JTAG Interface
+-- TCK JTAG has a maximal frequency of 10MHz and may vary
   i_vjtag_intf_0 : vjtag_intf
     generic map (
       G_DATA_WIDTH => 32,
@@ -369,9 +432,10 @@ begin  -- architecture rtl
 
       tdi   => tdi,
       tdo   => tdo,
-      ir_in => ir_in,
+      ir_in => ir_in(5 downto 0),
       sdr   => sdr,
       udr   => udr,
+      cdr   => cdr,
 
       addr        => addr,
       data_out    => master_wdata,
@@ -380,6 +444,74 @@ begin  -- architecture rtl
       rnw         => rnw,
       start       => start_clk_jtag
       );
+
+-- purpose: SDR Pipe
+  p_pipe_sdr : process (tck, rst_n_synch) is
+  begin  -- process p_pipe_sdr
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      sdr_p <= '0';
+    elsif rising_edge(tck) then         -- rising clock edge
+      sdr_p <= sdr;
+    end if;
+  end process p_pipe_sdr;
+
+  sdr_r_edge <= sdr and not sdr_p;
+  sdr_f_edge <= not sdr and sdr_p;
+
+-- purpose: Counter of SDR pulse
+  p_cnt_sdr : process (tck, rst_n_synch) is
+  begin  -- process p_cnt_sdr
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      cnt_sdr <= (others => '0');
+    elsif rising_edge(tck) then         -- rising clock edge
+
+      --  if(udr = '1') then                --sdr_f_edge = '1') then
+      --      cnt_sdr <= (others => '0');
+--      elsif(sdr = '1') then
+      if(sdr = '1' and ir_in(0) = '1') then
+        cnt_sdr <= cnt_sdr + 1;         -- Inc Counter
+      end if;
+
+    end if;
+  end process p_cnt_sdr;
+
+-- purpose: LEDR Update
+  p_ledr_mngt : process (tck, rst_n_synch) is
+  begin  -- process p_ledr_mngt
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      ledr_int <= (others => '0');
+    elsif rising_edge(tck) then         -- rising clock edge
+
+      if(udr = '1') then
+        ledr_int <= shift_reg(17 downto 0);
+      end if;
+
+    end if;
+  end process p_ledr_mngt;
+
+  -- purpose: Shift REG
+  p_shift_reg : process (tck, rst_n_synch) is
+  begin  -- process p_shift_reg
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      shift_reg <= (others => '0');
+    elsif rising_edge(tck) then         -- rising clock edge
+      if(sdr = '1') then
+        --shift_reg <= shift_reg(31 - 1 downto 0) & tdi;
+        shift_reg <= tdi & shift_reg(31 downto 1);
+      end if;
+
+    end if;
+  end process p_shift_reg;
+
+  -- purpose: LEDG Mngt
+  p_ledg_mngt : process (tck, rst_n_synch) is
+  begin  -- process p_ledg_mngt
+    if rst_n_synch = '0' then           -- asynchronous reset (active low)
+      ledg <= (others => '0');
+    elsif rising_edge(tck) then         -- rising clock edge
+      ledg <= "000" & ir_in(5 downto 0);
+    end if;
+  end process p_ledg_mngt;
 
   -- purpose: Double resynchronization of start_clk_jtag in clk clock domain
   p_resynch_start : process (clk, rst_n) is
@@ -528,4 +660,6 @@ begin  -- architecture rtl
       );
 
 
+  -- Outputs
+  ledr <= ledr_int;
 end architecture rtl;
