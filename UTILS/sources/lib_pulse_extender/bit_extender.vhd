@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-02
--- Last update: 2023-09-02
+-- Last update: 2023-09-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ begin  -- architecture rtl
       counter_pulse <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      if(en_cnt = '1' or pulse_in = '1') then
+      if(en_cnt = '1' ) then
         if(counter_pulse = to_unsigned(G_PULSE_WIDTH - 1, counter_pulse'length)) then
           counter_pulse <= (others => '0');
         else
