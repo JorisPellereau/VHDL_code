@@ -8,7 +8,7 @@ import sys
 import os
 import random
 # Path of Python SCN scripts generator
-scn_generator_class = '/home/linux-jp/Documents/GitHub/Verilog/Testbench/scripts/scn_generator'
+scn_generator_class = '/home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/scn_generator'
 sys.path.append(scn_generator_class)
 
 # Import Class
@@ -33,37 +33,43 @@ macros_tb = macros_tb_unit_lcd_cfah_itf.macros_tb_unit_lcd_cfah_itf(scn)
 
 scn.print_step("Wait for Reset")
 
-scn.WTR("RST_N")
+scn.WTRS("RST_N")
 scn.WAIT(100, "ns")
+
+scn.print_step("Set LCD ON after 1 us")
+scn.WAIT(1, "us")
+scn.SET("I_LCD_ON", 1)
+
+scn.WAIT(60, "ms")
 
 # macros_tb.lcd_wr_byte(rs    = 1,
 #                       wdata = 0xAA)
 
-scn.SET("I_LCD_ON", 1)
-scn.WTFS("CLK")
-scn.WTFS("CLK")
-scn.SET("I_LCD_ON", 0)
-scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 1)
+# scn.WTFS("CLK")
+# scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 0)
+# scn.WTFS("CLK")
 
-for i in range(42):
-    scn.WAIT(500, "us")
+# for i in range(42):
+#     scn.WAIT(500, "us")
 
-scn.SET("I_LCD_ON", 1)
-scn.WTFS("CLK")
-scn.WTFS("CLK")
-scn.SET("I_LCD_ON", 0)
-scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 1)
+# scn.WTFS("CLK")
+# scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 0)
+# scn.WTFS("CLK")
 
-for i in range(42):
-    scn.WAIT(500, "us")
+# for i in range(42):
+#     scn.WAIT(500, "us")
 
-scn.SET("I_LCD_ON", 1)
-scn.WTFS("CLK")
-scn.WTFS("CLK")
-scn.SET("I_LCD_ON", 0)
-scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 1)
+# scn.WTFS("CLK")
+# scn.WTFS("CLK")
+# scn.SET("I_LCD_ON", 0)
+# scn.WTFS("CLK")
 
-for i in range(42):
-    scn.WAIT(500, "us")
+# for i in range(42):
+#     scn.WAIT(500, "us")
 
 scn.END_TEST()

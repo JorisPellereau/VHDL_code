@@ -17,7 +17,7 @@
 
 
 `include "/home/linux-jp/Documents/GitHub/VHDL_code/LCD/LCD_CFAH1602BTMCJP/tb_sources/tb_lib_unit_lcd_cfah_top/testbench_setup.sv"
-`include "/home/linux-jp/Documents/GitHub/Verilog/Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
+`include "/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/lib_tb_sequencer/tb_tasks.sv"
 
 
 // TB TOP
@@ -122,11 +122,13 @@ module tb_top
 		       )
    s_check_level_if();
    
+/* -----\/----- EXCLUDED -----\/-----
    data_collector_intf #(
 			 .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
 			 .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
 			 )
    s_data_collector_if();
+ -----/\----- EXCLUDED -----/\----- */
    
 
 
@@ -216,6 +218,7 @@ module tb_top
    
    
 
+/* -----\/----- EXCLUDED -----\/-----
    data_collector #(
 		    .G_NB_COLLECTOR (`C_NB_DATA_COLLECTOR),
 		    .G_DATA_WIDTH   (`C_DATA_COLLECTOR_DATA_WIDTH)
@@ -226,6 +229,7 @@ module tb_top
 		       .i_data               (s_data_collector),
 		       .data_collector_if    (s_data_collector_if)
 		       ); 
+ -----/\----- EXCLUDED -----/\----- */
 
    // == HDL SPEFICIC TESTBENCH MODULES ==
 
@@ -295,7 +299,7 @@ module tb_top
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "O_CONTROL_DONE", 6);
 	
       // INIT DATA COLLECTOR MODULE
-      tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "LCD_CFAH_ITF_INPUT_COLLECTOR_0");
+      //tb_class_inst.tb_modules_custom_inst.init_data_collector_custom_class(s_data_collector_if, "LCD_CFAH_ITF_INPUT_COLLECTOR_0");
                   
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
