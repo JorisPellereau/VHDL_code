@@ -62,7 +62,8 @@ architecture rtl of fifo_sp_ram is
   signal fifo_full_int  : std_logic;    -- Fifo FULL Flag internal
   signal fifo_empty_int : std_logic;    -- Fifo EMPTY Flag internal
 
-  signal rd_en_p : std_logic;           -- RD Enable Piped one time
+  signal rd_en_p  : std_logic;          -- RD Enable Piped one time
+  signal we_int   : std_logic;          -- Internal Write Enable
 
 begin  -- architecture rtl
 
@@ -70,19 +71,35 @@ begin  -- architecture rtl
   -- Perform a FIFO Write Access on a write enable
   p_fifo_wr_access : process (clk, rst_n) is
   begin  -- process p_fifo_wr_access
-    if rst_n = '0' then                 -- asynchronous reset (active low)
-      write_ptr <= (others => '0');
-      we        <= '0';
+    if rst_n = '0' then          -- asynchronous reset (active low)      
+      we_int <= '0';
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Enable the write access if the FIFO is not full
       if(wr_en = '1' and fifo_full_int = '0') then
-        we        <= '1';
-        write_ptr <= write_ptr + 1;     -- Inc the ptr
+        we_int <= '1';
+
+      -- Otherwise do not perform a write access
+      else
+        we_int <= '0';
       end if;
 
     end if;
   end process p_fifo_wr_access;
+
+  -- purpose: Write Pointer Management
+  p_fifo_wr_ptr_mngt : process (clk, rst_n) is
+  begin  -- process p_fifo_wr_ptr_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      write_ptr <= (others => '0');
+    elsif rising_edge(clk) then         -- rising clock edge
+
+      if(we_int = '1' and fifo_full_int = '0') then
+        write_ptr <= write_ptr + 1;     -- Inc the ptr
+      end if;
+
+    end if;
+  end process p_fifo_wr_ptr_mngt;
 
   -- purpose: FIFO Read Access
   -- Perform a FIFO Read Access on Read Enable
@@ -93,7 +110,7 @@ begin  -- architecture rtl
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Enable the Read access if the FIFO is not empty
-      if(rd_en = '1' and fifo_empty_int = '0') then
+      if(rd_en_p = '1' and fifo_empty_int = '0') then
         read_ptr <= read_ptr + 1;       -- Inc the ptr
       end if;
 
@@ -134,13 +151,32 @@ begin  -- architecture rtl
     end if;
   end process p_data_out_mngt;
 
+  -- purpose: Write data out management
+  -- set wdata_out when a write access is allowed
+  p_wdata_out_mngt : process (clk, rst_n) is
+  begin  -- process p_wdata_out_mngt
+    if rst_n = '0' then                 -- asynchronous reset (active low)
+      wdata_out <= (others => '0');
+    elsif rising_edge(clk) then         -- rising clock edge
+
+      -- Enable to set wdata_out if the FIFO is not full
+      if(wr_en = '1' and fifo_full_int = '0') then
+        wdata_out <= wdata;
+      end if;
+
+    end if;
+  end process p_wdata_out_mngt;
+
+
   -- FIFO Flag computation
-  fifo_empty_int <= '1' when (unsigned(write_ptr) - unsigned(read_ptr)) = to_unsigned(0, G_ADDR_WIDTH)               else '0';
-  fifo_full_int  <= '1' when (unsigned(write_ptr) - unsigned(read_ptr)) = to_unsigned(2**G_ADDR_WIDTH, G_ADDR_WIDTH) else '0';
+  fifo_empty_int <= '1' when (unsigned(write_ptr) - unsigned(read_ptr)) = to_unsigned(0, G_ADDR_WIDTH)                     else '0';
+  fifo_full_int  <= '1' when (unsigned(write_ptr) - unsigned(read_ptr)) = to_unsigned((2**G_ADDR_WIDTH) - 1, G_ADDR_WIDTH) else '0';
 
   -- == Outputs Affectation ==
   fifo_full  <= fifo_full_int;
   fifo_empty <= fifo_empty_int;
-
+  wr_addr    <= std_logic_vector(write_ptr);
+  rd_addr    <= std_logic_vector(read_ptr);
+  we         <= we_int;
 
 end architecture rtl;

@@ -77,12 +77,15 @@ all:
 
 
 # == DESIGN VHD FILE LIST ==
-include TBD_files.mk
+#include TBD_files.mk
 
 
 lib_fifo_path=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo/
+lib_ram_intel_path=/home/linux-jp/Documents/GitHub/VHDL_code/RAM/sources/lib_ram_intel/
 
 FIFO_FILE_LIST+=fifo_sp_ram.vhd
+
+RAM_FILE_LIST+=sp_ram.vhd
 # ==========================
 
 # == TESTBENCH UART V FILES LIST ==
@@ -91,9 +94,12 @@ FIFO_FILE_LIST+=fifo_sp_ram.vhd
 
 
 # == Specific Testbench File List ==
-src_tb_lib_fifo_v+=$(TB_SRC_DIR)/tb_lib_fifo/testbench_setup.sv
-src_tb_lib_fifo_v+=$(TB_SRC_DIR)/tb_lib_fifo/clk_gen.sv
-src_tb_lib_fifo_v+=$(TB_SRC_DIR)/tb_lib_fifo/tb_top.sv
+
+src_tb_lib_fifo_path=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/tb_sources/tb_lib_fifo/
+
+src_tb_lib_fifo_v+=testbench_setup.sv
+src_tb_lib_fifo_v+=clk_gen.sv
+src_tb_lib_fifo_v+=tb_top.sv
 # ==================================
 
 
@@ -101,34 +107,35 @@ src_tb_lib_fifo_v+=$(TB_SRC_DIR)/tb_lib_fifo/tb_top.sv
 compile_fifo:
 	make compile_design_vhd_files SRC_VHD="$(FIFO_FILE_LIST)" VHD_DESIGN_LIB=lib_fifo VHD_FILE_PATH=$(lib_fifo_path)
 
+compile_sp_ram:
+	make compile_design_vhd_files SRC_VHD="$(RAM_FILE_LIST)" VHD_DESIGN_LIB=lib_ram_intel VHD_FILE_PATH=$(lib_ram_intel_path)
+
 # ========================
 
 ## == COMPILE TESTBENCH == ##
-
-
 compile_generic_tb_v_files:
 	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_fifo V_FILE_PATH=~/Documents/GitHub/
 
-compile_tb_TBD:
-	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_TBD_v)" LIB_TB_TOP=tb_lib_fifo
+compile_tb_fifo:
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_fifo_v)" LIB_TB_TOP=tb_lib_fifo V_FILE_PATH=$(src_tb_lib_fifo_path)
 
 # =======================
 
 # == COMPILE ALL ==
-compile_all_TBD : clean_all create_simulation_dir libs compile_TBD compile_generic_tb_v_files compile_tb_TBD print_compile_logs_file
+compile_all_fifo : clean_all create_simulation_dir libs compile_fifo compile_sp_ram compile_generic_tb_v_files compile_tb_fifo print_compile_logs_file
 # =================
 
 # == SCENARII LIST ======
-SCN_LIST+=TBD_000.py
+SCN_LIST+=FIFO_000.py
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L
+LIB_ARGS=-L lib_fifo -L lib_ram_intel
 # ==============
 
 
 # == RUN TEST ==
-run_tb_TBD:
-	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_TBD LIB_TB_TOP=tb_lib_TBD
+run_tb_fifo:
+	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_fifo LIB_TB_TOP=tb_lib_fifo
 # ==============
 

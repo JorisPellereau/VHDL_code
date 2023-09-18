@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-09-14
+-- Last update: 2023-09-17
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,7 +21,6 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
 
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
@@ -32,49 +31,34 @@ use lib_CFAH1602_v2.pkg_lcd_cfah.all;
 
 entity lcd_cfah_top is
   generic (
-    G_CLK_PERIOD_NS       : integer   := 20;  -- Clock Period in ns
-    G_BIDIR_POLARITY_READ : std_logic := '0'  -- BIDIR SEL Polarity
+    G_CLK_PERIOD_NS       : integer   := 20;   -- Clock Period in ns
+    G_BIDIR_POLARITY_READ : std_logic := '0';  -- BIDIR SEL Polarity
+    G_DATA_WIDTH          : integer   := 8;    -- DATA Width
+    G_FIFO_ADDR_WIDTH     : integer   := 10    -- FIFO ADDR WIDTH
     );
   port (
-    clk   : in std_logic;                     -- Clock
-    rst_n : in std_logic;                     -- Asynchronous Reset
+    clk   : in std_logic;                      -- Clock
+    rst_n : in std_logic;                      -- Asynchronous Reset
 
-    -- LCD LINES BUFFER I/F
-    i_char_wdata     : in std_logic_vector(7 downto 0);  -- Data character
-    i_char_wdata_val : in std_logic;                     -- Data valid
-    i_char_position  : in std_logic_vector(3 downto 0);  -- Character number
-    i_line_sel       : in std_logic;                     -- Line Selection
-
-    -- LCD CGRAM BUFFER I/F
-    i_cgram_addr      : in std_logic_vector(6 downto 0);  -- CGRAM Addr
-    i_cgram_wdata     : in std_logic_vector(4 downto 0);  -- CGRAM Data
-    i_cgram_wdata_val : in std_logic;                     -- CGRAM Data valid
+    -- LCD DISPLAY CTRL
+    i_update_all_lcd     : in std_logic;  -- Update the entire LCD display command
+    i_update_one_char    : in std_logic;  -- Update one character command
+    i_char_position      : in std_logic_vector(5 downto 0);  -- Character number
+    i_wr_en_fifo_display : in std_logic;  -- Write Enable the FIFO DATA DISPLAY
+    i_wdata_fifo_display : in std_logic_vector(7 downto 0);  -- FIFO Write data
 
     -- LCD Config Bus
     i_dl_n_f : in std_logic_vector(2 downto 0);  -- Function SET bis control
     i_dcb    : in std_logic_vector(2 downto 0);  -- Display ON/OFF Control bits
+    i_sc_rl  : in std_logic_vector(1 downto 0);  -- Cursor or Display Shift Control bits
+    i_id_sh  : in std_logic_vector(1 downto 0);  -- ID SH Entry Mode set Control Bit
 
     -- LCD Commands and Controls
-    i_lcd_on            : in std_logic;  -- LCD On control
-    i_start_init        : in std_logic;  -- Start Initialization command
-    i_display_ctrl_cmd  : in std_logic;  -- Display Control Command
-    i_clear_display_cmd : in std_logic;  -- Clear Display Command
-    i_return_home_cmd   : in std_logic;  -- Return Home Command
+    i_lcd_on : in std_logic;            -- LCD On control
 
-    i_cursor_or_display_shift_cmd : in std_logic;  -- Cursor/display shift command
-    i_sc_rl                       : in std_logic_vector(1 downto 0);  --Control bits of shift command
-
-    i_update_lcd        : in std_logic;  -- Update LCD
-    i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
-    i_lcd_line_sel      : in std_logic;
-    i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
-
-    -- CGRAM Update command
-    i_update_cgram        : in std_logic;  -- Update CGRAM Command
-    i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
-    i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection
-
-    o_control_done : out std_logic;     -- Command done
+    -- STATUS
+    fifo_full_display  : out std_logic;  -- FIFO FULL Display status
+    fifo_empty_display : out std_logic;  -- FIFO Empty Display status
 
     -- LCD I/F
     i_lcd_data  : in  std_logic_vector(7 downto 0);  -- Data from LCD
@@ -84,7 +68,6 @@ entity lcd_cfah_top is
     o_lcd_rs    : out std_logic;                     -- LCD RS
     o_lcd_on    : out std_logic;                     -- LCD ON Management
     o_bidir_sel : out std_logic                      -- Bidir Selector
-
     );
 
 end entity lcd_cfah_top;
@@ -94,36 +77,42 @@ end entity lcd_cfah_top;
 architecture rtl of lcd_cfah_top is
 
   -- == INTERNAL Signals ==
-  signal s_init_ongoing            : std_logic;
-  signal s_init_done               : std_logic;
-  signal s_cmd_bus_cmd_generator   : std_logic_vector(10 downto 0);  -- Command bus to command generator
-  signal s_cmd_req_poll            : std_logic;  -- Command request from polling block
-  signal s_id_sh_to_cmd_generator  : std_logic_vector(1 downto 0);
-  signal s_dcb_to_cmd_generator    : std_logic_vector(2 downto 0);
-  signal s_sc_rl                   : std_logic_vector(1 downto 0);
-  signal s_dl_n_f                  : std_logic_vector(2 downto 0);
-  signal s_data_bus                : std_logic_vector(7 downto 0);
-  signal s_lcd_rdata_cmd_generator : std_logic_vector(7 downto 0);
-  signal s_done_cmd_generator      : std_logic;
-  signal s_lcd_wdata               : std_logic_vector(7 downto 0);
-  signal s_rw                      : std_logic;
-  signal s_rs                      : std_logic;
-  signal s_start                   : std_logic;
-  signal s_start_polling           : std_logic;
-  signal s_lcd_rdata               : std_logic_vector(7 downto 0);  -- LCD RDATA
-  signal s_lcd_itf_done            : std_logic;
-  signal start_init                : std_logic;  -- Start INIT signal
-  signal s_cmds                    : std_logic_vector(10 downto 0);  -- Commands from
-  signal s_cmd_bus_poll            : std_logic_vector(10 downto 0);
-  signal s_done_cmd_init           : std_logic;  -- Command done to INIT module
-  signal s_function_set_init       : std_logic;  -- FUNCTION SET from INIT
-  signal s_display_ctrl_init       : std_logic;  -- Display CTRL from INIT
-  signal s_entry_mode_set_init     : std_logic;  -- Entry Mode SET from INIT
-  signal s_clear_display_init      : std_logic;  -- Clear Display from INIT
-  signal s_cmd_req_init            : std_logic;  -- Command request from INIT Module
-  signal s_cmd_req_cmd_generator   : std_logic;  -- Command request to cmd generator
-  signal s_done_cmd_poll           : std_logic;  -- Command done to poll block
-  signal dl_n_f_init               : std_logic_vector(2 downto 0);  -- DL N F Initialization value
+  signal s_init_ongoing             : std_logic;
+  signal s_init_done                : std_logic;
+  signal s_cmd_bus_cmd_generator    : std_logic_vector(10 downto 0);  -- Command bus to command generator
+  signal s_cmd_req_poll             : std_logic;  -- Command request from polling block
+  signal s_id_sh_to_cmd_generator   : std_logic_vector(1 downto 0);
+  signal s_dcb_to_cmd_generator     : std_logic_vector(2 downto 0);
+  signal s_sc_rl_cmd_generator      : std_logic_vector(1 downto 0);
+  signal s_dl_n_f_cmd_generator     : std_logic_vector(2 downto 0);
+  signal s_data_bus_cmd_generator   : std_logic_vector(7 downto 0);
+  signal s_lcd_rdata_cmd_generator  : std_logic_vector(7 downto 0);
+  signal s_done_cmd_generator       : std_logic;
+  signal s_lcd_wdata                : std_logic_vector(7 downto 0);
+  signal s_rw                       : std_logic;
+  signal s_rs                       : std_logic;
+  signal s_start                    : std_logic;
+  signal s_start_polling            : std_logic;
+  signal s_lcd_rdata                : std_logic_vector(7 downto 0);  -- LCD RDATA
+  signal s_lcd_itf_done             : std_logic;
+  signal start_init                 : std_logic;  -- Start INIT signal
+  signal s_cmds                     : std_logic_vector(10 downto 0);  -- Commands from
+  signal s_cmd_bus_poll             : std_logic_vector(10 downto 0);
+  signal s_done_cmd_init            : std_logic;  -- Command done to INIT module
+  signal s_function_set_init        : std_logic;  -- FUNCTION SET from INIT
+  signal s_display_ctrl_init        : std_logic;  -- Display CTRL from INIT
+  signal s_entry_mode_set_init      : std_logic;  -- Entry Mode SET from INIT
+  signal s_clear_display_init       : std_logic;  -- Clear Display from INIT
+  signal s_cmd_req_init             : std_logic;  -- Command request from INIT Module
+  signal s_cmd_req_cmd_generator    : std_logic;  -- Command request to cmd generator
+  signal s_done_cmd_poll            : std_logic;  -- Command done to poll block
+  signal dl_n_f_init                : std_logic_vector(2 downto 0);  -- DL N F Initialization value
+  signal polling_done               : std_logic;  -- Polling Ready Flag
+  signal set_ddram_addr_display     : std_logic;  -- SET DDRAM Command from DISPLAY UPDATE block
+  signal wr_data_display            : std_logic;  -- WR_DATA Command from DISPLAY UPDATE block
+  signal ddram_data_or_addr_display : std_logic;  -- DDRAM DATA or ADDR from DISPLAY UPDATE block
+  signal start_display              : std_logic;  -- Start from DISPLAY UPDATE block
+  signal update_display_done        : std_logic;  -- Update Display ON
 
 begin  -- architecture rtl
 
@@ -164,6 +153,43 @@ begin  -- architecture rtl
       o_init_done => s_init_done
       );
 
+  -- Instanciation of LCD DISPLAY UPDATE
+  i_lcd_cfah_update_display_0 : lcd_cfah_update_display
+    generic map (
+      G_DATA_WIDTH => G_DATA_WIDTH,
+      G_ADDR_WIDTH => G_FIFO_ADDR_WIDTH
+      )
+    port map (
+      clk   => clk,
+      rst_n => rst_n,
+
+      -- Commands
+      i_update_all_lcd  => i_update_all_lcd,
+      i_update_one_char => i_update_one_char,
+      i_char_position   => i_char_position,
+
+      -- LCD Commands
+      o_set_ddram_addr     => set_ddram_addr_display,
+      o_wr_data            => wr_data_display,
+      o_ddram_data_or_addr => ddram_data_or_addr_display,
+      o_start              => start_display,
+
+      -- Command Done
+      i_poll_done => polling_done,
+
+      -- FIFO CTRL 
+      wr_en => i_wr_en_fifo_display,
+      wdata => i_wdata_fifo_display,
+
+
+      -- LCD Update done flag
+      o_update_done => update_display_done,
+
+      -- FIFO Status
+      fifo_empty => fifo_empty_display,
+      fifo_full  => fifo_full_display
+      );
+
   -- Instanciation of LCD POLLING Block
   i_lcd_cfah_polling_0 : entity lib_CFAH1602_v2.lcd_cfah_polling
     port map(
@@ -172,13 +198,13 @@ begin  -- architecture rtl
       rst_n_sys => rst_n,
       i_start   => s_start_polling,     -- Start Commands
       i_cmds    => s_cmds,              -- Commands
+      o_done    => polling_done,        -- Polling Done Flag
 
       -- Command generator ITF
       o_cmd_req   => s_cmd_req_poll,
       o_cmds      => s_cmd_bus_poll,
       i_lcd_rdata => s_lcd_rdata_cmd_generator,
       i_done      => s_done_cmd_poll
-
       );
 
 
@@ -205,7 +231,7 @@ begin  -- architecture rtl
 
   -- MUX INIT WDATA value
   -- Mux DL N F vector
-  s_dl_n_f <= dl_n_f_init when s_init_ongoing = '1' else i_dl_n_f;
+  s_dl_n_f_cmd_generator <= dl_n_f_init when s_init_ongoing = '1' else i_dl_n_f;
 
   -- MUX DONE Signal :
 
@@ -217,6 +243,12 @@ begin  -- architecture rtl
   -- INIT mode
   s_done_cmd_init <= s_done_cmd_generator when s_init_ongoing = '1' else '0';
 
+
+  -- STATIC Configuration
+  s_dcb_to_cmd_generator   <= i_dcb;
+  s_sc_rl_cmd_generator    <= i_sc_rl;
+  s_id_sh_to_cmd_generator <= i_id_sh;
+
   -- LCD Command generator
   i_lcd_cfah_cmd_generator_0 : entity lib_CFAH1602_v2.lcd_cfah_cmd_generator
     port map(
@@ -224,22 +256,22 @@ begin  -- architecture rtl
       rst_n => rst_n,
 
       i_cmd_req              => s_cmd_req_cmd_generator,
-      i_clear_display        => s_cmd_bus_cmd_generator(0),
-      i_return_home          => s_cmd_bus_cmd_generator(1),
-      i_entry_mode_set       => s_cmd_bus_cmd_generator(2),
+      i_clear_display        => s_cmd_bus_cmd_generator(C_CLEAR_DISPLAY),
+      i_return_home          => s_cmd_bus_cmd_generator(C_RETURN_HOME),
+      i_entry_mode_set       => s_cmd_bus_cmd_generator(C_ENTRY_MODE_SET),
       i_id_sh                => s_id_sh_to_cmd_generator,
-      i_display_ctrl         => s_cmd_bus_cmd_generator(3),
+      i_display_ctrl         => s_cmd_bus_cmd_generator(C_DISP_ON_OFF_CTRL),
       i_dcb                  => s_dcb_to_cmd_generator,
-      i_cursor_display_shift => s_cmd_bus_cmd_generator(4),
-      i_sc_rl                => s_sc_rl,
-      i_function_set         => s_cmd_bus_cmd_generator(5),
-      i_dl_n_f               => s_dl_n_f,
-      i_set_gcram_addr       => s_cmd_bus_cmd_generator(6),
-      i_set_ddram_addr       => s_cmd_bus_cmd_generator(7),
-      i_read_busy_flag       => s_cmd_bus_cmd_generator(8),
-      i_wr_data              => s_cmd_bus_cmd_generator(9),
-      i_rd_data              => s_cmd_bus_cmd_generator(10),
-      i_data_bus             => s_data_bus,
+      i_cursor_display_shift => s_cmd_bus_cmd_generator(C_CURSOR_OR_DISP_SHIFT),
+      i_sc_rl                => s_sc_rl_cmd_generator,
+      i_function_set         => s_cmd_bus_cmd_generator(C_FUNCTION_SET),
+      i_dl_n_f               => s_dl_n_f_cmd_generator,
+      i_set_gcram_addr       => s_cmd_bus_cmd_generator(C_SET_CGRAM_ADDR),
+      i_set_ddram_addr       => s_cmd_bus_cmd_generator(C_SET_DDRAM_ADDR),
+      i_read_busy_flag       => s_cmd_bus_cmd_generator(C_READ_BUSY_FLAG),
+      i_wr_data              => s_cmd_bus_cmd_generator(C_WRITE_DATA_TO_RAM),
+      i_rd_data              => s_cmd_bus_cmd_generator(C_READ_DATA_FROM_RAM),
+      i_data_bus             => s_data_bus_cmd_generator,
       o_lcd_rdata            => s_lcd_rdata_cmd_generator,
       o_done                 => s_done_cmd_generator,
 
@@ -279,7 +311,7 @@ begin  -- architecture rtl
 
 
   -- purpose: LCD ON Management
-  p_lcd_on_mngt: process (clk, rst_n) is
+  p_lcd_on_mngt : process (clk, rst_n) is
   begin  -- process p_lcd_on_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       o_lcd_on <= '0';
