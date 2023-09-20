@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-30
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,23 +29,23 @@ use lib_axi4_lite_7seg.axi4_lite_7segs_pkg.all;
 entity axi4_lite_7segs_registers is
 
   generic (
-    G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
-    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32  -- AXI4 Lite DATA WIDTH
+    G_AXI4_LITE_ADDR_WIDTH : integer range 8 to 64  := 32;  -- AXI4 Lite ADDR WIDTH
+    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
     );
   port (
-    clk   : in std_logic;               -- Clock
-    rst_n : in std_logic;               -- Asynchronous Reset
+    clk   : in std_logic;                                   -- Clock
+    rst_n : in std_logic;                                   -- Asynchronous Reset
 
     -- Slave Registers Interface
-    slv_start  : in std_logic;          -- Start the access
-    slv_rw     : in std_logic;          -- Read or write access
-    slv_addr   : in std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Slave Addr
-    slv_wdata  : in std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave Write Data
+    slv_start  : in std_logic;                                                    -- Start the access
+    slv_rw     : in std_logic;                                                    -- Read or write access
+    slv_addr   : in std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);        -- Slave Addr
+    slv_wdata  : in std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Slave Write Data
     slv_strobe : in std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
 
-    slv_done   : out std_logic;         -- Slave access done
+    slv_done   : out std_logic;                                              -- Slave access done
     slv_rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
-    slv_status : out std_logic_vector(1 downto 0);         -- Slave status
+    slv_status : out std_logic_vector(1 downto 0);                           -- Slave status
 
     -- Registers Interface
     digits : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0)  -- Digits Value
@@ -56,8 +56,8 @@ end entity axi4_lite_7segs_registers;
 architecture rtl of axi4_lite_7segs_registers is
 
   -- == INTERNAL Signals ==
-  signal reg_wr_sel       : std_logic_vector(C_NB_REG - 1 downto 0);  -- Write register selection
-  signal reg_wr_sel_error : std_logic;  -- Reg Write Selection error
+  signal reg_wr_sel       : std_logic_vector(C_NB_REG - 1 downto 0);                -- Write register selection
+  signal reg_wr_sel_error : std_logic;                                              -- Reg Write Selection error
   signal digits_int       : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- DIGITS register
 begin  -- architecture rtl
 
@@ -96,7 +96,7 @@ begin  -- architecture rtl
     elsif rising_edge(clk) then         -- rising clock edge
 
       if(reg_wr_sel(C_DIGITS_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
-        digits_int <= slv_wdata; 
+        digits_int <= slv_wdata;
       end if;
     end if;
   end process p_digits_wr_mngt;

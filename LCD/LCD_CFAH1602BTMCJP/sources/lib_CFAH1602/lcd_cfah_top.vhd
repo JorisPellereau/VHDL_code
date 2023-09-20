@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-01-07
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -61,17 +61,17 @@ entity lcd_cfah_top is
     i_clear_display_cmd : in std_logic;  -- Clear Display Command
     i_return_home_cmd   : in std_logic;  -- Return Home Command
 
-    i_cursor_or_display_shift_cmd : in std_logic;  -- Cursor/display shift command
+    i_cursor_or_display_shift_cmd : in std_logic;                     -- Cursor/display shift command
     i_sc_rl                       : in std_logic_vector(1 downto 0);  --Control bits of shift command
 
-    i_update_lcd        : in std_logic;  -- Update LCD
-    i_lcd_all_char      : in std_logic;  -- One Char or all Lcd update selection
+    i_update_lcd        : in std_logic;                     -- Update LCD
+    i_lcd_all_char      : in std_logic;                     -- One Char or all Lcd update selection
     i_lcd_line_sel      : in std_logic;
     i_lcd_char_position : in std_logic_vector(3 downto 0);  -- Character number
 
     -- CGRAM Update command
-    i_update_cgram        : in std_logic;  -- Update CGRAM Command
-    i_cgram_all_char      : in std_logic;  -- All Char or One char selection  
+    i_update_cgram        : in std_logic;                     -- Update CGRAM Command
+    i_cgram_all_char      : in std_logic;                     -- All Char or One char selection  
     i_cgram_char_position : in std_logic_vector(2 downto 0);  -- Character position selection
 
     o_control_done : out std_logic;     -- Command done
@@ -241,7 +241,7 @@ begin  -- architecture rtl
         s_sc_rl_cmd_buffer <= i_sc_rl;
       end if;
 
-      s_id_sh <= "01";  -- shift to right (I/D == 0) and S == 1 (display
+      s_id_sh <= "01";                  -- shift to right (I/D == 0) and S == 1 (display
 
       -- Current not used cmd
       s_rd_data <= '0';

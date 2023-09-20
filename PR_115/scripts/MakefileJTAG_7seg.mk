@@ -180,11 +180,14 @@ LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender -L lib_jtag_intel -L lib_axi4_li
 # ==============
 
 #VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_ir_width=32
-VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_n_scan=2
-VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_total_length=12
-# SCNA TYPE : 0001
-# DR TYPE : 0010
-VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_sim_action="((1,1,1,6),(1,2,5,6))"
+ifeq ($(TEST), JTAG_7SEG_TOP_00)
+
+	VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_n_scan=2
+	VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_total_length=12
+	# SCNA TYPE : 0001
+	# DR TYPE : 0010
+	VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_sim_action="((1,1,1,6),(1,2,5,6))"
+endif
 #RUN_ARGS+= -do $(DO_FILES_DIR)/mentor.do
 # == RUN TEST ==
 run_tb_jtag_7seg_top:

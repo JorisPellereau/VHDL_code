@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-09-04
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -26,24 +26,24 @@ use ieee.numeric_std.all;
 entity axi4_lite_slave_itf is
 
   generic (
-    G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
-    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32  -- AXI4 Lite DATA WIDTH
+    G_AXI4_LITE_ADDR_WIDTH : integer range 8 to 64  := 32;  -- AXI4 Lite ADDR WIDTH
+    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
     );
   port (
-    clk   : in std_logic;               -- Clock
-    rst_n : in std_logic;               -- Asynchronous Reset
+    clk   : in std_logic;                                   -- Clock
+    rst_n : in std_logic;                                   -- Asynchronous Reset
 
     -- Write Address Channel signals
-    awvalid : in  std_logic;            -- Address Write Valid
+    awvalid : in  std_logic;                                              -- Address Write Valid
     awaddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Address Write
-    awprot  : in  std_logic_vector(2 downto 0);  -- Adress Write Prot
-    awready : out std_logic;            -- Address Write Ready
+    awprot  : in  std_logic_vector(2 downto 0);                           -- Adress Write Prot
+    awready : out std_logic;                                              -- Address Write Ready
 
     -- Write Data Channel
-    wvalid : in  std_logic;             -- Write Data Valid
-    wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Write Data
+    wvalid : in  std_logic;                                                    -- Write Data Valid
+    wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Write Data
     wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-    wready : out std_logic;             -- Write data Ready
+    wready : out std_logic;                                                    -- Write data Ready
 
     -- Write Response Channel
     bready : in  std_logic;                     -- Write Channel Response
@@ -51,27 +51,27 @@ entity axi4_lite_slave_itf is
     bresp  : out std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
     -- Read Address Channel
-    arvalid : in  std_logic;            -- Read Channel Valid
+    arvalid : in  std_logic;                                              -- Read Channel Valid
     araddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-    arprot  : in  std_logic_vector(2 downto 0);  --  Read Address channel Ready Prot
-    arready : out std_logic;            -- Read Address Channel Ready
+    arprot  : in  std_logic_vector(2 downto 0);                           --  Read Address channel Ready Prot
+    arready : out std_logic;                                              -- Read Address Channel Ready
 
     -- Read Data Channel
-    rready : in  std_logic;             -- Read Data Channel Ready
-    rvalid : out std_logic;             -- Read Data Channel Valid
+    rready : in  std_logic;                                              -- Read Data Channel Ready
+    rvalid : out std_logic;                                              -- Read Data Channel Valid
     rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-    rresp  : out std_logic_vector(1 downto 0);  -- Read Data Channel Response
+    rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
 
     -- Slave Registers Interface
-    slv_start  : out std_logic;         -- Start the access
-    slv_rw     : out std_logic;         -- Read or write access
-    slv_addr   : out std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Slave Addr
-    slv_wdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave Write Data
+    slv_start  : out std_logic;                                                    -- Start the access
+    slv_rw     : out std_logic;                                                    -- Read or write access
+    slv_addr   : out std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);        -- Slave Addr
+    slv_wdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Slave Write Data
     slv_strobe : out std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
 
-    slv_done   : in std_logic;          -- Slave access done
+    slv_done   : in std_logic;                                              -- Slave access done
     slv_rdata  : in std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
-    slv_status : in std_logic_vector(1 downto 0)  -- Slave status        
+    slv_status : in std_logic_vector(1 downto 0)                            -- Slave status        
     );
 
 end entity axi4_lite_slave_itf;
@@ -79,22 +79,22 @@ end entity axi4_lite_slave_itf;
 architecture rtl of axi4_lite_slave_itf is
 
   -- == INTERNAL Signals ==
-  signal s_arvalid : std_logic;         -- Latch arvalid
+  signal s_arvalid : std_logic;                                              -- Latch arvalid
   signal s_araddr  : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Latch araddr
-  signal s_arready : std_logic;         -- Arready
+  signal s_arready : std_logic;                                              -- Arready
 
   signal s_rvalid : std_logic;          -- Read Valid signal
 
   signal s_rd_ongoing : std_logic;      -- Read Access ongoing
   signal s_wr_ongoing : std_logic;      -- Write Access ongoing
 
-  signal s_awvalid : std_logic;         -- Internal awvalid
+  signal s_awvalid : std_logic;                                              -- Internal awvalid
   signal s_awaddr  : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Latch AWADDR
-  signal s_awready : std_logic;         -- Internal awready
+  signal s_awready : std_logic;                                              -- Internal awready
 
-  signal s_wvalid : std_logic;          -- Internal wvalid
-  signal s_wready : std_logic;          -- Internal wready
-  signal s_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Latch WDATA
+  signal s_wvalid : std_logic;                                                    -- Internal wvalid
+  signal s_wready : std_logic;                                                    -- Internal wready
+  signal s_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Latch WDATA
   signal s_wstrb  : std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
 
   signal s_bvalid : std_logic;          -- BVALID Signal
@@ -441,8 +441,8 @@ begin  -- architecture rtl
       elsif(s_wr_ongoing = '1' and awvalid = '1' and s_awready = '1') then
         slv_addr <= s_awaddr;
 
-      else
-        slv_addr <= (others => '0');
+      -- else
+      --   slv_addr <= (others => '0'); -- NO resset in order to keep the addr
       end if;
 
     end if;

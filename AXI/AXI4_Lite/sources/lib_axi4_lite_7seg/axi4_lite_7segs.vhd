@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-08-30
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ library lib_axi4_lite_7seg;
 
 entity axi4_lite_7segs is
   generic (
-    G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
+    G_AXI4_LITE_ADDR_WIDTH : integer range 8 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32  -- AXI4 Lite DATA WIDTH
     );
   port (

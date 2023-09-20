@@ -9,6 +9,15 @@
 #         -
 # ========================================== #
 
+#.PHONY: MakefileJTAG_7seg.mk
+
+# Execution :
+# make -f MakefileJTAG_axi4_lite.mk compile_all_jtag_axi4_lite_top
+
+# Reminder :
+# do ../../../Documents/GitHub/VHDL_code/Makefile/do_files_generic/add_dut_waves.do tb_top i_dut
+
+
 
 # -- PROJECT Configuration --
 ROOT=$(PWD)/..
@@ -138,6 +147,7 @@ src_axi4_lite_lcd_vhd+=axi4_lite_lcd_pkg.vhd
 src_axi4_lite_lcd_vhd+=axi4_lite_lcd_registers.vhd
 src_axi4_lite_lcd_vhd+=axi4_lite_lcd.vhd
 
+src_jtag_axi4_lite_top_vhd += pkg_jtag_axi4_lite_top.vhd
 src_jtag_axi4_lite_top_vhd += jtag_axi4_lite_core.vhd
 src_jtag_axi4_lite_top_vhd += jtag_axi4_lite_top.vhd
 # ==========================
@@ -174,7 +184,7 @@ compile_jtag_axi4_lite_top:
 
 
 
-compile_altera_vjag:
+compile_altera_vjag_jtag_axi4_lite_top:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
 	$(vsim) -c -do $(DO_FILES_DIR)/mentor.do -do exit;\
 
@@ -195,10 +205,13 @@ compile_tb_jtag_axi4_lite_top:
 compile_all_jtag_axi4_lite_top :
 	make clean_all ; \
 	make create_simulation_dir ; \
+	make compile_altera_vjag_jtag_axi4_lite_top; \
 	make libs ; \
 	make compile_jtag_axi4_lite_top ; \
+	make compile_generic_tb_v_files_jtag_axi4_lite_top ; \
+	make compile_tb_jtag_axi4_lite_top ; \
 	make print_compile_logs_file
-	#make compile_altera_vjag; \
+
 #	make libs
 
 #compile_jtag_7seg_top  compile_generic_tb_v_files_7seg compile_tb_jtag_7seg_top print_compile_logs_file
@@ -209,7 +222,7 @@ compile_all_jtag_axi4_lite_top :
 # =================
 
 # == SCENARII LIST ======
-SCN_LIST+=TBD_000.py
+SCN_LIST+=JTAG_AXI4_LITE_TOP_00.py
 # =======================
 
 # == LIB ARGS ==
@@ -225,8 +238,9 @@ LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender -L lib_jtag_intel -L lib_axi4_li
 # DR TYPE : 0010
 #VSIM_G_ARGS+=-G/tb_top/i_dut_0/i_altera_vjtag_0/virtual_jtag_0/user_input/sld_node_sim_action="((1,1,1,6),(1,2,5,6))"
 #RUN_ARGS+= -do $(DO_FILES_DIR)/mentor.do
+
 # == RUN TEST ==
-run_tb_jtag_7seg_top:
+run_tb_jtag_axi4_lite_top:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_jtag_axi4_lite_top LIB_TB_TOP=tb_lib_jtag_axi4_lite_top 
 # ==============
 

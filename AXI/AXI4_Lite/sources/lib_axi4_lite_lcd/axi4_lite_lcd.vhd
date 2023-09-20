@@ -28,12 +28,15 @@ library lib_CFAH1602_v2;
 
 entity axi4_lite_lcd is
   generic (
-    G_AXI4_LITE_ADDR_WIDTH : integer range 10 to 64 := 10;  -- AXI4 Lite ADDR WIDTH
-    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
+    G_AXI4_LITE_ADDR_WIDTH : integer range 10 to 64 := 10;   -- AXI4 Lite ADDR WIDTH
+    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32;   -- AXI4 Lite DATA WIDTH
+    G_CLK_PERIOD_NS        : integer                := 20;   -- Clock Period in ns
+    G_BIDIR_POLARITY_READ  : std_logic              := '0';  -- BIDIR SEL Polarity
+    G_FIFO_ADDR_WIDTH      : integer                := 10    -- FIFO ADDR WIDTH
     );
   port (
-    clk_sys   : in std_logic;                               -- System Clock
-    rst_n_sys : in std_logic;                               -- Asynchronous Reset
+    clk_sys   : in std_logic;                                -- System Clock
+    rst_n_sys : in std_logic;                                -- Asynchronous Reset
 
     -- Write Address Channel signals
     awvalid : in  std_logic;                                              -- Address Write Valid
@@ -160,7 +163,7 @@ begin  -- architecture rtl
   -- Instanciation of LCD REGISTERS
   i_axi4_lite_lcd_registers_0 : entity lib_axi4_lite_lcd.axi4_lite_lcd_registers
     generic map(
-      G_ADDR_WIDTH => 4,                -- USEFULL ADDR WIDTH
+      G_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,
       G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH
       )
     port map(
@@ -196,10 +199,10 @@ begin  -- architecture rtl
   -- Instanciation of LCDCFAH TOP
   i_lcd_cfah_top_0 : entity lib_CFAH1602_v2.lcd_cfah_top
     generic map (
-      G_CLK_PERIOD_NS       => 20,
-      G_BIDIR_POLARITY_READ => '0',
+      G_CLK_PERIOD_NS       => G_CLK_PERIOD_NS,
+      G_BIDIR_POLARITY_READ => G_BIDIR_POLARITY_READ,
       G_DATA_WIDTH          => 8,
-      G_FIFO_ADDR_WIDTH     => 10
+      G_FIFO_ADDR_WIDTH     => G_FIFO_ADDR_WIDTH
       )
     port map (
       clk   => clk_sys,

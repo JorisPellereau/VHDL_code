@@ -24,14 +24,17 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library lib_jtag_axi4_lite_top;
+use lib_jtag_axi4_lite_top.pkg_jtag_axi4_lite_top.all;
 
-entity jtag_7seg_top is
+
+entity jtag_axi4_lite_top is
   generic (
-    SEL_ALTERA_VJTAG : boolean := false  -- Selection of the VJTAG component
+    SEL_ALTERA_VJTAG : boolean := false;  -- Selection of the VJTAG component
+    G_SIMULATION     : boolean := false   -- Simulation purpose
     );
   port (
-    clk   : in std_logic;                -- Clock System
-    rst_n : in std_logic;                -- Asynchronous Reset
+    clk   : in std_logic;                 -- Clock System
+    rst_n : in std_logic;                 -- Asynchronous Reset
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -57,9 +60,9 @@ entity jtag_7seg_top is
     ledg : out std_logic_vector(8 downto 0)  -- GREEN LEDS
     );
 
-end entity jtag_7seg_top;
+end entity jtag_axi4_lite_top;
 
-architecture rtl of jtag_7seg_top is
+architecture rtl of jtag_axi4_lite_top is
 
   -- == COMPONENTS ==
   component reset_gen is
@@ -74,7 +77,7 @@ architecture rtl of jtag_7seg_top is
   signal lcd_rdata     : std_logic_vector(7 downto 0);  -- LCD Read Data
   signal lcd_wdata     : std_logic_vector(7 downto 0);  -- LCD Write Data
   signal lcd_bidir_sel : std_logic;                     -- LCD Bidir Selector
-  
+
 begin  -- architecture rtl
 
   -- Instanciation of Reset generation
@@ -86,13 +89,20 @@ begin  -- architecture rtl
       );
 
   -- BIDIR MNGT
-  
+  -- BIDIR Management -- Write access when not G_POL
+  io_lcd_data <= lcd_wdata when lcd_bidir_sel = not C_LCD_BIDIR_POLARITY else (others => 'Z');
+  lcd_rdata   <= io_lcd_data; -- io LCD DATA not synchronized in clk clock domain (50MHz) because it's dynamic is slewer than the clock
+
   -- Instanciation of the CORE
   i_jtag_axi4_lite_core_0 : entity lib_jtag_axi4_lite_top.jtag_axi4_lite_core
     generic map (
-      G_AXI_DATA_WIDTH => 32,
-      G_AXI_ADDR_WIDTH => 16,
-      G_SLAVE_NB       => 2
+      G_AXI_DATA_WIDTH      => 32,
+      G_AXI_ADDR_WIDTH      => 16,
+      G_SLAVE_NB            => 2,
+      G_CLK_PERIOD_NS       => 20,      -- Clock Period in ns
+      G_BIDIR_POLARITY_READ => C_LCD_BIDIR_POLARITY,     -- BIDIR SEL Polarity
+      G_FIFO_ADDR_WIDTH     => 10,      -- FIFO ADDR WIDTH
+      G_SIMULATION          => G_SIMULATION
       )
     port map (
       clk_sys   => clk,

@@ -27,20 +27,23 @@ library lib_axi4_lite;
 use lib_axi4_lite.pkg_axi4_lite_interco_cutom.all;
 use lib_axi4_lite.pkg_axi4_lite_interco.all;
 
+library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
-
-
 library lib_jtag_axi4_lite_top;
 
 entity jtag_axi4_lite_core is
   generic (
-    G_AXI_DATA_WIDTH : integer range 32 to 64 := 32;  -- AXI DATA WIDTH
-    G_AXI_ADDR_WIDTH : integer range 8 to 32  := 16;  -- AXI ADDR WIDTH
-    G_SLAVE_NB       : integer range 2 to 16  := 2    -- Number of AXI4 Lite Slave
+    G_AXI_DATA_WIDTH      : integer range 32 to 64 := 32;    -- AXI DATA WIDTH
+    G_AXI_ADDR_WIDTH      : integer range 8 to 64  := 16;    -- AXI ADDR WIDTH
+    G_SLAVE_NB            : integer range 2 to 16  := 2;     -- Number of AXI4 Lite Slave
+    G_CLK_PERIOD_NS       : integer                := 20;    -- Clock Period in ns
+    G_BIDIR_POLARITY_READ : std_logic              := '0';   -- BIDIR SEL Polarity
+    G_FIFO_ADDR_WIDTH     : integer                := 10;    -- FIFO ADDR WIDTH
+    G_SIMULATION          : boolean                := false  -- Simulation Purpose
     );
   port (
-    clk_sys   : in std_logic;                         -- Clock System
-    rst_n_sys : in std_logic;                         -- Asynchronous Reset
+    clk_sys   : in std_logic;                                -- Clock System
+    rst_n_sys : in std_logic;                                -- Asynchronous Reset
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -237,56 +240,56 @@ architecture rtl of jtag_axi4_lite_core is
 
   -- end component axi4_lite_slave_itf;
 
-  component axi4_lite_7segs is
-    generic (
-      G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
-      G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
-      );
-    port (
-      clk   : in std_logic;                                   -- Clock
-      rst_n : in std_logic;                                   -- Asynchronous Reset
+  -- component axi4_lite_7segs is
+  --   generic (
+  --     G_AXI4_LITE_ADDR_WIDTH : integer range 8 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
+  --     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
+  --     );
+  --   port (
+  --     clk   : in std_logic;                                   -- Clock
+  --     rst_n : in std_logic;                                   -- Asynchronous Reset
 
-      -- Write Address Channel signals
-      awvalid : in  std_logic;                                              -- Address Write Valid
-      awaddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Address Write
-      awprot  : in  std_logic_vector(2 downto 0);                           -- Adress Write Prot
-      awready : out std_logic;                                              -- Address Write Ready
+  --     -- Write Address Channel signals
+  --     awvalid : in  std_logic;                                              -- Address Write Valid
+  --     awaddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  --     awprot  : in  std_logic_vector(2 downto 0);                           -- Adress Write Prot
+  --     awready : out std_logic;                                              -- Address Write Ready
 
-      -- Write Data Channel
-      wvalid : in  std_logic;                                                    -- Write Data Valid
-      wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Write Data
-      wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-      wready : out std_logic;                                                    -- Write data Ready
+  --     -- Write Data Channel
+  --     wvalid : in  std_logic;                                                    -- Write Data Valid
+  --     wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Write Data
+  --     wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  --     wready : out std_logic;                                                    -- Write data Ready
 
-      -- Write Response Channel
-      bready : in  std_logic;                     -- Write Channel Response
-      bvalid : out std_logic;                     -- Write Response Channel Valid
-      bresp  : out std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  --     -- Write Response Channel
+  --     bready : in  std_logic;                     -- Write Channel Response
+  --     bvalid : out std_logic;                     -- Write Response Channel Valid
+  --     bresp  : out std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-      -- Read Address Channel
-      arvalid : in  std_logic;                                              -- Read Channel Valid
-      araddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-      arprot  : in  std_logic_vector(2 downto 0);                           --  Read Address channel Ready Prot
-      arready : out std_logic;                                              -- Read Address Channel Ready
+  --     -- Read Address Channel
+  --     arvalid : in  std_logic;                                              -- Read Channel Valid
+  --     araddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  --     arprot  : in  std_logic_vector(2 downto 0);                           --  Read Address channel Ready Prot
+  --     arready : out std_logic;                                              -- Read Address Channel Ready
 
-      -- Read Data Channel
-      rready : in  std_logic;                                              -- Read Data Channel Ready
-      rvalid : out std_logic;                                              -- Read Data Channel Valid
-      rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-      rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
+  --     -- Read Data Channel
+  --     rready : in  std_logic;                                              -- Read Data Channel Ready
+  --     rvalid : out std_logic;                                              -- Read Data Channel Valid
+  --     rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  --     rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
 
-      -- 7 Segments
-      o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
-      o_seg1 : out std_logic_vector(6 downto 0);  -- SEG 1
-      o_seg2 : out std_logic_vector(6 downto 0);  -- SEG 2
-      o_seg3 : out std_logic_vector(6 downto 0);  -- SEG 3
-      o_seg4 : out std_logic_vector(6 downto 0);  -- SEG 4
-      o_seg5 : out std_logic_vector(6 downto 0);  -- SEG 5
-      o_seg6 : out std_logic_vector(6 downto 0);  -- SEG 6
-      o_seg7 : out std_logic_vector(6 downto 0)   -- SEG 7
-      );
+  --     -- 7 Segments
+  --     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
+  --     o_seg1 : out std_logic_vector(6 downto 0);  -- SEG 1
+  --     o_seg2 : out std_logic_vector(6 downto 0);  -- SEG 2
+  --     o_seg3 : out std_logic_vector(6 downto 0);  -- SEG 3
+  --     o_seg4 : out std_logic_vector(6 downto 0);  -- SEG 4
+  --     o_seg5 : out std_logic_vector(6 downto 0);  -- SEG 5
+  --     o_seg6 : out std_logic_vector(6 downto 0);  -- SEG 6
+  --     o_seg7 : out std_logic_vector(6 downto 0)   -- SEG 7
+  --     );
 
-  end component axi4_lite_7segs;
+  -- end component axi4_lite_7segs;
 
   component bit_extender is
     generic (
@@ -317,27 +320,32 @@ architecture rtl of jtag_axi4_lite_core is
 --  signal rst_n_synch : std_logic;
 
 
-  signal start_clk_jtag : std_logic;
-  signal addr           : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);
-  signal rnw            : std_logic;
-  signal strobe         : std_logic_vector((G_AXI_DATA_WIDTH/8) - 1 downto 0);
-  signal master_wdata   : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);
-  signal master_rdata   : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);
-  signal access_status  : std_logic_vector(1 downto 0);
-
+  -- VJTAG Signals
+  signal start_clk_jtag     : std_logic;
+  signal addr_vjtag         : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);
+  signal rnw                : std_logic;
+  signal strobe             : std_logic_vector((G_AXI_DATA_WIDTH/8) - 1 downto 0);
+  signal master_wdata_vjtag : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);
+  signal master_rdata       : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);
+  signal access_status      : std_logic_vector(1 downto 0);
+  signal master_wdata       : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);
+  signal start_master       : std_logic;  -- Start Master
+  signal addr_master        : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);
+  signal rnw_master         : std_logic;
+  signal strobe_master      : std_logic_vector((G_AXI_DATA_WIDTH/8) - 1 downto 0);
 
   -- # AXI4 Lite MASTER signals --
   -- Write Address Channel signals
-  signal awvalid_master : std_logic;                          -- Address Write Valid
+  signal awvalid_master : std_logic;                                        -- Address Write Valid
   signal awaddr_master  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_master  : std_logic_vector(2 downto 0);       -- Adress Write Prot
-  signal awready_master : std_logic;                          -- Address Write Ready
+  signal awprot_master  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_master : std_logic;                                        -- Address Write Ready
 
   -- Write Data Channel
-  signal wvalid_master : std_logic;                                -- Write Data Valid
+  signal wvalid_master : std_logic;                                              -- Write Data Valid
   signal wdata_master  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
   signal wstrb_master  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_master : std_logic;                                -- Write data Ready
+  signal wready_master : std_logic;                                              -- Write data Ready
 
   -- Write Response Channel
   signal bready_master : std_logic;                     -- Write Channel Response
@@ -345,31 +353,31 @@ architecture rtl of jtag_axi4_lite_core is
   signal bresp_master  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_master : std_logic;                          -- Read Channel Valid
+  signal arvalid_master : std_logic;                                        -- Read Channel Valid
   signal araddr_master  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_master  : std_logic_vector(2 downto 0);       --  Read Address channel Ready Prot
-  signal arready_master : std_logic;                          -- Read Address Channel Ready
+  signal arprot_master  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_master : std_logic;                                        -- Read Address Channel Ready
 
   -- Read Data Channel
-  signal rready_master : std_logic;                          -- Read Data Channel Ready
-  signal rvalid_master : std_logic;                          -- Read Data Channel Valid
+  signal rready_master : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_master : std_logic;                                        -- Read Data Channel Valid
   signal rdata_master  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_master  : std_logic_vector(1 downto 0);       -- Read Data Channel Response
+  signal rresp_master  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
   -- ------------------------
 
 
   -- # AXI4 Lite LCD signals --
   -- Write Address Channel signals
-  signal awvalid_lcd : std_logic;                          -- Address Write Valid
+  signal awvalid_lcd : std_logic;                                        -- Address Write Valid
   signal awaddr_lcd  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_lcd  : std_logic_vector(2 downto 0);       -- Adress Write Prot
-  signal awready_lcd : std_logic;                          -- Address Write Ready
+  signal awprot_lcd  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_lcd : std_logic;                                        -- Address Write Ready
 
   -- Write Data Channel
-  signal wvalid_lcd : std_logic;                                -- Write Data Valid
+  signal wvalid_lcd : std_logic;                                              -- Write Data Valid
   signal wdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
   signal wstrb_lcd  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_lcd : std_logic;                                -- Write data Ready
+  signal wready_lcd : std_logic;                                              -- Write data Ready
 
   -- Write Response Channel
   signal bready_lcd : std_logic;                     -- Write Channel Response
@@ -377,30 +385,30 @@ architecture rtl of jtag_axi4_lite_core is
   signal bresp_lcd  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_lcd : std_logic;                          -- Read Channel Valid
+  signal arvalid_lcd : std_logic;                                        -- Read Channel Valid
   signal araddr_lcd  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_lcd  : std_logic_vector(2 downto 0);       --  Read Address channel Ready Prot
-  signal arready_lcd : std_logic;                          -- Read Address Channel Ready
+  signal arprot_lcd  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_lcd : std_logic;                                        -- Read Address Channel Ready
 
   -- Read Data Channel
-  signal rready_lcd : std_logic;                          -- Read Data Channel Ready
-  signal rvalid_lcd : std_logic;                          -- Read Data Channel Valid
+  signal rready_lcd : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_lcd : std_logic;                                        -- Read Data Channel Valid
   signal rdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_lcd  : std_logic_vector(1 downto 0);       -- Read Data Channel Response
+  signal rresp_lcd  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
   -- ------------------------
 
   -- # AXI4 Lite 7 SEGS signals --
   -- Write Address Channel signals
-  signal awvalid_7segs : std_logic;                          -- Address Write Valid
+  signal awvalid_7segs : std_logic;                                        -- Address Write Valid
   signal awaddr_7segs  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_7segs  : std_logic_vector(2 downto 0);       -- Adress Write Prot
-  signal awready_7segs : std_logic;                          -- Address Write Ready
+  signal awprot_7segs  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_7segs : std_logic;                                        -- Address Write Ready
 
   -- Write Data Channel
-  signal wvalid_7segs : std_logic;                                -- Write Data Valid
+  signal wvalid_7segs : std_logic;                                              -- Write Data Valid
   signal wdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
   signal wstrb_7segs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_7segs : std_logic;                                -- Write data Ready
+  signal wready_7segs : std_logic;                                              -- Write data Ready
 
   -- Write Response Channel
   signal bready_7segs : std_logic;                     -- Write Channel Response
@@ -408,16 +416,16 @@ architecture rtl of jtag_axi4_lite_core is
   signal bresp_7segs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_7segs : std_logic;                          -- Read Channel Valid
+  signal arvalid_7segs : std_logic;                                        -- Read Channel Valid
   signal araddr_7segs  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_7segs  : std_logic_vector(2 downto 0);       --  Read Address channel Ready Prot
-  signal arready_7segs : std_logic;                          -- Read Address Channel Ready
+  signal arprot_7segs  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_7segs : std_logic;                                        -- Read Address Channel Ready
 
   -- Read Data Channel
-  signal rready_7segs : std_logic;                          -- Read Data Channel Ready
-  signal rvalid_7segs : std_logic;                          -- Read Data Channel Valid
+  signal rready_7segs : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_7segs : std_logic;                                        -- Read Data Channel Valid
   signal rdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_7segs  : std_logic_vector(1 downto 0);       -- Read Data Channel Response
+  signal rresp_7segs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
   -- ------------------------
 
   -- # AXI4 Lite Interconnect Masters signals
@@ -453,7 +461,7 @@ architecture rtl of jtag_axi4_lite_core is
 
   signal start_clk_r_edge : std_logic;  -- Rising Edge of start
 
-  signal done_clk      : std_logic;     -- Done signal in clk clock domain
+  signal done_master   : std_logic;     -- Done signal in clk clock domain
   signal done_extended : std_logic;     -- Done signal extended in clk clock domain
 
 
@@ -508,8 +516,8 @@ begin  -- architecture rtl
 -- TCK JTAG has a maximal frequency of 10MHz and may vary
   i_vjtag_intf_0 : vjtag_intf
     generic map (
-      G_DATA_WIDTH => 32,
-      G_ADDR_WIDTH => 32,
+      G_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
       G_IR_WIDTH   => 6
       )
     port map(
@@ -523,8 +531,8 @@ begin  -- architecture rtl
       udr   => udr,
       cdr   => cdr,
 
-      addr        => addr,
-      data_out    => master_wdata,
+      addr        => addr_vjtag,
+      data_out    => master_wdata_vjtag,
       data_in     => master_rdata,
       data_in_val => done_extended_clk_jtag_r_edge,
       rnw         => rnw,
@@ -638,7 +646,7 @@ begin  -- architecture rtl
 
 
   -- Instanciation of bit extender
-  -- Extender the pulse done_clk in x width in order to be detected in the
+  -- Extender the pulse done_master in x width in order to be detected in the
   -- slower clock domain clk_jtag
   i_bit_extender_0 : bit_extender
     generic map(
@@ -647,9 +655,29 @@ begin  -- architecture rtl
     port map (
       clk_sys   => clk_sys,
       rst_n     => rst_n_sys,
-      pulse_in  => done_clk,
+      pulse_in  => done_master,
       pulse_out => done_extended
       );
+
+
+
+
+  -- Bypass
+  -- Force to '0' inputs of AXI4 Lite Master
+  -- Theses inputs will be drived by the testbench
+  g_bypass_altera_vjtag : if(G_SIMULATION = true) generate
+
+  end generate;
+
+  -- NO BYPASS
+  -- Connect Signals from vjtag to AXI4 Lite Master
+  g_no_bypass_altera_vjtag : if(G_SIMULATION = false) generate
+    start_master  <= start_clk_r_edge;
+    addr_master   <= addr_vjtag;
+    rnw_master    <= rnw;
+    strobe_master <= strobe;
+    master_wdata  <= master_wdata_vjtag;
+  end generate;
 
   -- Instanciation of AXI4 LITE MASTER
   i_axi4_lite_master_0 : entity lib_axi4_lite.axi4_lite_master
@@ -661,12 +689,12 @@ begin  -- architecture rtl
       clk   => clk_sys,
       rst_n => rst_n_sys,
 
-      start         => start_clk_r_edge,
-      addr          => addr,
-      rnw           => rnw,
-      strobe        => strobe,
+      start         => start_master,
+      addr          => addr_master,
+      rnw           => rnw_master,
+      strobe        => strobe_master,
       master_wdata  => master_wdata,
-      done          => done_clk,
+      done          => done_master,
       master_rdata  => master_rdata,
       access_status => access_status,
 
@@ -832,7 +860,7 @@ begin  -- architecture rtl
 
 
   -- Instanciation of AXI4 LITE 7 SEGMENT Controller
-  i_axi4_lite_7segs_0 : axi4_lite_7segs
+  i_axi4_lite_7segs_0 : entity lib_axi4_lite_7seg.axi4_lite_7segs
     generic map (
       G_AXI4_LITE_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
       G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH
@@ -885,7 +913,10 @@ begin  -- architecture rtl
   i_axi4_lite_lcd_0 : entity lib_axi4_lite_lcd.axi4_lite_lcd
     generic map (
       G_AXI4_LITE_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
-      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_CLK_PERIOD_NS        => G_CLK_PERIOD_NS,
+      G_BIDIR_POLARITY_READ  => G_BIDIR_POLARITY_READ,
+      G_FIFO_ADDR_WIDTH      => G_FIFO_ADDR_WIDTH
       )
     port map(
       clk_sys   => clk_sys,

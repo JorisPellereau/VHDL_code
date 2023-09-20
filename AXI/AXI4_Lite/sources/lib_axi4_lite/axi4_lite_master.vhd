@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-19
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,38 +32,38 @@ entity axi4_lite_master is
     clk   : in std_logic;               -- Clock system
     rst_n : in std_logic;               -- Asynchronous Reset
 
-    start         : in  std_logic;      -- Start the access
-    addr          : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr of the access
-    rnw           : in  std_logic;      -- Read ('1') or Write ('0') access
+    start         : in  std_logic;                                          -- Start the access
+    addr          : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);        -- Addr of the access
+    rnw           : in  std_logic;                                          -- Read ('1') or Write ('0') access
     strobe        : in  std_logic_vector((G_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
-    master_wdata  : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Write Data
-    done          : out std_logic;      -- Access done
-    master_rdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Read Data
-    access_status : out std_logic_vector(1 downto 0);  -- Access Status
+    master_wdata  : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- Write Data
+    done          : out std_logic;                                          -- Access done
+    master_rdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- Read Data
+    access_status : out std_logic_vector(1 downto 0);                       -- Access Status
 
-    awvalid : out std_logic;            -- Address Write Valid
+    awvalid : out std_logic;                                    -- Address Write Valid
     awaddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Address Write    
-    awprot  : out std_logic_vector(2 downto 0);  -- Adress Write Prot
-    awready : in  std_logic;            -- Address Write Ready
+    awprot  : out std_logic_vector(2 downto 0);                 -- Adress Write Prot
+    awready : in  std_logic;                                    -- Address Write Ready
 
-    wvalid : out std_logic;             -- Write Data Valid
+    wvalid : out std_logic;                                    -- Write Data Valid
     wdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Write Data
     wstrb  : out std_logic_vector((G_DATA_WIDTH / 8) - 1 downto 0);
-    wready : in  std_logic;             -- Write data Ready
+    wready : in  std_logic;                                    -- Write data Ready
 
     bready : out std_logic;                     -- Write Channel Response
     bvalid : in  std_logic;                     -- Write Response Channel Valid
     bresp  : in  std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-    arvalid : out std_logic;            -- Read Channel Valid
+    arvalid : out std_logic;                                    -- Read Channel Valid
     araddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-    arprot  : out std_logic_vector(2 downto 0);  --  Read Address channel Ready Prot
-    arready : in  std_logic;            -- Read Address Channel Ready
+    arprot  : out std_logic_vector(2 downto 0);                 --  Read Address channel Ready Prot
+    arready : in  std_logic;                                    -- Read Address Channel Ready
 
-    rready : out std_logic;             -- Read Data Channel Ready
-    rvalid : in  std_logic;             -- Read Data Channel Valid
+    rready : out std_logic;                                    -- Read Data Channel Ready
+    rvalid : in  std_logic;                                    -- Read Data Channel Valid
     rdata  : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-    rresp  : in  std_logic_vector(1 downto 0)  -- Read Data Channel Resp
+    rresp  : in  std_logic_vector(1 downto 0)                  -- Read Data Channel Resp
     );
 end entity axi4_lite_master;
 
@@ -82,8 +82,9 @@ architecture rtl of axi4_lite_master is
   signal wvalid_int  : std_logic;       -- WVALID
   signal bready_int  : std_logic;       -- BREADY
 
-  signal addr_int         : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- ADDR
-  signal master_wdata_int : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- WDATA
+  signal addr_int         : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);      -- ADDR
+  signal master_wdata_int : std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- WDATA
+  signal strobe_int       : std_logic_vector((G_DATA_WIDTH/8) - 1 downto 0);  -- Strobe
 
   signal rnw_int : std_logic;           -- Read or write access latched
   signal start_p : std_logic;
@@ -108,11 +109,13 @@ begin  -- architecture rtl
       addr_int         <= (others => '0');
       master_wdata_int <= (others => '0');
       rnw_int          <= '0';
+      strobe_int       <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
       if(start = '1') then
         addr_int         <= addr;
         master_wdata_int <= master_wdata;
         rnw_int          <= rnw;
+        strobe_int       <= strobe;
       end if;
     end if;
   end process p_latch_inputs;
@@ -175,7 +178,7 @@ begin  -- architecture rtl
 
   -- Computes Next States
 
-  p_update_ns : process (current_state, start_p, rnw_int, addr, strobe, arvalid_int, arready, rvalid,
+  p_update_ns : process (current_state, start_p, rnw_int, addr, arvalid_int, arready, rvalid,
                          rready_int, awvalid_int, awready, wvalid_int, wready, bvalid, bready_int) is
   begin  -- process p_update_ns
     case current_state is
@@ -243,11 +246,11 @@ begin  -- architecture rtl
   awvalid <= awvalid_int;
   wvalid  <= wvalid_int;
   bready  <= bready_int;
-  wstrb   <= strobe;
 
   awaddr <= addr_int         when current_state = ST_WADDR else (others => '0');
   araddr <= addr_int         when current_state = ST_RADDR else (others => '0');
   wdata  <= master_wdata_int when current_state = ST_WDATA else (others => '0');
+  wstrb  <= strobe_int       when current_state = ST_WDATA else (others => '0');
   awprot <= (others                                                     => '0');  -- Not Used
   arprot <= (others                                                     => '0');  -- Not Used
 

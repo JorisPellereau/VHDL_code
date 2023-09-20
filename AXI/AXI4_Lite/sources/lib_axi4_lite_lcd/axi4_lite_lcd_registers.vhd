@@ -28,7 +28,7 @@ use lib_axi4_lite_lcd.axi4_lite_lcd_pkg.all;
 
 entity axi4_lite_lcd_registers is
   generic (
-    G_ADDR_WIDTH : integer                := 4;  -- USEFULL ADDR WIDTH
+    G_ADDR_WIDTH : integer range 4 to 16  := 4;  -- USEFULL ADDR WIDTH
     G_DATA_WIDTH : integer range 32 to 64 := 32  -- AXI4 Lite DATA WIDTH
     );
   port (
@@ -98,11 +98,11 @@ begin  -- architecture rtl
 
       -- Set the corresponding bit to '1' if the address correspond to an
       -- exsisting address from the number of possible address      
-      if(unsigned(slv_addr) = to_unsigned((i*G_DATA_WIDTH)/8, slv_addr'length)) then
+      if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) = to_unsigned((i*G_DATA_WIDTH)/8, C_USEFUL_LSBITS)) then
 
         -- If different from REG2 ADDR -> Write access is authorized
         -- otherwise it is forbidden ('0')
-        if(unsigned(slv_addr) /= unsigned(C_REG2_ADDR)) then  --, slv_addr'length)) then
+        if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) /= unsigned(C_REG2_ADDR)) then  --, slv_addr'length)) then
           reg_wr_sel(i) <= '1';
         else
           reg_wr_sel(i) <= '0';
@@ -272,7 +272,7 @@ begin  -- architecture rtl
 
       -- Ack for a read access into a regular register
       -- Generates an error if the addr is greater than the last accessible addr C_REG2_ADDR
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(3 downto 0) > C_REG2_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG2_ADDR) then
         slv_status <= "10";
 
       -- No Error generated
@@ -292,17 +292,17 @@ begin  -- architecture rtl
 
       -- RDATA for Regular registers
       -- Set RDATA when reading REG0
-      if(slv_start = '1' and slv_rw = '1' and slv_addr(3 downto 0) = C_REG0_ADDR) then
+      if(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG0_ADDR) then
         slv_rdata <= x"0" & "00" & cursor_disp_config_register & x"0" & "0" & disp_on_off_config_register &
                      x"0" & "0" & entry_mode_set_config_register & x"0" & "000" & ctrl_register;
 
       -- Set RDATA when reading REG1
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(3 downto 0) = C_REG1_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG1_ADDR) then
         slv_rdata <= lcd_cmds_0_register & "000" & char_position_register & wdata_display_register &
                      x"0" & "0" & func_set_config_register;
 
       -- Set RDATA when reading REG2
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(3 downto 0) = C_REG2_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG2_ADDR) then
         slv_rdata <= x"00000000" & "00" & lcd_status_register;
 
       -- Otherwise REturn (others => '0');
