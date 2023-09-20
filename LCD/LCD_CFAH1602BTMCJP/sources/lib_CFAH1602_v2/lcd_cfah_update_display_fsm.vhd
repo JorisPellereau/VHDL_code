@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-15
--- Last update: 2023-09-17
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ begin  -- architecture rtl
       -- Only one char is updated in this case -> Get the char position (0:31)
       -- and transform it into the display DDRAM ADDR (0x00:0x0F / 0x40:0x4F)
       elsif(i_update_one_char = '1') then
-        o_ddram_data_or_addr <= i_char_position(4) & "00" & i_char_position(3 downto 0);
+        o_ddram_data_or_addr <= "0" & i_char_position(4) & "00" & i_char_position(3 downto 0);
 
       -- Update o_ddram_data_or_add with rdata on valid
       elsif(rdata_val = '1') then

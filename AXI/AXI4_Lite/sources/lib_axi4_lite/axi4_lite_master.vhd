@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-04
+-- Last update: 2023-09-19
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -27,7 +27,6 @@ entity axi4_lite_master is
   generic (
     G_DATA_WIDTH : integer range 8 to 32 := 32;   -- DATA WIDTH
     G_ADDR_WIDTH : integer range 8 to 32 := 32);  -- ADDR WIDTH
-
   port(
 
     clk   : in std_logic;               -- Clock system

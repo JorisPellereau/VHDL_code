@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-18
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,9 +47,10 @@ entity axi4_lite_lcd_registers is
     slv_status : out std_logic_vector(1 downto 0);                 -- Slave status
 
     -- Registers Interface
+    lcd_on             : out std_logic;                     -- LCD ON
     update_all_lcd     : out std_logic;                     -- UPDATE LCD Command
     update_one_char    : out std_logic;                     -- UPDATE Once Char command
-    char_position      : out std_logic_vector(5 downto 0);  -- Char Position
+    char_position      : out std_logic_vector(4 downto 0);  -- Char Position
     wr_en_fifo_display : out std_logic;                     -- Write Enable Data fifo display
     wdata_fifo_display : out std_logic_vector(7 downto 0);  -- Write Data FIFO Display
     dl_n_f             : out std_logic_vector(2 downto 0);  -- DL N F Configuration
@@ -101,7 +102,7 @@ begin  -- architecture rtl
 
         -- If different from REG2 ADDR -> Write access is authorized
         -- otherwise it is forbidden ('0')
-        if(unsigned(slv_addr) /= to_unsigned(C_REG2_ADDR, slv_addr'length)) then
+        if(unsigned(slv_addr) /= unsigned(C_REG2_ADDR)) then  --, slv_addr'length)) then
           reg_wr_sel(i) <= '1';
         else
           reg_wr_sel(i) <= '0';
@@ -174,7 +175,7 @@ begin  -- architecture rtl
     if rst_n = '0' then                 -- asynchronous reset (active low)
       func_set_config_register <= (others => '0');
       wdata_display_register   <= (others => '0');
-      char_position_regist     <= (others => '0');
+      char_position_register   <= (others => '0');
       lcd_cmds_0_register      <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
 
@@ -319,8 +320,9 @@ begin  -- architecture rtl
   lcd_status_register(1) <= fifo_empty_display;
 
   -- == OUTPUTS Affectation ==
+  lcd_on             <= ctrl_register(0);
   update_all_lcd     <= lcd_cmds_0_register(6);
-  update_one_char    <= cd_cmds_0_register(7);
+  update_one_char    <= lcd_cmds_0_register(7);
   char_position      <= char_position_register;
   wr_en_fifo_display <= wr_en_fifo_display_int;
   wdata_fifo_display <= wdata_display_register;

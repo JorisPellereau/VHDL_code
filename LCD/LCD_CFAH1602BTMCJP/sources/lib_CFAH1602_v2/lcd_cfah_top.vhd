@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-09-17
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,10 +41,10 @@ entity lcd_cfah_top is
     rst_n : in std_logic;                      -- Asynchronous Reset
 
     -- LCD DISPLAY CTRL
-    i_update_all_lcd     : in std_logic;  -- Update the entire LCD display command
-    i_update_one_char    : in std_logic;  -- Update one character command
-    i_char_position      : in std_logic_vector(5 downto 0);  -- Character number
-    i_wr_en_fifo_display : in std_logic;  -- Write Enable the FIFO DATA DISPLAY
+    i_update_all_lcd     : in std_logic;                     -- Update the entire LCD display command
+    i_update_one_char    : in std_logic;                     -- Update one character command
+    i_char_position      : in std_logic_vector(4 downto 0);  -- Character number
+    i_wr_en_fifo_display : in std_logic;                     -- Write Enable the FIFO DATA DISPLAY
     i_wdata_fifo_display : in std_logic_vector(7 downto 0);  -- FIFO Write data
 
     -- LCD Config Bus
@@ -80,7 +80,7 @@ architecture rtl of lcd_cfah_top is
   signal s_init_ongoing             : std_logic;
   signal s_init_done                : std_logic;
   signal s_cmd_bus_cmd_generator    : std_logic_vector(10 downto 0);  -- Command bus to command generator
-  signal s_cmd_req_poll             : std_logic;  -- Command request from polling block
+  signal s_cmd_req_poll             : std_logic;                      -- Command request from polling block
   signal s_id_sh_to_cmd_generator   : std_logic_vector(1 downto 0);
   signal s_dcb_to_cmd_generator     : std_logic_vector(2 downto 0);
   signal s_sc_rl_cmd_generator      : std_logic_vector(1 downto 0);
@@ -93,26 +93,26 @@ architecture rtl of lcd_cfah_top is
   signal s_rs                       : std_logic;
   signal s_start                    : std_logic;
   signal s_start_polling            : std_logic;
-  signal s_lcd_rdata                : std_logic_vector(7 downto 0);  -- LCD RDATA
+  signal s_lcd_rdata                : std_logic_vector(7 downto 0);   -- LCD RDATA
   signal s_lcd_itf_done             : std_logic;
-  signal start_init                 : std_logic;  -- Start INIT signal
+  signal start_init                 : std_logic;                      -- Start INIT signal
   signal s_cmds                     : std_logic_vector(10 downto 0);  -- Commands from
   signal s_cmd_bus_poll             : std_logic_vector(10 downto 0);
-  signal s_done_cmd_init            : std_logic;  -- Command done to INIT module
-  signal s_function_set_init        : std_logic;  -- FUNCTION SET from INIT
-  signal s_display_ctrl_init        : std_logic;  -- Display CTRL from INIT
-  signal s_entry_mode_set_init      : std_logic;  -- Entry Mode SET from INIT
-  signal s_clear_display_init       : std_logic;  -- Clear Display from INIT
-  signal s_cmd_req_init             : std_logic;  -- Command request from INIT Module
-  signal s_cmd_req_cmd_generator    : std_logic;  -- Command request to cmd generator
-  signal s_done_cmd_poll            : std_logic;  -- Command done to poll block
-  signal dl_n_f_init                : std_logic_vector(2 downto 0);  -- DL N F Initialization value
-  signal polling_done               : std_logic;  -- Polling Ready Flag
-  signal set_ddram_addr_display     : std_logic;  -- SET DDRAM Command from DISPLAY UPDATE block
-  signal wr_data_display            : std_logic;  -- WR_DATA Command from DISPLAY UPDATE block
-  signal ddram_data_or_addr_display : std_logic;  -- DDRAM DATA or ADDR from DISPLAY UPDATE block
-  signal start_display              : std_logic;  -- Start from DISPLAY UPDATE block
-  signal update_display_done        : std_logic;  -- Update Display ON
+  signal s_done_cmd_init            : std_logic;                      -- Command done to INIT module
+  signal s_function_set_init        : std_logic;                      -- FUNCTION SET from INIT
+  signal s_display_ctrl_init        : std_logic;                      -- Display CTRL from INIT
+  signal s_entry_mode_set_init      : std_logic;                      -- Entry Mode SET from INIT
+  signal s_clear_display_init       : std_logic;                      -- Clear Display from INIT
+  signal s_cmd_req_init             : std_logic;                      -- Command request from INIT Module
+  signal s_cmd_req_cmd_generator    : std_logic;                      -- Command request to cmd generator
+  signal s_done_cmd_poll            : std_logic;                      -- Command done to poll block
+  signal dl_n_f_init                : std_logic_vector(2 downto 0);   -- DL N F Initialization value
+  signal polling_done               : std_logic;                      -- Polling Ready Flag
+  signal set_ddram_addr_display     : std_logic;                      -- SET DDRAM Command from DISPLAY UPDATE block
+  signal wr_data_display            : std_logic;                      -- WR_DATA Command from DISPLAY UPDATE block
+  signal ddram_data_or_addr_display : std_logic_vector(7 downto 0);   -- DDRAM DATA or ADDR from DISPLAY UPDATE block
+  signal start_display              : std_logic;                      -- Start from DISPLAY UPDATE block
+  signal update_display_done        : std_logic;                      -- Update Display ON
 
 begin  -- architecture rtl
 
@@ -154,7 +154,7 @@ begin  -- architecture rtl
       );
 
   -- Instanciation of LCD DISPLAY UPDATE
-  i_lcd_cfah_update_display_0 : lcd_cfah_update_display
+  i_lcd_cfah_update_display_0 : entity lib_CFAH1602_v2.lcd_cfah_update_display
     generic map (
       G_DATA_WIDTH => G_DATA_WIDTH,
       G_ADDR_WIDTH => G_FIFO_ADDR_WIDTH

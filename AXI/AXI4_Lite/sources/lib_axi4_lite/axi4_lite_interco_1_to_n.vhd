@@ -22,6 +22,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_axi4_lite;
 use lib_axi4_lite.pkg_axi4_lite_interco.all;
@@ -93,7 +94,6 @@ entity axi4_lite_interco_1_to_n is
     rvalid_m : in  std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Read Data Channel Valid
     rdata_m  : in  t_data_array(0 to G_SLAVE_NB - 1);          -- Read Data Channel rdata
     rresp_m  : in  t_resp_array(0 to G_SLAVE_NB - 1)           -- Read Data Channel Resp
-
     );
 
 end entity axi4_lite_interco_1_to_n;
@@ -109,7 +109,7 @@ architecture rtl of axi4_lite_interco_1_to_n is
   signal slv_strobe : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Slave Strobe
   signal slv_done   : std_logic;                                              -- Slave Done
   signal slv_rdata  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Slave Read Data
-  signal slv_strobe : std_logic_vector(1 downto 0);                           -- Status
+  signal slv_status : std_logic_vector(1 downto 0);                           -- Status
 
   -- Decoder signals
   signal sel_idx_comb       : unsigned(3 downto 0);  -- Slave Index Selection combinatory
@@ -190,7 +190,7 @@ begin  -- architecture rtl
     for i in 0 to G_SLAVE_NB - 1 loop
 
       -- Selection of the Slave Index in function of the slv_addr
-      if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(i)) and unsigned(slv_addr) < C_SLV_ADDR_MAX_ARRAY(i)) then
+      if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(i)) and unsigned(slv_addr) < unsigned(C_SLV_ADDR_MAX_ARRAY(i))) then
         sel_idx_comb <= to_unsigned(i, sel_idx_comb'length);
       end if;
 
@@ -203,7 +203,7 @@ begin  -- architecture rtl
   p_addr_decoder_valid : process (slv_addr) is
   begin  -- process p_addr_decoder_valid
 
-    if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(0)) and unsigned(slv_addr) < C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1)) then
+    if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(0)) and unsigned(slv_addr) < unsigned(C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1))) then
       sel_idx_comb_valid <= '1';
     else
       sel_idx_comb_valid <= '0';
@@ -221,7 +221,7 @@ begin  -- architecture rtl
       addr_master   <= (others => (others => '0'));
       rnw_master    <= (others => '0');
       wdata_master  <= (others => (others => '0'));
-      strobe_master <= (others => '0');
+      strobe_master <= (others => (others => '0'));
       sel_idx_latch <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
@@ -245,7 +245,7 @@ begin  -- architecture rtl
         addr_master   <= (others => (others => '0'));
         rnw_master    <= (others => '0');
         wdata_master  <= (others => (others => '0'));
-        strobe_master <= (others => '0');
+        strobe_master <= (others => (others => '0'));
       end if;
 
     end if;
@@ -283,7 +283,7 @@ begin  -- architecture rtl
   -- There is one master per SLave Number
   g_axi4_lite_masters : for i in 0 to G_SLAVE_NB -1 generate
 
-    i_axi4_lite_master_0 : axi4_lite_master
+    i_axi4_lite_master_0 : entity lib_axi4_lite.axi4_lite_master
       generic map(
         G_DATA_WIDTH => G_AXI_DATA_WIDTH,
         G_ADDR_WIDTH => G_AXI_ADDR_WIDTH

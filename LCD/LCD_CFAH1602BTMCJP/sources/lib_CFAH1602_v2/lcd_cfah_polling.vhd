@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-12
--- Last update: 2023-09-17
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ begin  -- architecture rtl
       -- Generates the Busy command on start pulse or during the polling state
       -- if the busy flag is not equals to '0'
       if(i_start = '1' or (poll_ongoing = '1' and i_done = '1' and i_lcd_rdata(7) = '1')) then
-        o_cmds <= (others => '0', C_READ_BUSY_FLAG => '1');
+        o_cmds <= (C_READ_BUSY_FLAG => '1', others => '0');
         o_cmd_req                <= '1';
 
       -- Generates the selected command

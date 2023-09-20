@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-09-18
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,6 +23,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 library lib_axi4_lite;
+library lib_axi4_lite_lcd;
 library lib_CFAH1602_v2;
 
 entity axi4_lite_lcd is
@@ -79,17 +80,19 @@ end entity axi4_lite_lcd;
 architecture rtl of axi4_lite_lcd is
 
   -- == INTERNAL Signals ==
+  signal slv_start  : std_logic;                                                  -- Start the access
   signal slv_rw     : std_logic;                                                  -- Read or Write Access
-  signal slv_addr   : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      --ADDR to reach
-  signal slv_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      --Write Data
+  signal slv_addr   : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      -- ADDR to reach
+  signal slv_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Write Data
   signal slv_strobe : std_logic_vector((G_AXI4_LITE_DATA_WIDTH/8) - 1 downto 0);  -- Write Strobe
   signal slv_done   : std_logic;                                                  -- Access done
-  signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      --Slave read data
+  signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
   signal slv_status : std_logic_vector(1 downto 0);                               -- Slave status
 
+  signal lcd_on             : std_logic;                     -- LCD ON
   signal update_all_lcd     : std_logic;                     -- UPDATE LCD Command
   signal update_one_char    : std_logic;                     -- UPDATE Once Char command
-  signal char_position      : std_logic_vector(5 downto 0);  -- Char Position
+  signal char_position      : std_logic_vector(4 downto 0);  -- Char Position
   signal wr_en_fifo_display : std_logic;                     -- Write Enable Data fifo display
   signal wdata_fifo_display : std_logic_vector(7 downto 0);  -- Write Data FIFO Display
   signal dl_n_f             : std_logic_vector(2 downto 0);  -- DL N F Configuration
@@ -155,7 +158,7 @@ begin  -- architecture rtl
 
 
   -- Instanciation of LCD REGISTERS
-  i_axi4_lite_lcd_registers_0 : axi4_lite_lcd_registers
+  i_axi4_lite_lcd_registers_0 : entity lib_axi4_lite_lcd.axi4_lite_lcd_registers
     generic map(
       G_ADDR_WIDTH => 4,                -- USEFULL ADDR WIDTH
       G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH
@@ -176,6 +179,7 @@ begin  -- architecture rtl
       slv_status => slv_status,
 
       -- Registers Interface
+      lcd_on             => lcd_on,
       update_all_lcd     => update_all_lcd,
       update_one_char    => update_one_char,
       char_position      => char_position,

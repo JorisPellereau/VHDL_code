@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-24
--- Last update: 2023-09-17
+-- Last update: 2023-09-20
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,6 +23,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library lib_CFAH1602_v2;
 library lib_fifo_wrapper;
 
 entity lcd_cfah_update_display is
@@ -74,7 +75,7 @@ architecture rtl of lcd_cfah_update_display is
 begin  -- architecture rtl
 
   -- Instanciation of the FSM
-  i_lcd_cfah_update_display_fsm_0 : lcd_cfah_update_display_fsm
+  i_lcd_cfah_update_display_fsm_0 : entity lib_CFAH1602_v2.lcd_cfah_update_display_fsm
     generic map (
       G_DATA_WIDTH => G_DATA_WIDTH,
       G_ADDR_WIDTH => G_ADDR_WIDTH
