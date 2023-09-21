@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-09-20
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -82,8 +82,8 @@ architecture rtl of jtag_axi4_lite_core is
     port (
       tdi                : out std_logic;                                        -- tdi
       tdo                : in  std_logic                    := 'X';              -- tdo
-      ir_in              : out std_logic_vector(5 downto 0);                     -- ir_in
-      ir_out             : in  std_logic_vector(5 downto 0) := (others => 'X');  -- ir_out107
+      ir_in              : out std_logic_vector(7 downto 0);                     -- ir_in
+      ir_out             : in  std_logic_vector(7 downto 0) := (others => 'X');  -- ir_out
       virtual_state_cdr  : out std_logic;                                        -- virtual_state_cdr
       virtual_state_sdr  : out std_logic;                                        -- virtual_state_sdr
       virtual_state_e1dr : out std_logic;                                        -- virtual_state_e1dr
@@ -96,31 +96,12 @@ architecture rtl of jtag_axi4_lite_core is
       );
   end component altera_vjtag;
 
-  -- Component altera VJTAG with 24 IR length
-  component altera_vjtag_24ir is
-    port (
-      tdi                : out std_logic;                                         -- tdi
-      tdo                : in  std_logic                     := 'X';              -- tdo
-      ir_in              : out std_logic_vector(23 downto 0);                     -- ir_in
-      ir_out             : in  std_logic_vector(23 downto 0) := (others => 'X');  -- ir_out
-      virtual_state_cdr  : out std_logic;                                         -- virtual_state_cdr
-      virtual_state_sdr  : out std_logic;                                         -- virtual_state_sdr
-      virtual_state_e1dr : out std_logic;                                         -- virtual_state_e1dr
-      virtual_state_pdr  : out std_logic;                                         -- virtual_state_pdr
-      virtual_state_e2dr : out std_logic;                                         -- virtual_state_e2dr
-      virtual_state_udr  : out std_logic;                                         -- virtual_state_udr
-      virtual_state_cir  : out std_logic;                                         -- virtual_state_cir
-      virtual_state_uir  : out std_logic;                                         -- virtual_state_uir
-      tck                : out std_logic                                          -- clk
-      );
-  end component altera_vjtag_24ir;
-
   component vjtag_intf is
 
     generic (
       G_DATA_WIDTH : integer range 1 to 32 := 32;  -- DAta Width
       G_ADDR_WIDTH : integer range 8 to 32 := 32;
-      G_IR_WIDTH   : integer range 6 to 24 := 6);  -- VJTAG IR Width
+      G_IR_WIDTH   : integer range 8 to 24 := 8);  -- VJTAG IR Width
     port (
       clk_jtag   : in std_logic;                   -- JTAG Clock
       rst_n_jtag : in std_logic;                   -- Asynchronous Reset
@@ -130,14 +111,16 @@ architecture rtl of jtag_axi4_lite_core is
       ir_in : in  std_logic_vector(G_IR_WIDTH - 1 downto 0);  -- IR IN Vector
       sdr   : in  std_logic;                                  -- SDR state from Virtual JTAG
       udr   : in  std_logic;                                  -- UDR state from Virtual JTAG
-      cdr   : in  std_logic;
+      cdr   : in  std_logic;                                  -- CDR statue from Virtual JTAG
 
-      addr        : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr
-      data_out    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data out
-      data_in     : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- DATA IN to read
-      data_in_val : in  std_logic;                                    -- Data in Valid
-      rnw         : out std_logic;                                    -- Read not Write signal
-      start       : out std_logic);                                   -- Start Read or Write Access
+      addr          : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);      -- Addr
+      data_out      : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- Data out
+      data_in       : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- DATA IN to read
+      data_in_val   : in  std_logic;                                        -- Data in Valid
+      access_status : in  std_logic_vector(1 downto 0);                     -- Access status
+      rnw           : out std_logic;                                        -- Read not Write signal
+      strobe        : out std_logic_vector((G_DATA_WIDTH/8) - 1 downto 0);  -- Strobe signal
+      start         : out std_logic);
 
   end component vjtag_intf;
 
@@ -315,7 +298,7 @@ architecture rtl of jtag_axi4_lite_core is
   signal udr   : std_logic;
   signal uir   : std_logic;
   signal cir   : std_logic;
-  signal ir_in : std_logic_vector(23 downto 0);
+  signal ir_in : std_logic_vector(7 downto 0);
 
 --  signal rst_n_synch : std_logic;
 
@@ -470,35 +453,19 @@ architecture rtl of jtag_axi4_lite_core is
   signal done_extended_clk_jtag        : std_logic;  -- Done extended resynchronize in clk_jtag clock domain
   signal done_extended_clk_jtag_r_edge : std_logic;  -- rising edge
 
-  signal cnt_sdr    : unsigned(8 downto 0);  -- SDR Counter
-  signal sdr_p      : std_logic;             -- SDR pipe one time
-  signal sdr_r_edge : std_logic;             -- SDR Rising edge detection
-  signal sdr_f_edge : std_logic;             -- SDR Falling edge detection
-
-  signal ledr_int : std_logic_vector(17 downto 0);  -- RED LEDS
-
+  signal ledr_int  : std_logic_vector(17 downto 0);  -- RED LEDS
   signal shift_reg : std_logic_vector(31 downto 0);  -- Get TDI data
 
 begin  -- architecture rtl
 
-  -- Instanciation of Reset generation
-  -- i_reset_gen_0 : reset_gen
-  --   port map (
-  --     clk     => clk,
-  --     arst_n  => rst_n,
-  --     o_rst_n => rst_n_synch
-  --     );
-
-
   -- Instanciation of VIRTUAL JTAG Controller
   -- Generated from Quartus II
-
   i_altera_vjtag_0 : altera_vjtag
     port map (
       tdo                => tdo,
       tck                => tck,
       tdi                => tdi,
-      ir_in              => ir_in(5 downto 0),
+      ir_in              => ir_in(7 downto 0),
       ir_out             => open,
       virtual_state_cdr  => cdr,
       virtual_state_e1dr => e1dr,
@@ -518,7 +485,7 @@ begin  -- architecture rtl
     generic map (
       G_DATA_WIDTH => G_AXI_DATA_WIDTH,
       G_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
-      G_IR_WIDTH   => 6
+      G_IR_WIDTH   => 8
       )
     port map(
       clk_jtag   => tck,
@@ -526,48 +493,24 @@ begin  -- architecture rtl
 
       tdi   => tdi,
       tdo   => tdo,
-      ir_in => ir_in(5 downto 0),
+      ir_in => ir_in(7 downto 0),
       sdr   => sdr,
       udr   => udr,
       cdr   => cdr,
 
-      addr        => addr_vjtag,
-      data_out    => master_wdata_vjtag,
-      data_in     => master_rdata,
-      data_in_val => done_extended_clk_jtag_r_edge,
-      rnw         => rnw,
-      start       => start_clk_jtag
+      addr          => addr_vjtag,
+      data_out      => master_wdata_vjtag,
+      data_in       => master_rdata,
+      data_in_val   => done_extended_clk_jtag_r_edge,
+      access_status => access_status,   -- not resynchronized in clk_jtag clock domain /!\
+      rnw           => rnw,             -- not resynchronized in clk_jtag clock domain /!\
+      strobe        => strobe,          -- not resynchronized in clk_jtag clock domain /!\
+      start         => start_clk_jtag
       );
 
--- purpose: SDR Pipe
-  p_pipe_sdr : process (tck, rst_n_sys) is
-  begin  -- process p_pipe_sdr
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      sdr_p <= '0';
-    elsif rising_edge(tck) then         -- rising clock edge
-      sdr_p <= sdr;
-    end if;
-  end process p_pipe_sdr;
 
-  sdr_r_edge <= sdr and not sdr_p;
-  sdr_f_edge <= not sdr and sdr_p;
 
--- purpose: Counter of SDR pulse
-  p_cnt_sdr : process (tck, rst_n_sys) is
-  begin  -- process p_cnt_sdr
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      cnt_sdr <= (others => '0');
-    elsif rising_edge(tck) then         -- rising clock edge
 
-      --  if(udr = '1') then                --sdr_f_edge = '1') then
-      --      cnt_sdr <= (others => '0');
---      elsif(sdr = '1') then
-      if(sdr = '1' and ir_in(0) = '1') then
-        cnt_sdr <= cnt_sdr + 1;         -- Inc Counter
-      end if;
-
-    end if;
-  end process p_cnt_sdr;
 
 -- purpose: LEDR Update
   p_ledr_mngt : process (tck, rst_n_sys) is
@@ -624,7 +567,7 @@ begin  -- architecture rtl
   -- Rising edge detection of start
   start_clk_r_edge <= start_clk_p2 and not start_clk;
 
-  strobe <= (others => '0');            -- Not Used
+  --strobe <= (others => '0');            -- Not Used
 
 
   -- purpose: Resynchronization in tck clock domain of the signal done_extended
@@ -658,9 +601,6 @@ begin  -- architecture rtl
       pulse_in  => done_master,
       pulse_out => done_extended
       );
-
-
-
 
   -- Bypass
   -- Force to '0' inputs of AXI4 Lite Master
@@ -794,8 +734,8 @@ begin  -- architecture rtl
 
 
   -- Interconnect Master's connected to AXI4 Lite Slave
-  -- Index 0 -> AXI4 Lite SEGMENTS
-  -- Index 1 -> AXI4 Lite LCD7
+  -- Index 0 -> AXI4 Lite 7SEGMENTS
+  -- Index 1 -> AXI4 Lite LCD
 
   -- # - SEGMENTS Interconnexion
 -- Write Addr Channel

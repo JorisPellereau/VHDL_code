@@ -6,12 +6,13 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-09-20
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: AXI4 Lite Interconnect 1 Master to N Slaves
 -- The interconnect privides entire address (no filter of base addr. is performed)
+-- Limitation : 16 Slave Maximum
 -------------------------------------------------------------------------------
 -- Copyright (c) 2023 
 -------------------------------------------------------------------------------
@@ -23,6 +24,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library lib_pkg_utils;
+use lib_pkg_utils.pkg_utils.all;
 
 library lib_axi4_lite;
 use lib_axi4_lite.pkg_axi4_lite_interco.all;
@@ -112,9 +116,10 @@ architecture rtl of axi4_lite_interco_1_to_n is
   signal slv_status : std_logic_vector(1 downto 0);                           -- Status
 
   -- Decoder signals
-  signal sel_idx_comb       : unsigned(3 downto 0);  -- Slave Index Selection combinatory
-  signal sel_idx_latch      : unsigned(3 downto 0);  -- Slave Index Selection combinatory
-  signal sel_idx_comb_valid : std_logic;             -- A flag that indicates if the idx selection is valid
+  signal sel_idx_bit_comb   : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Slave Bit detection
+  signal sel_idx_comb       : unsigned(log2(G_SLAVE_NB) downto 0);        -- Slave Index Selection combinatory
+  signal sel_idx_latch      : unsigned(log2(G_SLAVE_NB) downto 0);        -- Slave Index Selection combinatory
+  signal sel_idx_comb_valid : std_logic;                                  -- A flag that indicates if the idx selection is valid
 
   -- Masters signals
   signal start_master         : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Start Master Pulse
@@ -181,22 +186,61 @@ begin  -- architecture rtl
       );
 
 
-
-  -- purpose: Address Decoder
-  -- Generate an unsigned value in function of the slv_addr
-  p_addr_decoder : process (slv_addr) is
-  begin  -- process p_addr_decoder
-
-    for i in 0 to G_SLAVE_NB - 1 loop
+  g_idx_detection : for i in 0 to G_SLAVE_NB - 1 generate
+    -- purpose: 
+    p_idx_detection : process (slv_addr) is
+    begin  -- process p_idx_detection
 
       -- Selection of the Slave Index in function of the slv_addr
       if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(i)) and unsigned(slv_addr) < unsigned(C_SLV_ADDR_MAX_ARRAY(i))) then
-        sel_idx_comb <= to_unsigned(i, sel_idx_comb'length);
+        sel_idx_bit_comb(i) <= '1';
+      else
+        sel_idx_bit_comb(i) <= '0';
       end if;
 
-    end loop;
+    end process p_idx_detection;
 
-  end process p_addr_decoder;
+  end generate;
+
+  -- purpose: Address Decoder
+  -- Generate an unsigned value in function of the sel_idx_bit_comb value
+  -- Example :
+  -- sel_idx_bit_comb |  sel_idx_comb
+  -- "0000"          --> "00"
+  -- "0010"          --> "01"
+  -- "0100"          --> "10" 
+  -- "1000"          --> "11" 
+  -- etc..
+
+  -- Addr Decode for 2 Slaves
+  g_addr_decode_2_slaves : if(G_SLAVE_NB = 2) generate
+    sel_idx_comb(0) <= sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
+    sel_idx_comb(1) <= '0';
+  end generate;
+
+  -- Addr Decode for 3 Slaves
+  g_addr_decode_3_slaves : if(G_SLAVE_NB = 3) generate
+    sel_idx_comb(0) <= (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
+    sel_idx_comb(1) <= sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  end generate;
+
+  -- Addr for 4 Slaves 
+
+  -- p_addr_decoder : process (slv_addr) is
+  -- begin  -- process p_addr_decoder
+
+  --   for i in 0 to G_SLAVE_NB - 1 loop
+
+  --     -- Selection of the Slave Index in function of the slv_addr
+  --     if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(i)) and unsigned(slv_addr) < unsigned(C_SLV_ADDR_MAX_ARRAY(i))) then
+  --       sel_idx_comb <= to_unsigned(i, sel_idx_comb'length);
+  --     else
+  --       sel_idx_comb <= to_unsigned(0, sel_idx_comb'length);
+  --     end if;
+
+  --   end loop;
+
+  -- end process p_addr_decoder;
 
   -- purpose: Check if the address range is valid
   -- If the slv_addr is greater than C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1), the valid signal is not set

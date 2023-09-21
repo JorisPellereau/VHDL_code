@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-12
--- Last update: 2023-09-20
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -44,11 +44,11 @@ use lib_CFAH1602_v2.pkg_lcd_cfah.all;
 entity lcd_cfah_polling is
 
   port (
-    clk_sys   : in  std_logic;          -- Clock System
-    rst_n_sys : in  std_logic;          -- Asynchronous Reset
-    i_start   : in  std_logic;          -- Start Commands
+    clk_sys   : in  std_logic;                      -- Clock System
+    rst_n_sys : in  std_logic;                      -- Asynchronous Reset
+    i_start   : in  std_logic;                      -- Start Commands
     i_cmds    : in  std_logic_vector(10 downto 0);  -- Commands in
-    o_done     : out std_logic;          -- Polling function is ready
+    o_done    : out std_logic;                      -- Polling function is ready
 
     -- Command generator ITF
     o_cmd_req   : out std_logic;
@@ -70,9 +70,9 @@ architecture rtl of lcd_cfah_polling is
   signal fsm_cs : t_fsm_state;          -- Current State
   signal fsm_ns : t_fsm_state;          -- Next State
 
-  signal cmds         : std_logic_vector(10 downto 0);  -- Latch commands
-  signal poll_ongoing : std_logic;                      -- Polling ongoing
-  signal run_cmd_ongoing : std_logic; -- Command Ongoing
+  signal cmds            : std_logic_vector(10 downto 0);  -- Latch commands
+  signal poll_ongoing    : std_logic;                      -- Polling ongoing
+  signal run_cmd_ongoing : std_logic;                      -- Command Ongoing
 
 begin  -- architecture rtl
 
@@ -111,9 +111,8 @@ begin  -- architecture rtl
       -- On IDLE stat wait for the start command
       when IDLE =>
 
-        o_done        <= '1';            -- Function Ready
-        poll_ongoing <= '0';            -- Polling state
-        run_cmd_ongoing <= '0'; -- RUN Command ongoing
+        poll_ongoing    <= '0';         -- Polling state
+        run_cmd_ongoing <= '0';         -- RUN Command ongoing
         if(i_start = '1') then
           fsm_ns <= POLL_BUSY;
         else
@@ -122,10 +121,9 @@ begin  -- architecture rtl
 
       when POLL_BUSY =>
 
-        o_done        <= '0';            -- Function Ready
-        poll_ongoing <= '1';            -- Polling state
-        run_cmd_ongoing <= '0'; -- RUN Command ongoing
-        
+        poll_ongoing    <= '1';         -- Polling state
+        run_cmd_ongoing <= '0';         -- RUN Command ongoing
+
         -- When a command is terminated and when the busy bit is unset
         -- Go to Run Command state
         if(i_done = '1' and i_lcd_rdata(7) = '0') then
@@ -137,10 +135,9 @@ begin  -- architecture rtl
 
       when RUN_CMD =>
 
-        o_done        <= '0';            -- Function Ready
-        poll_ongoing <= '0';            -- Polling state
-        run_cmd_ongoing <= '1'; -- RUN Command ongoing
-        
+        poll_ongoing    <= '0';         -- Polling state
+        run_cmd_ongoing <= '1';         -- RUN Command ongoing
+
         -- When a command is terminated
         -- -> Go to IDLE state
         if(i_done = '1') then
@@ -152,11 +149,10 @@ begin  -- architecture rtl
         end if;
 
       when others =>
-        fsm_ns       <= IDLE;
-        o_done        <= '0';            -- Function Ready
-        poll_ongoing <= '0';            -- Polling state
-        run_cmd_ongoing <= '0'; -- RUN Command ongoing
-        
+        fsm_ns          <= IDLE;
+        poll_ongoing    <= '0';         -- Polling state
+        run_cmd_ongoing <= '0';         -- RUN Command ongoing
+
     end case;
 
   end process p_fsm_ns_update;
@@ -174,8 +170,8 @@ begin  -- architecture rtl
       -- Generates the Busy command on start pulse or during the polling state
       -- if the busy flag is not equals to '0'
       if(i_start = '1' or (poll_ongoing = '1' and i_done = '1' and i_lcd_rdata(7) = '1')) then
-        o_cmds <= (C_READ_BUSY_FLAG => '1', others => '0');
-        o_cmd_req                <= '1';
+        o_cmds    <= (C_READ_BUSY_FLAG => '1', others => '0');
+        o_cmd_req <= '1';
 
       -- Generates the selected command
       -- Wait for the End of Polling and if the command
@@ -194,14 +190,14 @@ begin  -- architecture rtl
   -- purpose: Done Signal management
   -- Generate a pulse on done signal when the i_done input is set during the
   -- run_cmd state
-  p_done_mngt: process (clk_sys, rst_n_sys) is
+  p_done_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_done_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       o_done <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       o_done <= run_cmd_ongoing and i_done;
-      
+
     end if;
   end process p_done_mngt;
 

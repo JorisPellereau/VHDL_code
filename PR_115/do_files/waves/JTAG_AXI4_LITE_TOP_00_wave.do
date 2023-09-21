@@ -777,6 +777,7 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/bready_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/addr_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/master_wdata_int
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/strobe_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/rnw_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(1) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(1)/i_axi4_lite_master_0/start_p
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/clk_sys
@@ -827,6 +828,7 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/slv_done
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/slv_rdata
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/slv_status
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/sel_idx_bit_comb
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/sel_idx_comb
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/sel_idx_latch
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/sel_idx_comb_valid
@@ -876,6 +878,7 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/bready_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/addr_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/master_wdata_int
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/strobe_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/rnw_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_interco_1_to_n -group g_axi4_lite_masters(0) -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_interco_1_to_n/g_axi4_lite_masters(0)/i_axi4_lite_master_0/start_p
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/clk_sys
@@ -913,9 +916,14 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group In
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/addr_vjtag
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/rnw
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/strobe
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/master_wdata
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/master_wdata_vjtag
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/master_rdata
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/access_status
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/master_wdata
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/start_master
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/addr_master
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/rnw_master
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/strobe_master
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/awvalid_master
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/awaddr_master
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/awprot_master
@@ -996,6 +1004,7 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group In
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/start_clk_p1
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/start_clk_p2
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/start_clk_r_edge
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/done_master
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/done_extended
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/done_extended_clk_jtag_p1
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/done_extended_clk_jtag_p2
@@ -1039,21 +1048,21 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_bit_extender_0 -group Outputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_bit_extender_0/pulse_out
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_bit_extender_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_bit_extender_0/counter_pulse
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_bit_extender_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_bit_extender_0/en_cnt
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/clk
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rst_n
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/start
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/addr
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rnw
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/strobe
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/master_wdata
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/awready
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/wready
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/bvalid
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/bresp
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/arready
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rvalid
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rdata
-add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -expand -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rresp
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/clk
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/start
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/addr
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rnw
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/strobe
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/master_wdata
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/awready
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/wready
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/bvalid
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/bresp
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/arready
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rvalid
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rdata
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rresp
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Outputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/done
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Outputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/master_rdata
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Outputs /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/access_status
@@ -1077,6 +1086,7 @@ add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/bready_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/addr_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/master_wdata_int
+add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/strobe_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/rnw_int
 add wave -noupdate -expand -group i_dut -group i_jtag_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Internal /tb_top/i_dut/i_jtag_axi4_lite_core_0/i_axi4_lite_master_0/start_p
 add wave -noupdate -expand -group i_dut -group i_reset_gen_0 -group Inputs /tb_top/i_dut/i_reset_gen_0/clk
@@ -1085,7 +1095,7 @@ add wave -noupdate -expand -group i_dut -group i_reset_gen_0 -group Outputs /tb_
 add wave -noupdate -expand -group i_dut -group i_reset_gen_0 -group Internal /tb_top/i_dut/i_reset_gen_0/s_rst_n_p1
 add wave -noupdate -expand -group i_dut -group i_reset_gen_0 -group Internal /tb_top/i_dut/i_reset_gen_0/s_rst_n_p2
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {250389 ps} 0}
+WaveRestoreCursors {{Cursor 1} {13286106 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 219
 configure wave -valuecolwidth 100
@@ -1101,4 +1111,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {473805 ps}
+WaveRestoreZoom {13126550 ps} {14374843 ps}

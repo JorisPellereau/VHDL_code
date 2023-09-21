@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-20
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -97,7 +97,8 @@ begin  -- architecture rtl
     begin  -- process p_register_sel
 
       -- Set the corresponding bit to '1' if the address correspond to an
-      -- exsisting address from the number of possible address      
+      -- exsisting address from the number of possible address
+      -- check addr modulo 4 (0-4-8-C)
       if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) = to_unsigned((i*G_DATA_WIDTH)/8, C_USEFUL_LSBITS)) then
 
         -- If different from REG2 ADDR -> Write access is authorized
@@ -292,18 +293,18 @@ begin  -- architecture rtl
 
       -- RDATA for Regular registers
       -- Set RDATA when reading REG0
-      if(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG0_ADDR) then
+      if(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG0_ADDR) then
         slv_rdata <= x"0" & "00" & cursor_disp_config_register & x"0" & "0" & disp_on_off_config_register &
-                     x"0" & "0" & entry_mode_set_config_register & x"0" & "000" & ctrl_register;
+                     x"0" & "00" & entry_mode_set_config_register & x"0" & "000" & ctrl_register;
 
       -- Set RDATA when reading REG1
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG1_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG1_ADDR) then
         slv_rdata <= lcd_cmds_0_register & "000" & char_position_register & wdata_display_register &
                      x"0" & "0" & func_set_config_register;
 
       -- Set RDATA when reading REG2
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(G_ADDR_WIDTH - 1 downto 0) = C_REG2_ADDR) then
-        slv_rdata <= x"00000000" & "00" & lcd_status_register;
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
+        slv_rdata <= x"0000000" & "00" & lcd_status_register;
 
       -- Otherwise REturn (others => '0');
       else

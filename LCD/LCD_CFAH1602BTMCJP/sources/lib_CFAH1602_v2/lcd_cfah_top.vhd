@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-09-20
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -243,6 +243,25 @@ begin  -- architecture rtl
   -- INIT mode
   s_done_cmd_init <= s_done_cmd_generator when s_init_ongoing = '1' else '0';
 
+
+  -- DAta Connexion - /!\ a muxer ! TBD
+  s_data_bus_cmd_generator <= ddram_data_or_addr_display;
+
+  s_start_polling <= start_display;     --IDEM a muxer
+
+  s_cmds(C_CLEAR_DISPLAY)        <= '0';
+  s_cmds(C_RETURN_HOME)          <= '0';
+  s_cmds(C_ENTRY_MODE_SET)       <= '0';
+  s_cmds(C_DISP_ON_OFF_CTRL)     <= '0';
+  s_cmds(C_CURSOR_OR_DISP_SHIFT) <= '0';
+  s_cmds(C_FUNCTION_SET)         <= '0';
+  s_cmds(C_SET_CGRAM_ADDR)       <= '0';
+
+  s_cmds(C_SET_DDRAM_ADDR)    <= set_ddram_addr_display;
+  s_cmds(C_WRITE_DATA_TO_RAM) <= wr_data_display;
+
+  s_cmds(C_READ_BUSY_FLAG)     <= '0';
+  s_cmds(C_READ_DATA_FROM_RAM) <= '0';
 
   -- STATIC Configuration
   s_dcb_to_cmd_generator   <= i_dcb;

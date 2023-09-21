@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-28
--- Last update: 2023-09-07
+-- Last update: 2023-09-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,6 +25,8 @@
 -- IR : 3 -> Set RNW (1 : Read - 0 : Write)
 -- IR : 4 -> Start Access
 -- IR : 5 -> Read Data IN
+-- IR : 6 -> Access Status (RESP from AXI)
+-- IR : 7 -> Strobe((G_DATA_WIDTH/8)-1:0)
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -35,24 +37,26 @@ entity vjtag_intf is
   generic (
     G_DATA_WIDTH : integer range 1 to 32 := 32;  -- DAta Width
     G_ADDR_WIDTH : integer range 8 to 32 := 32;
-    G_IR_WIDTH   : integer range 6 to 24 := 6);  -- VJTAG IR Width
+    G_IR_WIDTH   : integer range 8 to 24 := 8);  -- VJTAG IR Width
   port (
     clk_jtag   : in std_logic;                   -- JTAG Clock
     rst_n_jtag : in std_logic;                   -- Asynchronous Reset
 
-    tdi   : in  std_logic;              -- TDI Data from Virtual JTAG
-    tdo   : out std_logic;              -- TDO Data to Virtual JTAG
+    tdi   : in  std_logic;                                  -- TDI Data from Virtual JTAG
+    tdo   : out std_logic;                                  -- TDO Data to Virtual JTAG
     ir_in : in  std_logic_vector(G_IR_WIDTH - 1 downto 0);  -- IR IN Vector
-    sdr   : in  std_logic;              -- SDR state from Virtual JTAG
-    udr   : in  std_logic;              -- UDR state from Virtual JTAG
-    cdr   : in  std_logic;              -- CDR statue from Virtual JTAG
+    sdr   : in  std_logic;                                  -- SDR state from Virtual JTAG
+    udr   : in  std_logic;                                  -- UDR state from Virtual JTAG
+    cdr   : in  std_logic;                                  -- CDR statue from Virtual JTAG
 
-    addr        : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr
-    data_out    : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data out
-    data_in     : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- DATA IN to read
-    data_in_val : in  std_logic;        -- Data in Valid
-    rnw         : out std_logic;        -- Read not Write signal
-    start       : out std_logic);       -- Start Read or Write Access
+    addr          : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);      -- Addr
+    data_out      : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- Data out
+    data_in       : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- DATA IN to read
+    data_in_val   : in  std_logic;                                        -- Data in Valid
+    access_status : in  std_logic_vector(1 downto 0);                     -- Access status
+    rnw           : out std_logic;                                        -- Read not Write signal
+    strobe        : out std_logic_vector((G_DATA_WIDTH/8) - 1 downto 0);  -- Strobe signal
+    start         : out std_logic);                                       -- Start Read or Write Access
 
 end entity vjtag_intf;
 
@@ -70,14 +74,18 @@ architecture rtl of vjtag_intf is
   signal select_DR3 : std_logic;        -- DR 3 
   signal select_DR4 : std_logic;        -- DR 4 
   signal select_DR5 : std_logic;        -- DR 5
+  signal select_DR6 : std_logic;        -- DR 6
+  signal select_DR7 : std_logic;        -- DR 7
 
-  signal addr_int     : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Addr int
-  signal data_out_int : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data Out int
-  signal rnw_int      : std_logic;      -- Read Not write internal
-  signal data_in_int  : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Data in latch
+  signal addr_int          : std_logic_vector(G_ADDR_WIDTH - 1 downto 0);      -- Addr int
+  signal data_out_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- Data Out int
+  signal strobe_int        : std_logic_vector((G_DATA_WIDTH/8) - 1 downto 0);  -- Strobe signal
+  signal rnw_int           : std_logic;                                        -- Read Not write internal
+  signal data_in_int       : std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- Data in latch
+  signal access_status_int : std_logic_vector(1 downto 0);                     -- Access Status internal
 
   signal shift_data : std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Shift regiser
-  signal start_int  : std_logic;        -- Start internal
+  signal start_int  : std_logic;                                    -- Start internal
 
 begin  -- architecture rtl
 
@@ -88,8 +96,8 @@ begin  -- architecture rtl
   select_DR3 <= '1' when ir_in = std_logic_vector(to_unsigned(3, ir_in'length)) else '0';
   select_DR4 <= '1' when ir_in = std_logic_vector(to_unsigned(4, ir_in'length)) else '0';
   select_DR5 <= '1' when ir_in = std_logic_vector(to_unsigned(5, ir_in'length)) else '0';
-
-
+  select_DR6 <= '1' when ir_in = std_logic_vector(to_unsigned(6, ir_in'length)) else '0';
+  select_DR7 <= '1' when ir_in = std_logic_vector(to_unsigned(7, ir_in'length)) else '0';
 
 
   -- purpose: Management of the ADDR
@@ -164,6 +172,31 @@ begin  -- architecture rtl
     end if;
   end process p_rnw_mngt;
 
+  -- purpose: STROBE Management
+  p_strobe_mngt : process (clk_jtag, rst_n_jtag) is
+  begin  -- process p_strobe_mngt
+    if rst_n_jtag = '0' then            -- asynchronous reset (active low)
+      strobe_int <= (others => '0');
+      strobe     <= (others => '0');
+    elsif rising_edge(clk_jtag) then    -- rising clock edge
+
+      -- When SDR is set and the DR7 register is selected -> Load the strobe_int signal with tdi data
+      if(sdr = '1' and select_DR7 = '1') then
+        strobe_int  <= tdi & strobe_int((G_DATA_WIDTH/8)-1 downto 1);
+
+      -- Reset the signal when udr is set
+      elsif(udr = '1') then
+       strobe_int <= (others => '0');
+      end if;
+
+      -- Update strobe on UDR pulse and when the DR7 register is selected
+      if(udr = '1'and select_DR7 = '1') then
+        strobe <= strobe_int;
+      end if;
+      
+    end if;
+  end process p_strobe_mngt;
+
   -- purpose: Start Management
   p_start_mngt : process (clk_jtag, rst_n_jtag) is
   begin  -- process p_start_mngt
@@ -202,7 +235,7 @@ begin  -- architecture rtl
       -- Shift Data on SDR and when select_DR5 is selected
       -- Shift MSBit to LSBit
       if(sdr = '1' and select_DR5 = '1') then
-        data_in_int <= '0' & data_in_int(G_DATA_WIDTH -1 downto 1);
+        data_in_int <= '0' & data_in_int(G_DATA_WIDTH - 1 downto 1);
 
       -- Reset the value of the register
       elsif(udr = '1' and select_DR5 = '1') then
@@ -213,9 +246,37 @@ begin  -- architecture rtl
   end process p_data_in_latch;
 
 
+  -- purpose: Latch access status on cdr
+  -- shift it during a read access
+  p_access_status_latch : process (clk_jtag, rst_n_jtag) is
+  begin  -- process p_access_status_latch
+    if rst_n_jtag = '0' then            -- asynchronous reset (active low)
+      access_status_int <= (others => '0');
+    elsif rising_edge(clk_jtag) then    -- rising clock edge
+
+      -- Latch Vector on cdr signal
+      if(cdr = '1') then
+        access_status_int <= access_status;
+      end if;
+
+      -- Shift Data on SDR and when select_DR6 is selected
+      -- Shift MSBit to LSBit
+      if(sdr = '1' and select_DR6 = '1') then
+        access_status_int <= '0' & access_status_int(2 - 1 downto 1);
+
+      -- Reset the value of the register
+      elsif(udr = '1' and select_DR6 = '1') then
+        access_status_int <= (others => '0');
+      end if;
+
+    end if;
+  end process p_access_status_latch;
+
 
   -- TDO Continuity
   -- LSBits is shifted first
-  tdo <= data_in_int(0) when select_DR5 = '1' else '0';
+  tdo <= data_in_int(0) when select_DR5 = '1' else
+         access_status_int(0) when select_DR6 = '1' else
+         '0';
 
 end architecture rtl;
