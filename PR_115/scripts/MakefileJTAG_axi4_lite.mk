@@ -29,10 +29,10 @@ SCN_LIB_DIR=
 # ----------------------------
 
 # -- IP VITRUAL JTAG MENTOR SCRIPT
-mentor_script=/home/linux-jp/Documents/GitHub/Quartus_Projects/PR_115_board/JTAG/JTAG_7SEG/ip_jtag/altera_vjtag/simulation/mentor/msim_setup.tcl
+mentor_script=/home/linux-jp/Documents/GitHub/Quartus_Projects/PR_115_board/JTAG/JTAG_AXI4_LITE/ip_jtag/altera_vjtag/simulation/mentor/msim_setup.tcl
 
 # -- SIMULATION Configuration --
-RTL_Testbench_path=~/RTL_Testbench
+RTL_Testbench_path=/home/linux-jp/Documents/GitHub
 HDL_SIMU_PATH=/home/linux-jp/SIMULATION_VHDL
 WORK_DIR=JTAG_AXI4_LITE_TOP_WORK
 LIB_TB_TOP=tb_lib_jtag_axi4_lite_top
@@ -186,15 +186,16 @@ compile_jtag_axi4_lite_top:
 
 compile_altera_vjag_jtag_axi4_lite_top:
 	cd $(HDL_SIMU_PATH)/$(PROJECT_NAME)/$(WORK_DIR); \
-	$(vsim) -c -do $(DO_FILES_DIR)/mentor.do -do exit;\
+	$(vsim) -c -do $(DO_FILES_DIR)/mentor_jtag_axi4_lite_top.do -do exit;\
 
 # ========================
 
 ## == COMPILE TESTBENCH == ##
 
-
+# INC_DIR_TB_EN=ON
+# Add include Directory
 compile_generic_tb_v_files_jtag_axi4_lite_top:
-	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=/home/linux-jp/Documents/GitHub WORK_DIR=JTAG_AXI4_LITE_TOP_WORK PROJECT_NAME=JTAG_AXI4_LITE_TOP
+	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=/home/linux-jp/Documents/GitHub WORK_DIR=JTAG_AXI4_LITE_TOP_WORK PROJECT_NAME=JTAG_AXI4_LITE_TOP INC_DIR_TB_EN=ON
 
 compile_tb_jtag_axi4_lite_top:
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_jtag_axi4_lite_top_v)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_jtag_axi4_lite_top/
@@ -243,4 +244,3 @@ LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender -L lib_jtag_intel -L lib_axi4_li
 run_tb_jtag_axi4_lite_top:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_jtag_axi4_lite_top LIB_TB_TOP=tb_lib_jtag_axi4_lite_top 
 # ==============
-
