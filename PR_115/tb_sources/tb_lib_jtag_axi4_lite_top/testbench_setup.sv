@@ -4,7 +4,7 @@
 // Clock and Reset Configuration - Unit in [ps]
 `define C_TB_CLK_HALF_PERIOD 10000
 `define C_WAIT_RST           100000
-`define C_TB_CLK_PERIOD      1000
+`define C_TB_CLK_PERIOD      2*`C_TB_CLK_HALF_PERIOD
 
 // SET ALIAS Configuration
 `define C_SET_ALIAS_NB 5
