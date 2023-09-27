@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2022-12-03
--- Last update: 2023-09-21
+-- Last update: 2023-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -41,6 +41,12 @@ entity lcd_cfah_top is
     rst_n : in std_logic;                      -- Asynchronous Reset
 
     -- LCD DISPLAY CTRL
+    i_func_set           : in std_logic;                     -- Function Set command
+    i_cursor_disp_shift  : in std_logic;                     -- Cursor Or display shift
+    i_disp_on_off_ctrl   : in std_logic;                     -- Displau ON/OFF Control command
+    i_entry_mode_set     : in std_logic;                     -- Entry Mode Set command
+    i_return_home        : in std_logic;                     -- Return Home Command
+    i_clear_disp         : in std_logic;                     -- Clear Display Command
     i_update_all_lcd     : in std_logic;                     -- Update the entire LCD display command
     i_update_one_char    : in std_logic;                     -- Update one character command
     i_char_position      : in std_logic_vector(4 downto 0);  -- Character number
@@ -57,8 +63,11 @@ entity lcd_cfah_top is
     i_lcd_on : in std_logic;            -- LCD On control
 
     -- STATUS
-    fifo_full_display  : out std_logic;  -- FIFO FULL Display status
-    fifo_empty_display : out std_logic;  -- FIFO Empty Display status
+    fifo_full_display   : out std_logic;  -- FIFO FULL Display status
+    fifo_empty_display  : out std_logic;  -- FIFO Empty Display status
+    init_ongoing        : out std_logic;  -- Initialization of the LCD ongoing
+    single_cmd_ongoing  : out std_logic;  -- Single Command ongoing
+    update_disp_ongoing : out std_logic;  -- Update Display ongoing
 
     -- LCD I/F
     i_lcd_data  : in  std_logic_vector(7 downto 0);  -- Data from LCD
@@ -114,6 +123,17 @@ architecture rtl of lcd_cfah_top is
   signal start_display              : std_logic;                      -- Start from DISPLAY UPDATE block
   signal update_display_done        : std_logic;                      -- Update Display ON
 
+  signal s_func_set          : std_logic;                     -- function_set command
+  signal s_cursor_disp_shift : std_logic;                     -- Cursor DISP Shift Command
+  signal s_disp_on_off_ctrl  : std_logic;                     -- Disp On OFF Control Command
+  signal s_entry_mode_set    : std_logic;                     -- Entry Mode Set Command
+  signal s_return_home       : std_logic;                     -- Return Home Command
+  signal s_clear_disp        : std_logic;                     -- Clear Display Command
+  signal s_update_all_lcd    : std_logic;                     -- Update All LCD Command
+  signal s_update_one_char   : std_logic;                     -- Update One Char Command
+  signal start_cmd           : std_logic;                     -- Start Command Pulse
+  signal mux_sel             : std_logic_vector(1 downto 0);  -- Mux selector
+
 begin  -- architecture rtl
 
   -- Instanciation of the MAIN FSM of the LCD CFAH
@@ -125,8 +145,35 @@ begin  -- architecture rtl
       i_lcd_on   => i_lcd_on,
       start_init => start_init,
 
-      init_ongoing => s_init_ongoing,
-      init_done    => s_init_done
+      -- External LCD Commands
+      i_func_set          => i_func_set,
+      i_cursor_disp_shift => i_cursor_disp_shift,
+      i_disp_on_off_ctrl  => i_disp_on_off_ctrl,
+      i_entry_mode_set    => i_entry_mode_set,
+      i_return_home       => i_return_home,
+      i_clear_disp        => i_clear_disp,
+      i_update_all_lcd    => i_update_all_lcd,
+      i_update_one_char   => i_update_one_char,
+
+      -- LCD Commands to send inside the function
+      o_func_set          => s_func_set,
+      o_cursor_disp_shift => s_cursor_disp_shift,
+      o_disp_on_off_ctrl  => s_disp_on_off_ctrl,
+      o_entry_mode_set    => s_entry_mode_set,
+      o_return_home       => s_return_home,
+      o_clear_disp        => s_clear_disp,
+      o_start_cmd         => start_cmd,
+      o_update_all_lcd    => s_update_all_lcd,
+      o_update_one_char   => s_update_one_char,
+      o_mux_sel           => mux_sel,
+
+      polling_done        => polling_done,
+      update_display_done => update_display_done,
+
+      init_ongoing        => s_init_ongoing,
+      init_done           => s_init_done,
+      single_cmd_ongoing  => single_cmd_ongoing,
+      update_disp_ongoing => update_disp_ongoing
       );
 
   -- Instanciation of LCD INITIALIZATION
@@ -164,8 +211,8 @@ begin  -- architecture rtl
       rst_n => rst_n,
 
       -- Commands
-      i_update_all_lcd  => i_update_all_lcd,
-      i_update_one_char => i_update_one_char,
+      i_update_all_lcd  => s_update_all_lcd,
+      i_update_one_char => s_update_one_char,
       i_char_position   => i_char_position,
 
       -- LCD Commands
@@ -189,6 +236,28 @@ begin  -- architecture rtl
       fifo_empty => fifo_empty_display,
       fifo_full  => fifo_full_display
       );
+
+
+  -- Commands vector to POLLING BLOCK affectation
+  s_cmds(C_CLEAR_DISPLAY)        <= s_clear_disp;
+  s_cmds(C_RETURN_HOME)          <= s_return_home;
+  s_cmds(C_ENTRY_MODE_SET)       <= s_entry_mode_set;
+  s_cmds(C_DISP_ON_OFF_CTRL)     <= s_disp_on_off_ctrl;
+  s_cmds(C_CURSOR_OR_DISP_SHIFT) <= s_cursor_disp_shift;
+  s_cmds(C_FUNCTION_SET)         <= s_func_set;
+  s_cmds(C_SET_CGRAM_ADDR)       <= '0';
+
+  s_cmds(C_SET_DDRAM_ADDR)    <= set_ddram_addr_display;
+  s_cmds(C_WRITE_DATA_TO_RAM) <= wr_data_display;
+
+  s_cmds(C_READ_BUSY_FLAG)     <= '0';
+  s_cmds(C_READ_DATA_FROM_RAM) <= '0';
+
+  -- Selection of the Start polling command
+  s_start_polling <= start_display when mux_sel = "10" else
+                     start_cmd when mux_sel = "01" else
+                     '0';
+
 
   -- Instanciation of LCD POLLING Block
   i_lcd_cfah_polling_0 : entity lib_CFAH1602_v2.lcd_cfah_polling
@@ -219,7 +288,6 @@ begin  -- architecture rtl
   s_cmd_bus_cmd_generator(C_ENTRY_MODE_SET)   <= s_entry_mode_set_init when s_init_ongoing = '1' else s_cmd_bus_poll(C_ENTRY_MODE_SET);
   s_cmd_bus_cmd_generator(C_CLEAR_DISPLAY)    <= s_clear_display_init  when s_init_ongoing = '1' else s_cmd_bus_poll(C_CLEAR_DISPLAY);
 
-
   -- Command directly connects to polling block
   s_cmd_bus_cmd_generator(C_RETURN_HOME)          <= s_cmd_bus_poll(C_RETURN_HOME);
   s_cmd_bus_cmd_generator(C_CURSOR_OR_DISP_SHIFT) <= s_cmd_bus_poll(C_CURSOR_OR_DISP_SHIFT);
@@ -231,37 +299,22 @@ begin  -- architecture rtl
 
   -- MUX INIT WDATA value
   -- Mux DL N F vector
-  s_dl_n_f_cmd_generator <= dl_n_f_init when s_init_ongoing = '1' else i_dl_n_f;
+  s_dl_n_f_cmd_generator <= dl_n_f_init when s_init_ongoing = '1' else
+                            i_dl_n_f;
 
   -- MUX DONE Signal :
-
   -- Done poll is connected to cmd_generator done only when we are in OPE mode
-  s_done_cmd_poll <= s_done_cmd_generator when s_init_ongoing = '0' else '0';
-
+  s_done_cmd_poll <= s_done_cmd_generator when s_init_ongoing = '0' else
+                     '0';
 
   -- Donne cmd init is connected to  cmd_generator done only when we are in
   -- INIT mode
-  s_done_cmd_init <= s_done_cmd_generator when s_init_ongoing = '1' else '0';
-
+  s_done_cmd_init <= s_done_cmd_generator when s_init_ongoing = '1' else
+                     '0';
 
   -- DAta Connexion - /!\ a muxer ! TBD
-  s_data_bus_cmd_generator <= ddram_data_or_addr_display;
-
-  s_start_polling <= start_display;     --IDEM a muxer
-
-  s_cmds(C_CLEAR_DISPLAY)        <= '0';
-  s_cmds(C_RETURN_HOME)          <= '0';
-  s_cmds(C_ENTRY_MODE_SET)       <= '0';
-  s_cmds(C_DISP_ON_OFF_CTRL)     <= '0';
-  s_cmds(C_CURSOR_OR_DISP_SHIFT) <= '0';
-  s_cmds(C_FUNCTION_SET)         <= '0';
-  s_cmds(C_SET_CGRAM_ADDR)       <= '0';
-
-  s_cmds(C_SET_DDRAM_ADDR)    <= set_ddram_addr_display;
-  s_cmds(C_WRITE_DATA_TO_RAM) <= wr_data_display;
-
-  s_cmds(C_READ_BUSY_FLAG)     <= '0';
-  s_cmds(C_READ_DATA_FROM_RAM) <= '0';
+  s_data_bus_cmd_generator <= ddram_data_or_addr_display when mux_sel = "10" else
+                              (others => '0');
 
   -- STATIC Configuration
   s_dcb_to_cmd_generator   <= i_dcb;
@@ -338,5 +391,7 @@ begin  -- architecture rtl
       o_lcd_on <= i_lcd_on;
     end if;
   end process p_lcd_on_mngt;
+
+  init_ongoing <= s_init_ongoing;       -- Affectation of the init ongoing status
 
 end architecture rtl;

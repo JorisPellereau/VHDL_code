@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-09-20
+-- Last update: 2023-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -92,18 +92,27 @@ architecture rtl of axi4_lite_lcd is
   signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
   signal slv_status : std_logic_vector(1 downto 0);                               -- Slave status
 
-  signal lcd_on             : std_logic;                     -- LCD ON
-  signal update_all_lcd     : std_logic;                     -- UPDATE LCD Command
-  signal update_one_char    : std_logic;                     -- UPDATE Once Char command
-  signal char_position      : std_logic_vector(4 downto 0);  -- Char Position
-  signal wr_en_fifo_display : std_logic;                     -- Write Enable Data fifo display
-  signal wdata_fifo_display : std_logic_vector(7 downto 0);  -- Write Data FIFO Display
-  signal dl_n_f             : std_logic_vector(2 downto 0);  -- DL N F Configuration
-  signal dcb                : std_logic_vector(2 downto 0);  -- DCB Configuration
-  signal sc_rl              : std_logic_vector(1 downto 0);  -- SC RL Condifuration
-  signal id_sh              : std_logic_vector(1 downto 0);  -- ID SH Configuration
-  signal fifo_full_display  : std_logic;                     -- FIFO Full Display flag
-  signal fifo_empty_display : std_logic;                     -- FIFO Empty Display flag
+  signal lcd_on              : std_logic;                     -- LCD ON
+  signal func_set            : std_logic;                     -- Function Set Command
+  signal cursor_disp_shift   : std_logic;                     -- Cursor or Display shift Command
+  signal disp_on_off_ctrl    : std_logic;                     -- Display ON OFF Control
+  signal entry_mode_set      : std_logic;                     -- Entry Mode Set command
+  signal return_home         : std_logic;                     -- Return Home Command
+  signal clear_disp          : std_logic;                     -- Clear Display Command
+  signal update_all_lcd      : std_logic;                     -- UPDATE LCD Command
+  signal update_one_char     : std_logic;                     -- UPDATE Once Char command
+  signal char_position       : std_logic_vector(4 downto 0);  -- Char Position
+  signal wr_en_fifo_display  : std_logic;                     -- Write Enable Data fifo display
+  signal wdata_fifo_display  : std_logic_vector(7 downto 0);  -- Write Data FIFO Display
+  signal dl_n_f              : std_logic_vector(2 downto 0);  -- DL N F Configuration
+  signal dcb                 : std_logic_vector(2 downto 0);  -- DCB Configuration
+  signal sc_rl               : std_logic_vector(1 downto 0);  -- SC RL Condifuration
+  signal id_sh               : std_logic_vector(1 downto 0);  -- ID SH Configuration
+  signal fifo_full_display   : std_logic;                     -- FIFO Full Display flag
+  signal fifo_empty_display  : std_logic;                     -- FIFO Empty Display flag
+  signal init_ongoing        : std_logic;                     -- Init ongoing flag
+  signal single_cmd_ongoing  : std_logic;                     -- SINGLE Command ongoing
+  signal update_disp_ongoing : std_logic;                     -- Update display ongoing
 
 begin  -- architecture rtl
 
@@ -182,18 +191,29 @@ begin  -- architecture rtl
       slv_status => slv_status,
 
       -- Registers Interface
-      lcd_on             => lcd_on,
-      update_all_lcd     => update_all_lcd,
-      update_one_char    => update_one_char,
-      char_position      => char_position,
-      wr_en_fifo_display => wr_en_fifo_display,
-      wdata_fifo_display => wdata_fifo_display,
-      dl_n_f             => dl_n_f,
-      dcb                => dcb,
-      sc_rl              => sc_rl,
-      id_sh              => id_sh,
-      fifo_full_display  => fifo_full_display,
-      fifo_empty_display => fifo_empty_display
+      lcd_on            => lcd_on,
+      update_all_lcd    => update_all_lcd,
+      update_one_char   => update_one_char,
+      func_set          => func_set,
+      cursor_disp_shift => cursor_disp_shift,
+      disp_on_off_ctrl  => disp_on_off_ctrl,
+      entry_mode_set    => entry_mode_set,
+      return_home       => return_home,
+      clear_disp        => clear_disp,
+
+
+      char_position       => char_position,
+      wr_en_fifo_display  => wr_en_fifo_display,
+      wdata_fifo_display  => wdata_fifo_display,
+      dl_n_f              => dl_n_f,
+      dcb                 => dcb,
+      sc_rl               => sc_rl,
+      id_sh               => id_sh,
+      fifo_full_display   => fifo_full_display,
+      fifo_empty_display  => fifo_empty_display,
+      init_ongoing        => init_ongoing,
+      single_cmd_ongoing  => single_cmd_ongoing,
+      update_disp_ongoing => update_disp_ongoing
       );
 
   -- Instanciation of LCDCFAH TOP
@@ -209,6 +229,12 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- LCD DISPLAY CTRL
+      i_func_set           => func_set,
+      i_cursor_disp_shift  => cursor_disp_shift,
+      i_disp_on_off_ctrl   => disp_on_off_ctrl,
+      i_entry_mode_set     => entry_mode_set,
+      i_return_home        => return_home,
+      i_clear_disp         => clear_disp,
       i_update_all_lcd     => update_all_lcd,
       i_update_one_char    => update_one_char,
       i_char_position      => char_position,
@@ -225,8 +251,11 @@ begin  -- architecture rtl
       i_lcd_on => lcd_on,
 
       -- STATUS
-      fifo_full_display  => fifo_full_display,
-      fifo_empty_display => fifo_empty_display,
+      fifo_full_display   => fifo_full_display,
+      fifo_empty_display  => fifo_empty_display,
+      init_ongoing        => init_ongoing,
+      single_cmd_ongoing  => single_cmd_ongoing,
+      update_disp_ongoing => update_disp_ongoing,
 
       -- LCD I/F
       i_lcd_data  => i_lcd_data,

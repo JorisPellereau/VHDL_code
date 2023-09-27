@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-26
+-- Last update: 2023-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,18 +47,27 @@ entity axi4_lite_lcd_registers is
     slv_status : out std_logic_vector(1 downto 0);                 -- Slave status
 
     -- Registers Interface
-    lcd_on             : out std_logic;                     -- LCD ON
-    update_all_lcd     : out std_logic;                     -- UPDATE LCD Command
-    update_one_char    : out std_logic;                     -- UPDATE Once Char command
-    char_position      : out std_logic_vector(4 downto 0);  -- Char Position
-    wr_en_fifo_display : out std_logic;                     -- Write Enable Data fifo display
-    wdata_fifo_display : out std_logic_vector(7 downto 0);  -- Write Data FIFO Display
-    dl_n_f             : out std_logic_vector(2 downto 0);  -- DL N F Configuration
-    dcb                : out std_logic_vector(2 downto 0);  -- DCB Configuration
-    sc_rl              : out std_logic_vector(1 downto 0);  -- SC RL Condifuration
-    id_sh              : out std_logic_vector(1 downto 0);  -- ID SH Configuration
-    fifo_full_display  : in  std_logic;                     -- FIFO Full Display flag
-    fifo_empty_display : in  std_logic                      -- FIFO Empty Display flag
+    lcd_on              : out std_logic;                     -- LCD ON
+    update_all_lcd      : out std_logic;                     -- UPDATE LCD Command
+    update_one_char     : out std_logic;                     -- UPDATE Once Char command
+    func_set            : out std_logic;                     -- Function Set command
+    cursor_disp_shift   : out std_logic;                     -- Cursor Or display shift
+    disp_on_off_ctrl    : out std_logic;                     -- Displau ON/OFF Control command
+    entry_mode_set      : out std_logic;                     -- Entry Mode Set command
+    return_home         : out std_logic;                     -- Return Home Command
+    clear_disp          : out std_logic;                     -- Clear Display Command
+    char_position       : out std_logic_vector(4 downto 0);  -- Char Position
+    wr_en_fifo_display  : out std_logic;                     -- Write Enable Data fifo display
+    wdata_fifo_display  : out std_logic_vector(7 downto 0);  -- Write Data FIFO Display
+    dl_n_f              : out std_logic_vector(2 downto 0);  -- DL N F Configuration
+    dcb                 : out std_logic_vector(2 downto 0);  -- DCB Configuration
+    sc_rl               : out std_logic_vector(1 downto 0);  -- SC RL Condifuration
+    id_sh               : out std_logic_vector(1 downto 0);  -- ID SH Configuration
+    fifo_full_display   : in  std_logic;                     -- FIFO Full Display flag
+    fifo_empty_display  : in  std_logic;                     -- FIFO Empty Display flag
+    init_ongoing        : in  std_logic;                     -- Initialization of the LCD ongoing
+    single_cmd_ongoing  : in  std_logic;                     -- SINGLE Command ongoing
+    update_disp_ongoing : in  std_logic                      -- Uate Display ongoing
     );
 
 end entity axi4_lite_lcd_registers;
@@ -85,6 +94,8 @@ architecture rtl of axi4_lite_lcd_registers is
   signal slv_wr_access_error    : std_logic;  -- SLave Write Access Error
   signal en_wr_cmds_0           : std_logic;  -- Enable to write in lcd_cmds_0 register if set
 
+  signal lcd_cmd_ongoing : std_logic; -- LCD Command ongoing
+  
   -- Alias
   alias a_wdata_cmds_0_field : std_logic_vector(C_LCD_CMDS_0_WIDTH - 1 downto 0) is slv_wdata(C_LCD_CMDS_0_WIDTH - 1 + 3*8 downto 0 + 3*8);
 begin  -- architecture rtl
@@ -201,7 +212,9 @@ begin  -- architecture rtl
 
       -- Write in LCD_CMDS0 register
       -- Write only in this field if en_wr_cmds_0 = '1' (One command bit selected at a time)
-      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0' and slv_strobe(3) = '1' and en_wr_cmds_0 = '1') then
+      -- Write Only in this field if no other commands (single or display update) is being processed
+      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0' and
+         slv_strobe(3) = '1' and en_wr_cmds_0 = '1' and lcd_cmd_ongoing = '0') then
 
         -- Enable to write commands only if one commands is set or equals to '0'
         -- Otherwise no write access
@@ -220,6 +233,7 @@ begin  -- architecture rtl
   en_wr_cmds_0 <= '1' when a_wdata_cmds_0_field = "10000000" else
                   '1' when a_wdata_cmds_0_field = "01000000" else
                   '1' when a_wdata_cmds_0_field(7 downto 6) = "00" and a_wdata_cmds_0_field(3 downto 0) = "0000" else
+                  '1' when a_wdata_cmds_0_field(7 downto 2) = "000000" else
                   '1' when a_wdata_cmds_0_field = "00000100" else
                   '1' when a_wdata_cmds_0_field = "00001000" else
                   '0';
@@ -251,7 +265,12 @@ begin  -- architecture rtl
                             else '0';
 
   -- Slave WRite Access error :
-  slv_wr_access_error <= reg_wr_sel_error or wdata_display_wr_error or ((not en_wr_cmds_0) and reg_wr_sel(C_REG1_IDX) and slv_strobe(3));
+  -- Wrong Write selection or
+  -- FIFO is full or
+  -- During selection of C_REG1_IDX : Wdata not correct (multiple cmd set at the same time) or a single_command is being processed
+  slv_wr_access_error <= reg_wr_sel_error or
+                         wdata_display_wr_error or
+                         (((not en_wr_cmds_0) or lcd_cmd_ongoing) and (reg_wr_sel(C_REG1_IDX) and slv_strobe(3)));
 
 
   -- == Slave ACK Management ==
@@ -322,7 +341,7 @@ begin  -- architecture rtl
 
       -- Set RDATA when reading REG2
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
-        slv_rdata <= x"0000000" & "00" & lcd_status_register;
+        slv_rdata <= std_logic_vector(to_unsigned(0, G_DATA_WIDTH - C_LCD_STATUS_WIDTH)) & lcd_status_register;
 
       -- Otherwise REturn (others => '0');
       else
@@ -334,14 +353,28 @@ begin  -- architecture rtl
 
   -- ==========================
 
+  lcd_cmd_ongoing <= single_cmd_ongoing or update_disp_ongoing;
+  
   -- Inputs Set
   lcd_status_register(0) <= fifo_full_display;
   lcd_status_register(1) <= fifo_empty_display;
+  lcd_status_register(2) <= init_ongoing;
+  lcd_status_register(3) <= single_cmd_ongoing;
+  lcd_status_register(4) <= update_disp_ongoing;
 
   -- == OUTPUTS Affectation ==
-  lcd_on             <= ctrl_register(0);
-  update_all_lcd     <= lcd_cmds_0_register(6);
-  update_one_char    <= lcd_cmds_0_register(7);
+  lcd_on <= ctrl_register(0);
+
+  -- LCD Commands
+  update_one_char   <= lcd_cmds_0_register(7);
+  update_all_lcd    <= lcd_cmds_0_register(6);
+  func_set          <= lcd_cmds_0_register(5);
+  cursor_disp_shift <= lcd_cmds_0_register(4);
+  disp_on_off_ctrl  <= lcd_cmds_0_register(3);
+  entry_mode_set    <= lcd_cmds_0_register(2);
+  return_home       <= lcd_cmds_0_register(1);
+  clear_disp        <= lcd_cmds_0_register(0);
+
   char_position      <= char_position_register;
   wr_en_fifo_display <= wr_en_fifo_display_int;
   wdata_fifo_display <= wdata_display_register;

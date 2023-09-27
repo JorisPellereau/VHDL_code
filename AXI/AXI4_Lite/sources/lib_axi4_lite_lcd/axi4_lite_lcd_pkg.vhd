@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-09-18
+-- Last update: 2023-09-27
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ package axi4_lite_lcd_pkg is
   constant C_WDATA_DISPLAY_WIDTH         : integer := 8;  -- Width of the WDATA DISPLAY Register
   constant C_CHAR_POSITION_WIDTH         : integer := 5;  -- Width of the char position register
   constant C_LCD_CMDS_0_WIDTH            : integer := 8;  -- Width of the LCD CMD 0 Register
-  constant C_LCD_STATUS_WIDTH            : integer := 2;  -- Width of the LCD STATUS Register
+  constant C_LCD_STATUS_WIDTH            : integer := 5;  -- Width of the LCD STATUS Register
 
 
 end package;
