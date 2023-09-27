@@ -78,14 +78,15 @@ architecture rtl of lcd_cfah_main_fsm is
   signal fsm_cs : t_fsm_state;          -- Current State
   signal fsm_ns : t_fsm_state;          -- Next state
 
-  signal start_init_int          : std_logic;                     -- Internal Start init
-  signal start_init_p            : std_logic;                     -- Internal Start init
-  signal single_cmd_detect       : std_logic;                     -- Single Command detection
-  signal single_cmd_vector       : std_logic_vector(5 downto 0);  -- Single Command vector Latch
-  signal update_all_lcd_int      : std_logic;                     -- Update all lcd command latch
-  signal update_one_char_int     : std_logic;                     -- Update one char lcd command latch
-  signal single_cmd_ongoing_int  : std_logic;                     -- Single Command ongoing flag
-  signal update_disp_ongoing_int : std_logic;                     -- Update Display ongoing flag
+  signal start_init_int           : std_logic;                     -- Internal Start init
+  signal start_init_p             : std_logic;                     -- Internal Start init
+  signal single_cmd_detect        : std_logic;                     -- Single Command detection
+  signal single_cmd_vector        : std_logic_vector(5 downto 0);  -- Single Command vector Latch
+  signal update_all_lcd_int       : std_logic;                     -- Update all lcd command latch
+  signal update_one_char_int      : std_logic;                     -- Update one char lcd command latch
+  signal single_cmd_ongoing_int   : std_logic;                     -- Single Command ongoing flag
+  signal single_cmd_ongoing_int_p : std_logic;                     -- Single Command ongoing flag piped
+  signal update_disp_ongoing_int  : std_logic;                     -- Update Display ongoing flag
 
 begin  -- architecture rtl
 
@@ -128,6 +129,17 @@ begin  -- architecture rtl
     end if;
   end process p_lcd_update_one_char;
 
+  -- purpose: Piped one time single cmd_onging int
+  -- Used in order to detectthe rising edge
+  p_piped_single_cmd_ongoing: process (clk_sys, rst_n_sys) is
+  begin  -- process p_piped_single_cmd_ongoing
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      single_cmd_ongoing_int_p <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      single_cmd_ongoing_int_p <= single_cmd_ongoing_int;
+    end if;
+  end process p_piped_single_cmd_ongoing;
+
   -- purpose: Single Command generation
   -- Generates single command if we are in SINGLE_CMD state
   -- Otherwise no generation of the command (filtering)
@@ -143,8 +155,8 @@ begin  -- architecture rtl
       o_start_cmd         <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- Single Command generation
-      if(single_cmd_ongoing_int = '1') then
+      -- Single Command generation on the detection of the rising edge of single_cmd_ongoing_int
+      if(single_cmd_ongoing_int = '1' and single_cmd_ongoing_int_p = '0') then
         o_func_set          <= single_cmd_vector(5);
         o_cursor_disp_shift <= single_cmd_vector(4);
         o_disp_on_off_ctrl  <= single_cmd_vector(3);

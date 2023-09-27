@@ -48,14 +48,14 @@ scn.WAIT(120, "us")
 scn.print_step("Run command Clear Display")
 macros_scn.axi4_lite_write(0x1004, 0x01000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
+scn.WAIT(3, "us")
 
 
 
 scn.print_step("Run return_gome_command")
 macros_scn.axi4_lite_write(0x1004, 0x02000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
+scn.WAIT(3, "us")
 
 
 
@@ -67,7 +67,7 @@ macros_scn.axi4_lite_write(0x1000, 0x00000300, 0x2, 0)
 scn.print_sub_step("Set entry set command")
 macros_scn.axi4_lite_write(0x1004, 0x04000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
+scn.WAIT(3, "us")
 
 
 
@@ -80,7 +80,7 @@ macros_scn.axi4_lite_write(0x1000, 0x00070000, 0x4, 0)
 scn.print_sub_step("Set display_on_off command")
 macros_scn.axi4_lite_write(0x1004, 0x08000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
+scn.WAIT(3, "us")
 
 
 
@@ -93,8 +93,7 @@ macros_scn.axi4_lite_write(0x1000, 0x03000000, 0x8, 0)
 scn.print_sub_step("Set cursor_shift command")
 macros_scn.axi4_lite_write(0x1004, 0x10000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
-
+scn.WAIT(3, "us")
 
 
 
@@ -106,9 +105,7 @@ macros_scn.axi4_lite_write(0x1004, 0x00000007, 0x1, 0)
 scn.print_sub_step("Set function_set command")
 macros_scn.axi4_lite_write(0x1004, 0x20000000, 0x8, 0)
 
-scn.WAIT(200, "ns")
-
-
+scn.WAIT(3, "us")
 
 
 
