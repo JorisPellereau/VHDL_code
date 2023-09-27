@@ -6,12 +6,13 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-14
--- Last update: 2023-09-14
+-- Last update: 2023-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: FIFO for a SP_RAM.
 -- Read and Write access can be simulteneous
+-- Limitation : FIFO is full when 2**G_ADDR_WIDTH - 1 data are stored in the FIFO
 -------------------------------------------------------------------------------
 -- Copyright (c) 2023 
 -------------------------------------------------------------------------------

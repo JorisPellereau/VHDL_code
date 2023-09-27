@@ -152,9 +152,12 @@ src_jtag_axi4_lite_top_vhd += jtag_axi4_lite_core.vhd
 src_jtag_axi4_lite_top_vhd += jtag_axi4_lite_top.vhd
 # ==========================
 
-# == TESTBENCH UART V FILES LIST ==
 
-# =================================
+# == TESTBENCH MODULES V FILES LIST ==
+SRC_LCD_EMUL_DIR=/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/TB_modules/LCD_CFAH_checker/
+src_lcd_emul_v+=LCD_CFAH_emul.sv
+# ====================================
+
 
 
 # == Specific Testbench File List ==
@@ -198,6 +201,7 @@ compile_generic_tb_v_files_jtag_axi4_lite_top:
 	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=/home/linux-jp/Documents/GitHub WORK_DIR=JTAG_AXI4_LITE_TOP_WORK PROJECT_NAME=JTAG_AXI4_LITE_TOP INC_DIR_TB_EN=ON
 
 compile_tb_jtag_axi4_lite_top:
+	make compile_tb_v_files SRC_TB_V="$(src_lcd_emul_v)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=$(SRC_LCD_EMUL_DIR)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_jtag_axi4_lite_top_v)" LIB_TB_TOP=tb_lib_jtag_axi4_lite_top V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_jtag_axi4_lite_top/
 
 # =======================

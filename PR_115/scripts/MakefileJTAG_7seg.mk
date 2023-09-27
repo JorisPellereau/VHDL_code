@@ -121,9 +121,7 @@ src_jtag_intf_vhd += vjtag_intf.vhd
 src_jtag_7seg_top_vhd += jtag_7seg_top.vhd
 # ==========================
 
-# == TESTBENCH UART V FILES LIST ==
 
-# =================================
 
 
 # == Specific Testbench File List ==

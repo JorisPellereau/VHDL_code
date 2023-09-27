@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-21
+-- Last update: 2023-09-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -83,6 +83,10 @@ architecture rtl of axi4_lite_lcd_registers is
   signal wr_en_fifo_display_int : std_logic;  -- WR EN Fifo Display
   signal wdata_display_wr_error : std_logic;  -- Write Error in WDATA_DISLAY register
   signal slv_wr_access_error    : std_logic;  -- SLave Write Access Error
+  signal en_wr_cmds_0           : std_logic;  -- Enable to write in lcd_cmds_0 register if set
+
+  -- Alias
+  alias a_wdata_cmds_0_field : std_logic_vector(C_LCD_CMDS_0_WIDTH - 1 downto 0) is slv_wdata(C_LCD_CMDS_0_WIDTH - 1 + 3*8 downto 0 + 3*8);
 begin  -- architecture rtl
 
 
@@ -196,8 +200,13 @@ begin  -- architecture rtl
       end if;
 
       -- Write in LCD_CMDS0 register
-      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0' and slv_strobe(3) = '1') then
-        lcd_cmds_0_register <= slv_wdata(C_LCD_CMDS_0_WIDTH - 1 + 3*8 downto 0 + 3*8);
+      -- Write only in this field if en_wr_cmds_0 = '1' (One command bit selected at a time)
+      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0' and slv_strobe(3) = '1' and en_wr_cmds_0 = '1') then
+
+        -- Enable to write commands only if one commands is set or equals to '0'
+        -- Otherwise no write access
+        lcd_cmds_0_register <= a_wdata_cmds_0_field;
+
 
       -- Reset the register after the write access (CW type)
       else
@@ -206,6 +215,15 @@ begin  -- architecture rtl
 
     end if;
   end process p_reg1_wr_mngt;
+
+  -- en_wr_cmds_0 : set only when one bit of the vector is set at a time
+  en_wr_cmds_0 <= '1' when a_wdata_cmds_0_field = "10000000" else
+                  '1' when a_wdata_cmds_0_field = "01000000" else
+                  '1' when a_wdata_cmds_0_field(7 downto 6) = "00" and a_wdata_cmds_0_field(3 downto 0) = "0000" else
+                  '1' when a_wdata_cmds_0_field = "00000100" else
+                  '1' when a_wdata_cmds_0_field = "00001000" else
+                  '0';
+
 
   -- purpose:       wr_en_fifo_display_int management
   p_wr_en_fifo_display_mngt : process (clk, rst_n) is
@@ -229,11 +247,11 @@ begin  -- architecture rtl
   -- WDATA DISPLAY error detection
   -- Detect the error if the FIFO en FULL and a write access is performed
   wdata_display_wr_error <= '1' when (reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0'
-                                      and slv_strobe(1) = '1' and lcd_status_register(0) = '0')
+                                      and slv_strobe(1) = '1' and lcd_status_register(0) = '1')
                             else '0';
 
   -- Slave WRite Access error :
-  slv_wr_access_error <= reg_wr_sel_error or wdata_display_wr_error;
+  slv_wr_access_error <= reg_wr_sel_error or wdata_display_wr_error or ((not en_wr_cmds_0) and reg_wr_sel(C_REG1_IDX) and slv_strobe(3));
 
 
   -- == Slave ACK Management ==
