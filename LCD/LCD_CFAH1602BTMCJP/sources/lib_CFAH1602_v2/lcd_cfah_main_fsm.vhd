@@ -131,7 +131,7 @@ begin  -- architecture rtl
 
   -- purpose: Piped one time single cmd_onging int
   -- Used in order to detectthe rising edge
-  p_piped_single_cmd_ongoing: process (clk_sys, rst_n_sys) is
+  p_piped_single_cmd_ongoing : process (clk_sys, rst_n_sys) is
   begin  -- process p_piped_single_cmd_ongoing
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       single_cmd_ongoing_int_p <= '0';
@@ -287,6 +287,8 @@ begin  -- architecture rtl
       -- Generate Single Command
       -- Stay in this state until the end of the command
       when SINGLE_CMD =>
+        init_ongoing            <= '0';   -- Init Ongoing flag
+        start_init_int          <= '0';   -- Start init internal
         single_cmd_ongoing_int  <= '1';   -- Single Command ongoing
         update_disp_ongoing_int <= '0';   -- Update display ongoing
         o_mux_sel               <= "01";  -- Mux data selection
@@ -300,6 +302,8 @@ begin  -- architecture rtl
 
       -- Stay in this state until the end of the UPDATE of the display
       when UPDATE_DISPLAY =>
+        init_ongoing            <= '0';   -- Init Ongoing flag
+        start_init_int          <= '0';   -- Start init internal
         single_cmd_ongoing_int  <= '0';   -- Single Command ongoing
         update_disp_ongoing_int <= '1';   -- Update display ongoing
         o_mux_sel               <= "10";  -- Mux data selection
