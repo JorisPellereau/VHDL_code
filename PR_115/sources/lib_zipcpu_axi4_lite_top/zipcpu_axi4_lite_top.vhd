@@ -1,12 +1,12 @@
 -------------------------------------------------------------------------------
--- Title      : TOP Block of an FPGA with JTAG and AXI4 Lite Slaves
+-- Title      : TOP Block of an FPGA with ZIPCPU and AXI4 Lite Slaves
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : jtag_axi4_lite_top.vhd
+-- File       : zipcpu_axi4_lite_top.vhd
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-09-20
+-- Last update: 2023-09-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -23,11 +23,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library lib_jtag_axi4_lite_top;
-use lib_jtag_axi4_lite_top.pkg_jtag_axi4_lite_top.all;
+library lib_zipcpu_axi4_lite_top;
+use lib_zipcpu_axi4_lite_top.pkg_zipcpu_axi4_lite_top.all;
 
 
-entity jtag_axi4_lite_top is
+entity zipcpu_axi4_lite_top is
   generic (
     SEL_ALTERA_VJTAG : boolean := false;  -- Selection of the VJTAG component
     G_SIMULATION     : boolean := false   -- Simulation purpose
@@ -60,9 +60,9 @@ entity jtag_axi4_lite_top is
     ledg : out std_logic_vector(8 downto 0)  -- GREEN LEDS
     );
 
-end entity jtag_axi4_lite_top;
+end entity zipcpu_axi4_lite_top;
 
-architecture rtl of jtag_axi4_lite_top is
+architecture rtl of zipcpu_axi4_lite_top is
 
   -- == COMPONENTS ==
   component reset_gen is
@@ -94,7 +94,7 @@ begin  -- architecture rtl
   lcd_rdata   <= io_lcd_data; -- io LCD DATA not synchronized in clk clock domain (50MHz) because it's dynamic is slewer than the clock
 
   -- Instanciation of the CORE
-  i_jtag_axi4_lite_core_0 : entity lib_jtag_axi4_lite_top.jtag_axi4_lite_core
+  i_zipcpu_axi4_lite_core_0 : entity lib_zipcpu_axi4_lite_top.zipcpu_axi4_lite_core
     generic map (
       G_AXI_DATA_WIDTH      => 32,
       G_AXI_ADDR_WIDTH      => 16,

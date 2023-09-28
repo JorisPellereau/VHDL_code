@@ -29,9 +29,9 @@ use lib_axi4_lite.pkg_axi4_lite_interco.all;
 
 library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
-library lib_jtag_axi4_lite_top;
+library lib_zipcpu_axi4_lite_top;
 
-entity jtag_axi4_lite_core is
+entity zipcpu_axi4_lite_core is
   generic (
     G_AXI_DATA_WIDTH      : integer range 32 to 64 := 32;    -- AXI DATA WIDTH
     G_AXI_ADDR_WIDTH      : integer range 8 to 64  := 16;    -- AXI ADDR WIDTH
@@ -71,237 +71,115 @@ entity jtag_axi4_lite_core is
     ledg : out std_logic_vector(8 downto 0)  -- GREEN LEDS
     );
 
-end entity jtag_axi4_lite_core;
+end entity zipcpu_axi4_lite_core;
 
-architecture rtl of jtag_axi4_lite_core is
+architecture rtl of zipcpu_axi4_lite_core is
 
   -- == COMPONENTS ==
 
-  -- Component Altera VJTAG with 6 IR length
-  component altera_vjtag is
-    port (
-      tdi                : out std_logic;                                        -- tdi
-      tdo                : in  std_logic                    := 'X';              -- tdo
-      ir_in              : out std_logic_vector(7 downto 0);                     -- ir_in
-      ir_out             : in  std_logic_vector(7 downto 0) := (others => 'X');  -- ir_out
-      virtual_state_cdr  : out std_logic;                                        -- virtual_state_cdr
-      virtual_state_sdr  : out std_logic;                                        -- virtual_state_sdr
-      virtual_state_e1dr : out std_logic;                                        -- virtual_state_e1dr
-      virtual_state_pdr  : out std_logic;                                        -- virtual_state_pdr
-      virtual_state_e2dr : out std_logic;                                        -- virtual_state_e2dr
-      virtual_state_udr  : out std_logic;                                        -- virtual_state_udr
-      virtual_state_cir  : out std_logic;                                        -- virtual_state_cir
-      virtual_state_uir  : out std_logic;                                        -- virtual_state_uir
-      tck                : out std_logic                                         -- clk
-      );
-  end component altera_vjtag;
 
-  component vjtag_intf is
-
-    generic (
-      G_DATA_WIDTH : integer range 1 to 32 := 32;  -- DAta Width
-      G_ADDR_WIDTH : integer range 8 to 32 := 32;
-      G_IR_WIDTH   : integer range 8 to 24 := 8);  -- VJTAG IR Width
-    port (
-      clk_jtag   : in std_logic;                   -- JTAG Clock
-      rst_n_jtag : in std_logic;                   -- Asynchronous Reset
-
-      tdi   : in  std_logic;                                  -- TDI Data from Virtual JTAG
-      tdo   : out std_logic;                                  -- TDO Data to Virtual JTAG
-      ir_in : in  std_logic_vector(G_IR_WIDTH - 1 downto 0);  -- IR IN Vector
-      sdr   : in  std_logic;                                  -- SDR state from Virtual JTAG
-      udr   : in  std_logic;                                  -- UDR state from Virtual JTAG
-      cdr   : in  std_logic;                                  -- CDR statue from Virtual JTAG
-
-      addr          : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);      -- Addr
-      data_out      : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- Data out
-      data_in       : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);      -- DATA IN to read
-      data_in_val   : in  std_logic;                                        -- Data in Valid
-      access_status : in  std_logic_vector(1 downto 0);                     -- Access status
-      rnw           : out std_logic;                                        -- Read not Write signal
-      strobe        : out std_logic_vector((G_DATA_WIDTH/8) - 1 downto 0);  -- Strobe signal
-      start         : out std_logic);
-
-  end component vjtag_intf;
-
-  -- component axi4_lite_master is
-
-  --   generic (
-  --     G_DATA_WIDTH : integer range 8 to 32 := 32;   -- DATA WIDTH
-  --     G_ADDR_WIDTH : integer range 8 to 32 := 32);  -- ADDR WIDTH
-
-  --   port(
-
-  --     clk   : in std_logic;             -- Clock system
-  --     rst_n : in std_logic;             -- Asynchronous Reset
-
-  --     start         : in  std_logic;                                          -- Start the access
-  --     addr          : in  std_logic_vector(G_ADDR_WIDTH - 1 downto 0);        -- Addr of the access
-  --     rnw           : in  std_logic;                                          -- Read ('1') or Write ('0') access
-  --     strobe        : in  std_logic_vector((G_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
-  --     master_wdata  : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- Write Data
-  --     done          : out std_logic;                                          -- Access done
-  --     master_rdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- Read Data
-  --     access_status : out std_logic_vector(1 downto 0);                       -- Access Status
-
-  --     awvalid : out std_logic;                                    -- Address Write Valid
-  --     awaddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Address Write    
-  --     awprot  : out std_logic_vector(2 downto 0);                 -- Adress Write Prot
-  --     awready : in  std_logic;                                    -- Address Write Ready
-
-  --     wvalid : out std_logic;                                    -- Write Data Valid
-  --     wdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Write Data
-  --     wstrb  : out std_logic_vector((G_DATA_WIDTH / 8) - 1 downto 0);
-  --     wready : in  std_logic;                                    -- Write data Ready
-
-  --     bready : out std_logic;                     -- Write Channel Response
-  --     bvalid : in  std_logic;                     -- Write Response Channel Valid
-  --     bresp  : in  std_logic_vector(1 downto 0);  -- Write Response Channel resp
-
-  --     arvalid : out std_logic;                                    -- Read Channel Valid
-  --     araddr  : out std_logic_vector(G_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  --     arprot  : out std_logic_vector(2 downto 0);                 --  Read Address channel Ready Prot
-  --     arready : in  std_logic;                                    -- Read Address Channel Ready
-
-  --     rready : out std_logic;                                    -- Read Data Channel Ready
-  --     rvalid : in  std_logic;                                    -- Read Data Channel Valid
-  --     rdata  : in  std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  --     rresp  : in  std_logic_vector(1 downto 0)                  -- Read Data Channel Resp
-  --     );
-  -- end component axi4_lite_master;
-
-  -- component axi4_lite_slave_itf is
-
-  --   generic (
-  --     G_AXI4_LITE_ADDR_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
-  --     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
-  --     );
-  --   port (
-  --     clk   : in std_logic;                                   -- Clock
-  --     rst_n : in std_logic;                                   -- Asynchronous Reset
-
-  --     -- Write Address Channel signals
-  --     awvalid : in  std_logic;                                              -- Address Write Valid
-  --     awaddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  --     awprot  : in  std_logic_vector(2 downto 0);                           -- Adress Write Prot
-  --     awready : out std_logic;                                              -- Address Write Ready
-
-  --     -- Write Data Channel
-  --     wvalid : in  std_logic;                                                    -- Write Data Valid
-  --     wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Write Data
-  --     wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  --     wready : out std_logic;                                                    -- Write data Ready
-
-  --     -- Write Response Channel
-  --     bready : in  std_logic;                     -- Write Channel Response
-  --     bvalid : out std_logic;                     -- Write Response Channel Valid
-  --     bresp  : out std_logic_vector(1 downto 0);  -- Write Response Channel resp
-
-  --     -- Read Address Channel
-  --     arvalid : in  std_logic;                                              -- Read Channel Valid
-  --     araddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  --     arprot  : in  std_logic_vector(2 downto 0);                           --  Read Address channel Ready Prot
-  --     arready : out std_logic;                                              -- Read Address Channel Ready
-
-  --     -- Read Data Channel
-  --     rready : in  std_logic;                                              -- Read Data Channel Ready
-  --     rvalid : out std_logic;                                              -- Read Data Channel Valid
-  --     rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  --     rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
-
-  --     -- Slave Registers Interface
-  --     slv_start  : out std_logic;                                                    -- Start the access
-  --     slv_rw     : out std_logic;                                                    -- Read or write access
-  --     slv_addr   : out std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);        -- Slave Addr
-  --     slv_wdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Slave Write Data
-  --     slv_strobe : out std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write strobe
-
-  --     slv_done   : in std_logic;                                              -- Slave access done
-  --     slv_rdata  : in std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
-  --     slv_status : in std_logic_vector(1 downto 0)                            -- Slave status        
-  --     );
-
-  -- end component axi4_lite_slave_itf;
-
-  -- component axi4_lite_7segs is
-  --   generic (
-  --     G_AXI4_LITE_ADDR_WIDTH : integer range 8 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
-  --     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32   -- AXI4 Lite DATA WIDTH
-  --     );
-  --   port (
-  --     clk   : in std_logic;                                   -- Clock
-  --     rst_n : in std_logic;                                   -- Asynchronous Reset
-
-  --     -- Write Address Channel signals
-  --     awvalid : in  std_logic;                                              -- Address Write Valid
-  --     awaddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  --     awprot  : in  std_logic_vector(2 downto 0);                           -- Adress Write Prot
-  --     awready : out std_logic;                                              -- Address Write Ready
-
-  --     -- Write Data Channel
-  --     wvalid : in  std_logic;                                                    -- Write Data Valid
-  --     wdata  : in  std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);        -- Write Data
-  --     wstrb  : in  std_logic_vector((G_AXI4_LITE_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  --     wready : out std_logic;                                                    -- Write data Ready
-
-  --     -- Write Response Channel
-  --     bready : in  std_logic;                     -- Write Channel Response
-  --     bvalid : out std_logic;                     -- Write Response Channel Valid
-  --     bresp  : out std_logic_vector(1 downto 0);  -- Write Response Channel resp
-
-  --     -- Read Address Channel
-  --     arvalid : in  std_logic;                                              -- Read Channel Valid
-  --     araddr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  --     arprot  : in  std_logic_vector(2 downto 0);                           --  Read Address channel Ready Prot
-  --     arready : out std_logic;                                              -- Read Address Channel Ready
-
-  --     -- Read Data Channel
-  --     rready : in  std_logic;                                              -- Read Data Channel Ready
-  --     rvalid : out std_logic;                                              -- Read Data Channel Valid
-  --     rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  --     rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
-
-  --     -- 7 Segments
-  --     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
-  --     o_seg1 : out std_logic_vector(6 downto 0);  -- SEG 1
-  --     o_seg2 : out std_logic_vector(6 downto 0);  -- SEG 2
-  --     o_seg3 : out std_logic_vector(6 downto 0);  -- SEG 3
-  --     o_seg4 : out std_logic_vector(6 downto 0);  -- SEG 4
-  --     o_seg5 : out std_logic_vector(6 downto 0);  -- SEG 5
-  --     o_seg6 : out std_logic_vector(6 downto 0);  -- SEG 6
-  --     o_seg7 : out std_logic_vector(6 downto 0)   -- SEG 7
-  --     );
-
-  -- end component axi4_lite_7segs;
-
-  component bit_extender is
-    generic (
-      G_PULSE_WIDTH : positive := 10);  -- Extended Pulse Width
-    port (
-      clk_sys   : in  std_logic;        -- Clock system
-      rst_n     : in  std_logic;        -- Asynchronous Reset
-      pulse_in  : in  std_logic;        -- Input pulse to extend
-      pulse_out : out std_logic);       -- Output Extended Pulse
-  end component bit_extender;
 
 
   -- == INTERNAL Signals ==
-  --Signals and registers declared for VJI instance
-  signal tck   : std_logic;
-  signal tdi   : std_logic;
-  signal tdo   : std_logic;
-  signal cdr   : std_logic;
-  signal e1dr  : std_logic;
-  signal e2dr  : std_logic;
-  signal pdr   : std_logic;
-  signal sdr   : std_logic;
-  signal udr   : std_logic;
-  signal uir   : std_logic;
-  signal cir   : std_logic;
-  signal ir_in : std_logic_vector(7 downto 0);
+  -- ZIPAXIL Signals
 
---  signal rst_n_synch : std_logic;
+  -- # ZIPAXIL DEBUG Interface --
+  -- Write Address Channel signals
+  signal awvalid_zipaxil_dbg : std_logic;                                        -- Address Write Valid
+  signal awaddr_zipaxil_dbg  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_zipaxil_dbg : std_logic;                                        -- Address Write Ready
 
+  -- Write Data Channel
+  signal wvalid_zipaxil_dbg : std_logic;                                              -- Write Data Valid
+  signal wdata_zipaxil_dbg  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_zipaxil_dbg  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_zipaxil_dbg : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_zipaxil_dbg : std_logic;                     -- Write Channel Response
+  signal bvalid_zipaxil_dbg : std_logic;                     -- Write Response Channel Valid
+  signal bresp_zipaxil_dbg  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_zipaxil_dbg : std_logic;                                        -- Read Channel Valid
+  signal araddr_zipaxil_dbg  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_zipaxil_dbg : std_logic;                                        -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_zipaxil_dbg : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_zipaxil_dbg : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_zipaxil_dbg  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_zipaxil_dbg  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+
+
+  -- # ZIPAXIL MASTER Instruction bus --
+  -- Write Address Channel signals
+  signal awvalid_master_instr : std_logic;                                        -- Address Write Valid
+  signal awaddr_master_instr  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_master_instr  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_master_instr : std_logic;                                        -- Address Write Ready
+
+  -- Write Data Channel
+  signal wvalid_master_instr : std_logic;                                              -- Write Data Valid
+  signal wdata_master_instr  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_master_instr  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_master_instr : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_master_instr : std_logic;                     -- Write Channel Response
+  signal bvalid_master_instr : std_logic;                     -- Write Response Channel Valid
+  signal bresp_master_instr  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_master_instr : std_logic;                                        -- Read Channel Valid
+  signal araddr_master_instr  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_master_instr  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_master_instr : std_logic;                                        -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_master_instr : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_master_instr : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_master_instr  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_master_instr  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- ------------------------
+
+  -- # ZIPAXIL MASTER DATA bus --
+  -- Write Address Channel signals
+  signal awvalid_master_data : std_logic;                                        -- Address Write Valid
+  signal awaddr_master_data  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_master_data  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
+  signal awready_master_data : std_logic;                                        -- Address Write Ready
+
+  -- Write Data Channel
+  signal wvalid_master_data : std_logic;                                              -- Write Data Valid
+  signal wdata_master_data  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_master_data  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_master_data : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_master_data : std_logic;                     -- Write Channel Response
+  signal bvalid_master_data : std_logic;                     -- Write Response Channel Valid
+  signal bresp_master_data  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_master_data : std_logic;                                        -- Read Channel Valid
+  signal araddr_master_data  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_master_data  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
+  signal arready_master_data : std_logic;                                        -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_master_data : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_master_data : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_master_data  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_master_data  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- ------------------------
+
+
+  -- ------------------------
+
+  ------------------
 
   -- VJTAG Signals
   signal start_clk_jtag     : std_logic;
@@ -459,166 +337,139 @@ architecture rtl of jtag_axi4_lite_core is
 
 begin  -- architecture rtl
 
-  -- Instanciation of VIRTUAL JTAG Controller
-  -- Generated from Quartus II
-  i_altera_vjtag_0 : altera_vjtag
-    port map (
-      tdo                => tdo,
-      tck                => tck,
-      tdi                => tdi,
-      ir_in              => ir_in(7 downto 0),
-      ir_out             => open,
-      virtual_state_cdr  => cdr,
-      virtual_state_e1dr => e1dr,
-      virtual_state_e2dr => e2dr,
-      virtual_state_pdr  => pdr,
-      virtual_state_sdr  => sdr,
-      virtual_state_udr  => udr,
-      virtual_state_uir  => uir,
-      virtual_state_cir  => cir
-      );
-
-
-
--- Instanciation of VRITUAL JTAG Interface
--- TCK JTAG has a maximal frequency of 10MHz and may vary
-  i_vjtag_intf_0 : vjtag_intf
+  -- ZIPAXIL Instanciation
+  i_zipaxil_0 : entity lib_zipcpu.zipaxil
     generic map (
-      G_DATA_WIDTH => G_AXI_DATA_WIDTH,
-      G_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
-      G_IR_WIDTH   => 8
+      C_DBG_ADDR_WIDTH     => G_AXI_ADDR_WIDTH,
+      ADDRESS_WIDTH        => G_AXI_ADDR_WIDTH,
+      C_AXI_DATA_WIDTH     => G_AXI_DATA_WIDTH,
+      OPT_LGICACHE         => 0,
+      OPT_LGDCACHE         => 0,
+      OPT_PIPELINED        => '1',
+      RESET_ADDRESS        => (others => '0'),
+      START_HALTED         => "0",
+      SWAP_WSTRB           => "1",
+      OPT_MPY              => 3,
+      OPT_DIV              => "1",
+      OPT_SHIFTS           => "1",
+      OPT_LOCK             => "1",
+      OPT_FPU              => "0",
+      OPT_EARLY_BRANCHING  => "1",
+      OPT_CIS              => "1",
+      OPT_LOWPOWER         => "0",
+      OPT_DISTRIBUTED_REGS => "1",
+      OPT_DBGPORT          => "0",      -- Same as start halted
+      OPT_TRACE_PORT       => "0",
+      OPT_PROFILER         => "0",
+      OPT_USERMODE         => "1",
+      RESET_DURATION       => 10,
+      OPT_SIM              => "0",
+      OPT_CLKGATE          => "0"
       )
     port map(
-      clk_jtag   => tck,
-      rst_n_jtag => rst_n_sys,          --'1',                -- TBD pas de reset ..
+      S_AXI_ACLK    => clk_sys,
+      S_AXI_ARESETN => rst_n_sys,
+      i_interrupt   => '0',
+      i_cpu_reset   => '0',
 
-      tdi   => tdi,
-      tdo   => tdo,
-      ir_in => ir_in(7 downto 0),
-      sdr   => sdr,
-      udr   => udr,
-      cdr   => cdr,
+      S_DBG_AWVALID => awvalid_zipaxil_dbg,
+      S_DBG_AWREADY => awready_zipaxil_dbg,
+      S_DBG_AWADDR  => awaddr_zipaxil_dbg,
+      S_DBG_AWPROT  => awprot_zipaxil_dbg,
 
-      addr          => addr_vjtag,
-      data_out      => master_wdata_vjtag,
-      data_in       => master_rdata,
-      data_in_val   => done_extended_clk_jtag_r_edge,
-      access_status => access_status,   -- not resynchronized in clk_jtag clock domain /!\
-      rnw           => rnw,             -- not resynchronized in clk_jtag clock domain /!\
-      strobe        => strobe,          -- not resynchronized in clk_jtag clock domain /!\
-      start         => start_clk_jtag
+      S_DBG_WVALID => wvalid_zipaxil_dbg,
+      S_DBG_WREADY => wready_zipaxil_dbg,
+      S_DBG_WDATA  => wdata_zipaxil_dbg,
+      S_DBG_WSTRB  => wstrb_zipaxil_dbg,
+
+      S_DBG_BVALID => bvalid_zipaxil_dbg,
+      S_DBG_BREADY => bresp_zipaxil_dbg,
+
+      S_DBG_BRESP => bresp_zipaxil_dbg,
+
+      S_DBG_ARVALID => arvalid_zipaxil_dbg,
+      S_DBG_ARREADY => arready_zipaxil_dbg,
+      S_DBG_ARADDR  => araddr_zipaxil_dbg,
+
+      S_DBG_ARPROT => arprot_zipaxil_dbg,
+
+      S_DBG_RVALID => rvalid_zipaxil_dbg,
+      S_DBG_RREADY => rresp_zipaxil_dbg,
+      S_DBG_RDATA  => rdata_zipaxil_dbg,
+
+      S_DBG_RRESP => rresp_zipaxil_dbg,
+
+      -- Instruction bus (master)
+      M_INSN_AWVALID => awvalid_master_instr,
+      M_INSN_AWREADY => awready_master_instr,
+      M_INSN_AWADDR  => awaddr_master_instr,
+      M_INSN_AWPROT  => awprot_master_instr,
+
+      M_INSN_WVALID => wvalid_master_instr,
+      M_INSN_WREADY => wready_master_instr,
+      M_INSN_WDATA  => wdata_master_instr,
+      M_INSN_WSTRB  => wstrb_master_instr,
+
+      M_INSN_BVALID => bvalid_master_instr,
+      M_INSN_BREADY => bready_master_instr,
+      M_INSN_BRESP  => bresp_master_instr,
+
+      M_INSN_ARVALID => arvalid_master_instr,
+      M_INSN_ARREADY => arready_master_instr,
+      M_INSN_ARADDR  => araddr_master_instr,
+      M_INSN_ARPROT  => arprot_master_instr,
+
+      M_INSN_RVALID => rvalid_master_instr,
+      M_INSN_RREADY => rready_master_instr,
+      M_INSN_RDATA  => rdata_master_instr,
+      M_INSN_RRESP  => rresp_master_instr,
+
+      -- DAta Bus Master
+      M_DATA_AWVALID => awvalid_master_data,
+      M_DATA_AWREADY => awready_master_data,
+      M_DATA_AWADDR  => awaddr_master_data,
+
+      M_DATA_AWPROT => awprot_master_data,
+      M_DATA_WVALID => wvalid_master_data,
+
+      M_DATA_WREADY => wready_master_data,
+      M_DATA_WDATA  => wdata_master_data,
+      M_DATA_WSTRB  => wstrb_master_data,
+
+      M_DATA_BVALID => bvalid_master_data,
+      M_DATA_BREADY => bready_master_data,
+      M_DATA_BRESP  => bresp_master_data,
+
+      M_DATA_ARVALID => arvalid_master_data,
+      M_DATA_ARREADY => arready_master_data,
+      M_DATA_ARADDR  => araddr_master_data,
+
+      M_DATA_ARPROT => arprot_master_data,
+
+      M_DATA_RVALID => rvalid_master_data,
+      M_DATA_RREADY => rready_master_data,
+      M_DATA_RDATA  => rdata_master_data,
+      M_DATA_RRESP  => rresp_master_data,
+
+      o_cmd_reset => open,
+      o_halted    => open,
+      o_gie       => open,
+      o_op_stall  => open,
+      o_pf_stall  => open,
+      o_i_count   => open,
+
+      o_cpu_debug => open,
+
+      o_prof_stb   => open,
+      o_prof_addr  => open,
+      o_prof_ticks => open
       );
 
 
 
 
 
--- purpose: LEDR Update
-  p_ledr_mngt : process (tck, rst_n_sys) is
-  begin  -- process p_ledr_mngt
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      ledr_int <= (others => '0');
-    elsif rising_edge(tck) then         -- rising clock edge
 
-      if(udr = '1') then
-        ledr_int <= shift_reg(17 downto 0);
-      end if;
-
-    end if;
-  end process p_ledr_mngt;
-
-  -- purpose: Shift REG
-  p_shift_reg : process (tck, rst_n_sys) is
-  begin  -- process p_shift_reg
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      shift_reg <= (others => '0');
-    elsif rising_edge(tck) then         -- rising clock edge
-      if(sdr = '1') then
-        --shift_reg <= shift_reg(31 - 1 downto 0) & tdi;
-        shift_reg <= tdi & shift_reg(31 downto 1);
-      end if;
-
-    end if;
-  end process p_shift_reg;
-
-  -- purpose: LEDG Mngt
-  p_ledg_mngt : process (tck, rst_n_sys) is
-  begin  -- process p_ledg_mngt
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      ledg(7 downto 0) <= (others => '0');
-    elsif rising_edge(tck) then         -- rising clock edge
-      ledg(7 downto 0) <= ir_in(7 downto 0);
-    end if;
-  end process p_ledg_mngt;
-
-  -- purpose: Double resynchronization of start_clk_jtag in clk clock domain
-  p_resynch_start : process (clk_sys, rst_n_sys) is
-  begin  -- process p_resynch_start
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      start_clk_p1 <= '0';
-      start_clk_p2 <= '0';
-      start_clk    <= '0';
-    elsif rising_edge(clk_sys) then     -- rising clock edge
-      start_clk_p1 <= start_clk_jtag;
-      start_clk_p2 <= start_clk_p1;
-      start_clk    <= start_clk_p2;
-    end if;
-  end process p_resynch_start;
-
-  -- Rising edge detection of start
-  start_clk_r_edge <= start_clk_p2 and not start_clk;
-
-  --strobe <= (others => '0');            -- Not Used
-
-
-  -- purpose: Resynchronization in tck clock domain of the signal done_extended
-  p_ressynch_done_extended : process (tck, rst_n_sys) is
-  begin  -- process p_ressynch_done_extended
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      done_extended_clk_jtag_p1 <= '0';
-      done_extended_clk_jtag_p2 <= '0';
-      done_extended_clk_jtag    <= '0';
-    elsif rising_edge(tck) then         -- rising clock edge
-      done_extended_clk_jtag_p1 <= done_extended;
-      done_extended_clk_jtag_p2 <= done_extended_clk_jtag_p1;
-      done_extended_clk_jtag    <= done_extended_clk_jtag_p2;
-    end if;
-  end process p_ressynch_done_extended;
-
-
-  done_extended_clk_jtag_r_edge <= done_extended_clk_jtag_p2 and not done_extended_clk_jtag;
-
-
-  -- Instanciation of bit extender
-  -- Extender the pulse done_master in x width in order to be detected in the
-  -- slower clock domain clk_jtag
-  i_bit_extender_0 : bit_extender
-    generic map(
-      G_PULSE_WIDTH => 2*5
-      )
-    port map (
-      clk_sys   => clk_sys,
-      rst_n     => rst_n_sys,
-      pulse_in  => done_master,
-      pulse_out => done_extended
-      );
-
-  -- Bypass
-  -- Force to '0' inputs of AXI4 Lite Master
-  -- Theses inputs will be drived by the testbench
-  g_bypass_altera_vjtag : if(G_SIMULATION = true) generate
-
-  end generate;
-
-  -- NO BYPASS
-  -- Connect Signals from vjtag to AXI4 Lite Master
-  g_no_bypass_altera_vjtag : if(G_SIMULATION = false) generate
-    start_master  <= start_clk_r_edge;
-    addr_master   <= addr_vjtag;
-    rnw_master    <= rnw;
-    strobe_master <= strobe;
-    master_wdata  <= master_wdata_vjtag;
-  end generate;
 
   -- Instanciation of AXI4 LITE MASTER
   i_axi4_lite_master_0 : entity lib_axi4_lite.axi4_lite_master
