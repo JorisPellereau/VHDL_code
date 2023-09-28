@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-09-28
+-- Last update: 2023-09-29
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -338,6 +338,19 @@ architecture rtl of zipcpu_axi4_lite_core is
 
 begin  -- architecture rtl
 
+  -- Set DEBUG Port of the CPU to '0'
+  awvalid_zipaxil_dbg <= '0';
+  awaddr_zipaxil_dbg  <= (others => '0');
+  awprot_zipaxil_dbg  <= (others => '0');
+  wvalid_zipaxil_dbg  <= '0';
+  wdata_zipaxil_dbg   <= (others => '0');
+  wstrb_zipaxil_dbg   <= (others => '0');
+  bready_zipaxil_dbg  <= '0';
+  arvalid_zipaxil_dbg <= '0';
+  araddr_zipaxil_dbg  <= (others => '0');
+  arprot_zipaxil_dbg  <= (others => '0');
+  rready_zipaxil_dbg  <= '0';
+
   -- ZIPAXIL Instanciation
   i_zipaxil_0 : entity lib_zipcpu.zipaxil
     generic map (
@@ -346,7 +359,7 @@ begin  -- architecture rtl
       C_AXI_DATA_WIDTH     => G_AXI_DATA_WIDTH,
       OPT_LGICACHE         => 0,
       OPT_LGDCACHE         => 0,
-      OPT_PIPELINED        => '1',
+      OPT_PIPELINED        => "0",      --'Pipelined access
       RESET_ADDRESS        => x"00000000",
       START_HALTED         => "0",
       SWAP_WSTRB           => "1",
@@ -513,48 +526,48 @@ begin  -- architecture rtl
 
 
   -- Instanciation of AXI4 LITE MASTER
-  i_axi4_lite_master_0 : entity lib_axi4_lite.axi4_lite_master
-    generic map(
-      G_DATA_WIDTH => G_AXI_DATA_WIDTH,
-      G_ADDR_WIDTH => G_AXI_ADDR_WIDTH
-      )
-    port map(
-      clk   => clk_sys,
-      rst_n => rst_n_sys,
+  -- i_axi4_lite_master_0 : entity lib_axi4_lite.axi4_lite_master
+  --   generic map(
+  --     G_DATA_WIDTH => G_AXI_DATA_WIDTH,
+  --     G_ADDR_WIDTH => G_AXI_ADDR_WIDTH
+  --     )
+  --   port map(
+  --     clk   => clk_sys,
+  --     rst_n => rst_n_sys,
 
-      start         => start_master,
-      addr          => addr_master,
-      rnw           => rnw_master,
-      strobe        => strobe_master,
-      master_wdata  => master_wdata,
-      done          => done_master,
-      master_rdata  => master_rdata,
-      access_status => access_status,
+  --     start         => start_master,
+  --     addr          => addr_master,
+  --     rnw           => rnw_master,
+  --     strobe        => strobe_master,
+  --     master_wdata  => master_wdata,
+  --     done          => done_master,
+  --     master_rdata  => master_rdata,
+  --     access_status => access_status,
 
-      awvalid => awvalid_master,
-      awaddr  => awaddr_master,
-      awprot  => awprot_master,
-      awready => awready_master,
+  --     awvalid => awvalid_master,
+  --     awaddr  => awaddr_master,
+  --     awprot  => awprot_master,
+  --     awready => awready_master,
 
-      wvalid => wvalid_master,
-      wdata  => wdata_master,
-      wstrb  => wstrb_master,
-      wready => wready_master,
+  --     wvalid => wvalid_master,
+  --     wdata  => wdata_master,
+  --     wstrb  => wstrb_master,
+  --     wready => wready_master,
 
-      bready => bready_master,
-      bvalid => bvalid_master,
-      bresp  => bresp_master,
+  --     bready => bready_master,
+  --     bvalid => bvalid_master,
+  --     bresp  => bresp_master,
 
-      arvalid => arvalid_master,
-      araddr  => araddr_master,
-      arprot  => arprot_master,
-      arready => arready_master,
+  --     arvalid => arvalid_master,
+  --     araddr  => araddr_master,
+  --     arprot  => arprot_master,
+  --     arready => arready_master,
 
-      rready => rready_master,
-      rvalid => rvalid_master,
-      rdata  => rdata_master,
-      rresp  => rresp_master
-      );
+  --     rready => rready_master,
+  --     rvalid => rvalid_master,
+  --     rdata  => rdata_master,
+  --     rresp  => rresp_master
+  --     );
 
   -- AXI4 Lite Interconnect
   i_axi4_lite_interco_1_to_n : entity lib_axi4_lite.axi4_lite_interco_1_to_n
@@ -570,33 +583,33 @@ begin  -- architecture rtl
       -- SLAVE INTERFACE
 
       -- Write Address Channel signals
-      awvalid_s => awvalid_master,
-      awaddr_s  => awaddr_master,
-      awprot_s  => awprot_master,
-      awready_s => awready_master,
+      awvalid_s => awvalid_master_data,
+      awaddr_s  => awaddr_master_data,
+      awprot_s  => awprot_master_data,
+      awready_s => awready_master_data,
 
       -- Write Data Channel
-      wvalid_s => wvalid_master,
-      wdata_s  => wdata_master,
-      wstrb_s  => wstrb_master,
-      wready_s => wready_master,
+      wvalid_s => wvalid_master_data,
+      wdata_s  => wdata_master_data,
+      wstrb_s  => wstrb_master_data,
+      wready_s => wready_master_data,
 
       -- Write Response Channel
-      bready_s => bready_master,
-      bvalid_s => bvalid_master,
-      bresp_s  => bresp_master,
+      bready_s => bready_master_data,
+      bvalid_s => bvalid_master_data,
+      bresp_s  => bresp_master_data,
 
       -- Read Address Channel
-      arvalid_s => arvalid_master,
-      araddr_s  => araddr_master,
-      arprot_s  => arprot_master,
-      arready_s => arready_master,
+      arvalid_s => arvalid_master_data,
+      araddr_s  => araddr_master_data,
+      arprot_s  => arprot_master_data,
+      arready_s => arready_master_data,
 
       -- Read Data Channel
-      rready_s => rready_master,
-      rvalid_s => rvalid_master,
-      rdata_s  => rdata_master,
-      rresp_s  => rresp_master,
+      rready_s => rready_master_data,
+      rvalid_s => rvalid_master_data,
+      rdata_s  => rdata_master_data,
+      rresp_s  => rresp_master_data,
 
 
       -- MASTERS Interface

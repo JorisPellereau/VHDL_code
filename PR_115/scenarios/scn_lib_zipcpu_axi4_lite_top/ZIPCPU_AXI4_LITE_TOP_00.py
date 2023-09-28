@@ -17,6 +17,8 @@ import scn_class
 # Create SCN Class
 scn = scn_class.scn_class()
 
+# Initialized the ROM with NOOP instruction
+scn.MODELSIM_CMD("mem load -skip 0 -filltype value -filldata 77C00000 -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom")
 
 scn.print_step("Wait for Reset")
 
