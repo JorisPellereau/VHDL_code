@@ -30,6 +30,7 @@ use lib_axi4_lite.pkg_axi4_lite_interco.all;
 library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
 library lib_zipcpu_axi4_lite_top;
+library lib_zipcpu;
 
 entity zipcpu_axi4_lite_core is
   generic (
@@ -77,16 +78,15 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- == COMPONENTS ==
 
-
-
-
   -- == INTERNAL Signals ==
   -- ZIPAXIL Signals
+
+  signal prof_addr : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0); -- PROF Addr
 
   -- # ZIPAXIL DEBUG Interface --
   -- Write Address Channel signals
   signal awvalid_zipaxil_dbg : std_logic;                                        -- Address Write Valid
-  signal awaddr_zipaxil_dbg  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awaddr_zipaxil_dbg  : std_logic_vector(7 downto 0);  -- Address Write
   signal awprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
   signal awready_zipaxil_dbg : std_logic;                                        -- Address Write Ready
 
@@ -103,7 +103,7 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- Read Address Channel
   signal arvalid_zipaxil_dbg : std_logic;                                        -- Read Channel Valid
-  signal araddr_zipaxil_dbg  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal araddr_zipaxil_dbg  : std_logic_vector(7 downto 0);  -- Read Address channel Ready
   signal arprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
   signal arready_zipaxil_dbg : std_logic;                                        -- Read Address Channel Ready
 
@@ -230,7 +230,7 @@ architecture rtl of zipcpu_axi4_lite_core is
   -- # AXI4 Lite LCD signals --
   -- Write Address Channel signals
   signal awvalid_lcd : std_logic;                                        -- Address Write Valid
-  signal awaddr_lcd  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awaddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Address Write
   signal awprot_lcd  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
   signal awready_lcd : std_logic;                                        -- Address Write Ready
 
@@ -247,7 +247,7 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- Read Address Channel
   signal arvalid_lcd : std_logic;                                        -- Read Channel Valid
-  signal araddr_lcd  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal araddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
   signal arprot_lcd  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
   signal arready_lcd : std_logic;                                        -- Read Address Channel Ready
 
@@ -261,7 +261,7 @@ architecture rtl of zipcpu_axi4_lite_core is
   -- # AXI4 Lite 7 SEGS signals --
   -- Write Address Channel signals
   signal awvalid_7segs : std_logic;                                        -- Address Write Valid
-  signal awaddr_7segs  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awaddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Address Write
   signal awprot_7segs  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
   signal awready_7segs : std_logic;                                        -- Address Write Ready
 
@@ -278,7 +278,7 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- Read Address Channel
   signal arvalid_7segs : std_logic;                                        -- Read Channel Valid
-  signal araddr_7segs  : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal araddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
   signal arprot_7segs  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
   signal arready_7segs : std_logic;                                        -- Read Address Channel Ready
 
@@ -340,13 +340,13 @@ begin  -- architecture rtl
   -- ZIPAXIL Instanciation
   i_zipaxil_0 : entity lib_zipcpu.zipaxil
     generic map (
-      C_DBG_ADDR_WIDTH     => G_AXI_ADDR_WIDTH,
+      C_DBG_ADDR_WIDTH     => 8,
       ADDRESS_WIDTH        => G_AXI_ADDR_WIDTH,
       C_AXI_DATA_WIDTH     => G_AXI_DATA_WIDTH,
       OPT_LGICACHE         => 0,
       OPT_LGDCACHE         => 0,
       OPT_PIPELINED        => '1',
-      RESET_ADDRESS        => (others => '0'),
+      RESET_ADDRESS        => x"00000000",
       START_HALTED         => "0",
       SWAP_WSTRB           => "1",
       OPT_MPY              => 3,
@@ -383,7 +383,7 @@ begin  -- architecture rtl
       S_DBG_WSTRB  => wstrb_zipaxil_dbg,
 
       S_DBG_BVALID => bvalid_zipaxil_dbg,
-      S_DBG_BREADY => bresp_zipaxil_dbg,
+      S_DBG_BREADY => bready_zipaxil_dbg,
 
       S_DBG_BRESP => bresp_zipaxil_dbg,
 
@@ -394,7 +394,7 @@ begin  -- architecture rtl
       S_DBG_ARPROT => arprot_zipaxil_dbg,
 
       S_DBG_RVALID => rvalid_zipaxil_dbg,
-      S_DBG_RREADY => rresp_zipaxil_dbg,
+      S_DBG_RREADY => rready_zipaxil_dbg,
       S_DBG_RDATA  => rdata_zipaxil_dbg,
 
       S_DBG_RRESP => rresp_zipaxil_dbg,
@@ -461,7 +461,7 @@ begin  -- architecture rtl
       o_cpu_debug => open,
 
       o_prof_stb   => open,
-      o_prof_addr  => open,
+      o_prof_addr  => prof_addr,
       o_prof_ticks => open
       );
 
@@ -592,7 +592,7 @@ begin  -- architecture rtl
   -- # - SEGMENTS Interconnexion
 -- Write Addr Channel
   awvalid_7segs        <= awvalid_interco_m(0);
-  awaddr_7segs         <= awaddr_interco_m(0);
+  awaddr_7segs         <= awaddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
   awprot_7segs         <= awprot_interco_m(0);
   awready_interco_m(0) <= awready_7segs;
 
@@ -609,7 +609,7 @@ begin  -- architecture rtl
 
   -- Read Addr Channel
   arvalid_7segs        <= arvalid_interco_m(0);
-  araddr_7segs         <= araddr_interco_m(0);
+  araddr_7segs         <= araddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
   arprot_7segs         <= arprot_interco_m(0);
   arready_interco_m(0) <= arready_7segs;
 
@@ -623,7 +623,7 @@ begin  -- architecture rtl
   -- # - LCD Interconnexion
   -- Write Addr Channel
   awvalid_lcd          <= awvalid_interco_m(1);
-  awaddr_lcd           <= awaddr_interco_m(1);
+  awaddr_lcd           <= awaddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
   awprot_lcd           <= awprot_interco_m(1);
   awready_interco_m(1) <= awready_lcd;
 
@@ -640,7 +640,7 @@ begin  -- architecture rtl
 
   -- Read Addr Channel
   arvalid_lcd          <= arvalid_interco_m(1);
-  araddr_lcd           <= araddr_interco_m(1);
+  araddr_lcd           <= araddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
   arprot_lcd           <= arprot_interco_m(1);
   arready_interco_m(1) <= arready_lcd;
 
@@ -654,7 +654,7 @@ begin  -- architecture rtl
   -- Instanciation of AXI4 LITE 7 SEGMENT Controller
   i_axi4_lite_7segs_0 : entity lib_axi4_lite_7seg.axi4_lite_7segs
     generic map (
-      G_AXI4_LITE_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_LCD_ADDR_WIDTH,
       G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH
       )
     port map (
@@ -704,7 +704,7 @@ begin  -- architecture rtl
   -- Instanciation of AXI4 Lite LCD
   i_axi4_lite_lcd_0 : entity lib_axi4_lite_lcd.axi4_lite_lcd
     generic map (
-      G_AXI4_LITE_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_LCD_ADDR_WIDTH,
       G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
       G_CLK_PERIOD_NS        => G_CLK_PERIOD_NS,
       G_BIDIR_POLARITY_READ  => G_BIDIR_POLARITY_READ,

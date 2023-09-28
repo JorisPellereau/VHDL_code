@@ -26,6 +26,8 @@ use ieee.numeric_std.all;
 library lib_zipcpu_axi4_lite_top;
 use lib_zipcpu_axi4_lite_top.pkg_zipcpu_axi4_lite_top.all;
 
+library lib_axi4_lite;
+use lib_axi4_lite.pkg_axi4_lite_interco_cutom.all;
 
 entity zipcpu_axi4_lite_top is
   generic (
@@ -94,10 +96,11 @@ begin  -- architecture rtl
   lcd_rdata   <= io_lcd_data; -- io LCD DATA not synchronized in clk clock domain (50MHz) because it's dynamic is slewer than the clock
 
   -- Instanciation of the CORE
+  -- Zipcpu CORE doesnt access an ADDR_WIDTh lower than 16 (idecode multiplier concat : AW-15 < 0 -> BUG !
   i_zipcpu_axi4_lite_core_0 : entity lib_zipcpu_axi4_lite_top.zipcpu_axi4_lite_core
     generic map (
-      G_AXI_DATA_WIDTH      => 32,
-      G_AXI_ADDR_WIDTH      => 16,
+      G_AXI_DATA_WIDTH      => C_AXI_DATA_WIDTH,
+      G_AXI_ADDR_WIDTH      => C_AXI_ADDR_WIDTH,
       G_SLAVE_NB            => 2,
       G_CLK_PERIOD_NS       => 20,      -- Clock Period in ns
       G_BIDIR_POLARITY_READ => C_LCD_BIDIR_POLARITY,     -- BIDIR SEL Polarity

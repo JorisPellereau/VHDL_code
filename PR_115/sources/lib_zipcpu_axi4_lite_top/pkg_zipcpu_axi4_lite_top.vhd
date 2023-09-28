@@ -1,12 +1,12 @@
 -------------------------------------------------------------------------------
--- Title      : Package of JTAG AXI4 Lite TOP FPGA
+-- Title      : Package of ZIPCPU AXI4 Lite TOP FPGA
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : pkg_jtag_axi4_lite_top.vhd
+-- File       : pkg_zipcpu_axi4_lite_top.vhd
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2023-09-20
+-- Last update: 2023-09-28
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-package pkg_jtag_axi4_lite_top is
+package pkg_zipcpu_axi4_lite_top is
 
   -- == CORE CONFIguration ==
   constant C_LCD_BIDIR_POLARITY : std_logic := '0';  -- LCD BIDIR Polarity for read access
