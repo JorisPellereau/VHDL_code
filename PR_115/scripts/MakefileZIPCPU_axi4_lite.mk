@@ -101,7 +101,7 @@ SRC_LIB_RAM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/RAM/sources/lib_
 SRC_LIB_FIFO_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo/
 SRC_LIB_FIFO_WRAPPER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo_wrapper/
 
-SRB_LIB_ROM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/RAM/sources/lib_rom_intel/
+SRC_LIB_ROM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/ROM/sources/lib_rom_intel/
 
 SRC_ZIPCPU_AXI4_LITE_TOP_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_zipcpu_axi4_lite_top/
 

@@ -24,7 +24,7 @@ use ieee.std_logic_1164.all;
 
 library lib_axi4_lite;
 library lib_axi4_lite_memory;
-library lib_ram_intel;
+library lib_rom_intel;
 
 
 entity axi4_lite_memory is
@@ -81,7 +81,7 @@ architecture rtl of axi4_lite_memory is
   signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
   signal slv_status : std_logic_vector(1 downto 0);                               -- Slave status
 
-  signal addr_rom : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- ADDR ROM
+  signal addr_rom : std_logic_vector(G_ROM_ADDR_WIDTH - 1 downto 0);        -- ADDR ROM
   signal data_rom : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- DATA ROM
 
 begin  -- architecture rtl
@@ -161,7 +161,7 @@ begin  -- architecture rtl
 
       -- Rom Interface
       addr_rom  => addr_rom,
-      rom_rdata => rom_rdata
+      rom_rdata => data_rom
       );
 
   -- Instanciation of the SP ROM

@@ -22,6 +22,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
@@ -40,7 +41,7 @@ entity axi4_lite_rom_ctrl is
     -- Slave Interface
     slv_start : in  std_logic;                                              -- Slave start access
     slv_rw    : in  std_logic;                                              -- Slave RNW
-    slv_addr  : in  std_logic;                                              -- Slave Addr
+    slv_addr  : in  std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);  -- Slave Addr
     done      : out std_logic;                                              -- Access done
     rdata     : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read data from ROM
     status    : out std_logic_vector(1 downto 0);                           -- Status
@@ -68,7 +69,7 @@ begin  -- architecture rtl
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       if(slv_start = '1') then
-        addr_rom <= slv_addr(G_AXI4_LITE_ADDR_WIDTH downto log2(G_AXI4_LITE_ADDR_WIDTH/8));
+        addr_rom <= std_logic_vector(to_unsigned(0, log2(G_AXI4_LITE_ADDR_WIDTH/8))) & slv_addr(G_ROM_ADDR_WIDTH - 1 downto log2(G_AXI4_LITE_ADDR_WIDTH/8));
       end if;
 
     end if;

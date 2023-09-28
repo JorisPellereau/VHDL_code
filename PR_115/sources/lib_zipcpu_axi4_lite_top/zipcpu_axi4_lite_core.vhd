@@ -29,6 +29,7 @@ use lib_axi4_lite.pkg_axi4_lite_interco.all;
 
 library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
+library lib_axi4_lite_memory;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
 
@@ -81,14 +82,14 @@ architecture rtl of zipcpu_axi4_lite_core is
   -- == INTERNAL Signals ==
   -- ZIPAXIL Signals
 
-  signal prof_addr : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0); -- PROF Addr
+  signal prof_addr : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- PROF Addr
 
   -- # ZIPAXIL DEBUG Interface --
   -- Write Address Channel signals
-  signal awvalid_zipaxil_dbg : std_logic;                                        -- Address Write Valid
+  signal awvalid_zipaxil_dbg : std_logic;                     -- Address Write Valid
   signal awaddr_zipaxil_dbg  : std_logic_vector(7 downto 0);  -- Address Write
-  signal awprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
-  signal awready_zipaxil_dbg : std_logic;                                        -- Address Write Ready
+  signal awprot_zipaxil_dbg  : std_logic_vector(2 downto 0);  -- Adress Write Prot
+  signal awready_zipaxil_dbg : std_logic;                     -- Address Write Ready
 
   -- Write Data Channel
   signal wvalid_zipaxil_dbg : std_logic;                                              -- Write Data Valid
@@ -102,10 +103,10 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal bresp_zipaxil_dbg  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_zipaxil_dbg : std_logic;                                        -- Read Channel Valid
+  signal arvalid_zipaxil_dbg : std_logic;                     -- Read Channel Valid
   signal araddr_zipaxil_dbg  : std_logic_vector(7 downto 0);  -- Read Address channel Ready
-  signal arprot_zipaxil_dbg  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
-  signal arready_zipaxil_dbg : std_logic;                                        -- Read Address Channel Ready
+  signal arprot_zipaxil_dbg  : std_logic_vector(2 downto 0);  --  Read Address channel Ready Prot
+  signal arready_zipaxil_dbg : std_logic;                     -- Read Address Channel Ready
 
   -- Read Data Channel
   signal rready_zipaxil_dbg : std_logic;                                        -- Read Data Channel Ready
@@ -229,10 +230,10 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- # AXI4 Lite LCD signals --
   -- Write Address Channel signals
-  signal awvalid_lcd : std_logic;                                        -- Address Write Valid
+  signal awvalid_lcd : std_logic;                                                  -- Address Write Valid
   signal awaddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_lcd  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
-  signal awready_lcd : std_logic;                                        -- Address Write Ready
+  signal awprot_lcd  : std_logic_vector(2 downto 0);                               -- Adress Write Prot
+  signal awready_lcd : std_logic;                                                  -- Address Write Ready
 
   -- Write Data Channel
   signal wvalid_lcd : std_logic;                                              -- Write Data Valid
@@ -246,10 +247,10 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal bresp_lcd  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_lcd : std_logic;                                        -- Read Channel Valid
+  signal arvalid_lcd : std_logic;                                                  -- Read Channel Valid
   signal araddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_lcd  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
-  signal arready_lcd : std_logic;                                        -- Read Address Channel Ready
+  signal arprot_lcd  : std_logic_vector(2 downto 0);                               --  Read Address channel Ready Prot
+  signal arready_lcd : std_logic;                                                  -- Read Address Channel Ready
 
   -- Read Data Channel
   signal rready_lcd : std_logic;                                        -- Read Data Channel Ready
@@ -260,10 +261,10 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- # AXI4 Lite 7 SEGS signals --
   -- Write Address Channel signals
-  signal awvalid_7segs : std_logic;                                        -- Address Write Valid
+  signal awvalid_7segs : std_logic;                                                    -- Address Write Valid
   signal awaddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_7segs  : std_logic_vector(2 downto 0);                     -- Adress Write Prot
-  signal awready_7segs : std_logic;                                        -- Address Write Ready
+  signal awprot_7segs  : std_logic_vector(2 downto 0);                                 -- Adress Write Prot
+  signal awready_7segs : std_logic;                                                    -- Address Write Ready
 
   -- Write Data Channel
   signal wvalid_7segs : std_logic;                                              -- Write Data Valid
@@ -277,10 +278,10 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal bresp_7segs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_7segs : std_logic;                                        -- Read Channel Valid
+  signal arvalid_7segs : std_logic;                                                    -- Read Channel Valid
   signal araddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_7segs  : std_logic_vector(2 downto 0);                     --  Read Address channel Ready Prot
-  signal arready_7segs : std_logic;                                        -- Read Address Channel Ready
+  signal arprot_7segs  : std_logic_vector(2 downto 0);                                 --  Read Address channel Ready Prot
+  signal arready_7segs : std_logic;                                                    -- Read Address Channel Ready
 
   -- Read Data Channel
   signal rready_7segs : std_logic;                                        -- Read Data Channel Ready
@@ -467,6 +468,46 @@ begin  -- architecture rtl
 
 
 
+  -- Instanciation of ZIP CPU ROM for instruction
+  i_axi4_lite_memory_0 : entity lib_axi4_lite_memory.axi4_lite_memory
+    generic map (
+      G_AXI4_LITE_ADDR_WIDTH => G_AXI_ADDR_WIDTH,
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_ROM_ADDR_WIDTH       => 8       -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+      )
+    port map(
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_master_instr,
+      awaddr  => awaddr_master_instr,
+      awprot  => awprot_master_instr,
+      awready => awready_master_instr,
+
+      -- Write Data Channel
+      wvalid => wvalid_master_instr,
+      wdata  => wdata_master_instr,
+      wstrb  => wstrb_master_instr,
+      wready => wready_master_instr,
+
+      -- Write Response Channel
+      bready => bready_master_instr,
+      bvalid => bvalid_master_instr,
+      bresp  => bresp_master_instr,
+
+      -- Read Address Channel
+      arvalid => arvalid_master_instr,
+      araddr  => araddr_master_instr,
+      arprot  => arprot_master_instr,
+      arready => arready_master_instr,
+
+      -- Read Data Channel
+      rready => rready_master_instr,
+      rvalid => rvalid_master_instr,
+      rdata  => rdata_master_instr,
+      rresp  => rresp_master_instr
+      );
 
 
 
