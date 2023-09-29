@@ -369,7 +369,7 @@ begin  -- architecture rtl
       OPT_LOCK             => "1",
       OPT_FPU              => "0",
       OPT_EARLY_BRANCHING  => "1",
-      OPT_CIS              => "1",
+      OPT_CIS              => "0", -- Compressed Instruction not used
       OPT_LOWPOWER         => "0",
       OPT_DISTRIBUTED_REGS => "1",
       OPT_DBGPORT          => "0",      -- Same as start halted

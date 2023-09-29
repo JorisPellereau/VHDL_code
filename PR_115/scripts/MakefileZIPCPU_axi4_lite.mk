@@ -24,7 +24,7 @@ PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP
 # ---------------------------
 
 # -- SCENARII Configuration --
-SCN_LIB_DIR=
+SCN_LIB_DIR=scn_lib_zipcpu_axi4_lite_top
 # ----------------------------
 
 # == ZIPCPU ==
@@ -371,11 +371,18 @@ run_tb_zipcpu_axi4_lite_top:
 	make run_test TRANSCRIPT_EN=ON DO_FILES_EN=ON SCN_LIB_DIR=scn_lib_zipcpu_axi4_lite_top LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top 
 # ==============
 
+# TBD pas lisible via MakefileGenerics ?
+
+
 compile_s: 
-	$(AS) test.s -o test.o
+	$(AS) ../scenarios/$(SCN_LIB_DIR)/$(TEST).s -o $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
 
 disasemble:
-	$(OBJDUMP) -S -D -g test.o
+	$(OBJDUMP) -S -D -g $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
+
+
+as:
+	$(AS)
 
 #include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 #include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGHDL
