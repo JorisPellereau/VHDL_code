@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-09-28
+-- Last update: 2023-10-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,13 +25,15 @@ use ieee.std_logic_1164.all;
 library lib_axi4_lite;
 library lib_axi4_lite_memory;
 library lib_rom_intel;
+use lib_rom_intel.pkg_sp_rom.all;
 
 
 entity axi4_lite_memory is
   generic (
     G_AXI4_LITE_ADDR_WIDTH : integer range 10 to 64 := 32;  -- AXI4 Lite ADDR WIDTH
     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite DATA WIDTH
-    G_ROM_ADDR_WIDTH       : integer                := 8    -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+    G_ROM_ADDR_WIDTH       : integer                := 8;   -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+    G_ROM_INIT             : t_rom_32bits                   -- Rom Initialization
     );
   port (
     clk_sys   : in std_logic;                               -- System Clock
@@ -169,7 +171,8 @@ begin  -- architecture rtl
   i_sp_rom_0 : entity lib_rom_intel.sp_rom
     generic map(
       G_ADDR_WIDTH => G_ROM_ADDR_WIDTH,
-      G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH
+      G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH,
+      G_ROM_INIT   => G_ROM_INIT
       )
     port map (
       clk    => clk_sys,

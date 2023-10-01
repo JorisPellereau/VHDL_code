@@ -1,6 +1,6 @@
 # ZIPCPU_AXI4_LITE_TOP_01
 #
-# DEBUG TEST
+# Set data on 7 segments from ZIPCPU
 # 
 #
 import sys
@@ -18,7 +18,7 @@ import scn_class
 scn = scn_class.scn_class()
 
 # Initialized the ROM with NOOP instruction
-scn.MODELSIM_CMD("mem load -skip 0 -filltype value -filldata 77C00000 -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom")
+#scn.MODELSIM_CMD("mem load -skip 0 -filltype value -filldata 77C00000 -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom")
 
 # Set specific data into the ROM
 #mem load -filltype value -filldata 5 -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom(22)
@@ -39,8 +39,8 @@ data_list = ["1343C00D", "1a000000", "1a400150",
              "48656c6c", "6f2c2057", "6f726c64", "210d0a00"
 ]
 
-for i, data in enumerate(data_list):
-    scn.MODELSIM_CMD("mem load -filltype value -filldata {0} -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom({1})".format(data, i))
+#for i, data in enumerate(data_list):
+#    scn.MODELSIM_CMD("mem load -filltype value -filldata {0} -fillradix hexadecimal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom({1})".format(data, i))
 # Disassembly of section .start:
 
 # 00000000 <_start>:

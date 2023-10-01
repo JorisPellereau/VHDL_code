@@ -79,6 +79,7 @@ LIB_LIST+=lib_zipcpu_axi4_lite_top
 LIB_LIST+=$(LIB_ZIPCPU)
 LIB_LIST+=$(LIB_WISHBONE)
 LIB_LIST+=lib_rom_intel
+LIB_LIST+=lib_jtag_intel
 # ================
 
 
@@ -102,6 +103,7 @@ SRC_LIB_FIFO_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo
 SRC_LIB_FIFO_WRAPPER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo_wrapper/
 
 SRC_LIB_ROM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/ROM/sources/lib_rom_intel/
+SRC_LIB_JTAG_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/Intel/JTAG/sources/lib_jtag_intel/
 
 SRC_ZIPCPU_AXI4_LITE_TOP_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_zipcpu_axi4_lite_top/
 
@@ -138,6 +140,7 @@ src_lib_ram_intel_vhd+=sp_ram.vhd
 src_lib_fifo_vhd+=fifo_sp_ram.vhd
 src_lib_fifo_wrapper_vhd+=fifo_sp_ram_wrapper.vhd
 
+src_lib_rom_intel_vhd+=pkg_sp_rom.vhd
 src_lib_rom_intel_vhd+=sp_rom.vhd
 
 axi4_lite_custom_src_vhd += pkg_axi4_lite_interco_custom.vhd
@@ -174,6 +177,8 @@ src_axi4_lite_lcd_vhd+=axi4_lite_lcd.vhd
 
 src_axi4_lite_memory_vhd+=axi4_lite_rom_ctrl.vhd
 src_axi4_lite_memory_vhd+=axi4_lite_memory.vhd
+
+src_lib_jtag_intel_vhd+=vjtag_intf.vhd
 
 src_zipcpu_axi4_lite_top_vhd += pkg_zipcpu_axi4_lite_top.vhd
 src_zipcpu_axi4_lite_top_vhd += zipcpu_axi4_lite_core.vhd
@@ -279,6 +284,7 @@ compile_zipcpu_axi4_lite_top:
 	make compile_design_vhd_files SRC_VHD="$(rst_gen_src_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_RESET_GEN_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_ram_intel_vhd)" VHD_DESIGN_LIB=lib_ram_intel VHD_FILE_PATH=$(SRC_LIB_RAM_INTEL_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_rom_intel_vhd)" VHD_DESIGN_LIB=lib_rom_intel VHD_FILE_PATH=$(SRC_LIB_ROM_INTEL_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_lib_jtag_intel_vhd)" VHD_DESIGN_LIB=lib_jtag_intel VHD_FILE_PATH=$(SRC_LIB_JTAG_INTEL_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_fifo_vhd)" VHD_DESIGN_LIB=lib_fifo VHD_FILE_PATH=$(SRC_LIB_FIFO_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_fifo_wrapper_vhd)" VHD_DESIGN_LIB=lib_fifo_wrapper VHD_FILE_PATH=$(SRC_LIB_FIFO_WRAPPER_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(seg_src_vhd)" VHD_DESIGN_LIB=lib_seg7 VHD_FILE_PATH=$(SRC_LIB_7SEG) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
@@ -300,7 +306,7 @@ compile_zipcpu_ex:
 	make compile_design_v_files SRC_V="$(src_lib_zipcpu_ex_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_EX_DIR);
 
 compile_zipcpu_core:
-	make compile_design_v_files SRC_V="$(src_lib_zipcpu_core_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_CORE_DIR);
+	make compile_design_v_files SRC_V="$(src_lib_zipcpu_core_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_CORE_DIR) VLOG_ARGS="+define+IDECODE";
 
 compile_zipcpu_peripherals:
 	make compile_design_v_files SRC_V="$(src_lib_zipcpu_peripherals_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_PERIPHERALS_DIR);
