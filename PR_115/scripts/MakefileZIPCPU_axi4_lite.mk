@@ -28,11 +28,12 @@ SCN_LIB_DIR=scn_lib_zipcpu_axi4_lite_top
 # ----------------------------
 
 # == ZIPCPU ==
-CC      := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-gcc
-CPP     := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-cpp
-AS      := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-as
-LD      := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-ld
-OBJDUMP := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-objdump
+CC        := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-gcc
+CPP       := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-cpp
+AS        := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-as
+LD        := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-ld
+OBJDUMP   := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-objdump
+ADDR2LINE := /home/linux-jp/Documents/GitHub/zipcpu/sw/install/cross-tools/bin/zip-addr2line
 # ============
 
 
@@ -383,9 +384,15 @@ run_tb_zipcpu_axi4_lite_top:
 compile_s: 
 	$(AS) ../scenarios/$(SCN_LIB_DIR)/$(TEST).s -o $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
 
-disasemble:
-	$(OBJDUMP) -S -D -g $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
+OBJDUMP_ARGS+=
+OBJDUMP_ARGS+=-S -D -g
 
+disasemble:
+	$(OBJDUMP) $(OBJDUMP_ARGS) $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
+
+
+addr_to_line:
+	$(ADDR2LINE) $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
 
 as:
 	$(AS)
