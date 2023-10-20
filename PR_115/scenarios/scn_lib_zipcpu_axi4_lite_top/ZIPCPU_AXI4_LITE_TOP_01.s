@@ -33,15 +33,18 @@
 ;; }}}
 
 	.section .start,"ax",@progbits
-	.global	_start
+	.global	main
 	.equ	segments, 0x0000
 	.equ    LCD, 0x1000
-	.equ LCD_CHAR, 0xCAFEDEC0
+	.equ LCD_CHAR, 0xCAFEDECA
+
 	
-_start:
-	ldi	LCD_CHAR,r2
+main:
+	ldi	LCD_CHAR,r2 	; Load data into R2
 	SW r2,segments
+	BUSY
 	;; ldi	uart,r3		;
+
 
 ;; next_char:
 ;; 	LB	(r2),R4
