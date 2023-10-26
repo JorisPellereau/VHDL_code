@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-03-04
--- Last update: 2023-09-20
+-- Last update: 2023-10-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ begin  -- architecture rtl
         s_arvalid <= '0';
 
       -- Set s_arvalid (Rising edge detection)
-      elsif(arvalid = '1' and s_arvalid = '0') then
+      elsif(arvalid = '1' and s_arvalid = '0' and s_rd_ongoing = '0') then
         s_arvalid <= '1';
       end if;
     end if;
@@ -150,7 +150,7 @@ begin  -- architecture rtl
         s_arready <= '0';
 
       -- Generate arready
-      elsif(arvalid = '1' and s_arvalid = '0') then
+      elsif(arvalid = '1' and s_arvalid = '0' and s_rd_ongoing = '0') then
         s_arready <= '1';
       end if;
 
