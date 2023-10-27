@@ -40,10 +40,11 @@
 	.equ    LCD_base_addr,      0x1000 ; LCD Base Addr
 
 	;; INITIAL Values
-	.equ segment_init_value, 0x0000	   ; Segment Initial Value
+	.equ segment_init_value, 0x00000000	   ; Segment Initial Value
 
 	;; CONSTANTS
-	.equ LCD_CHAR, 0xCAFEDECA
+	.equ C_TEST_OK, 0x000DEA15 ; DEAL == OK
+	.equ C_TEST_KO, 0x00FA11ED ; FAILED == KO
 
 
 	;; Main program
@@ -61,21 +62,21 @@ _main:
 ;;; Read Initial values of Segments registers
 read_init_segments:
 	LW (segments_base_addr), r1 ; Get the value store in segment register from SEGMENT slave and store it into R1
-	cmp 0, r1
-	BZ inc_error
+	cmp segment_init_value, r1
+	BNZ inc_error 		; Branch if not zero (initial value if 0)
 	RETN
 
 ;;; Read initial Values of LCD registers
 read_init_lcd:
-	LW (LCD_base_addr), r2
+	LW (LCD_base_addr), r2	; Get Initial Value of reg0
 	cmp 0, r2
-	BZ inc_error
-	LW.Z LCD_base_addr + 4, r2 ; Get Initial Value of reg1
+	BNZ inc_error		 ; Branch if not zero (initial value if 0)
+	LW LCD_base_addr + 4, r2 ; Get Initial Value of reg1
 	cmp 0, r2
-	BZ inc_error
+	BNZ inc_error		 ; Branch if not zero (initial value if 0)
 	LW LCD_base_addr + 8, r2 ; Get Initial Value of reg2
 	cmp 2, r2
-	BZ inc_error
+	BNZ inc_error		; Branch if not equal to 2 (initial value)
 	RETN
 
 ;; This function increments Error if the previous comparison is wrong
@@ -86,59 +87,14 @@ inc_error:
 
 ;;; This function Check the result of the test
 check_test:
+	cmp 0, r10
+	BZ success_test 	; If ok goto success_test subroutines
+	LDI C_TEST_KO, r11 	; Else write KO
 	BUSY
-	
-;; for_loop:
-;; 	add	$1,r1
-;; 	;; add 	$1,r0
-;; 	JSR 	inc_segment
-;; 	cmp	$10,r1
-;; 	blt	for_loop
-;; 	BRA 	infinite_loop
-	
-	;; Read the value the segments, increment it by one and update the segment
-;; inc_segment:
-;; 	NOP
-;; 	;; SUB 	$4,SP		; PUSH
-;; 	;; SW 	R0,(SP)		; PUSH
-;; 	;; SUB 	$4,SP
-;; 	;; SW 	R1,$(SP)
-;; 	LW (segments_base_addr), r2 ; Get the value store in segment register from SEGMENT slave and store it into R2
-;; 	ADD 1,r2		  ; Inc by one the value into R2
-;; 	SW r2, segments_base_addr ; Write the Update value into segment
-;; 	;; LW (SP),R0		  ; POP
-;; 	;; ADD $4,SP		  ; POP
-;; 	;; LW $(SP),R1
-;; 	;; ADD $4,SP
-;; 	;; LW $(SP),R0
-;; 	;; ADD $4,SP
-;; 	RETN
 
-
-	
-;; infinite_loop:
-;; 	BUSY
-	;; LW.Z segments_base_addr, r2 ;Get Initial Value from segments and check if it is equals to (others => '0')
-	;; LW.Z LCD_base_addr, r2 ; Get Initial Value of reg0
-	;; LW.Z LCD_base_addr + 4, r2 ; Get Initial Value of reg1
-	;; LW LCD_base_addr + 8, r2 ; Get Initial Value of reg2
-	;; BUSY
-;; next_char:
-;; 	LB	(r2),R4
-;; 	TST	R4
-;; 	BZ	all_done
-;; keep_waiting:
-;; 	LW	12(r3),R5
-;; 	TST	1,R5
-;; 	BNZ	keep_waiting
-;; 	SW	r4,12(r3)
-;; 	ADD	1,r2
-;; 	BRA	next_char
-	
-;; all_done:
-;; 	SEXIT	0
-;; 	HALT
-;; string:
-;; 	.string	"H"
+;;; Success : Write value 1 in r11
+success_test:
+	LDI C_TEST_OK, r11
+	BUSY
 
 
