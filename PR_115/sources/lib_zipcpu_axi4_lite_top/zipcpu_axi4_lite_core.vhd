@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-10-01
+-- Last update: 2023-11-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -38,22 +38,25 @@ library lib_zipcpu;
 library lib_jtag_intel;
 library lib_pulse_extender;
 
+library lib_pkg_utils;
+use lib_pkg_utils.pkg_utils.all;
 
 
 entity zipcpu_axi4_lite_core is
   generic (
-    G_AXI_DATA_WIDTH      : integer range 32 to 64 := 32;   -- AXI DATA WIDTH
-    G_AXI_ADDR_WIDTH      : integer range 8 to 64  := 16;   -- AXI ADDR WIDTH
-    G_SLAVE_NB            : integer range 2 to 16  := 2;    -- Number of AXI4 Lite Slave
-    G_CLK_PERIOD_NS       : integer                := 20;   -- Clock Period in ns
-    G_BIDIR_POLARITY_READ : std_logic              := '0';  -- BIDIR SEL Polarity
-    G_FIFO_ADDR_WIDTH     : integer                := 10;   -- FIFO ADDR WIDTH
-    G_ROM_ADDR_WIDTH      : integer                := 8;    -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
-    G_ROM_INIT            : t_rom_32bits                    -- Rom Initialization
+    G_AXI_DATA_WIDTH        : integer range 32 to 64 := 32;   -- AXI DATA WIDTH
+    G_AXI_ADDR_WIDTH        : integer range 8 to 64  := 16;   -- AXI ADDR WIDTH
+    G_SLAVE_NB              : integer range 2 to 16  := 2;    -- Number of AXI4 Lite Slave
+    G_CLK_PERIOD_NS         : integer                := 20;   -- Clock Period in ns
+    G_BIDIR_POLARITY_READ   : std_logic              := '0';  -- BIDIR SEL Polarity
+    G_FIFO_ADDR_WIDTH       : integer                := 10;   -- FIFO ADDR WIDTH
+    G_ROM_ADDR_WIDTH        : integer                := 8;    -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+    G_ROM_INIT              : t_rom_32bits;                   -- Rom Initialization
+    G_EXTERNAL_INTERRUPT_NB : integer                := 16    -- External Interruption of the ZIPCPU Configuration
     );
   port (
-    clk_sys   : in std_logic;                               -- Clock System
-    rst_n_sys : in std_logic;                               -- Asynchronous Reset
+    clk_sys   : in std_logic;                                 -- Clock System
+    rst_n_sys : in std_logic;                                 -- Asynchronous Reset
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -242,6 +245,58 @@ architecture rtl of zipcpu_axi4_lite_core is
       );
   end component;
 
+  -- Component axilperiphs
+  component axilperiphs
+    generic (
+      C_AXI_ADDR_WIDTH    : integer                      := 6;
+      C_AXI_DATA_WIDTH    : integer                      := 32;
+      OPT_SKIDBUFFER      : std_logic_vector(0 downto 0) := "1";
+      OPT_LOWPOWER        : std_logic_vector(0 downto 0) := "0";
+      EXTERNAL_INTERRUPTS : integer                      := 1;
+      OPT_COUNTERS        : std_logic_vector(0 downto 0) := "1";
+      ADDRLSB             : integer                      := 8-3
+      );
+    port (
+
+      S_AXI_ACLK    : in std_logic;
+      S_AXI_ARESETN : in std_logic;
+
+      S_AXI_AWVALID : in  std_logic;
+      S_AXI_AWREADY : out std_logic;
+      S_AXI_AWADDR  : in  std_logic_vector(C_AXI_ADDR_WIDTH-1 downto 0);
+      S_AXI_AWPROT  : in  std_logic_vector(2 downto 0);
+
+      S_AXI_WVALID : in  std_logic;
+      S_AXI_WREADY : out std_logic;
+      S_AXI_WDATA  : in  std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
+      S_AXI_WSTRB  : in  std_logic_vector((C_AXI_DATA_WIDTH/8) - 1 downto 0);
+
+      S_AXI_BVALID : out std_logic;
+      S_AXI_BREADY : in  std_logic;
+      S_AXI_BRESP  : out std_logic_vector(1 downto 0);
+
+      S_AXI_ARVALID : in  std_logic;
+      S_AXI_ARREADY : out std_logic;
+      S_AXI_ARADDR  : in  std_logic_vector(C_AXI_ADDR_WIDTH-1 downto 0);
+      S_AXI_ARPROT  : in  std_logic_vector(2 downto 0);
+
+      S_AXI_RVALID : out std_logic;
+      S_AXI_RREADY : in  std_logic;
+      S_AXI_RDATA  : out std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
+      S_AXI_RRESP  : out std_logic_vector(1 downto 0);
+
+      i_cpu_reset      : in  std_logic;
+      i_cpu_halted     : in  std_logic;
+      i_cpu_gie        : in  std_logic;
+      i_cpu_pfstall    : in  std_logic;
+      i_cpu_opstall    : in  std_logic;
+      i_cpu_icount     : in  std_logic;
+      i_ivec           : in  std_logic_vector(EXTERNAL_INTERRUPTS - 1 downto 0);
+      o_interrupt      : out std_logic;
+      o_watchdog_reset : out std_logic
+      );
+  end component;
+
 
   -- == INTERNAL Signals ==
 
@@ -274,12 +329,13 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- ZIPAXIL Signals
 
-  signal cmd_reset : std_logic;
-  signal halted    : std_logic;
-  signal gie       : std_logic;
-  signal op_stall  : std_logic;
-  signal pf_stall  : std_logic;
-  signal i_count   : std_logic;
+  signal zipcpu_interrupt : std_logic;  -- ZIPCPU Interrupt
+  signal cmd_reset        : std_logic;
+  signal halted           : std_logic;
+  signal gie              : std_logic;
+  signal op_stall         : std_logic;
+  signal pf_stall         : std_logic;
+  signal i_count          : std_logic;
 
   signal prof_addr : std_logic_vector(G_AXI_ADDR_WIDTH - 1 downto 0);  -- PROF Addr
 
@@ -381,6 +437,39 @@ architecture rtl of zipcpu_axi4_lite_core is
 
 
   ------------------
+
+  signal interrupt_vector : std_logic_vector(G_EXTERNAL_INTERRUPT_NB - 1 downto 0);  -- Vector of Interrupt
+
+  -- # AXI4 Lite ZIPCPU PERIPHERALS signals --
+  -- Write Address Channel signals
+  signal awvalid_periphs : std_logic;                                                      -- Address Write Valid
+  signal awaddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_periphs  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  signal awready_periphs : std_logic;                                                      -- Address Write Ready
+
+  -- Write Data Channel
+  signal wvalid_periphs : std_logic;                                              -- Write Data Valid
+  signal wdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_periphs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_periphs : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_periphs : std_logic;                     -- Write Channel Response
+  signal bvalid_periphs : std_logic;                     -- Write Response Channel Valid
+  signal bresp_periphs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_periphs : std_logic;                                                      -- Read Channel Valid
+  signal araddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_periphs  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  signal arready_periphs : std_logic;                                                      -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_periphs : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_periphs : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_periphs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- ------------------------
 
   -- # AXI4 Lite LCD signals --
   -- Write Address Channel signals
@@ -684,7 +773,7 @@ begin  -- architecture rtl
     port map(
       S_AXI_ACLK    => clk_sys,
       S_AXI_ARESETN => rst_n_sys,
-      i_interrupt   => '0',
+      i_interrupt   => zipcpu_interrupt,
       i_cpu_reset   => '0',
 
       S_DBG_AWVALID => awvalid_zipaxil_dbg,
@@ -901,9 +990,10 @@ begin  -- architecture rtl
   -- Interconnect Master's connected to AXI4 Lite Slave
   -- Index 0 -> AXI4 Lite 7SEGMENTS
   -- Index 1 -> AXI4 Lite LCD
+  -- Index 2 -> AXI4 Lite ZIPCPU PERIPHerals
 
   -- # - SEGMENTS Interconnexion
--- Write Addr Channel
+  -- Write Addr Channel
   awvalid_7segs        <= awvalid_interco_m(0);
   awaddr_7segs         <= awaddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
   awprot_7segs         <= awprot_interco_m(0);
@@ -915,7 +1005,7 @@ begin  -- architecture rtl
   wstrb_7segs         <= wstrb_interco_m(0);
   wready_interco_m(0) <= wready_7segs;
 
-  -- Write Response Channem
+  -- Write Response Channel
   bready_7segs        <= bready_interco_m(0);
   bvalid_interco_m(0) <= bvalid_7segs;
   bresp_interco_m(0)  <= bresp_7segs;
@@ -946,7 +1036,7 @@ begin  -- architecture rtl
   wstrb_lcd           <= wstrb_interco_m(1);
   wready_interco_m(1) <= wready_lcd;
 
-  -- Write Response Channem
+  -- Write Response Channel
   bready_lcd          <= bready_interco_m(1);
   bvalid_interco_m(1) <= bvalid_lcd;
   bresp_interco_m(1)  <= bresp_lcd;
@@ -963,11 +1053,93 @@ begin  -- architecture rtl
   rdata_interco_m(1)  <= rdata_lcd;
   rresp_interco_m(1)  <= rresp_lcd;
 
+  -- # - ZIPCPU PERIPHERALS Interconnexion
+  -- Write Addr Channel
+  awvalid_periphs      <= awvalid_interco_m(2);
+  awaddr_periphs       <= awaddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
+  awprot_periphs       <= awprot_interco_m(2);
+  awready_interco_m(2) <= awready_periphs;
+
+  -- Write Data Channel
+  wvalid_periphs      <= wvalid_interco_m(2);
+  wdata_periphs       <= wdata_interco_m(2);
+  wstrb_periphs       <= wstrb_interco_m(2);
+  wready_interco_m(2) <= wready_periphs;
+
+  -- Write Response Channel
+  bready_periphs      <= bready_interco_m(2);
+  bvalid_interco_m(2) <= bvalid_periphs;
+  bresp_interco_m(2)  <= bresp_periphs;
+
+  -- Read Addr Channel
+  arvalid_periphs      <= arvalid_interco_m(2);
+  araddr_periphs       <= araddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
+  arprot_periphs       <= arprot_interco_m(2);
+  arready_interco_m(2) <= arready_periphs;
+
+  -- Read DAta Channel
+  rready_periphs      <= rready_interco_m(2);
+  rvalid_interco_m(2) <= rvalid_periphs;
+  rdata_interco_m(2)  <= rdata_periphs;
+  rresp_interco_m(2)  <= rresp_periphs;
+
+
+  interrupt_vector <= (others => '0');
+
+  -- Instanciation of AXIPERIPH
+  i_axilperiphs_0 : axilperiphs
+    generic map (
+      C_AXI_ADDR_WIDTH    => C_AXI4_LITE_PERIPHS_ADDR_WIDTH,
+      C_AXI_DATA_WIDTH    => C_AXI_DATA_WIDTH,
+      OPT_SKIDBUFFER      => "1",       -- 1'b1,
+      OPT_LOWPOWER        => "0",
+      EXTERNAL_INTERRUPTS => G_EXTERNAL_INTERRUPT_NB,
+      OPT_COUNTERS        => "0",
+      ADDRLSB             => log2(C_AXI_DATA_WIDTH)-3
+      )
+    port map (
+      S_AXI_ACLK    => clk_sys,
+      S_AXI_ARESETN => rst_n_sys,
+
+      S_AXI_AWVALID => awvalid_periphs,
+      S_AXI_AWREADY => awready_periphs,
+      S_AXI_AWADDR  => awaddr_periphs,
+      S_AXI_AWPROT  => awprot_periphs,
+
+      S_AXI_WVALID => wvalid_periphs,
+      S_AXI_WREADY => wready_periphs,
+      S_AXI_WDATA  => wdata_periphs,
+      S_AXI_WSTRB  => wstrb_periphs,
+
+      S_AXI_BVALID => bvalid_periphs,
+      S_AXI_BREADY => bready_periphs,
+      S_AXI_BRESP  => bresp_periphs,
+
+      S_AXI_ARVALID => arvalid_periphs,
+      S_AXI_ARREADY => arready_periphs,
+      S_AXI_ARADDR  => araddr_periphs,
+      S_AXI_ARPROT  => arprot_periphs,
+
+      S_AXI_RVALID => rvalid_periphs,
+      S_AXI_RREADY => rready_periphs,
+      S_AXI_RDATA  => rdata_periphs,
+      S_AXI_RRESP  => rresp_periphs,
+
+      i_cpu_reset      => '0',
+      i_cpu_halted     => '0',
+      i_cpu_gie        => '0',
+      i_cpu_pfstall    => '0',
+      i_cpu_opstall    => '0',
+      i_cpu_icount     => '0',
+      i_ivec           => interrupt_vector,
+      o_interrupt      => zipcpu_interrupt,
+      o_watchdog_reset => open
+      );
 
   -- Instanciation of AXI4 LITE 7 SEGMENT Controller
   i_axi4_lite_7segs_0 : entity lib_axi4_lite_7seg.axi4_lite_7segs
     generic map (
-      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_LCD_ADDR_WIDTH,
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_7SEGS_ADDR_WIDTH,
       G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH
       )
     port map (

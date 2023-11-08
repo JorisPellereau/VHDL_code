@@ -1,6 +1,6 @@
-# ZIPCPU_AXI4_LITE_TOP_01
+# ZIPCPU_AXI4_LITE_TOP_03
 #
-# Use asm script : read initial values of registers and check it
+# Use asm script : test of the input interrupt of the ZIPCPU
 # 
 #
 import sys
@@ -30,7 +30,7 @@ scn = scn_class.scn_class()
 mem_file = ZIPCPU_AXI4_LITE_TOP_constants.o_file_path + "/" +  os.path.splitext(os.path.basename(__file__))[0] + ".mem"
 rtl_mem_path = "/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom"
 
-scn.CREATE_MODELSIM_MEMORY(mem_file = mem_file,
+scn.CREATE_MODELSIM_MEMORY(mem_file        = mem_file,
                             data_list      = phy_mem_list,
                             rtl_mem_path   = rtl_mem_path,
                             mem_data_width = 32,
@@ -45,7 +45,7 @@ scn.print_step("Wait for Reset")
 
 scn.WTRS("RST_N")
 
-scn.WAIT(20, "us")
+scn.WAIT(200, "us")
 
 scn.END_TEST()
 

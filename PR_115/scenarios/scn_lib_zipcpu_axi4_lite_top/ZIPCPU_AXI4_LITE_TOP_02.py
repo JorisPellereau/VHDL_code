@@ -1,6 +1,6 @@
-# ZIPCPU_AXI4_LITE_TOP_01
+# ZIPCPU_AXI4_LITE_TOP_02
 #
-# Use asm script : read initial values of registers and check it
+# Use asm script : perform read access to not mapped registers. Error expected
 # 
 #
 import sys
@@ -30,7 +30,7 @@ scn = scn_class.scn_class()
 mem_file = ZIPCPU_AXI4_LITE_TOP_constants.o_file_path + "/" +  os.path.splitext(os.path.basename(__file__))[0] + ".mem"
 rtl_mem_path = "/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_memory_0/i_sp_rom_0/rom"
 
-scn.CREATE_MODELSIM_MEMORY(mem_file = mem_file,
+scn.CREATE_MODELSIM_MEMORY(mem_file        = mem_file,
                             data_list      = phy_mem_list,
                             rtl_mem_path   = rtl_mem_path,
                             mem_data_width = 32,

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-10-01
+-- Last update: 2023-11-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -98,14 +98,15 @@ begin  -- architecture rtl
   -- Zipcpu CORE doesnt access an ADDR_WIDTh lower than 16 (idecode multiplier concat : AW-15 < 0 -> BUG !
   i_zipcpu_axi4_lite_core_0 : entity lib_zipcpu_axi4_lite_top.zipcpu_axi4_lite_core
     generic map (
-      G_AXI_DATA_WIDTH      => C_AXI_DATA_WIDTH,
-      G_AXI_ADDR_WIDTH      => C_AXI_ADDR_WIDTH,
-      G_SLAVE_NB            => 2,
-      G_CLK_PERIOD_NS       => 20,                    -- Clock Period in ns
-      G_BIDIR_POLARITY_READ => C_LCD_BIDIR_POLARITY,  -- BIDIR SEL Polarity
-      G_FIFO_ADDR_WIDTH     => 10,                    -- FIFO ADDR WIDTH      
-      G_ROM_ADDR_WIDTH      => C_ROM_ADDR_WIDTH,      -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
-      G_ROM_INIT            => C_ROM_INIT
+      G_AXI_DATA_WIDTH        => C_AXI_DATA_WIDTH,
+      G_AXI_ADDR_WIDTH        => C_AXI_ADDR_WIDTH,
+      G_SLAVE_NB              => C_SLAVE_NB,
+      G_CLK_PERIOD_NS         => 20,                      -- Clock Period in ns
+      G_BIDIR_POLARITY_READ   => C_LCD_BIDIR_POLARITY,    -- BIDIR SEL Polarity
+      G_FIFO_ADDR_WIDTH       => 10,                      -- FIFO ADDR WIDTH      
+      G_ROM_ADDR_WIDTH        => C_ROM_ADDR_WIDTH,        -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+      G_ROM_INIT              => C_ROM_INIT,
+      G_EXTERNAL_INTERRUPT_NB => C_EXTERNAL_INTERRUPT_NB  -- Number of External Interrupt in ZIPCPU
       )
     port map (
       clk_sys   => clk,

@@ -225,7 +225,6 @@ src_lib_zipcpu_core_v+= zipcore.v
 src_lib_zipcpu_core_v+= zipwb.v
 
 # Compile peripherals
-src_lib_zipcpu_peripherals_v+= axilperiphs.v
 src_lib_zipcpu_peripherals_v+= icontrol.v
 src_lib_zipcpu_peripherals_v+= wbdmac.v
 src_lib_zipcpu_peripherals_v+= wbwatchdog.v
@@ -233,6 +232,7 @@ src_lib_zipcpu_peripherals_v+= zipcounter.v
 src_lib_zipcpu_peripherals_v+= zipjiffies.v
 src_lib_zipcpu_peripherals_v+= zipmmu.v
 src_lib_zipcpu_peripherals_v+= ziptimer.v
+src_lib_zipcpu_peripherals_v+= axilperiphs.v
 
 # Compile ZipDMA
 src_lib_zipcpu_dma_v+= zipdma_ctrl.v

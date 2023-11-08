@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2023-10-01
+-- Last update: 2023-11-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -28,8 +28,9 @@ use lib_rom_intel.pkg_sp_rom.all;
 package pkg_zipcpu_axi4_lite_top is
 
   -- == CORE CONFIguration ==
-  constant C_LCD_BIDIR_POLARITY : std_logic := '0';  -- LCD BIDIR Polarity for read access
-  constant C_ROM_ADDR_WIDTH     : integer   := 8;    -- ROM ADDR WIDTH
+  constant C_LCD_BIDIR_POLARITY    : std_logic := '0';  -- LCD BIDIR Polarity for read access
+  constant C_ROM_ADDR_WIDTH        : integer   := 8;    -- ROM ADDR WIDTH
+  constant C_EXTERNAL_INTERRUPT_NB : integer   := 1;    -- Number of external Interrupt
 
   -- == ROM Initialization ==
 
