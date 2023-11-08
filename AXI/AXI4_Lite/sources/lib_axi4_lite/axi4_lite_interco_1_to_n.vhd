@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-09-21
+-- Last update: 2023-11-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -117,8 +117,8 @@ architecture rtl of axi4_lite_interco_1_to_n is
 
   -- Decoder signals
   signal sel_idx_bit_comb   : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Slave Bit detection
-  signal sel_idx_comb       : unsigned(log2(G_SLAVE_NB) downto 0);        -- Slave Index Selection combinatory
-  signal sel_idx_latch      : unsigned(log2(G_SLAVE_NB) downto 0);        -- Slave Index Selection combinatory
+  signal sel_idx_comb       : unsigned(log2(G_SLAVE_NB) - 1 downto 0);    -- Slave Index Selection combinatory
+  signal sel_idx_latch      : unsigned(log2(G_SLAVE_NB) - 1 downto 0);    -- Slave Index Selection combinatory
   signal sel_idx_comb_valid : std_logic;                                  -- A flag that indicates if the idx selection is valid
 
   -- Masters signals
