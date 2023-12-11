@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-07
--- Last update: 2023-12-07
+-- Last update: 2023-12-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,7 +70,8 @@ architecture rtl of max7219_ctrl is
   signal fifo_full_int   : std_logic;                      -- FIFO FULL
   signal fifo_empty_int  : std_logic;                      -- FIFO Empty
   signal max7219_if_done : std_logic;                      -- MAX7219 Interface Done
-
+  signal rd_data_val     : std_logic;                      -- Read DAta
+  
 begin  -- architecture rtl
 
 

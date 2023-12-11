@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-07
+-- Last update: 2023-12-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,8 +70,6 @@ architecture rtl of wr_fifo_mngt is
   signal addr_reg     : std_logic_vector(3 downto 0);                     -- Addr Register
   signal cmd_data_p   : std_logic_vector(7 downto 0);                     -- Command Data to send
   signal matrix_idx_p : std_logic_vector(log2(G_MATRIX_NB) -1 downto 0);  -- Matrix Number
-  signal cmd_data_p   : std_logic_vector(7 downto 0);                     -- Command Data pipe
-  signal cmd_start    : std_logic;                                        -- Command start Pipe
   signal cnt_wr_en    : unsigned(3 downto 0);                             -- Counter for Write Enable
   signal load_en      : std_logic;                                        -- Load Enable Flag
 
@@ -156,7 +154,7 @@ begin  -- architecture rtl
         wr_en <= '1';
 
       -- Disable the signal when the counter reach 0
-      elsif(cnt_wr_en = (others => '0')) then
+      elsif(cnt_wr_en = "0000") then
         wr_en <= '0';
       end if;
 
@@ -171,7 +169,7 @@ begin  -- architecture rtl
       wdata <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      if(cmd_start = '1' and matrix_idx /= (others => '0')) then
+      if(cmd_start = '1' and matrix_idx /= std_logic_vector(to_unsigned(0, matrix_idx'length))) then
         wdata <= '0' & x"0" & addr_reg & cmd_data;
 
       elsif(cmd_start = '1') then
@@ -186,6 +184,6 @@ begin  -- architecture rtl
 
 
   -- A flag for the Load enable
-  load_en <= '1' when cnt_wr_en = (others => '0') else '0';
+  load_en <= '1' when cnt_wr_en = "0000" else '0';
 
 end architecture rtl;

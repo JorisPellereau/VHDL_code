@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-12-07
+-- Last update: 2023-12-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -56,9 +56,9 @@ entity axi4_lite_max7219_registers is
     cmd_data    : out std_logic_vector(7 downto 0);                     -- Data Command
     matrix_idx  : out std_logic_vector(log2(G_MATRIX_NB) -1 downto 0);  -- Number of Matrix
     ctrl_done   : in  std_logic;                                        -- Write access done
-    ctrl_status : in  std_logic;                                         -- Controller Status 0 : No Error - 1 : Error
-    fifo_full  : in std_logic;         -- FIFO Full
-    fifo_empty : in std_logic         -- FIFO Empty Status
+    ctrl_status : in  std_logic;                                        -- Controller Status 0 : No Error - 1 : Error
+    fifo_full   : in  std_logic;                                        -- FIFO Full
+    fifo_empty  : in  std_logic                                         -- FIFO Empty Status
     );
 
 end entity axi4_lite_max7219_registers;
@@ -70,10 +70,10 @@ architecture rtl of axi4_lite_max7219_registers is
   signal reg_wr_sel_error : std_logic;                                -- Reg Write Selection error
 
   -- Internal Registers
-  signal ctrl_register   : std_logic_vector(C_CTRL_WIDTH - 1 downto 0);  -- CTRL Register
-  signal cmd_register    : std_logic_vector(C_CMD_WIDTH - 1 downto 0);   -- Command Register
-  signal status_register : std_logic_vector(C_STATUS_WIDTH - 1 downto 0);
-
+  signal ctrl_register       : std_logic_vector(C_CTRL_WIDTH - 1 downto 0);  -- CTRL Register
+  signal cmd_register        : std_logic_vector(C_CMD_WIDTH - 1 downto 0);   -- Command Register
+  signal status_register     : std_logic_vector(C_STATUS_WIDTH - 1 downto 0);
+  signal slv_wr_access_error : std_logic;                                    -- Slave Write Access Error
 
 begin  -- architecture rtl
 
@@ -156,28 +156,13 @@ begin  -- architecture rtl
     end if;
   end process p_reg1_wr_mngt;
 
-  -- en_wr_cmds_0 : set only when one bit of the vector is set at a time
-  -- en_wr_cmds_0 <= '1' when a_wdata_cmds_0_field = "10000000" else
-  --                 '1' when a_wdata_cmds_0_field = "01000000" else
-  --                 '1' when a_wdata_cmds_0_field(7 downto 6) = "00" and a_wdata_cmds_0_field(3 downto 0) = "0000" else
-  --                 '1' when a_wdata_cmds_0_field(7 downto 2) = "000000" else
-  --                 '1' when a_wdata_cmds_0_field = "00000100" else
-  --                 '1' when a_wdata_cmds_0_field = "00001000" else
-  --                 '0';
-
-
-
   -- ===========================
 
 
 
   -- Slave WRite Access error :
-  -- Wrong Write selection or
-  -- FIFO is full or
-  -- During selection of C_REG1_IDX : Wdata not correct (multiple cmd set at the same time) or a single_command is being processed
-  slv_wr_access_error <= reg_wr_sel_error or
-                         wdata_display_wr_error or
-                         (((not en_wr_cmds_0) or lcd_cmd_ongoing) and (reg_wr_sel(C_REG1_IDX) and slv_strobe(3)));
+  -- Wrong Write selection
+  slv_wr_access_error <= reg_wr_sel_error;
 
 
   -- == Slave ACK Management ==
@@ -246,7 +231,7 @@ begin  -- architecture rtl
 
       -- Set RDATA when reading REG2
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
-        slv_rdata <= std_logic_vector(to_unsigned(0, G_DATA_WIDTH - C_STATUS_WIDTH)) & lcd_status_register;
+        slv_rdata <= std_logic_vector(to_unsigned(0, G_DATA_WIDTH - C_STATUS_WIDTH)) & status_register;
 
       -- Otherwise REturn (others => '0');
       else
@@ -261,10 +246,10 @@ begin  -- architecture rtl
   -- Inputs
   status_register <= fifo_full & fifo_empty;
   -- == OUTPUTS Affectation ==
-  cmd_start  <= '0';                    -- Command Start
-  cmd        <= cmd_register(13 downto 0);
-  cmd_data   <= cmd_register(23 downto 16);
-  matrix_idx <= cmd_register(26 downto 24);
+  cmd_start       <= '0';               -- Command Start
+  cmd             <= cmd_register(13 downto 0);
+  cmd_data        <= cmd_register(23 downto 16);
+  matrix_idx      <= cmd_register(26 downto 24);
 
 
 end architecture rtl;
