@@ -151,6 +151,10 @@ begin  -- architecture rtl
       -- Write in FUNC_SET_CONFIG Register
       if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
         cmd_register <= slv_wdata(C_CMD_WIDTH - 1 downto 0);
+
+      -- By default reset the cmd of the register
+      else
+        cmd_register(13 downto 0) <= (others => '0');
       end if;
 
     end if;
@@ -223,11 +227,11 @@ begin  -- architecture rtl
       -- RDATA for Regular registers
       -- Set RDATA when reading REG0
       if(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG0_ADDR) then
-        slv_rdata <= x"0000000" & x"0" & "000" & ctrl_register;
+        slv_rdata <= x"0000000" & "000" & ctrl_register;
 
       -- Set RDATA when reading REG1
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG1_ADDR) then
-        slv_rdata <= x"0" & cmd_register;
+        slv_rdata <= "0" & x"0" & cmd_register;
 
       -- Set RDATA when reading REG2
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
@@ -246,10 +250,27 @@ begin  -- architecture rtl
   -- Inputs
   status_register <= fifo_full & fifo_empty;
   -- == OUTPUTS Affectation ==
-  cmd_start       <= '0';               -- Command Start
-  cmd             <= cmd_register(13 downto 0);
-  cmd_data        <= cmd_register(23 downto 16);
-  matrix_idx      <= cmd_register(25 downto 24);
+
+  -- Enable the generation of the start command only if only command is set at a time on tle 14 LSBits
+  cmd_start <= '1' when cmd_register(13 downto 0) = "00" & x"001" else
+               '1' when cmd_register(13 downto 0) = "00" & x"002" else
+               '1' when cmd_register(13 downto 0) = "00" & x"004" else
+               '1' when cmd_register(13 downto 0) = "00" & x"008" else
+               '1' when cmd_register(13 downto 0) = "00" & x"010" else
+               '1' when cmd_register(13 downto 0) = "00" & x"020" else
+               '1' when cmd_register(13 downto 0) = "00" & x"040" else
+               '1' when cmd_register(13 downto 0) = "00" & x"080" else
+               '1' when cmd_register(13 downto 0) = "00" & x"100" else
+               '1' when cmd_register(13 downto 0) = "00" & x"200" else
+               '1' when cmd_register(13 downto 0) = "00" & x"400" else
+               '1' when cmd_register(13 downto 0) = "00" & x"800" else
+               '1' when cmd_register(13 downto 0) = "01" & x"000" else
+               '1' when cmd_register(13 downto 0) = "10" & x"000" else
+               '0';
+
+  cmd        <= cmd_register(13 downto 0);
+  cmd_data   <= cmd_register(23 downto 16);
+  matrix_idx <= cmd_register(25 downto 24);
 
 
 end architecture rtl;

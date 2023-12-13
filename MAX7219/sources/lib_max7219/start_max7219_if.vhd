@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-06
+-- Last update: 2023-12-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,7 +29,6 @@ entity start_max7219_if is
     rst_n_sys   : in  std_logic;        -- Asynchronous Reset
     fifo_empty  : in  std_logic;        -- Fifo Empty info
     rd_en       : out std_logic;        -- FIFO Read Enable
-    rd_data_val : in  std_logic;        -- RD Data valid
     done        : in  std_logic         -- MAX7219 Access Done
     );
 end entity start_max7219_if;
@@ -56,7 +55,7 @@ begin  -- architecture rtl
   end process p_cs_update;
 
   -- purpose: FSM Next State management
-  p_ns_update : process (fifo_empty, done, rd_data_val) is
+  p_ns_update : process (fsm_cs, fifo_empty, done) is
   begin  -- process p_ns_update
 
     case fsm_cs is

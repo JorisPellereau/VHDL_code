@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-07
--- Last update: 2023-12-11
+-- Last update: 2023-12-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,8 +70,7 @@ architecture rtl of max7219_ctrl is
   signal fifo_full_int   : std_logic;                      -- FIFO FULL
   signal fifo_empty_int  : std_logic;                      -- FIFO Empty
   signal max7219_if_done : std_logic;                      -- MAX7219 Interface Done
-  signal rd_data_val     : std_logic;                      -- Read DAta
-  
+
 begin  -- architecture rtl
 
 
@@ -122,12 +121,11 @@ begin  -- architecture rtl
   -- Instanciation of the Start MAX7219 interface block
   i_start_max7219_if_0 : entity lib_max7219.start_max7219_if
     port map (
-      clk_sys     => clk_sys,
-      rst_n_sys   => rst_n_sys,
-      fifo_empty  => fifo_empty_int,
-      rd_en       => rd_en,
-      rd_data_val => rd_data_val,
-      done        => max7219_if_done
+      clk_sys    => clk_sys,
+      rst_n_sys  => rst_n_sys,
+      fifo_empty => fifo_empty_int,
+      rd_en      => rd_en,
+      done       => max7219_if_done
       );
 
 
@@ -142,7 +140,7 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- Input commands
-      i_start   => rd_data_val,
+      i_start   => rdata_val,           -- Start from FIFO (Read Value)
       i_en_load => rdata(16),           -- The bit 16 is the en_load information
       i_data    => rdata(15 downto 0),  -- Read data from FIFO
 
@@ -154,4 +152,10 @@ begin  -- architecture rtl
       -- Transaction Done
       o_done => max7219_if_done
       );
+
+
+  -- == OUTPUTS Affectation ==
+  fifo_full  <= fifo_full_int;
+  fifo_empty <= fifo_empty_int;
+
 end architecture rtl;

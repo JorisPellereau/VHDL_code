@@ -2,14 +2,14 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -group TB_Master_AXI4_Lite /tb_top/i_master_axi4lite_0/clk
 add wave -noupdate -group TB_Master_AXI4_Lite /tb_top/i_master_axi4lite_0/rst_n
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/start
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/addr
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/rnw
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/strobe
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/master_wdata
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/done
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/master_rdata
-add wave -noupdate -group TB_Master_AXI4_Lite -group CTRL_ITF /tb_top/i_master_axi4lite_0/access_status
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/start
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/addr
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/rnw
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/strobe
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/master_wdata
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/done
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/master_rdata
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group CTRL_ITF /tb_top/i_master_axi4lite_0/access_status
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/awvalid
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/awaddr
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/awprot
@@ -21,14 +21,14 @@ add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_ma
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/bready
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/bvalid
 add wave -noupdate -group TB_Master_AXI4_Lite -group Write_Channels /tb_top/i_master_axi4lite_0/bresp
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/arvalid
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/araddr
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/arprot
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/arready
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/rready
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/rvalid
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/rdata
-add wave -noupdate -group TB_Master_AXI4_Lite -group Read_Channel /tb_top/i_master_axi4lite_0/rresp
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/arvalid
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/araddr
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/arprot
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/arready
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/rready
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/rvalid
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/rdata
+add wave -noupdate -group TB_Master_AXI4_Lite -expand -group Read_Channel /tb_top/i_master_axi4lite_0/rresp
 add wave -noupdate -group MAX7219_SPI_CHECKER /tb_top/i_max7219_spi_checker_0/clk
 add wave -noupdate -group MAX7219_SPI_CHECKER /tb_top/i_max7219_spi_checker_0/rst_n
 add wave -noupdate -group MAX7219_SPI_CHECKER /tb_top/i_max7219_spi_checker_0/i_max7219_clk
@@ -86,121 +86,121 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/fifo_full
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/fifo_empty
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/ctrl_status
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/ctrl_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/rst_n
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/i_start
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/i_en_load
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/i_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/o_max7219_load
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/o_max7219_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/o_max7219_clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/o_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_en_load
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_start
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_init_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_en_clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_clk_p
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_clk_f_edge
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_clk_r_edge
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_max7219_load
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_start_r_edge
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_cnt_15
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_cnt_16
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_cnt_half_period
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_load_px
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_end_frame
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_max7219_if_0/s_ongoing
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/rst_n
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/wr_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/rd_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/wdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/rdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/rdata_val
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/fifo_full
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/ram_data_in
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/ram_we
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/wr_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/rd_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/ram_data_out
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/data_in
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/wr_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/rd_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/we
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/data_out
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rst_n
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wr_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata_in
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata_val
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wdata_out
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/we
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wr_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_addr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_full
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/write_ptr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/read_ptr
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_full_int
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_empty_int
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_en_p
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/we_int
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/clk_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/rst_n_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/cmd_start
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/cmd
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/cmd_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/matrix_idx
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/fifo_full
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/wr_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/wdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/status
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/addr_reg
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/cmd_data_p
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/matrix_idx_p
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/cnt_wr_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_wr_fifo_mngt_0/load_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/clk_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/rst_n_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/cmd_start
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/cmd
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/cmd_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/matrix_idx
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/ctrl_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/ctrl_status
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/fifo_full
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/o_max7219_load
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/o_max7219_data
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/o_max7219_clk
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/wr_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/rd_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/wdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/rdata
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/rdata_val
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/fifo_full_int
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/fifo_empty_int
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/max7219_if_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/rd_data_val
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/clk_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/rst_n_sys
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/rd_data_val
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/rd_en
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/fsm_cs
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrli_0 -group i_start_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrli_0/i_start_max7219_if_0/fsm_ns
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/data_in
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/wr_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/rd_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/we
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_sp_ram_0/data_out
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wr_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata_in
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rdata_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wdata_out
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/we
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/wr_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_empty
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_full
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/write_ptr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/read_ptr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_full_int
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/fifo_empty_int
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/rd_en_p
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group i_fifo_sp_ram_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/i_fifo_sp_ram_0/we_int
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/wr_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/rd_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/wdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/rdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/rdata_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/fifo_empty
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/fifo_full
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/ram_data_in
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/ram_we
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/wr_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/rd_addr
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/ram_data_out
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/clk_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/rst_n_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd_start
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/matrix_idx
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/ctrl_done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/ctrl_status
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/fifo_full
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/fifo_empty
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/o_max7219_load
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/o_max7219_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/o_max7219_clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/wr_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/rd_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/wdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/rdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/rdata_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/fifo_full_int
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/fifo_empty_int
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/max7219_if_done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/rd_data_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/clk_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rst_n_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/fifo_empty
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rd_data_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rd_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/fsm_cs
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/fsm_ns
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/rst_n
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/i_start
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/i_en_load
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/i_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/o_max7219_load
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/o_max7219_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/o_max7219_clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/o_done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_en_load
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_start
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_init_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_en_clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_clk
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_clk_p
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_clk_f_edge
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_clk_r_edge
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_max7219_load
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_start_r_edge
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_cnt_15
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_cnt_16
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_cnt_half_period
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_load_px
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_end_frame
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_max7219_if_0/s_ongoing
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/clk_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/rst_n_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/cmd_start
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/cmd
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/cmd_data
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/matrix_idx
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/fifo_full
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/fifo_empty
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/wr_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/wdata
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/done
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/status
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/addr_reg
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/cmd_data_p
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/matrix_idx_p
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/cnt_wr_en
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_wr_fifo_mngt_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_wr_fifo_mngt_0/load_en
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_slave_itf_0 -group Inputs /tb_top/i_dut/i_axi4_lite_slave_itf_0/clk
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_slave_itf_0 -group Inputs /tb_top/i_dut/i_axi4_lite_slave_itf_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_slave_itf_0 -group Inputs /tb_top/i_dut/i_axi4_lite_slave_itf_0/awvalid
@@ -285,4 +285,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {0 ps} {21220500 ps}
+WaveRestoreZoom {0 ps} {661500 ps}

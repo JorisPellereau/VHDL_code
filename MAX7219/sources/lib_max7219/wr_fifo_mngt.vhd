@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-11
+-- Last update: 2023-12-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -67,11 +67,11 @@ architecture rtl of wr_fifo_mngt is
   constant C_CMD_DISPLAY_TEST : std_logic_vector(13 downto 0) := "10" & x"000";  -- Digit 0 Command
 
   -- == INTERNAL Signals ==
-  signal addr_reg     : std_logic_vector(3 downto 0);                     -- Addr Register
-  signal cmd_data_p   : std_logic_vector(7 downto 0);                     -- Command Data to send
-  signal matrix_idx_p : std_logic_vector(log2(G_MATRIX_NB) -1 downto 0);  -- Matrix Number
-  signal cnt_wr_en    : unsigned(3 downto 0);                             -- Counter for Write Enable
-  signal load_en      : std_logic;                                        -- Load Enable Flag
+  signal addr_reg     : std_logic_vector(3 downto 0);                      -- Addr Register
+  signal cmd_data_p   : std_logic_vector(7 downto 0);                      -- Command Data to send
+  signal matrix_idx_p : std_logic_vector(log2(G_MATRIX_NB) - 1 downto 0);  -- Matrix Number
+  signal cnt_wr_en    : unsigned(log2(G_MATRIX_NB) -1 downto 0);           -- Counter for Write Enable
+  signal load_en      : std_logic;                                         -- Load Enable Flag
 
 begin  -- architecture rtl
 
