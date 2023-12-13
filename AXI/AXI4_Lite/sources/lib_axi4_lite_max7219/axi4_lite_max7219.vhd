@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-12-07
+-- Last update: 2023-12-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ begin  -- architecture rtl
   -- Instanciation of LCD REGISTERS
   i_axi4_lite_max7219_registers_0 : entity lib_axi4_lite_max7219.axi4_lite_max7219_registers
     generic map (
-      G_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,
+      G_ADDR_WIDTH => 4, -- Only Usefull bits
       G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH,
       G_MATRIX_NB  => G_MATRIX_NB
       )
@@ -165,7 +165,7 @@ begin  -- architecture rtl
       -- Slave Registers Interface
       slv_start  => slv_start,
       slv_rw     => slv_rw,
-      slv_addr   => slv_addr,
+      slv_addr   => slv_addr(4-1 downto 0), -- Only Useful bits
       slv_wdata  => slv_wdata,
       slv_strobe => slv_strobe,
 
@@ -186,7 +186,7 @@ begin  -- architecture rtl
 
 
   -- Instanciation of MAX7219 Controller
-  i_max7219_ctrli_0 : entity lib_max7219.max7219_ctrl
+  i_max7219_ctrl_0 : entity lib_max7219.max7219_ctrl
     generic map (
       G_MATRIX_NB => G_MATRIX_NB
       )

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-12-11
+-- Last update: 2023-12-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -249,7 +249,7 @@ begin  -- architecture rtl
   cmd_start       <= '0';               -- Command Start
   cmd             <= cmd_register(13 downto 0);
   cmd_data        <= cmd_register(23 downto 16);
-  matrix_idx      <= cmd_register(26 downto 24);
+  matrix_idx      <= cmd_register(25 downto 24);
 
 
 end architecture rtl;

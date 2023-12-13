@@ -57,6 +57,7 @@ LIB_LIST+=lib_max7219_interface
 LIB_LIST+=lib_max7219
 LIB_LIST+=lib_pkg_utils
 LIB_LIST+=lib_axi4_lite
+LIB_LIST+=lib_axi4_lite_max7219
 LIB_LIST+=lib_ram_intel
 LIB_LIST+=lib_fifo
 LIB_LIST+=lib_fifo_wrapper
@@ -104,9 +105,14 @@ axi4_lite_max7219_src_vhd+=axi4_lite_max7219.vhd
 
 
 
+# == TESTBENCH VHD FILES LIST ==
+SRC_AXI4_LITE_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite/
+src_axi4_lite_master_vhd_tb=axi4_lite_master.vhd
+# ====================================
+
 # == TESTBENCH MODULES V FILES LIST ==
-SRC_LCD_EMUL_DIR=/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/TB_modules/LCD_CFAH_checker/
-src_lcd_emul_v+=LCD_CFAH_emul.sv
+SRC_MAX7219_CHECKER_DIR=/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/TB_modules/MAX7219_checker/
+src_max7219_checker_v_files+=max7219_spi_checker.sv
 # ====================================
 
 
@@ -143,10 +149,16 @@ make compile_design_vhd_files SRC_VHD="$(max7219_src_vhd)" VHD_DESIGN_LIB=lib_ma
 # INC_DIR_TB_EN=ON
 # Add include Directory
 compile_generic_tb_v_files_axi4_lite_max7219:
+	make compile_tb_vhd_files SRC_TB_VHD="$(src_axi4_lite_master_vhd_tb)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 VHD_FILE_PATH=$(SRC_AXI4_LITE_MASTER_DIR) ;\
 	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 V_FILE_PATH=/home/linux-jp/Documents/GitHub WORK_DIR=AXI4_LITE_MAX7219_WORK PROJECT_NAME=AXI4_LITE_MAX7219 INC_DIR_TB_EN=ON
 
+# Compilation of :
+# - MASTER AXI4 Lite Block
+# - tb_top
 compile_tb_axi4_lite_max7219:
-	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_axi4_lite_max7219_v)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_axi4_lite_max7219/
+	make compile_tb_v_files SRC_TB_V="$(src_max7219_checker_v_files)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 V_FILE_PATH=$(SRC_MAX7219_CHECKER_DIR) ;\
+	make compile_tb_v_files SRC_TB_V="$(AXI4LITE_MASTER_FILE_LIST)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 V_FILE_PATH=/home/linux-jp/Documents/GitHub ;\
+	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_axi4_lite_max7219_v)" LIB_TB_TOP=tb_lib_axi4_lite_max7219 V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_axi4_lite_max7219/; \
 
 
 # == COMPILE ALL TESTBENCH files ==
