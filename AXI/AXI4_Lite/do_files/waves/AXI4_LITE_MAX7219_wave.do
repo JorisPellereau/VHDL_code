@@ -78,6 +78,7 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/slv_strobe
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/slv_done
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/slv_rdata
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/slv_status
+add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/enable
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/cmd_start
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/cmd
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/cmd_data
@@ -128,6 +129,7 @@ add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_fifo_sp_ram_wrapper_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_fifo_sp_ram_wrapper_0/ram_data_out
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/clk_sys
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/rst_n_sys
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/enable
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd_start
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/cmd_data
@@ -147,11 +149,10 @@ add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal 
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/fifo_full_int
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/fifo_empty_int
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/max7219_if_done
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/rd_data_val
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/clk_sys
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rst_n_sys
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/fifo_empty
-add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rd_data_val
+add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/enable
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Inputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/done
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Outputs /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/rd_en
 add wave -noupdate -expand -group i_dut -group i_max7219_ctrl_0 -group i_start_max7219_if_0 -group Internal /tb_top/i_dut/i_max7219_ctrl_0/i_start_max7219_if_0/fsm_cs
@@ -258,6 +259,7 @@ add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/slv_done
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/slv_rdata
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/slv_status
+add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/enable
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/cmd_start
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/cmd
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Outputs /tb_top/i_dut/i_axi4_lite_max7219_registers_0/cmd_data
@@ -269,8 +271,8 @@ add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Internal /tb_top/i_dut/i_axi4_lite_max7219_registers_0/status_register
 add wave -noupdate -expand -group i_dut -group i_axi4_lite_max7219_registers_0 -group Internal /tb_top/i_dut/i_axi4_lite_max7219_registers_0/slv_wr_access_error
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ps} 0}
-quietly wave cursor active 0
+WaveRestoreCursors {{Cursor 1} {338815 ps} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 201
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -285,4 +287,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {0 ps} {661500 ps}
+WaveRestoreZoom {0 ps} {1669500 ps}

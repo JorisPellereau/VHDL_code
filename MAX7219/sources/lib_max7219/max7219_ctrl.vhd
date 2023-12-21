@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-07
--- Last update: 2023-12-13
+-- Last update: 2023-12-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -39,6 +39,7 @@ entity max7219_ctrl is
     rst_n_sys : in std_logic;           -- Asynchronous Reset
 
     -- Control Signals
+    enable     : in std_logic;                                        -- Enable the MAX7219 Generation
     cmd_start  : in std_logic;                                        -- Command Start
     cmd        : in std_logic_vector(13 downto 0);                    -- Possible Commands
     cmd_data   : in std_logic_vector(7 downto 0);                     -- Data Command
@@ -124,6 +125,7 @@ begin  -- architecture rtl
       clk_sys    => clk_sys,
       rst_n_sys  => rst_n_sys,
       fifo_empty => fifo_empty_int,
+      enable     => enable,
       rd_en      => rd_en,
       done       => max7219_if_done
       );

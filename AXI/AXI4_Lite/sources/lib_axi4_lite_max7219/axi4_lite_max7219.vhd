@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2023-12-13
+-- Last update: 2023-12-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -87,6 +87,7 @@ architecture rtl of axi4_lite_max7219 is
   signal slv_done    : std_logic;                                                  -- Access done
   signal slv_rdata   : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
   signal slv_status  : std_logic_vector(1 downto 0);                               -- Slave status
+  signal enable      : std_logic;                                                  -- Enable signal
   signal cmd_start   : std_logic;                                                  -- Command Start
   signal cmd         : std_logic_vector(13 downto 0);                              -- Command
   signal cmd_data    : std_logic_vector(7 downto 0);                               -- Command Data
@@ -154,7 +155,7 @@ begin  -- architecture rtl
   -- Instanciation of LCD REGISTERS
   i_axi4_lite_max7219_registers_0 : entity lib_axi4_lite_max7219.axi4_lite_max7219_registers
     generic map (
-      G_ADDR_WIDTH => 4, -- Only Usefull bits
+      G_ADDR_WIDTH => 4,                -- Only Usefull bits
       G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH,
       G_MATRIX_NB  => G_MATRIX_NB
       )
@@ -163,9 +164,10 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- Slave Registers Interface
+      enable     => enable,
       slv_start  => slv_start,
       slv_rw     => slv_rw,
-      slv_addr   => slv_addr(4-1 downto 0), -- Only Useful bits
+      slv_addr   => slv_addr(4-1 downto 0),  -- Only Useful bits
       slv_wdata  => slv_wdata,
       slv_strobe => slv_strobe,
 
@@ -195,6 +197,7 @@ begin  -- architecture rtl
       rst_n_sys => rst_n_sys,
 
       -- Control Signals
+      enable     => enable,
       cmd_start  => cmd_start,
       cmd        => cmd,
       cmd_data   => cmd_data,

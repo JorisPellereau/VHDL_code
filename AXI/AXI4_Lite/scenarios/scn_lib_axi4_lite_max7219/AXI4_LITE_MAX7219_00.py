@@ -24,34 +24,17 @@ scn.WAIT(200, "ns")
 
 scn.print_step("Read Registers")
 
-scn.MASTER_AXI4LITE_READ(alias        = "MASTER_AXI4LITE_0",
-                         addr         = 0x00,
-                         data         = 0x00,
-                         expc         = 0x00000000,
-                         timeout      = None,
-                         timout_unity = None)
-
-
-scn.MASTER_AXI4LITE_READ(alias        = "MASTER_AXI4LITE_0",
-                         addr         = 0x04,
-                         data         = 0x00,
-                         expc         = 0,
-                         timeout      = None,
-                         timout_unity = None)
-
-
-scn.MASTER_AXI4LITE_READ(alias        = "MASTER_AXI4LITE_0",
-                         addr         = 0x08,
-                         data         = 0x01,
-                         expc         = 0x00000000,
-                         timeout      = None,
-                         timout_unity = None)
+scn.MASTER_AXI4LITE_READ("MASTER_AXI4LITE_0", 0x00, 0x00, 0x00000000)
+scn.MASTER_AXI4LITE_READ("MASTER_AXI4LITE_0", 0x04, 0x00, 0x00000000)
+scn.MASTER_AXI4LITE_READ("MASTER_AXI4LITE_0", 0x08, 0x01, 0x00000000)
 
 scn.WAIT(200, "ns")
 
 scn.print_step("Write Registers")
 
+scn.MASTER_AXI4LITE_WRITE("MASTER_AXI4LITE_0", 0x00, 0x1, 0x00, 0) # Enable the Block
 scn.MASTER_AXI4LITE_WRITE("MASTER_AXI4LITE_0", 0x04, 0x1, 0x00, 0) # Send NOOP Command
+scn.MASTER_AXI4LITE_WRITE("MASTER_AXI4LITE_0", 0x08, 0xFFFFFFFF, 0x00, 0x2) # Write in status register -> Error expected
 
 
 scn.END_TEST()

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-12-13
+-- Last update: 2023-12-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ entity axi4_lite_max7219_registers is
     slv_status : out std_logic_vector(1 downto 0);                 -- Slave status
 
     -- Registers Interface
+    enable      : out std_logic;                                        -- Enable Signals
     cmd_start   : out std_logic;                                        -- Command Start
     cmd         : out std_logic_vector(13 downto 0);                    -- Possible Commands
     cmd_data    : out std_logic_vector(7 downto 0);                     -- Data Command
@@ -268,6 +269,7 @@ begin  -- architecture rtl
                '1' when cmd_register(13 downto 0) = "10" & x"000" else
                '0';
 
+  enable     <= ctrl_register(0);
   cmd        <= cmd_register(13 downto 0);
   cmd_data   <= cmd_register(23 downto 16);
   matrix_idx <= cmd_register(25 downto 24);

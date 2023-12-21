@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-13
+-- Last update: 2023-12-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -25,11 +25,12 @@ use ieee.numeric_std.all;
 
 entity start_max7219_if is
   port (
-    clk_sys     : in  std_logic;        -- Clock System
-    rst_n_sys   : in  std_logic;        -- Asynchronous Reset
-    fifo_empty  : in  std_logic;        -- Fifo Empty info
-    rd_en       : out std_logic;        -- FIFO Read Enable
-    done        : in  std_logic         -- MAX7219 Access Done
+    clk_sys    : in  std_logic;         -- Clock System
+    rst_n_sys  : in  std_logic;         -- Asynchronous Reset
+    fifo_empty : in  std_logic;         -- Fifo Empty info
+    enable     : in  std_logic;         -- Enable signal
+    rd_en      : out std_logic;         -- FIFO Read Enable
+    done       : in  std_logic          -- MAX7219 Access Done
     );
 end entity start_max7219_if;
 
@@ -64,7 +65,7 @@ begin  -- architecture rtl
       when IDLE =>
         rd_en <= '0';                   -- Read Enable
 
-        if(fifo_empty = '0') then
+        if(fifo_empty = '0' and enable = '1') then
           fsm_ns <= RD_FIFO;
         else
           fsm_ns <= IDLE;
@@ -81,11 +82,15 @@ begin  -- architecture rtl
         rd_en <= '0';                   -- Read Enable
 
         -- FIFO Not Empty -> Go to RD_FIFO
-        if(done = '1' and fifo_empty = '0') then
+        if(done = '1' and fifo_empty = '0' and enable = '1') then
           fsm_ns <= RD_FIFO;
 
         -- FIFO is Empty -> Go to IDLE state
-        elsif(done = '1' and fifo_empty = '1') then
+        elsif(done = '1' and fifo_empty = '1' and enable = '1') then
+          fsm_ns <= IDLE;
+
+        -- After the done, if the block is not enable anymore -> Go to IDLE state
+        elsif(done = '1' and enable = '0') then
           fsm_ns <= IDLE;
 
         else
@@ -94,7 +99,9 @@ begin  -- architecture rtl
 
       when others =>
         rd_en <= '0';                   -- Read Enable;
+        
     end case;
+    
   end process p_ns_update;
 
 end architecture rtl;
