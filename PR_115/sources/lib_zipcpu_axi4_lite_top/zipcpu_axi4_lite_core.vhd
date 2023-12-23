@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-11-07
+-- Last update: 2023-12-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -30,8 +30,10 @@ use lib_axi4_lite.pkg_axi4_lite_interco.all;
 library lib_rom_intel;
 use lib_rom_intel.pkg_sp_rom.all;
 
+library lib_max7219;
 library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
+library lib_axi4_lite_max7219;
 library lib_axi4_lite_memory;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
@@ -76,6 +78,11 @@ entity zipcpu_axi4_lite_core is
     o_lcd_rs    : out std_logic;                     -- LCD RS
     o_lcd_on    : out std_logic;                     -- LCD ON Management
     o_bidir_sel : out std_logic;                     -- Bidir Selector
+
+    -- MAX7219 Interface
+    o_max7219_clk  : out std_logic;     -- MAX7219 Clock
+    o_max7219_load : out std_logic;     -- MAX7219 LOAD
+    o_max7219_data : out std_logic;     -- MAX7219 DATA
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -533,6 +540,37 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal rresp_7segs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
   -- ------------------------
 
+  -- # AXI4 Lite MAX7219 signals --
+  -- Write Address Channel signals
+  signal awvalid_max7219 : std_logic;                                                    -- Address Write Valid
+  signal awaddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_max7219  : std_logic_vector(2 downto 0);                                 -- Adress Write Prot
+  signal awready_max7219 : std_logic;                                                    -- Address Write Ready
+
+  -- Write Data Channel
+  signal wvalid_max7219 : std_logic;                                              -- Write Data Valid
+  signal wdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_max7219  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_max7219 : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_max7219 : std_logic;                     -- Write Channel Response
+  signal bvalid_max7219 : std_logic;                     -- Write Response Channel Valid
+  signal bresp_max7219  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_max7219 : std_logic;                                                    -- Read Channel Valid
+  signal araddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_max7219  : std_logic_vector(2 downto 0);                                 --  Read Address channel Ready Prot
+  signal arready_max7219 : std_logic;                                                    -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_max7219 : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_max7219 : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_max7219  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- ------------------------
+
   -- # AXI4 Lite Interconnect Masters signals
   signal awvalid_interco_m : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Address Write Valid
   signal awaddr_interco_m  : t_addr_array(0 to G_SLAVE_NB - 1);          -- Address Write    
@@ -596,7 +634,7 @@ begin  -- architecture rtl
 
   -- Instanciation of VIRTUAL JTAG Controller
   -- Generated from Quartus II
-  i_altera_vjtag_0 : altera_vjtag
+  inst_altera_vjtag_0 : altera_vjtag
     port map (
       tdo                => tdo,
       tck                => tck,
@@ -617,7 +655,7 @@ begin  -- architecture rtl
 
   -- Virtual JTAG Instanciation
   -- TCK JTAG has a maximal frequency of 10MHz and may vary
-  i_vjtag_intf_0 : entity lib_jtag_intel.vjtag_intf
+  ii_vjtag_intf_0 : entity lib_jtag_intel.vjtag_intf
     generic map (
       G_DATA_WIDTH => 32,
       G_ADDR_WIDTH => 8,
@@ -1083,6 +1121,36 @@ begin  -- architecture rtl
   rdata_interco_m(2)  <= rdata_periphs;
   rresp_interco_m(2)  <= rresp_periphs;
 
+  -- # - AXI4 LITE MAX7219 Interconnexion
+  -- Write Addr Channel
+  awvalid_max7219      <= awvalid_interco_m(3);
+  awaddr_max7219       <= awaddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
+  awprot_max7219       <= awprot_interco_m(3);
+  awready_interco_m(3) <= awready_max7219;
+
+  -- Write Data Channel
+  wvalid_max7219      <= wvalid_interco_m(3);
+  wdata_max7219       <= wdata_interco_m(3);
+  wstrb_max7219       <= wstrb_interco_m(3);
+  wready_interco_m(3) <= wready_max7219;
+
+  -- Write Response Channel
+  bready_max7219      <= bready_interco_m(3);
+  bvalid_interco_m(3) <= bvalid_max7219;
+  bresp_interco_m(3)  <= bresp_max7219;
+
+  -- Read Addr Channel
+  arvalid_max7219      <= arvalid_interco_m(3);
+  araddr_max7219       <= araddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
+  arprot_max7219       <= arprot_interco_m(3);
+  arready_interco_m(3) <= arready_max7219;
+
+  -- Read DAta Channel
+  rready_max7219      <= rready_interco_m(3);
+  rvalid_interco_m(3) <= rvalid_max7219;
+  rdata_interco_m(3)  <= rdata_max7219;
+  rresp_interco_m(3)  <= rresp_max7219;
+
 
   interrupt_vector <= (others => '0');
 
@@ -1238,6 +1306,51 @@ begin  -- architecture rtl
       o_bidir_sel => o_bidir_sel
       );
 
+  -- Instanciation of the MAX7219 AXI Controller
+  i_axi4_lite_max7219_0 : entity lib_axi4_lite_max7219.axi4_lite_max7219
+    generic map (
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_MAX7219_ADDR_WIDTH,
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_MATRIX_NB            => 4
+      )
+    port map (
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_max7219,
+      awaddr  => awaddr_max7219,
+      awprot  => awprot_max7219,
+      awready => awready_max7219,
+
+      -- Write Data Channel
+      wvalid => wvalid_max7219,
+      wdata  => wdata_max7219,
+      wstrb  => wstrb_max7219,
+      wready => wready_max7219,
+
+      -- Write Response Channel
+      bready => bready_max7219,
+      bvalid => bvalid_max7219,
+      bresp  => bresp_max7219,
+
+      -- Read Address Channel
+      arvalid => arvalid_max7219,
+      araddr  => araddr_max7219,
+      arprot  => arprot_max7219,
+      arready => arready_max7219,
+
+      -- Read Data Channel
+      rready => rready_max7219,
+      rvalid => rvalid_max7219,
+      rdata  => rdata_max7219,
+      rresp  => rresp_max7219,
+
+      -- MAX7219 I/F
+      o_max7219_load => o_max7219_load,
+      o_max7219_data => o_max7219_data,
+      o_max7219_clk  => o_max7219_clk
+      );
 
   -- ZIPCPU Single outputs
   ledr_int(0)           <= cmd_reset;

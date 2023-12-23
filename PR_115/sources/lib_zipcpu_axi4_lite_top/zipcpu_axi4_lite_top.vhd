@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-11-07
+-- Last update: 2023-12-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -53,6 +53,11 @@ entity zipcpu_axi4_lite_top is
     o_lcd_en    : out   std_logic;                     -- LCD Enable
     o_lcd_rs    : out   std_logic;                     -- LCD RS
     o_lcd_on    : out   std_logic;                     -- LCD ON Management
+
+    -- MAX7219 Interface
+    o_max7219_clk  : out std_logic;     -- MAX7219 Clock
+    o_max7219_load : out std_logic;     -- MAX7219 LOAD
+    o_max7219_data : out std_logic;     -- MAX7219 DATA
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -130,6 +135,11 @@ begin  -- architecture rtl
       o_lcd_rs    => o_lcd_rs,
       o_lcd_on    => o_lcd_on,
       o_bidir_sel => lcd_bidir_sel,
+
+      -- MAX7219 Interface
+      o_max7219_clk  => o_max7219_clk,
+      o_max7219_load => o_max7219_load,
+      o_max7219_data => o_max7219_data,
 
       -- RED LEDS
       ledr => ledr,

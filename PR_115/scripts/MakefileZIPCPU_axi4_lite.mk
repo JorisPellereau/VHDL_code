@@ -66,11 +66,14 @@ LIB_LIST+=tb_lib_zipcpu_axi4_lite_top
 
 # ==  LIB LIST ==
 LIB_LIST+=lib_seg7
+LIB_LIST+=lib_max7219_interface
+LIB_LIST+=lib_max7219
 LIB_LIST+=lib_pkg_utils
 LIB_LIST+=lib_pulse_extender
 LIB_LIST+=lib_axi4_lite
 LIB_LIST+=lib_axi4_lite_7seg
 LIB_LIST+=lib_axi4_lite_lcd
+LIB_LIST+=lib_axi4_lite_max7219
 LIB_LIST+=lib_axi4_lite_memory
 LIB_LIST+=lib_CFAH1602_v2
 LIB_LIST+=lib_ram_intel
@@ -107,6 +110,10 @@ SRC_LIB_ROM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/ROM/sources/lib_
 SRC_LIB_JTAG_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/Intel/JTAG/sources/lib_jtag_intel/
 
 SRC_ZIPCPU_AXI4_LITE_TOP_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PR_115/sources/lib_zipcpu_axi4_lite_top/
+
+SRC_LIB_MAX7219_INTERFACE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/sources/lib_max7219_interface/
+SRC_LIB_MAX7219_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/MAX7219/sources/lib_max7219/
+SRC_AXI4_LITE_MAX7219_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_max7219/
 
 # -- ZIPCPU PATH --
 SRC_ZIPCPU_EX_DIR=$(SRC_ZIPCPU_DIR)/ex/
@@ -155,6 +162,12 @@ axi4_lite_src_vhd += axi4_lite_interco_1_to_n.vhd
 seg_src_vhd += seg7_lut.vhd
 seg_src_vhd += seg7x8.vhd
 
+max7219_interface_src_vhd+=max7219_if.vhd
+
+max7219_src_vhd+=start_max7219_if.vhd
+max7219_src_vhd+=wr_fifo_mngt.vhd
+max7219_src_vhd+=max7219_ctrl.vhd
+
 axi4_lite_7seg_src_vhd += axi4_lite_7segs_pkg.vhd
 axi4_lite_7seg_src_vhd += axi4_lite_7segs_registers.vhd
 axi4_lite_7seg_src_vhd += axi4_lite_7segs.vhd
@@ -175,6 +188,10 @@ src_lcd_vhd+=lcd_cfah_top.vhd
 src_axi4_lite_lcd_vhd+=axi4_lite_lcd_pkg.vhd
 src_axi4_lite_lcd_vhd+=axi4_lite_lcd_registers.vhd
 src_axi4_lite_lcd_vhd+=axi4_lite_lcd.vhd
+
+src_axi4_lite_max7219_vhd+=axi4_lite_max7219_pkg.vhd
+src_axi4_lite_max7219_vhd+=axi4_lite_max7219_registers.vhd
+src_axi4_lite_max7219_vhd+=axi4_lite_max7219.vhd
 
 src_axi4_lite_memory_vhd+=axi4_lite_rom_ctrl.vhd
 src_axi4_lite_memory_vhd+=axi4_lite_memory.vhd
@@ -296,6 +313,9 @@ compile_zipcpu_axi4_lite_top:
 	make compile_design_vhd_files SRC_VHD="$(src_jtag_7seg_top_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_JTAG_7SEG_TOP_DIR); \
 	make compile_design_vhd_files SRC_VHD="$(src_lcd_vhd)" VHD_DESIGN_LIB=lib_CFAH1602_v2 VHD_FILE_PATH=$(SRC_LCD_DIR); \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_lcd_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_lcd VHD_FILE_PATH=$(SRC_AXI4_LITE_LCD_DIR); \
+	make compile_design_vhd_files SRC_VHD="$(max7219_interface_src_vhd)" VHD_DESIGN_LIB=lib_max7219_interface VHD_FILE_PATH=$(SRC_LIB_MAX7219_INTERFACE_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(max7219_src_vhd)" VHD_DESIGN_LIB=lib_max7219 VHD_FILE_PATH=$(SRC_LIB_MAX7219_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_max7219_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_max7219 VHD_FILE_PATH=$(SRC_AXI4_LITE_MAX7219_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_memory_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_memory VHD_FILE_PATH=$(SRC_AXI4_LITE_MEMORY_DIR); \
 	make compile_design_vhd_files SRC_VHD="$(src_zipcpu_axi4_lite_top_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_ZIPCPU_AXI4_LITE_TOP_DIR); \
 
@@ -369,7 +389,9 @@ SCN_LIST+=ZIPCPU_AXI4_LITE_TOP_00.py
 # =======================
 
 # == LIB ARGS ==
-LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender  -L lib_axi4_lite -L lib_axi4_lite_7seg -L lib_zipcpu_axi4_lite_top -L lib_seg7 -L lib_axi4_lite_lcd -L lib_CFAH1602_v2 -L lib_ram_intel -L lib_fifo -L lib_fifo_wrapper -L lib_zipcpu -L lib_wishbone -L lib_rom_intel -L lib_axi4_lite_memory
+LIB_ARGS=$(foreach list,$(LIB_LIST),-L $(list) )
+
+#LIB_ARGS=-L lib_pkg_utils -L lib_pulse_extender  -L lib_axi4_lite -L lib_axi4_lite_7seg -L lib_zipcpu_axi4_lite_top -L lib_seg7 -L lib_axi4_lite_lcd -L lib_CFAH1602_v2 -L lib_ram_intel -L lib_fifo -L lib_fifo_wrapper -L lib_zipcpu -L lib_wishbone -L lib_rom_intel -L lib_axi4_lite_memory
 # ==============
 
 
