@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-11-07
+-- Last update: 2023-12-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -224,23 +224,13 @@ begin  -- architecture rtl
     sel_idx_comb(1) <= sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
   end generate;
 
-  -- Addr for 4 Slaves 
+  -- Addr Decode for 4 Slaves 
+  g_addr_decode_4_slaves : if(G_SLAVE_NB = 4) generate
+    sel_idx_comb(0) <= ((not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+                       (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+    sel_idx_comb(1) <= (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  end generate;
 
-  -- p_addr_decoder : process (slv_addr) is
-  -- begin  -- process p_addr_decoder
-
-  --   for i in 0 to G_SLAVE_NB - 1 loop
-
-  --     -- Selection of the Slave Index in function of the slv_addr
-  --     if(unsigned(slv_addr) >= unsigned(C_SLV_ADDR_MIN_ARRAY(i)) and unsigned(slv_addr) < unsigned(C_SLV_ADDR_MAX_ARRAY(i))) then
-  --       sel_idx_comb <= to_unsigned(i, sel_idx_comb'length);
-  --     else
-  --       sel_idx_comb <= to_unsigned(0, sel_idx_comb'length);
-  --     end if;
-
-  --   end loop;
-
-  -- end process p_addr_decoder;
 
   -- purpose: Check if the address range is valid
   -- If the slv_addr is greater than C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1), the valid signal is not set
