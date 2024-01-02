@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-21
+-- Last update: 2023-12-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,8 +70,6 @@ architecture rtl of wr_fifo_mngt is
 
   -- == INTERNAL Signals ==
   signal addr_reg     : std_logic_vector(3 downto 0);                      -- Addr Register
-  signal cmd_data_p   : std_logic_vector(7 downto 0);                      -- Command Data to send
-  signal matrix_idx_p : std_logic_vector(log2(G_MATRIX_NB) - 1 downto 0);  -- Matrix Number
   signal cnt_wr_en    : unsigned(log2(G_MATRIX_NB) -1 downto 0);           -- Counter for Write Enable
   signal load_en      : std_logic;                                         -- Load Enable Flag
   signal wr_en_int    : std_logic;                                         -- Write Enable
@@ -94,37 +92,6 @@ begin  -- architecture rtl
               x"C" when cmd = C_CMD_SHUTDOWN else
               x"F" when cmd = C_CMD_DISPLAY_TEST else
               (others => '0');
-
-  -- purpose: MAX Counter update 
-  p_max_cnt_update : process (clk_sys, rst_n_sys) is
-  begin  -- process p_max_cnt_update
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      matrix_idx_p <= (others => '0');
-    elsif rising_edge(clk_sys) then     -- rising clock edge
-
-      if(cmd_start = '1') then
-        matrix_idx_p <= matrix_idx;
-      end if;
-
-
-    end if;
-  end process p_max_cnt_update;
-
-
-  -- purpose: Command Data pipe 
-  p_cmd_data_pipe : process (clk_sys, rst_n_sys) is
-  begin  -- process p_cmd_data_pipe
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      cmd_data_p <= (others => '0');
-    elsif rising_edge(clk_sys) then     -- rising clock edge
-
-      if(cmd_start = '1') then
-        cmd_data_p <= cmd_data;
-      end if;
-
-    end if;
-  end process p_cmd_data_pipe;
-
 
   -- purpose: Counter Management
   p_cnt_mngt : process (clk_sys, rst_n_sys) is

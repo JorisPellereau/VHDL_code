@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-12-06
--- Last update: 2023-12-21
+-- Last update: 2023-12-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ begin  -- architecture rtl
   end process p_cs_update;
 
   -- purpose: FSM Next State management
-  p_ns_update : process (fsm_cs, fifo_empty, done) is
+  p_ns_update : process (fsm_cs, fifo_empty, done, enable) is
   begin  -- process p_ns_update
 
     case fsm_cs is
