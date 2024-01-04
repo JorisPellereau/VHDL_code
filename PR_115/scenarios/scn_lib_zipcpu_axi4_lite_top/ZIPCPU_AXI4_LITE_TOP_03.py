@@ -19,9 +19,9 @@ sys.path.append(asm_to_memory_path)
 import asm_to_memory
 import ZIPCPU_AXI4_LITE_TOP_constants
 
-phy_mem_list = asm_to_memory.main_asm_to_memory(test           = os.path.splitext(os.path.basename(__file__))[0],
+phy_mem_list = asm_to_memory.main_asm_to_memory(asm_file_path  = ZIPCPU_AXI4_LITE_TOP_constants.scn_path,                                  
+                                                asm_file       = os.path.splitext(os.path.basename(__file__))[0] + ".s",
                                                 zip_tools_path = ZIPCPU_AXI4_LITE_TOP_constants.zip_tools_path,
-                                                scn_path       = ZIPCPU_AXI4_LITE_TOP_constants.scn_path,
                                                 o_file_path    = ZIPCPU_AXI4_LITE_TOP_constants.o_file_path)
 
 # Create SCN Class

@@ -128,15 +128,15 @@ SRC_LIB_WISHBONE_DIR=$(SRC_LIB_WISHBONE_VHD_DIR)/
 # ---------------------
 
 # == WishBone UART ==
-src_lib_zipcpu_wbuart32_v+= axiluart.v
+src_lib_zipcpu_wbuart32_v+= skidbuffer_zipuart.v
 src_lib_zipcpu_wbuart32_v+= rxuartlite.v
 src_lib_zipcpu_wbuart32_v+= rxuart.v
-src_lib_zipcpu_wbuart32_v+= skidbuffer.v
 src_lib_zipcpu_wbuart32_v+= txuartlite.v
 src_lib_zipcpu_wbuart32_v+= txuart.v
 src_lib_zipcpu_wbuart32_v+= ufifo.v
-src_lib_zipcpu_wbuart32_v+= wbuart-insert.v
+#src_lib_zipcpu_wbuart32_v+= wbuart-insert.v
 src_lib_zipcpu_wbuart32_v+= wbuart.v
+src_lib_zipcpu_wbuart32_v+= axiluart.v
 # ===================
 
 # Design Sources List
@@ -200,6 +200,7 @@ src_lib_jtag_intel_vhd+=vjtag_intf.vhd
 
 src_zipcpu_axi4_lite_top_vhd += pkg_zipcpu_axi4_lite_top.vhd
 src_zipcpu_axi4_lite_top_vhd += zipcpu_axi4_lite_core.vhd
+src_zipcpu_axi4_lite_top_vhd += resynchro.vhd
 src_zipcpu_axi4_lite_top_vhd += zipcpu_axi4_lite_top.vhd
 
 src_lib_wishbone_vhd+=wb_slv_memory.vhd
@@ -297,6 +298,7 @@ compile_zipcpu_axi4_lite_top:
 	make compile_zipcpu_core; \
 	make compile_zipcpu_peripherals; \
 	make compile_zipcpu_dma; \
+	make compile_zipuart; \
 	make compile_zipcpu; \
 	make compile_design_vhd_files SRC_VHD="$(util_src_vhd)" VHD_DESIGN_LIB=lib_pkg_utils VHD_FILE_PATH=$(SRC_UTILS_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(rst_gen_src_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_RESET_GEN_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
@@ -337,6 +339,8 @@ compile_zipcpu_dma:
 compile_zipcpu:
 	make compile_design_v_files SRC_V="$(src_lib_zipcpu_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_TOP_DIR);
 
+compile_zipuart:
+	make compile_design_v_files SRC_V="$(src_lib_zipcpu_wbuart32_v)" V_DESIGN_LIB=lib_zipcpu V_FILE_PATH=$(SRC_ZIPCPU_WBUART32_DIR);
 # compile_zipcpu:
 # 	make compile_design_v_files SRC_V="$(src_lib_zipcpu_v)" V_DESIGN_LIB=$(LIB_ZIPCPU)
 # 	make compile_design_vhd_files SRC_VHD="$(src_lib_zipcpu_vhd)" VHD_DESIGN_LIB=$(LIB_ZIPCPU)

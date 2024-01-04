@@ -1,6 +1,6 @@
-# ZIPCPU_AXI4_LITE_TOP_02
+# ZIPCPU_AXI4_LITE_TOP_UART_00
 #
-# Use asm script : perform read access to not mapped registers. Error expected
+# Use asm script : test of the ZIPUART
 # 
 #
 import sys
@@ -19,9 +19,9 @@ sys.path.append(asm_to_memory_path)
 import asm_to_memory
 import ZIPCPU_AXI4_LITE_TOP_constants
 
-phy_mem_list = asm_to_memory.main_asm_to_memory(asm_file       = os.path.splitext(os.path.basename(__file__))[0],
+phy_mem_list = asm_to_memory.main_asm_to_memory(asm_file_path  = ZIPCPU_AXI4_LITE_TOP_constants.scn_path,                                  
+                                                asm_file       = os.path.splitext(os.path.basename(__file__))[0] + ".s",
                                                 zip_tools_path = ZIPCPU_AXI4_LITE_TOP_constants.zip_tools_path,
-                                                scn_path       = ZIPCPU_AXI4_LITE_TOP_constants.scn_path,
                                                 o_file_path    = ZIPCPU_AXI4_LITE_TOP_constants.o_file_path)
 
 # Create SCN Class
@@ -45,7 +45,7 @@ scn.print_step("Wait for Reset")
 
 scn.WTRS("RST_N")
 
-scn.WAIT(20, "us")
+scn.WAIT(200, "us")
 
 scn.END_TEST()
 
