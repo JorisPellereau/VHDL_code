@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2023-09-20
+-- Last update: 2024-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ end entity axi4_lite_master;
 architecture rtl of axi4_lite_master is
 
   -- == TYPES ==
-  type t_state is (ST_IDLE, ST_RADDR, ST_RDATA, ST_WADDR, ST_WDATA, ST_WRESP);  -- States of the FSM
+  type t_state is (ST_IDLE, ST_RADDR, ST_RDATA, ST_WR, ST_WRESP);  --ST_WADDR, ST_WDATA, ST_WRESP);  -- States of the FSM
 
   -- == INTERNAL Signals ==
   signal current_state : t_state;       -- Current State
@@ -188,7 +188,7 @@ begin  -- architecture rtl
         if(start_p = '1' and rnw_int = '1') then
           next_state <= ST_RADDR;
         elsif(start_p = '1' and rnw_int = '0') then
-          next_state <= ST_WADDR;
+          next_state <= ST_WR;
         else
           next_state <= ST_IDLE;
         end if;
@@ -207,19 +207,28 @@ begin  -- architecture rtl
           next_state <= ST_RDATA;
         end if;
 
-      when ST_WADDR =>
-        if(awvalid_int = '1' and awready = '1') then
-          next_state <= ST_WDATA;
-        else
-          next_state <= ST_WADDR;
-        end if;
+      when ST_WR =>
 
-      when ST_WDATA =>
-        if(wvalid_int = '1' and wready = '1') then
+        -- Case : All valid (AW and W) are set at the same time with valids signals
+        if(awvalid_int = '1' and awready = '1' and wvalid_int = '1' and wready = '1') then
           next_state <= ST_WRESP;
         else
-          next_state <= ST_WDATA;
+          next_state <= ST_WR;
         end if;
+
+        -- when ST_WADDR =>
+        --   if(awvalid_int = '1' and awready = '1') then
+        --     next_state <= ST_WDATA;
+        --   else
+        --     next_state <= ST_WADDR;
+        --   end if;
+
+        -- when ST_WDATA =>
+        --   if(wvalid_int = '1' and wready = '1') then
+        --     next_state <= ST_WRESP;
+        --   else
+        --     next_state <= ST_WDATA;
+        --   end if;
 
       when ST_WRESP =>
         if(bvalid = '1' and bready_int = '1') then
@@ -237,8 +246,8 @@ begin  -- architecture rtl
   -- == Outputs Affectation ==
   arvalid_int <= '1' when current_state = ST_RADDR else '0';
   rready_int  <= '1' when current_state = ST_RDATA else '0';
-  awvalid_int <= '1' when current_state = ST_WADDR else '0';
-  wvalid_int  <= '1' when current_state = ST_WDATA else '0';
+  awvalid_int <= '1' when current_state = ST_WR    else '0';
+  wvalid_int  <= '1' when current_state = ST_WR    else '0';
   bready_int  <= '1' when current_state = ST_WRESP else '0';
 
   arvalid <= arvalid_int;
@@ -247,10 +256,10 @@ begin  -- architecture rtl
   wvalid  <= wvalid_int;
   bready  <= bready_int;
 
-  awaddr <= addr_int         when current_state = ST_WADDR else (others => '0');
+  awaddr <= addr_int         when current_state = ST_WR    else (others => '0');
   araddr <= addr_int         when current_state = ST_RADDR else (others => '0');
-  wdata  <= master_wdata_int when current_state = ST_WDATA else (others => '0');
-  wstrb  <= strobe_int       when current_state = ST_WDATA else (others => '0');
+  wdata  <= master_wdata_int when current_state = ST_WR    else (others => '0');
+  wstrb  <= strobe_int       when current_state = ST_WR    else (others => '0');
   awprot <= (others                                                     => '0');  -- Not Used
   arprot <= (others                                                     => '0');  -- Not Used
 

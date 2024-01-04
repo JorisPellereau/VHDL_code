@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-12-23
+-- Last update: 2024-01-03
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -231,6 +231,16 @@ begin  -- architecture rtl
     sel_idx_comb(1) <= (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
   end generate;
 
+  -- Addr Decode for 5 Slaves
+  g_addr_decode_5_slaves : if(G_SLAVE_NB = 5) generate
+    sel_idx_comb(0) <= ((not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
+                        and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+                       (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1))
+                        and (not sel_idx_bit_comb(0)));
+    sel_idx_comb(1) <= (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+    sel_idx_comb(2) <= sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
+                       and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  end generate;
 
   -- purpose: Check if the address range is valid
   -- If the slv_addr is greater than C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1), the valid signal is not set
