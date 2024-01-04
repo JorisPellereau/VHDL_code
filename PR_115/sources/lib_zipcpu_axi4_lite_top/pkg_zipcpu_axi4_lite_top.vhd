@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2023-11-07
+-- Last update: 2024-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -65,5 +65,20 @@ package pkg_zipcpu_axi4_lite_top is
     );
 
   constant C_ROM_INIT : t_rom_32bits(0 to 2**C_ROM_ADDR_WIDTH - 1) := C_SIMUART_ROM;
+
+
+  -- ZIPUART Initial setup Value
+  -- Initial Setup :
+  -- H = 1 == Flow ctrl disable - 0 : enable
+  -- N = 00 -> 8 bits
+  -- S = 0 -> 1 stop bit
+  -- PFT = 000 -> No Parity
+  -- CLKS = 50MHz/115200 = 434 = 0x1B2
+  constant C_ZIPUART_INIT_SETUP     : std_logic_vector(30 downto 0) := "100" & x"0" & x"0001B2";  -- ZIPUART Initial Value
+  constant C_ZIPUART_LGFLEN         : std_logic_vector(3 downto 0)  := x"4";                      -- ZIPUART LGFLEN FIFO SIZE log based 2 -
+                                                                                                  -- MAX 10
+  constant C_ZIPUART_HW_FLOW_CTRL   : std_logic_vector(0 downto 0)  := "1";                       -- HW Flow Hardware enable
+  constant C_ZIPUART_OPT_SKIDBUFFER : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT SKIDBUFFER
+  constant C_ZIPUART_LOWPOWER       : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT LOW POWER
 
 end package;

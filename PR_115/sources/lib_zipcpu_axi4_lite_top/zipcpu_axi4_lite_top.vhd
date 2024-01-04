@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-12-21
+-- Last update: 2024-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -59,6 +59,12 @@ entity zipcpu_axi4_lite_top is
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
     o_max7219_data : out std_logic;     -- MAX7219 DATA
 
+    -- UART Interface
+    i_rx_uart : in  std_logic;          -- RX UART
+    o_tx_uart : out std_logic;          -- TX UART
+    i_rts_n_a : in  std_logic;          -- RTS Input - asynchronous
+    o_cts_n   : out std_logic;          -- CTS Output
+
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
 
@@ -83,6 +89,7 @@ architecture rtl of zipcpu_axi4_lite_top is
   signal lcd_rdata     : std_logic_vector(7 downto 0);  -- LCD Read Data
   signal lcd_wdata     : std_logic_vector(7 downto 0);  -- LCD Write Data
   signal lcd_bidir_sel : std_logic;                     -- LCD Bidir Selector
+  signal rts_n_clk_sys : std_logic;                     -- RTS signal resynchronized in clk_sys clock domain
 
 begin  -- architecture rtl
 
@@ -92,6 +99,15 @@ begin  -- architecture rtl
       clk     => clk,
       arst_n  => rst_n,
       o_rst_n => rst_n_clk_sys
+      );
+
+  -- Instanciation of RESYNCHRONIZATION Block
+  i_resynchro_0 : entity lib_zipcpu_axi4_lite_top.resynchro
+    port map(
+      rst_n_clk_sys   => rst_n_clk_sys,
+      clk_sys         => clk,
+      i_rts_n_a       => i_rts_n_a,
+      o_rts_n_clk_sys => rts_n_clk_sys
       );
 
   -- BIDIR MNGT
@@ -140,6 +156,12 @@ begin  -- architecture rtl
       o_max7219_clk  => o_max7219_clk,
       o_max7219_load => o_max7219_load,
       o_max7219_data => o_max7219_data,
+
+      -- UART Interface
+      i_rx_uart => i_rx_uart,           -- The asynchronous input is double resynchronized inside the core
+      o_tx_uart => o_tx_uart,
+      i_cts_n   => rts_n_clk_sys,       -- RTS Inputs from PR_115 board connected to the CTS input of the BLOCK (a modif ?)
+      o_rts_n   => o_cts_n,             -- RTS from block connected to CTS of the PR_115 board
 
       -- RED LEDS
       ledr => ledr,

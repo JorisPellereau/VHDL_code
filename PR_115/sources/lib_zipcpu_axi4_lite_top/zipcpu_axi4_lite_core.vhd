@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2023-12-23
+-- Last update: 2024-01-04
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -43,6 +43,8 @@ library lib_pulse_extender;
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
 
+library lib_zipcpu_axi4_lite_top;
+use lib_zipcpu_axi4_lite_top.pkg_zipcpu_axi4_lite_top.all;
 
 entity zipcpu_axi4_lite_core is
   generic (
@@ -83,6 +85,12 @@ entity zipcpu_axi4_lite_core is
     o_max7219_clk  : out std_logic;     -- MAX7219 Clock
     o_max7219_load : out std_logic;     -- MAX7219 LOAD
     o_max7219_data : out std_logic;     -- MAX7219 DATA
+
+    -- UART Interface
+    i_rx_uart : in  std_logic;          -- RX UART
+    o_tx_uart : out std_logic;          -- TX UART
+    i_cts_n   : in  std_logic;          -- CTS
+    o_rts_n   : out std_logic;          -- RTS
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -301,6 +309,59 @@ architecture rtl of zipcpu_axi4_lite_core is
       i_ivec           : in  std_logic_vector(EXTERNAL_INTERRUPTS - 1 downto 0);
       o_interrupt      : out std_logic;
       o_watchdog_reset : out std_logic
+      );
+  end component;
+
+  component axiluart
+    generic (
+      INITIAL_SETUP                 : std_logic_vector(30 downto 0) := "000" & x"0000019";
+      LGFLEN                        : std_logic_vector(3 downto 0)  := x"4";
+      HARDWARE_FLOW_CONTROL_PRESENT : std_logic_vector(0 downto 0)  := "1";
+      LCLLGFLEN                     : std_logic_vector(3 downto 0)  := x"4";
+      C_AXI_ADDR_WIDTH              : integer                       := 4;
+      C_AXI_DATA_WIDTH              : integer                       := 32;
+      OPT_SKIDBUFFER                : std_logic_vector(0 downto 0)  := "0";
+      OPT_LOWPOWER                  : std_logic_vector(0 downto 0)  := "0";
+      ADDRLSB                       : integer
+      );
+    port (
+      S_AXI_ACLK    : in std_logic;
+      S_AXI_ARESETN : in std_logic;
+
+      S_AXI_AWVALID : in  std_logic;
+      S_AXI_AWREADY : out std_logic;
+      S_AXI_AWADDR  : in  std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0);
+      S_AXI_AWPROT  : in  std_logic_vector(2 downto 0);
+
+      S_AXI_WVALID : in  std_logic;
+      S_AXI_WREADY : out std_logic;
+      S_AXI_WDATA  : in  std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
+      S_AXI_WSTRB  : in  std_logic_vector(C_AXI_DATA_WIDTH/8 - 1 downto 0);
+
+      S_AXI_BVALID : out std_logic;
+      S_AXI_BREADY : in  std_logic;
+      S_AXI_BRESP  : out std_logic_vector(1 downto 0);
+
+      S_AXI_ARVALID : in  std_logic;
+      S_AXI_ARREADY : out std_logic;
+      S_AXI_ARADDR  : in  std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0);
+      S_AXI_ARPROT  : in  std_logic_vector(2 downto 0);
+
+      S_AXI_RVALID : out std_logic;
+      S_AXI_RREADY : in  std_logic;
+      S_AXI_RDATA  : out std_logic_vector(C_AXI_DATA_WIDTH - 1 downto 0);
+      S_AXI_RRESP  : out std_logic_vector(1 downto 0);
+
+      i_uart_rx : in  std_logic;
+      o_uart_tx : out std_logic;
+
+      i_cts_n : in  std_logic;
+      o_rts_n : out std_logic;
+
+      o_uart_rx_int     : out std_logic;
+      o_uart_tx_int     : out std_logic;
+      o_uart_rxfifo_int : out std_logic;
+      o_uart_txfifo_int : out std_logic
       );
   end component;
 
@@ -542,10 +603,10 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   -- # AXI4 Lite MAX7219 signals --
   -- Write Address Channel signals
-  signal awvalid_max7219 : std_logic;                                                    -- Address Write Valid
+  signal awvalid_max7219 : std_logic;                                                      -- Address Write Valid
   signal awaddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_max7219  : std_logic_vector(2 downto 0);                                 -- Adress Write Prot
-  signal awready_max7219 : std_logic;                                                    -- Address Write Ready
+  signal awprot_max7219  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  signal awready_max7219 : std_logic;                                                      -- Address Write Ready
 
   -- Write Data Channel
   signal wvalid_max7219 : std_logic;                                              -- Write Data Valid
@@ -559,16 +620,47 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal bresp_max7219  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
   -- Read Address Channel
-  signal arvalid_max7219 : std_logic;                                                    -- Read Channel Valid
+  signal arvalid_max7219 : std_logic;                                                      -- Read Channel Valid
   signal araddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_max7219  : std_logic_vector(2 downto 0);                                 --  Read Address channel Ready Prot
-  signal arready_max7219 : std_logic;                                                    -- Read Address Channel Ready
+  signal arprot_max7219  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  signal arready_max7219 : std_logic;                                                      -- Read Address Channel Ready
 
   -- Read Data Channel
   signal rready_max7219 : std_logic;                                        -- Read Data Channel Ready
   signal rvalid_max7219 : std_logic;                                        -- Read Data Channel Valid
   signal rdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
   signal rresp_max7219  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- ------------------------
+
+  -- # AXI4 Lite ZIPUART signals --
+  -- Write Address Channel signals
+  signal awvalid_zipuart : std_logic;                                                      -- Address Write Valid
+  signal awaddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  signal awprot_zipuart  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  signal awready_zipuart : std_logic;                                                      -- Address Write Ready
+
+  -- Write Data Channel
+  signal wvalid_zipuart : std_logic;                                              -- Write Data Valid
+  signal wdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  signal wstrb_zipuart  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  signal wready_zipuart : std_logic;                                              -- Write data Ready
+
+  -- Write Response Channel
+  signal bready_zipuart : std_logic;                     -- Write Channel Response
+  signal bvalid_zipuart : std_logic;                     -- Write Response Channel Valid
+  signal bresp_zipuart  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+
+  -- Read Address Channel
+  signal arvalid_zipuart : std_logic;                                                      -- Read Channel Valid
+  signal araddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  signal arprot_zipuart  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  signal arready_zipuart : std_logic;                                                      -- Read Address Channel Ready
+
+  -- Read Data Channel
+  signal rready_zipuart : std_logic;                                        -- Read Data Channel Ready
+  signal rvalid_zipuart : std_logic;                                        -- Read Data Channel Valid
+  signal rdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  signal rresp_zipuart  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
   -- ------------------------
 
   -- # AXI4 Lite Interconnect Masters signals
@@ -1029,6 +1121,8 @@ begin  -- architecture rtl
   -- Index 0 -> AXI4 Lite 7SEGMENTS
   -- Index 1 -> AXI4 Lite LCD
   -- Index 2 -> AXI4 Lite ZIPCPU PERIPHerals
+  -- Index 3 -> AXI4 Lite MAX7219
+  -- Index 4 -> AXI4 Lite ZIPUART
 
   -- # - SEGMENTS Interconnexion
   -- Write Addr Channel
@@ -1151,6 +1245,35 @@ begin  -- architecture rtl
   rdata_interco_m(3)  <= rdata_max7219;
   rresp_interco_m(3)  <= rresp_max7219;
 
+  -- # - AXI4 LITE ZIPUART Interconnexion
+  -- Write Addr Channel
+  awvalid_zipuart      <= awvalid_interco_m(4);
+  awaddr_zipuart       <= awaddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
+  awprot_zipuart       <= awprot_interco_m(4);
+  awready_interco_m(4) <= awready_zipuart;
+
+  -- Write Data Channel
+  wvalid_zipuart      <= wvalid_interco_m(4);
+  wdata_zipuart       <= wdata_interco_m(4);
+  wstrb_zipuart       <= wstrb_interco_m(4);
+  wready_interco_m(4) <= wready_zipuart;
+
+  -- Write Response Channel
+  bready_zipuart      <= bready_interco_m(4);
+  bvalid_interco_m(4) <= bvalid_zipuart;
+  bresp_interco_m(4)  <= bresp_zipuart;
+
+  -- Read Addr Channel
+  arvalid_zipuart      <= arvalid_interco_m(4);
+  araddr_zipuart       <= araddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
+  arprot_zipuart       <= arprot_interco_m(4);
+  arready_interco_m(4) <= arready_zipuart;
+
+  -- Read DAta Channel
+  rready_zipuart      <= rready_interco_m(4);
+  rvalid_interco_m(4) <= rvalid_zipuart;
+  rdata_interco_m(4)  <= rdata_zipuart;
+  rresp_interco_m(4)  <= rresp_zipuart;
 
   interrupt_vector <= (others => '0');
 
@@ -1350,6 +1473,59 @@ begin  -- architecture rtl
       o_max7219_load => o_max7219_load,
       o_max7219_data => o_max7219_data,
       o_max7219_clk  => o_max7219_clk
+      );
+
+  -- Instanciation of the ZIPAXIL Function
+  i_axiluart_0 : axiluart
+    generic map (
+      INITIAL_SETUP                 => C_ZIPUART_INIT_SETUP,
+      LGFLEN                        => C_ZIPUART_LGFLEN,
+      HARDWARE_FLOW_CONTROL_PRESENT => C_ZIPUART_HW_FLOW_CTRL,
+      LCLLGFLEN                     => C_ZIPUART_LGFLEN,
+      C_AXI_ADDR_WIDTH              => 32,  --C_AXI4_LITE_ZIPUART_ADDR_WIDTH,
+      C_AXI_DATA_WIDTH              => C_AXI_DATA_WIDTH,
+      OPT_SKIDBUFFER                => C_ZIPUART_OPT_SKIDBUFFER,
+      OPT_LOWPOWER                  => C_ZIPUART_LOWPOWER,
+      ADDRLSB                       => log2(C_AXI_DATA_WIDTH)-3
+      )
+    port map(
+      S_AXI_ACLK    => clk_sys,
+      S_AXI_ARESETN => rst_n_sys,
+
+      S_AXI_AWVALID => awvalid_zipuart,
+      S_AXI_AWREADY => awready_zipuart,
+      S_AXI_AWADDR  => awaddr_zipuart,
+      S_AXI_AWPROT  => awprot_zipuart,
+
+      S_AXI_WVALID => wvalid_zipuart,
+      S_AXI_WREADY => wready_zipuart,
+      S_AXI_WDATA  => wdata_zipuart,
+      S_AXI_WSTRB  => wstrb_zipuart,
+
+      S_AXI_BVALID => bvalid_zipuart,
+      S_AXI_BREADY => bready_zipuart,
+      S_AXI_BRESP  => bresp_zipuart,
+
+      S_AXI_ARVALID => arvalid_zipuart,
+      S_AXI_ARREADY => arready_zipuart,
+      S_AXI_ARADDR  => araddr_zipuart,
+      S_AXI_ARPROT  => arprot_zipuart,
+
+      S_AXI_RVALID => rvalid_zipuart,
+      S_AXI_RREADY => rready_zipuart,
+      S_AXI_RDATA  => rdata_zipuart,
+      S_AXI_RRESP  => rresp_zipuart,
+
+      i_uart_rx => i_rx_uart,
+      o_uart_tx => o_tx_uart,
+
+      i_cts_n => i_cts_n,
+      o_rts_n => o_rts_n,
+
+      o_uart_rx_int     => open,
+      o_uart_tx_int     => open,
+      o_uart_rxfifo_int => open,
+      o_uart_txfifo_int => open
       );
 
   -- ZIPCPU Single outputs
