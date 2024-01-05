@@ -65,11 +65,12 @@ LIB_LIST+=lib_spi_master
 
 # -- Design DIR PATH --
 SRC_UTILS_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/PKG/sources/lib_pkg_utils/
-SRC_LIB_SPI_VHD_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/SPI/sources/lib_spi
 
 SRC_LIB_RAM_INTEL_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/RAM/sources/lib_ram_intel/
 SRC_LIB_FIFO_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo/
 SRC_LIB_FIFO_WRAPPER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/FIFO/sources/lib_fifo_wrapper/
+
+SRC_LIB_SPI_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/SPI/sources/lib_spi_master/
 # ---------------------
 
 
@@ -79,8 +80,11 @@ util_src_vhd += pkg_utils.vhd
 
 
 src_lib_ram_intel_vhd+=sp_ram.vhd
-src_lib_fifo_vhd+=fifo_sp_ram.vhd
-src_lib_fifo_wrapper_vhd+=fifo_sp_ram_wrapper.vhd
+src_lib_fifo_vhd+=fifo_sp_ram_fast.vhd
+src_lib_fifo_wrapper_vhd+=fifo_sp_ram_fast_wrapper.vhd
+
+src_spi_master_vhd+=spi_master_itf.vhd
+src_spi_master_vhd+=spi_master.vhd
 
 # ==========================
 
@@ -105,7 +109,7 @@ compile_spi_master:
 	make compile_design_vhd_files SRC_VHD="$(src_lib_rom_intel_vhd)" VHD_DESIGN_LIB=lib_rom_intel VHD_FILE_PATH=$(SRC_LIB_ROM_INTEL_DIR) WORK_DIR=SPI_MASTER_WORK PROJECT_NAME=SPI_MASTER; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_fifo_vhd)" VHD_DESIGN_LIB=lib_fifo VHD_FILE_PATH=$(SRC_LIB_FIFO_DIR) WORK_DIR=SPI_MASTER_WORK PROJECT_NAME=SPI_MASTER; \
 	make compile_design_vhd_files SRC_VHD="$(src_lib_fifo_wrapper_vhd)" VHD_DESIGN_LIB=lib_fifo_wrapper VHD_FILE_PATH=$(SRC_LIB_FIFO_WRAPPER_DIR) WORK_DIR=SPI_MASTER_WORK PROJECT_NAME=SPI_MASTER; \
-
+	make compile_design_vhd_files SRC_VHD="$(src_spi_master_vhd)" VHD_DESIGN_LIB=lib_spi_master VHD_FILE_PATH=$(SRC_LIB_SPI_MASTER_DIR) WORK_DIR=SPI_MASTER_WORK PROJECT_NAME=SPI_MASTER; \
 
 # ================================
 
