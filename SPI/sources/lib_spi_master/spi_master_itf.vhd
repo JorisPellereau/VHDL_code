@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-04
--- Last update: 2024-01-05
+-- Last update: 2024-01-08
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ end entity spi_master_itf;
 architecture rtl of spi_master_itf is
 
   -- == TYPES ==
-  type t_fsm_state is (ST_IDLE, ST_SYNCHRO, ST_INIT, ST_WR, ST_RD, ST_RW, ST_END);  -- FSM STATES
+  type t_fsm_state is (ST_IDLE, ST_LATCH_IN, ST_SYNCHRO, ST_INIT, ST_WR, ST_RD, ST_RW, ST_END);  -- FSM STATES
 
   -- == INTERNAL Signals ==
   signal nb_wr_int            : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of write to send
@@ -91,7 +91,9 @@ architecture rtl of spi_master_itf is
   signal fifo_tx_rd_en_int    : std_logic;                                          -- FIFO TX Read Enable internal
   signal fifo_tx_rd_en_int_p1 : std_logic;                                          -- FIFO TX Read Enable internal p1
   signal fifo_tx_rd_en_int_p2 : std_logic;                                          -- FIFO TX Read Enable internal p2
-  signal spi_tx_data_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
+  signal fifo_tx_rd_en_int_p3 : std_logic;                                          -- FIFO TX Read Enable internal p3
+--  signal spi_tx_data_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
+  signal spi_tx_data_sr       : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
   signal spi_rx_data_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to received and shifted
   signal wr_ongoing           : std_logic;                                          -- ST_WR ongoing state
   signal rd_ongoing           : std_logic;                                          -- ST_RD ongoing state
@@ -102,8 +104,10 @@ architecture rtl of spi_master_itf is
   signal fifo_rx_wr_en_int    : std_logic;                                          -- FIFO RX Write Enable
   signal en_cs                : std_logic;                                          -- Enable Chip select
   signal init_ongoing         : std_logic;                                          -- INIT Ongoing
-  signal rst_cnt_data         : std_logic;                                          -- Reset Counter data
   signal cnt_bit_done         : std_logic;                                          -- Counter of Bit Done
+  signal synch_edge           : std_logic;                                          -- Edge Synchronization in case of cpha = '1'
+  signal fifo_tx_load_sr      : std_logic;                                          -- FIFO TX Load SR
+  signal en_do                : std_logic;                                          -- Enable Data out generation
 
 begin  -- architecture rtl
 
@@ -168,32 +172,34 @@ begin  -- architecture rtl
           cnt_clk_div <= cnt_clk_div - 1;        -- Downcount
         end if;
       else
-        cnt_clk_div <= (others => '0');
+        cnt_clk_div <= (others => '0');          -- Set at MAX Value
       end if;
 
     end if;
   end process p_cnt_clk_div_mngt;
 
   -- purpose: Clock Enable generatio 
-  p_clk_en_mngt : process (clk_sys, rst_n_sys) is
-  begin  -- process p_clk_en_mngt
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      clk_en <= '0';
-    elsif rising_edge(clk_sys) then     -- rising clock edge
+  -- p_clk_en_mngt : process (clk_sys, rst_n_sys) is
+  -- begin  -- process p_clk_en_mngt
+  --   if rst_n_sys = '0' then             -- asynchronous reset (active low)
+  --     clk_en <= '0';
+  --   elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- Enable the generation of clk_en only during a frame transaction drived by en_cs
-      if(en_cs = '1') then
-        if(cnt_clk_div = 0) then
-          clk_en <= '1';
-        else
-          clk_en <= '0';
-        end if;
-      else
-        clk_en <= '0';
-      end if;
+  --     -- Enable the generation of clk_en only during a frame transaction drived by en_cs
+  --     if(en_cs = '1') then
+  --       if(cnt_clk_div = 0) then
+  --         clk_en <= '1';
+  --       else
+  --         clk_en <= '0';
+  --       end if;
+  --     else
+  --       clk_en <= '0';
+  --     end if;
 
-    end if;
-  end process p_clk_en_mngt;
+  --   end if;
+  -- end process p_clk_en_mngt;
+
+  clk_en <= '1' when cnt_clk_div = to_unsigned(0, cnt_clk_div'length) else '0';
 
 
   -- purpose: Clock SPI generation
@@ -203,13 +209,16 @@ begin  -- architecture rtl
       clk_spi_int <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- Initialized the clock polarity
-      if(start_int = '1') then
+      -- Initialized the clock polarity during the INIT State
+      if(init_ongoing = '1') then
         clk_spi_int <= cpol_int;
 
       -- Inverted the clock on clk enable
-      elsif(clk_en = '1') then
+      elsif(clk_en = '1' and en_cs = '1') then
         clk_spi_int <= not clk_spi_int;
+
+      elsif(en_cs = '0') then
+        clk_spi_int <= cpol_int;
       end if;
 
     end if;
@@ -232,8 +241,8 @@ begin  -- architecture rtl
   --   end if;
   -- end process p_fifo_tx_rd_mngt;
 
-  fifo_tx_rd_en <= fifo_tx_rd_en_int; -- Anticiper l'accès
-  
+  fifo_tx_rd_en <= fifo_tx_rd_en_int;   -- Anticiper l'accès
+
   -- purpose: FIFO RX Write Management
   p_fifo_rx_wr_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_fifo_rx_wr_mngt
@@ -278,7 +287,7 @@ begin  -- architecture rtl
         cnt_bit <= cnt_bit + 1;
 
       -- RESET §!!
-      elsif(cnt_bit = to_unsigned(G_DATA_WIDTH / G_SPI_SIZE, cnt_bit'length)) then
+      elsif(cnt_bit_done = '1') then
         cnt_bit <= (others => '0');
       end if;
 
@@ -303,16 +312,18 @@ begin  -- architecture rtl
       fifo_tx_rd_en_int    <= '0';
       fifo_tx_rd_en_int_p1 <= '0';
       fifo_tx_rd_en_int_p2 <= '0';
+      fifo_tx_rd_en_int_p3 <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- Read Enable Flag : read a new data when the counter reach 0
-      if(cnt_bit = to_unsigned(G_DATA_WIDTH / G_SPI_SIZE, cnt_bit'length)) then
+      -- Read Enable Flag : read a new data when the counter reach MAX - 1
+      if((cnt_bit = to_unsigned((G_DATA_WIDTH / G_SPI_SIZE) - 1, cnt_bit'length)) and cnt_bit_en = '1') then
         fifo_tx_rd_en_int <= '1';
       else
         fifo_tx_rd_en_int <= '0';
       end if;
       fifo_tx_rd_en_int_p1 <= fifo_tx_rd_en_int;
       fifo_tx_rd_en_int_p2 <= fifo_tx_rd_en_int_p1;
+      fifo_tx_rd_en_int_p3 <= fifo_tx_rd_en_int_p2;
     end if;
   end process p_fifo_tx_rd_en_mngt;
 
@@ -360,7 +371,7 @@ begin  -- architecture rtl
         cnt_data <= cnt_data + 1;
 
       -- Reset the counter of data
-      elsif(rst_cnt_data = '1') then
+      elsif(cnt_data_done = '1') then
         cnt_data <= (others => '0');
 
       end if;
@@ -373,6 +384,13 @@ begin  -- architecture rtl
                    '1' when cnt_data = unsigned(nb_wr_int) and rw_ongoing = '1' else
                    '0';
 
+
+  -- Edge Synchronization in function of the SPI Configuration
+  synch_edge <= '1' when cpha_int = '1' and cpol_int = '0' and clk_spi_r_edge = '1' else
+                '1' when cpha_int = '1' and cpol_int = '1' and clk_spi_f_edge = '1' else
+                '1' when cpha_int = '0' else
+                '0';
+
   -- purpose: FSM Current state management
   p_fsm_cs : process (clk_sys, rst_n_sys) is
   begin  -- process p_fsm_cs
@@ -383,8 +401,8 @@ begin  -- architecture rtl
     end if;
   end process p_fsm_cs;
 
-  p_fsm_ns : process (start, fsm_cs, cpol_int, cpha_int, clk_spi_r_edge, clk_spi_f_edge,
-                      full_duplex_int, nb_wr_int, nb_rd_int, cnt_data) is
+  p_fsm_ns : process (start, fsm_cs, synch_edge, cpol_int, cpha_int, clk_spi_r_edge, clk_spi_f_edge,
+                      full_duplex_int, nb_wr_int, nb_rd_int, cnt_data_done) is
   begin  -- process p_fsm_ns
 
     -- Computes FSM Next state
@@ -397,42 +415,23 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '0';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
 
         if(start = '1') then
-          fsm_ns <= ST_SYNCHRO;
+          fsm_ns <= ST_LATCH_IN;
         else
           fsm_ns <= ST_IDLE;
         end if;
 
-      -- Use for Synchronization in cpha = '1'
-      when ST_SYNCHRO =>
+      when ST_LATCH_IN =>
         wr_ongoing   <= '0';            -- WR Ongoing Flag
         rd_ongoing   <= '0';            -- RD Ongoing Flag
         rw_ongoing   <= '0';            -- RW Ongoing Flag
-        en_cs        <= '1';            -- Enable Chip Select
+        en_cs        <= '0';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
 
-        -- If CPHA = '0' do not wait for a half period
-        if(cpha_int = '0') then
-          fsm_ns <= ST_INIT;
-        else
-
-          -- CPHA = '1' and wait on clock spi rising edge
-          if(cpol_int = '0' and clk_spi_r_edge = '1') then
-            fsm_ns <= ST_INIT;
-
-          -- CPHA = '1' and wait for clock spi falling edge
-          elsif(cpol_int = '1' and clk_spi_f_edge = '1') then
-            fsm_ns <= ST_INIT;
-
-          -- Stay in the state
-          else
-            fsm_ns <= ST_SYNCHRO;
-          end if;
-
-        end if;
+        fsm_ns <= ST_INIT;
 
       -- In function of the configuration go to SPI generation states
       when ST_INIT =>
@@ -441,28 +440,46 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '1';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
 
-        -- Full duplex selection
-        if(full_duplex_int = '1' and nb_wr_int /= std_logic_vector(to_unsigned(0, nb_wr_int'length))) then
-          fsm_ns <= ST_RW;
+        fsm_ns <= ST_SYNCHRO;
 
-        -- Half Duplex
-        else
+      -- Use for Synchronization in cpha = '1'
+      when ST_SYNCHRO =>
+        wr_ongoing   <= '0';            -- WR Ongoing Flag
+        rd_ongoing   <= '0';            -- RD Ongoing Flag
+        rw_ongoing   <= '0';            -- RW Ongoing Flag
+        en_cs        <= '1';            -- Enable Chip Select
+        init_ongoing <= '0';            -- INIT Ongoing Flag
+        en_do        <= '1';            -- Enable Data Out generation
 
-          -- Case : send Write access
-          if(nb_wr_int /= std_logic_vector(to_unsigned(0, nb_wr_int'length))) then
-            fsm_ns <= ST_WR;
 
-          -- Case : send Read access
-          elsif(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
-            fsm_ns <= ST_RD;
+        -- On the synchronization edge go to the selected State
+        if(synch_edge = '1') then
 
-          -- Error -> Go to END State
+          -- Full duplex selection
+          if(full_duplex_int = '1' and nb_wr_int /= std_logic_vector(to_unsigned(0, nb_wr_int'length))) then
+            fsm_ns <= ST_RW;
+
+          -- Half Duplex
           else
-            fsm_ns <= ST_END;
+            -- Case : send Write access
+            if(nb_wr_int /= std_logic_vector(to_unsigned(0, nb_wr_int'length))) then
+              fsm_ns <= ST_WR;
+
+            -- Case : send Read access
+            elsif(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
+              fsm_ns <= ST_RD;
+
+            -- Error -> Go to END State
+            else
+              fsm_ns <= ST_END;
+            end if;
           end if;
 
+        -- Stay in this state
+        else
+          fsm_ns <= ST_SYNCHRO;
         end if;
 
 
@@ -473,15 +490,14 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '1';            -- Enable Data Out generation
 
         --if(cpha_int = '0') then
 
         if(cpol_int = '0') then
           if(cnt_data_done = '1' and clk_spi_f_edge = '1') then
             if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
-              fsm_ns       <= ST_RD;
-              rst_cnt_data <= '1';      -- Reset Counter Data
+              fsm_ns <= ST_RD;
             else
               fsm_ns <= ST_END;
             end if;
@@ -491,8 +507,7 @@ begin  -- architecture rtl
 
             if(cnt_data_done = '1' and clk_spi_r_edge = '1') then
               if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
-                fsm_ns       <= ST_RD;
-                rst_cnt_data <= '1';    -- Reset Counter Data
+                fsm_ns <= ST_RD;
               else
                 fsm_ns <= ST_END;
               end if;
@@ -511,7 +526,7 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
 
         if(cpol_int = '0') then
           if(cnt_data_done = '1' and clk_spi_f_edge = '1') then
@@ -547,7 +562,7 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '1';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
 
         -- Synchronization on the next internal rising edge
         if(cpha_int = '0' and cpol_int = '0' and clk_spi_r_edge = '1') then
@@ -577,7 +592,7 @@ begin  -- architecture rtl
         rw_ongoing   <= '1';            -- RW Ongoing Flag
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '1';            -- Enable Data Out generation
 
       when others =>
         wr_ongoing   <= '0';            -- WR Ongoing Flag
@@ -585,96 +600,100 @@ begin  -- architecture rtl
         rw_ongoing   <= '0';            -- RW Ongoing Flag
         en_cs        <= '0';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
-        rst_cnt_data <= '0';            -- Reset Counter Data
+        en_do        <= '0';            -- Enable Data Out generation
         fsm_ns       <= ST_IDLE;
 
     end case;
   end process p_fsm_ns;
 
 
-  -- SPI Data out generation
-  -- Generate for 1 bit
-  g_spi_1_bit : if(G_SPI_SIZE = 1) generate
+-- SPI Data out generation
+-- Generate for 1 bit
+  -- g_spi_1_bit : if(G_SPI_SIZE = 1) generate
 
-    -- purpose: SPI TX DATA Management
-    -- TX Data shift register
-    p_spi_tx_data_mngt : process (clk_sys, rst_n_sys) is
-    begin  -- process p_spi_tx_data_mngt
-      if rst_n_sys = '0' then           -- asynchronous reset (active low)
-        spi_tx_data_int <= (others => '0');
-      elsif rising_edge(clk_sys) then   -- rising clock edge
+  --   -- purpose: SPI TX DATA Management
+  --   -- TX Data shift register
+  --   p_spi_tx_data_mngt : process (clk_sys, rst_n_sys) is
+  --   begin  -- process p_spi_tx_data_mngt
+  --     if rst_n_sys = '0' then           -- asynchronous reset (active low)
+  --       spi_tx_data_int <= (others => '0');
+  --     elsif rising_edge(clk_sys) then   -- rising clock edge
 
-        -- Load the shift register on the start (1st data) or 
-        if(start = '1' or (fifo_tx_rd_en_int_p2 = '1' and en_cs = '1')) then
-          spi_tx_data_int <= fifo_tx_data;  -- Latch data
+  --       -- Load the shift register on the start (1st data) or 
+  --       if(start = '1' or (fifo_tx_rd_en_int_p2 = '1' and en_cs = '1')) then
+  --         spi_tx_data_int <= fifo_tx_data;  -- Latch data
 
-        -- Shift the data one bit at a time
-        elsif(shift_tx = '1') then
-          spi_tx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_tx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift 
-        end if;
+  --       -- Shift the data one bit at a time
+  --       elsif(shift_tx = '1') then
+  --         spi_tx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_tx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift 
+  --       end if;
 
-      end if;
-    end process p_spi_tx_data_mngt;
+  --     end if;
+  --   end process p_spi_tx_data_mngt;
 
-    -- purpose: SPI RX DATA Management
-    p_spi_rx_data_mngt : process (clk_sys, rst_n_sys) is
-    begin  -- process p_spi_rx_data_mngt
-      if rst_n_sys = '0' then           -- asynchronous reset (active low)
-        spi_rx_data_int <= (others => '0');
-      elsif rising_edge(clk_sys) then   -- rising clock edge
+  --   -- purpose: SPI RX DATA Management
+  --   p_spi_rx_data_mngt : process (clk_sys, rst_n_sys) is
+  --   begin  -- process p_spi_rx_data_mngt
+  --     if rst_n_sys = '0' then           -- asynchronous reset (active low)
+  --       spi_rx_data_int <= (others => '0');
+  --     elsif rising_edge(clk_sys) then   -- rising clock edge
 
-        -- Shift RX : load data on MSB and shift it
-        -- TBD : latch DI ..
-        if(shift_rx = '1') then
-          spi_rx_data_int(G_DATA_WIDTH - 1)          <= spi_di_p(G_SPI_SIZE - 1);                    -- Load on MSBit
-          spi_rx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_rx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift it
-        end if;
-      end if;
-    end process p_spi_rx_data_mngt;
+  --       -- Shift RX : load data on MSB and shift it
+  --       -- TBD : latch DI ..
+  --       if(shift_rx = '1') then
+  --         spi_rx_data_int(G_DATA_WIDTH - 1)          <= spi_di_p(G_SPI_SIZE - 1);                    -- Load on MSBit
+  --         spi_rx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_rx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift it
+  --       end if;
+  --     end if;
+  --   end process p_spi_rx_data_mngt;
 
-  end generate;
+  -- end generate;
 
 
   -- Generate for 2 bits
-  g_spi_2_bit : if(G_SPI_SIZE = 2) generate
+  -- g_spi_2_bit : if(G_SPI_SIZE = 2) generate
 
-    -- purpose: SPI TX DATA Management
-    -- TX Data shift register
-    p_spi_tx_data_mngt : process (clk_sys, rst_n_sys) is
-    begin  -- process p_spi_tx_data_mngt
-      if rst_n_sys = '0' then           -- asynchronous reset (active low)
-        spi_tx_data_int <= (others => '0');
-      elsif rising_edge(clk_sys) then   -- rising clock edge
+  --   -- purpose: SPI TX DATA Management
+  --   -- TX Data shift register
+  --   p_spi_tx_data_mngt : process (clk_sys, rst_n_sys) is
+  --   begin  -- process p_spi_tx_data_mngt
+  --     if rst_n_sys = '0' then           -- asynchronous reset (active low)
+  --       spi_tx_data_int <= (others => '0');
+  --     elsif rising_edge(clk_sys) then   -- rising clock edge
 
-        -- Load the shift register on the start (1st data) or 
-        if(start = '1' or (fifo_tx_rd_en_int_p2 = '1' and en_cs = '1')) then
-          spi_tx_data_int <= fifo_tx_data;  -- Latch data
+  --       -- Load the shift register on the start (1st data) or 
+  --       if(start = '1' or (fifo_tx_rd_en_int_p2 = '1' and en_cs = '1')) then
+  --         spi_tx_data_int <= fifo_tx_data;  -- Latch data
 
-        -- Shift the data one bit at a time
-        elsif(shift_tx = '1') then
-          spi_tx_data_int(G_DATA_WIDTH - 3 downto 0) <= spi_tx_data_int(G_DATA_WIDTH - 1 downto G_SPI_SIZE);  -- Shift 
-        end if;
+  --       -- Shift the data one bit at a time
+  --       elsif(shift_tx = '1') then
+  --         spi_tx_data_int(G_DATA_WIDTH - 3 downto 0) <= spi_tx_data_int(G_DATA_WIDTH - 1 downto G_SPI_SIZE);  -- Shift 
+  --       end if;
 
-      end if;
-    end process p_spi_tx_data_mngt;
+  --     end if;
+  --   end process p_spi_tx_data_mngt;
 
-    -- purpose: SPI RX DATA Management
-    p_spi_rx_data_mngt : process (clk_sys, rst_n_sys) is
-    begin  -- process p_spi_rx_data_mngt
-      if rst_n_sys = '0' then           -- asynchronous reset (active low)
-        spi_rx_data_int <= (others => '0');
-      elsif rising_edge(clk_sys) then   -- rising clock edge
+  --   -- purpose: SPI RX DATA Management
+  --   p_spi_rx_data_mngt : process (clk_sys, rst_n_sys) is
+  --   begin  -- process p_spi_rx_data_mngt
+  --     if rst_n_sys = '0' then           -- asynchronous reset (active low)
+  --       spi_rx_data_int <= (others => '0');
+  --     elsif rising_edge(clk_sys) then   -- rising clock edge
 
-        -- Shift RX : load data on MSB and shift it
-        -- TBD : latch DI ..
-        if(shift_rx = '1') then
-          spi_rx_data_int(G_DATA_WIDTH - 1)          <= spi_di_p(G_SPI_SIZE - 1);                    -- Load on MSBit
-          spi_rx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_rx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift it
-        end if;
-      end if;
-    end process p_spi_rx_data_mngt;
+  --       -- Shift RX : load data on MSB and shift it
+  --       -- TBD : latch DI ..
+  --       if(shift_rx = '1') then
+  --         spi_rx_data_int(G_DATA_WIDTH - 1)          <= spi_di_p(G_SPI_SIZE - 1);                    -- Load on MSBit
+  --         spi_rx_data_int(G_DATA_WIDTH - 2 downto 0) <= spi_rx_data_int(G_DATA_WIDTH - 1 downto 1);  -- Shift it
+  --       end if;
+  --     end if;
+  --   end process p_spi_rx_data_mngt;
 
-  end generate;
+  -- end generate;
+
+  -- Load a new Data in the TX Shift register only if we are in WR or RW state
+  fifo_tx_load_sr <= '1' when fifo_tx_rd_en_int_p3 = '1' and (wr_ongoing = '1' or rw_ongoing = '1')
+                     else '0';
 
   -- Generate for 4 bits
   g_spi_4_bit : if(G_SPI_SIZE = 4) generate
@@ -684,16 +703,16 @@ begin  -- architecture rtl
     p_spi_tx_data_mngt : process (clk_sys, rst_n_sys) is
     begin  -- process p_spi_tx_data_mngt
       if rst_n_sys = '0' then           -- asynchronous reset (active low)
-        spi_tx_data_int <= (others => '0');
+        spi_tx_data_sr <= (others => '0');
       elsif rising_edge(clk_sys) then   -- rising clock edge
 
-        -- Load the shift register on the start (1st data) or 
-        if(start = '1') then
-          spi_tx_data_int <= fifo_tx_data;  -- Latch data
+        -- Load SR on init or Load the SR with a new data (case multiple WR to perform)
+        if(init_ongoing = '1' or fifo_tx_load_sr = '1') then
+          spi_tx_data_sr <= fifo_tx_data;  -- Latch data
 
         -- Shift the data one bit at a time
         elsif(shift_tx = '1') then
-          spi_tx_data_int(G_DATA_WIDTH - 4 - 1 downto 0) <= spi_tx_data_int(G_DATA_WIDTH - 1 downto G_SPI_SIZE);  -- Shift 
+          spi_tx_data_sr(G_DATA_WIDTH - 4 - 1 downto 0) <= spi_tx_data_sr(G_DATA_WIDTH - 1 downto G_SPI_SIZE);  -- Shift 
         end if;
 
       end if;
@@ -717,34 +736,34 @@ begin  -- architecture rtl
 
   end generate;
 
-  -- purpose: SPI Data Out management
+                                        -- purpose: SPI Data Out management
   p_spi_do_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_do_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       spi_do <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      if(en_cs = '1') then --init_ongoing = '1' or wr_ongoing = '1' or rw_ongoing = '1') then
-        spi_do(G_SPI_SIZE - 1 downto 0) <= spi_tx_data_int(G_SPI_SIZE - 1 downto 0);
+      if(en_do = '1') then              --init_ongoing = '1' or wr_ongoing = '1' or rw_ongoing = '1') then
+        spi_do(G_SPI_SIZE - 1 downto 0) <= spi_tx_data_sr(G_SPI_SIZE - 1 downto 0);
 
-      -- Reset the output data when the chip select is not enable
-      else--if(en_cs = '0') then
+                                        -- Reset the output data when the chip select is not enable
+      elsif(en_cs = '0') then                              --if(en_cs = '0') then
         spi_do <= (others => '0');
       end if;
 
     end if;
   end process p_spi_do_mngt;
 
-  --spi_do <= spi_tx_data_int(G_SPI_SIZE - 1 downto 0) when en_cs = '1' else (others => '0');
+                                        --spi_do <= spi_tx_data_int(G_SPI_SIZE - 1 downto 0) when en_cs = '1' else (others => '0');
 
-  -- purpose: SPI CLK Generation
+                                        -- purpose: SPI CLK Generation
   p_spi_clk_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_clk_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       spi_clk <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
       if(wr_ongoing = '1' or rd_ongoing = '1' or rw_ongoing = '1') then
-        spi_clk <= clk_spi_int;
+        spi_clk <= clk_spi_int_p1;
       else
         spi_clk <= cpol_int;
       end if;
@@ -752,7 +771,7 @@ begin  -- architecture rtl
   end process p_spi_clk_mngt;
 
 
-  -- purpose: CHIP Select management
+                                        -- purpose: CHIP Select management
   p_spi_cs_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_cs_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
@@ -764,7 +783,7 @@ begin  -- architecture rtl
     end if;
   end process p_spi_cs_mngt;
 
-  -- purpose: SPI Busy Management
+                                        -- purpose: SPI Busy Management
   p_spi_busy_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_busy_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)

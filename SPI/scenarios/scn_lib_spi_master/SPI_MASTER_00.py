@@ -72,7 +72,7 @@ scn.WAIT(200, "ns")
 scn.print_step("")
 spi_master_class.start_spi_master(nb_wr       = 1,
                                   nb_rd       = 0,
-                                  clk_div     = 2,
+                                  clk_div     = 1,
                                   full_duplex = 0,
                                   cpha        = 0,
                                   cpol        = 0)
@@ -80,40 +80,40 @@ spi_master_class.start_spi_master(nb_wr       = 1,
 scn.WTFS("SPI_BUSY") # Synchronization on the end of the SPI
 
 
-scn.print_step("Write into FIFO TX and Start SPI Write Transaction : only one data to write")
-spi_master_class.wr_fifo(0x12)
+# scn.print_step("Write into FIFO TX and Start SPI Write Transaction : only one data to write")
+# spi_master_class.wr_fifo(0x12)
 
-scn.WAIT(200, "ns")
+# scn.WAIT(200, "ns")
 
-scn.print_step("")
-spi_master_class.start_spi_master(nb_wr       = 1,
-                                  nb_rd       = 0,
-                                  clk_div     = 20,
-                                  full_duplex = 0,
-                                  cpha        = 0,
-                                  cpol        = 0)
+# scn.print_step("")
+# spi_master_class.start_spi_master(nb_wr       = 1,
+#                                   nb_rd       = 0,
+#                                   clk_div     = 20,
+#                                   full_duplex = 0,
+#                                   cpha        = 0,
+#                                   cpol        = 1)
 
-scn.WTFS("SPI_BUSY") # Synchronization on the end of the SPI
+# scn.WTFS("SPI_BUSY") # Synchronization on the end of the SPI
 
-scn.print_step("Write into FIFO TX and Start SPI Write Transaction : only one data to write")
+# scn.print_step("Write into FIFO TX and Start SPI Write Transaction : only one data to write")
 
-for i in range(0,256):
-    spi_master_class.wr_fifo(i)
+# for i in range(0,256):
+#     spi_master_class.wr_fifo(i)
 
-    scn.WAIT(200, "ns")
+#     scn.WAIT(200, "ns")
 
-    scn.print_step("")
-    spi_master_class.start_spi_master(nb_wr       = 1,
-                                      nb_rd       = 0,
-                                      clk_div     = 50,
-                                      full_duplex = 0,
-                                      cpha        = 0,
-                                      cpol        = 0)
+#     scn.print_step("")
+#     spi_master_class.start_spi_master(nb_wr       = 1,
+#                                       nb_rd       = 0,
+#                                       clk_div     = 50,
+#                                       full_duplex = 0,
+#                                       cpha        = 0,
+#                                       cpol        = 0)
     
-    scn.WTFS("SPI_BUSY") # Synchronization on the end of the SPI
+#     scn.WTFS("SPI_BUSY") # Synchronization on the end of the SPI
 
 
-scn.WAIT(200, "ns")
+# scn.WAIT(200, "ns")
 
 
 scn.END_TEST()
