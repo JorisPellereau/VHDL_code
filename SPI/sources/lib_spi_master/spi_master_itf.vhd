@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-04
--- Last update: 2024-01-08
+-- Last update: 2024-01-09
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -69,45 +69,40 @@ architecture rtl of spi_master_itf is
   type t_fsm_state is (ST_IDLE, ST_LATCH_IN, ST_SYNCHRO, ST_INIT, ST_WR, ST_RD, ST_RW, ST_END);  -- FSM STATES
 
   -- == INTERNAL Signals ==
-  signal nb_wr_int            : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of write to send
-  signal nb_rd_int            : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of read to perform
-  signal full_duplex_int      : std_logic;                                          -- Fulle Duplux configuration
-  signal cpha_int             : std_logic;                                          -- SPI SPHA Configuration
-  signal cpol_int             : std_logic;                                          -- SPI CPOL Configuration
-  signal clk_div_int          : std_logic_vector(7 downto 0);                       -- Clock Division
-  signal cnt_clk_div          : unsigned(7 downto 0);                               -- Counter clk_div
-  signal clk_en               : std_logic;                                          -- Clock Enable
-  signal fsm_cs               : t_fsm_state;                                        -- FSM Current state
-  signal fsm_ns               : t_fsm_state;                                        -- FSM Next state
-  signal cnt_bit_en           : std_logic;                                          -- Counter bit Enable
-  signal cnt_bit              : unsigned(log2(G_DATA_WIDTH) - 1 downto 0);          -- Counter Bit
-  signal cnt_data             : unsigned(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Counter of Data
-  signal cnt_data_done        : std_logic;                                          -- Counter of data done
-  signal clk_spi_int          : std_logic;                                          -- Internal Clock SPI
-  signal clk_spi_int_p1       : std_logic;                                          -- Internal Clock SPI Piped one time
-  signal clk_spi_r_edge       : std_logic;                                          -- R Edge of Internal Clock SPI
-  signal clk_spi_f_edge       : std_logic;                                          -- F Edge of Internal Clock SPI
-  signal start_int            : std_logic;                                          -- Start piped one time
-  signal fifo_tx_rd_en_int    : std_logic;                                          -- FIFO TX Read Enable internal
-  signal fifo_tx_rd_en_int_p1 : std_logic;                                          -- FIFO TX Read Enable internal p1
-  signal fifo_tx_rd_en_int_p2 : std_logic;                                          -- FIFO TX Read Enable internal p2
-  signal fifo_tx_rd_en_int_p3 : std_logic;                                          -- FIFO TX Read Enable internal p3
---  signal spi_tx_data_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
-  signal spi_tx_data_sr       : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
-  signal spi_rx_data_int      : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to received and shifted
-  signal wr_ongoing           : std_logic;                                          -- ST_WR ongoing state
-  signal rd_ongoing           : std_logic;                                          -- ST_RD ongoing state
-  signal rw_ongoing           : std_logic;                                          -- ST_RW ongoing state
-  signal shift_tx             : std_logic;                                          -- Shift TX
-  signal shift_rx             : std_logic;                                          -- Shift RX
-  signal spi_di_p             : std_logic_vector(G_SPI_SIZE - 1 downto 0);          -- Latch one time SPI DI - Use for synchronization
-  signal fifo_rx_wr_en_int    : std_logic;                                          -- FIFO RX Write Enable
-  signal en_cs                : std_logic;                                          -- Enable Chip select
-  signal init_ongoing         : std_logic;                                          -- INIT Ongoing
-  signal cnt_bit_done         : std_logic;                                          -- Counter of Bit Done
-  signal synch_edge           : std_logic;                                          -- Edge Synchronization in case of cpha = '1'
-  signal fifo_tx_load_sr      : std_logic;                                          -- FIFO TX Load SR
-  signal en_do                : std_logic;                                          -- Enable Data out generation
+  signal nb_wr_int         : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of write to send
+  signal nb_rd_int         : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of read to perform
+  signal full_duplex_int   : std_logic;                                          -- Fulle Duplux configuration
+  signal cpha_int          : std_logic;                                          -- SPI SPHA Configuration
+  signal cpol_int          : std_logic;                                          -- SPI CPOL Configuration
+  signal clk_div_int       : std_logic_vector(7 downto 0);                       -- Clock Division
+  signal cnt_clk_div       : unsigned(7 downto 0);                               -- Counter clk_div
+  signal clk_en            : std_logic;                                          -- Clock Enable
+  signal fsm_cs            : t_fsm_state;                                        -- FSM Current state
+  signal fsm_ns            : t_fsm_state;                                        -- FSM Next state
+  signal cnt_bit_en        : std_logic;                                          -- Counter bit Enable
+  signal cnt_bit           : unsigned(log2(G_DATA_WIDTH) - 1 downto 0);          -- Counter Bit
+  signal cnt_data          : unsigned(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Counter of Data
+  signal cnt_data_done     : std_logic;                                          -- Counter of data done
+  signal clk_spi_int       : std_logic;                                          -- Internal Clock SPI
+  signal clk_spi_int_p1    : std_logic;                                          -- Internal Clock SPI Piped one time
+  signal clk_spi_r_edge    : std_logic;                                          -- R Edge of Internal Clock SPI
+  signal clk_spi_f_edge    : std_logic;                                          -- F Edge of Internal Clock SPI
+  signal start_int         : std_logic;                                          -- Start piped one time
+  signal fifo_tx_rd_en_int : std_logic;                                          -- FIFO TX Read Enable internal
+  signal spi_tx_data_sr    : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
+  signal spi_rx_data_int   : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to received and shifted
+  signal wr_ongoing        : std_logic;                                          -- ST_WR ongoing state
+  signal rd_ongoing        : std_logic;                                          -- ST_RD ongoing state
+  signal rw_ongoing        : std_logic;                                          -- ST_RW ongoing state
+  signal shift_tx          : std_logic;                                          -- Shift TX
+  signal shift_rx          : std_logic;                                          -- Shift RX
+  signal spi_di_p          : std_logic_vector(G_SPI_SIZE - 1 downto 0);          -- Latch one time SPI DI - Use for synchronization
+  signal fifo_rx_wr_en_int : std_logic;                                          -- FIFO RX Write Enable
+  signal en_cs             : std_logic;                                          -- Enable Chip select
+  signal init_ongoing      : std_logic;                                          -- INIT Ongoing
+  signal cnt_bit_done      : std_logic;                                          -- Counter of Bit Done
+  signal synch_edge        : std_logic;                                          -- Edge Synchronization in case of cpha = '1'
+  signal en_do             : std_logic;                                          -- Enable Data out generation
 
 begin  -- architecture rtl
 
@@ -178,29 +173,7 @@ begin  -- architecture rtl
     end if;
   end process p_cnt_clk_div_mngt;
 
-  -- purpose: Clock Enable generatio 
-  -- p_clk_en_mngt : process (clk_sys, rst_n_sys) is
-  -- begin  -- process p_clk_en_mngt
-  --   if rst_n_sys = '0' then             -- asynchronous reset (active low)
-  --     clk_en <= '0';
-  --   elsif rising_edge(clk_sys) then     -- rising clock edge
-
-  --     -- Enable the generation of clk_en only during a frame transaction drived by en_cs
-  --     if(en_cs = '1') then
-  --       if(cnt_clk_div = 0) then
-  --         clk_en <= '1';
-  --       else
-  --         clk_en <= '0';
-  --       end if;
-  --     else
-  --       clk_en <= '0';
-  --     end if;
-
-  --   end if;
-  -- end process p_clk_en_mngt;
-
   clk_en <= '1' when cnt_clk_div = to_unsigned(0, cnt_clk_div'length) else '0';
-
 
   -- purpose: Clock SPI generation
   p_clk_spi_mngt : process (clk_sys, rst_n_sys) is
@@ -224,22 +197,6 @@ begin  -- architecture rtl
     end if;
   end process p_clk_spi_mngt;
 
-
-  -- purpose: FIFO TX Read Management
-  -- p_fifo_tx_rd_mngt : process (clk_sys, rst_n_sys) is
-  -- begin  -- process p_fifo_tx_rd_mngt
-  --   if rst_n_sys = '0' then             -- asynchronous reset (active low)
-  --     fifo_tx_rd_en <= '0';
-  --   elsif rising_edge(clk_sys) then     -- rising clock edge
-
-  --     -- On start -> Data are already available
-  --     if(fifo_tx_rd_en_int = '1' and (wr_ongoing = '1' or rw_ongoing = '1')) then
-  --       fifo_tx_rd_en <= '1';
-  --     else
-  --       fifo_tx_rd_en <= '0';
-  --     end if;
-  --   end if;
-  -- end process p_fifo_tx_rd_mngt;
 
   fifo_tx_rd_en <= fifo_tx_rd_en_int;   -- Anticiper l'accès
 
@@ -286,7 +243,7 @@ begin  -- architecture rtl
       if(cnt_bit_en = '1') then
         cnt_bit <= cnt_bit + 1;
 
-      -- RESET §!!
+      -- RESET the counter
       elsif(cnt_bit_done = '1') then
         cnt_bit <= (others => '0');
       end if;
@@ -305,34 +262,16 @@ begin  -- architecture rtl
                 (wr_ongoing = '1' or rd_ongoing = '1' or rw_ongoing = '1') else
                 '0';
 
-
-  p_fifo_tx_rd_en_mngt : process (clk_sys, rst_n_sys) is
-  begin  -- process p_fifo_tx_rd_en_mngt
-    if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      fifo_tx_rd_en_int    <= '0';
-      fifo_tx_rd_en_int_p1 <= '0';
-      fifo_tx_rd_en_int_p2 <= '0';
-      fifo_tx_rd_en_int_p3 <= '0';
-    elsif rising_edge(clk_sys) then     -- rising clock edge
-
-      -- Read Enable Flag : read a new data when the counter reach MAX - 1
-      if((cnt_bit = to_unsigned((G_DATA_WIDTH / G_SPI_SIZE) - 1, cnt_bit'length)) and cnt_bit_en = '1') then
-        fifo_tx_rd_en_int <= '1';
-      else
-        fifo_tx_rd_en_int <= '0';
-      end if;
-      fifo_tx_rd_en_int_p1 <= fifo_tx_rd_en_int;
-      fifo_tx_rd_en_int_p2 <= fifo_tx_rd_en_int_p1;
-      fifo_tx_rd_en_int_p3 <= fifo_tx_rd_en_int_p2;
-    end if;
-  end process p_fifo_tx_rd_en_mngt;
+  fifo_tx_rd_en_int <= '1' when (cnt_bit = to_unsigned(0, cnt_bit'length) and cnt_bit_en = '1') else
+                       '0';
 
   -- Read Enable Flag : read a new data when the counter reach 0
   cnt_bit_done <= '1' when cnt_bit = to_unsigned(G_DATA_WIDTH / G_SPI_SIZE, cnt_bit'length) else
                   '0';
 
   -- Write Enable Flag : write a new data when the counter reach 0
-  fifo_rx_wr_en_int <= '1' when cnt_bit = to_unsigned(G_DATA_WIDTH / G_SPI_SIZE, cnt_bit'length) else
+  fifo_rx_wr_en_int <= '1' when cnt_bit = to_unsigned(G_DATA_WIDTH / G_SPI_SIZE, cnt_bit'length) and
+                       (rd_ongoing = '1' or rw_ongoing = '1') else
                        '0';
 
   -- Shift TX flag
@@ -554,7 +493,6 @@ begin  -- architecture rtl
 
         end if;
 
-
       -- Synchronization on the last edge of the clock
       when ST_END =>
         wr_ongoing   <= '0';            -- WR Ongoing Flag
@@ -691,9 +629,7 @@ begin  -- architecture rtl
 
   -- end generate;
 
-  -- Load a new Data in the TX Shift register only if we are in WR or RW state
-  fifo_tx_load_sr <= '1' when fifo_tx_rd_en_int_p3 = '1' and (wr_ongoing = '1' or rw_ongoing = '1')
-                     else '0';
+
 
   -- Generate for 4 bits
   g_spi_4_bit : if(G_SPI_SIZE = 4) generate
@@ -707,7 +643,7 @@ begin  -- architecture rtl
       elsif rising_edge(clk_sys) then   -- rising clock edge
 
         -- Load SR on init or Load the SR with a new data (case multiple WR to perform)
-        if(init_ongoing = '1' or fifo_tx_load_sr = '1') then
+        if(init_ongoing = '1' or (shift_tx = '1' and cnt_bit = to_unsigned(0, cnt_bit'length))) then
           spi_tx_data_sr <= fifo_tx_data;  -- Latch data
 
         -- Shift the data one bit at a time
@@ -736,27 +672,25 @@ begin  -- architecture rtl
 
   end generate;
 
-                                        -- purpose: SPI Data Out management
+  -- purpose: SPI Data Out management
   p_spi_do_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_do_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       spi_do <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      if(en_do = '1') then              --init_ongoing = '1' or wr_ongoing = '1' or rw_ongoing = '1') then
+      if(en_do = '1') then
         spi_do(G_SPI_SIZE - 1 downto 0) <= spi_tx_data_sr(G_SPI_SIZE - 1 downto 0);
 
-                                        -- Reset the output data when the chip select is not enable
-      elsif(en_cs = '0') then                              --if(en_cs = '0') then
+      -- Reset the output data when the chip select is not enable
+      elsif(en_cs = '0') then
         spi_do <= (others => '0');
       end if;
 
     end if;
   end process p_spi_do_mngt;
 
-                                        --spi_do <= spi_tx_data_int(G_SPI_SIZE - 1 downto 0) when en_cs = '1' else (others => '0');
-
-                                        -- purpose: SPI CLK Generation
+  -- purpose: SPI CLK Generation
   p_spi_clk_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_clk_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
@@ -771,7 +705,7 @@ begin  -- architecture rtl
   end process p_spi_clk_mngt;
 
 
-                                        -- purpose: CHIP Select management
+  -- purpose: CHIP Select management
   p_spi_cs_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_cs_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
@@ -783,7 +717,7 @@ begin  -- architecture rtl
     end if;
   end process p_spi_cs_mngt;
 
-                                        -- purpose: SPI Busy Management
+  -- purpose: SPI Busy Management
   p_spi_busy_mngt : process (clk_sys, rst_n_sys) is
   begin  -- process p_spi_busy_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)

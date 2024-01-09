@@ -27,24 +27,24 @@ add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/wr_en_fifo
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/wdata_fifo_rx
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/fifo_empty_fifo_rx
 add wave -noupdate -expand -group i_dut -group Internal /tb_top/i_dut/fifo_full_fifo_rx
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/clk_sys
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/rst_n_sys
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_data
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/start
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/nb_wr
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/nb_rd
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/full_duplex
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/cpha
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/cpol
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/clk_div
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Inputs /tb_top/i_dut/i_spi_master_itf_0/spi_di
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_rx_wr_en
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_rx_data
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_clk
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_cs_n
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_do
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_busy
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/clk_sys
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/rst_n_sys
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_data
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/start
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/nb_wr
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/nb_rd
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/full_duplex
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/cpha
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/cpol
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/clk_div
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Inputs /tb_top/i_dut/i_spi_master_itf_0/spi_di
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_rx_wr_en
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/fifo_rx_data
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_clk
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_cs_n
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_do
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -expand -group Outputs /tb_top/i_dut/i_spi_master_itf_0/spi_busy
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/nb_wr_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/nb_rd_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/full_duplex_int
@@ -52,6 +52,7 @@ add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Interna
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/cpol_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/clk_div_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/cnt_clk_div
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/clk_sys
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/clk_en
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fsm_cs
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fsm_ns
@@ -64,9 +65,11 @@ add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Interna
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/clk_spi_r_edge
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/clk_spi_f_edge
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/start_int
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal -color Salmon /tb_top/i_dut/i_spi_master_itf_0/en_do
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en_int_p1
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en_int_p2
+add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_rd_en_int_p3
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/spi_tx_data_sr
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/spi_rx_data_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/wr_ongoing
@@ -78,7 +81,6 @@ add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Interna
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_rx_wr_en_int
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/en_cs
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/init_ongoing
-add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/rst_cnt_data
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/cnt_bit_done
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/synch_edge
 add wave -noupdate -expand -group i_dut -group i_spi_master_itf_0 -group Internal /tb_top/i_dut/i_spi_master_itf_0/fifo_tx_load_sr
@@ -121,13 +123,13 @@ add wave -noupdate -expand -group i_dut -group i_fifo_rx_0 -group Internal /tb_t
 add wave -noupdate -expand -group i_dut -group i_fifo_rx_0 -group Internal /tb_top/i_dut/i_fifo_rx_0/wr_addr
 add wave -noupdate -expand -group i_dut -group i_fifo_rx_0 -group Internal /tb_top/i_dut/i_fifo_rx_0/rd_addr
 add wave -noupdate -expand -group i_dut -group i_fifo_rx_0 -group Internal /tb_top/i_dut/i_fifo_rx_0/ram_data_out
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/clk
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/data_in
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/wr_addr
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/rd_addr
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/we
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Outputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/data_out
-add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_sp_ram_0 -group Internal /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/mem
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/clk
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/data_in
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/wr_addr
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/rd_addr
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/we
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -expand -group Outputs /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/data_out
+add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -expand -group i_sp_ram_0 -group Internal /tb_top/i_dut/i_fifo_tx_0/i_sp_ram_0/mem
 add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_fifo_sp_ram_fast_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_fifo_sp_ram_fast_0/clk
 add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_fifo_sp_ram_fast_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_fifo_sp_ram_fast_0/rst_n
 add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group i_fifo_sp_ram_fast_0 -group Inputs /tb_top/i_dut/i_fifo_tx_0/i_fifo_sp_ram_fast_0/wr_en
@@ -161,7 +163,7 @@ add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group Internal /tb_t
 add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group Internal /tb_top/i_dut/i_fifo_tx_0/rd_addr
 add wave -noupdate -expand -group i_dut -group i_fifo_tx_0 -group Internal /tb_top/i_dut/i_fifo_tx_0/ram_data_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1451139 ps} 0}
+WaveRestoreCursors {{Cursor 1} {972443 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 208
 configure wave -valuecolwidth 100
@@ -177,4 +179,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {629989 ps} {1778382 ps}
+WaveRestoreZoom {549281 ps} {1503984 ps}
