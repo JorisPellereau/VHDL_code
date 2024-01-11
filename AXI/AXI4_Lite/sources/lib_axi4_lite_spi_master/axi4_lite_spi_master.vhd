@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2024-01-10
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -84,47 +84,36 @@ end entity axi4_lite_spi_master;
 architecture rtl of axi4_lite_spi_master is
 
   -- == INTERNAL Signals ==
-  signal slv_start   : std_logic;                                                  -- Start the access
-  signal slv_rw      : std_logic;                                                  -- Read or Write Access
-  signal slv_addr    : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      -- ADDR to reach
-  signal slv_wdata   : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Write Data
-  signal slv_strobe  : std_logic_vector((G_AXI4_LITE_DATA_WIDTH/8) - 1 downto 0);  -- Write Strobe
-  signal slv_done    : std_logic;                                                  -- Access done
-  signal slv_rdata   : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
-  signal slv_status  : std_logic_vector(1 downto 0);                               -- Slave status
-  signal enable      : std_logic;                                                  -- Enable signal
-  signal cmd_start   : std_logic;                                                  -- Command Start
-  signal cmd         : std_logic_vector(13 downto 0);                              -- Command
-  signal cmd_data    : std_logic_vector(7 downto 0);                               -- Command Data
-  signal matrix_idx  : std_logic_vector(log2(G_MATRIX_NB) - 1 downto 0);           -- Matrix Index
-  signal fifo_full   : std_logic;                                                  -- FIFO FULL
-  signal fifo_empty  : std_logic;                                                  -- FIFO Empty
-  signal ctrl_status : std_logic;                                                  -- Control Status
-  signal ctrl_done   : std_logic;                                                  -- Control done
-
-  signal start_spi         : std_logic;                                          -- Start SPI
-  signal cpha              : std_logic;                                          -- CPHA Configuration
-  signal cpol              : std_logic;                                          -- CPOL Configuration
-  signal full_duplex       : std_logic;                                          -- Full Duplex Configuration
-  signal clk_div           : std_logic_vector(7 downto 0);                       -- Clock Division Configuration
-  signal nb_wr             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of Write to perform
-  signal nb_rd             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of Read to perform
-  signal wdata_fifo_tx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);   -- FIFO TX Data
-  signal wr_en_fifo_tx     : std_logic;                                          -- FIFO TX Write Enable    
-  signal rdata_fifo_rx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);   -- FIFO RX Data
-  signal rdata_fifo_rx_val : std_logic;                                          -- FIFO RX Data Valid
-  signal rd_en_fifo_rx     : std_logic;                                          -- FIFO RX Read Enable
-  signal fifo_tx_empty     : std_logic;                                          -- FIFO TX Empty Flag
-  signal fifo_tx_full      : std_logic;                                          -- FIFO TX Full Flag
-  signal fifo_rx_empty     : std_logic;                                          -- FIFO RX Empty Flag
-  signal fifo_rx_full      : std_logic;                                          -- FIFO RX Full Flag
-  signal spi_busy          : std_logic;                                          -- SPI BUSY Flag
+  signal slv_start         : std_logic;                                                  -- Start the access
+  signal slv_rw            : std_logic;                                                  -- Read or Write Access
+  signal slv_addr          : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      -- ADDR to reach
+  signal slv_wdata         : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Write Data
+  signal slv_strobe        : std_logic_vector((G_AXI4_LITE_DATA_WIDTH/8) - 1 downto 0);  -- Write Strobe
+  signal slv_done          : std_logic;                                                  -- Access done
+  signal slv_rdata         : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
+  signal slv_status        : std_logic_vector(1 downto 0);                               -- Slave status
+  signal start_spi         : std_logic;                                                  -- Start SPI
+  signal cpha              : std_logic;                                                  -- CPHA Configuration
+  signal cpol              : std_logic;                                                  -- CPOL Configuration
+  signal full_duplex       : std_logic;                                                  -- Full Duplex Configuration
+  signal clk_div           : std_logic_vector(7 downto 0);                               -- Clock Division Configuration
+  signal nb_wr             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Number of Write to perform
+  signal nb_rd             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Number of Read to perform
+  signal wdata_fifo_tx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);           -- FIFO TX Data
+  signal wr_en_fifo_tx     : std_logic;                                                  -- FIFO TX Write Enable    
+  signal rdata_fifo_rx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);           -- FIFO RX Data
+  signal rdata_fifo_rx_val : std_logic;                                                  -- FIFO RX Data Valid
+  signal rd_en_fifo_rx     : std_logic;                                                  -- FIFO RX Read Enable
+  signal fifo_tx_empty     : std_logic;                                                  -- FIFO TX Empty Flag
+  signal fifo_tx_full      : std_logic;                                                  -- FIFO TX Full Flag
+  signal fifo_rx_empty     : std_logic;                                                  -- FIFO RX Empty Flag
+  signal fifo_rx_full      : std_logic;                                                  -- FIFO RX Full Flag
+  signal spi_busy          : std_logic;                                                  -- SPI BUSY Flag
 
 begin  -- architecture rtl
 
   -- Instanciation of AXI4 Lite Slave interface
   i_axi4_lite_slave_itf_0 : entity lib_axi4_lite.axi4_lite_slave_itf
-
     generic map (
       G_AXI4_LITE_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,
       G_AXI4_LITE_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH
@@ -234,10 +223,14 @@ begin  -- architecture rtl
       -- FIFO TX Interface
       wr_en_fifo_tx => wr_en_fifo_tx,
       wdata_fifo_tx => wdata_fifo_tx,
+      fifo_tx_empty => fifo_tx_empty,
+      fifo_tx_full  => fifo_tx_full,
 
       -- FIFO RX Interface
       rd_en_fifo_rx => rd_en_fifo_rx,
       rdata_fifo_rx => rdata_fifo_rx,
+      fifo_rx_empty => fifo_rx_empty,
+      fifo_rx_full  => fifo_rx_full,
 
       -- SPI Control
       start       => start_spi,

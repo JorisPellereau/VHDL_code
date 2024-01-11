@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-04
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -35,6 +35,7 @@ library lib_axi4_lite_7seg;
 library lib_axi4_lite_lcd;
 library lib_axi4_lite_max7219;
 library lib_axi4_lite_memory;
+library lib_axi4_lite_spi_master;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
 library lib_jtag_intel;
@@ -56,7 +57,8 @@ entity zipcpu_axi4_lite_core is
     G_FIFO_ADDR_WIDTH       : integer                := 10;   -- FIFO ADDR WIDTH
     G_ROM_ADDR_WIDTH        : integer                := 8;    -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
     G_ROM_INIT              : t_rom_32bits;                   -- Rom Initialization
-    G_EXTERNAL_INTERRUPT_NB : integer                := 16    -- External Interruption of the ZIPCPU Configuration
+    G_EXTERNAL_INTERRUPT_NB : integer                := 16;   -- External Interruption of the ZIPCPU Configuration
+    G_SPI_SIZE              : integer range 1 to 4   := 4     -- SPI Size
     );
   port (
     clk_sys   : in std_logic;                                 -- Clock System
@@ -91,6 +93,12 @@ entity zipcpu_axi4_lite_core is
     o_tx_uart : out std_logic;          -- TX UART
     i_cts_n   : in  std_logic;          -- CTS
     o_rts_n   : out std_logic;          -- RTS
+
+    -- SPI MASTER I/F
+    spi_clk  : out std_logic;                                  -- MASTER SPI Clock
+    spi_cs_n : out std_logic;                                  -- MASTER SPI Chip Select
+    spi_do   : out std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- SPI Data Out
+    spi_di   : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- SPI Data In
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -1123,6 +1131,7 @@ begin  -- architecture rtl
   -- Index 2 -> AXI4 Lite ZIPCPU PERIPHerals
   -- Index 3 -> AXI4 Lite MAX7219
   -- Index 4 -> AXI4 Lite ZIPUART
+  -- Index 5 -> AXI4 Lite SPI MASTER
 
   -- # - SEGMENTS Interconnexion
   -- Write Addr Channel
@@ -1528,6 +1537,59 @@ begin  -- architecture rtl
       o_uart_txfifo_int => open
       );
 
+
+  -- Instanciation of AXI4 Lite SPI MASTER
+  i_axi4_lite_spi_master_0 : entity lib_axi4_lite_spi_master.axi4_lite_spi_master
+    generic map(
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_SPI_MASTER_ADDR_WIDTH,
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_SPI_SIZE             => G_SPI_SIZE,
+      G_SPI_DATA_WIDTH       => C_SPI_DATA_WIDTH,
+      G_FIFO_DATA_WIDTH      => C_SPI_FIFO_DATA_WIDTH,
+      G_FIFO_DEPTH           => C_FIFO_DEPTH
+      )
+    port map(
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_interco_m(C_SPI_MASTER_IDX),
+      awaddr  => awaddr_interco_m(C_SPI_MASTER_IDX)(C_AXI4_LITE_SPI_MASTER_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_SPI_MASTER_IDX),
+      awready => awready_interco_m(C_SPI_MASTER_IDX),
+
+      -- Write Data Channel
+      wvalid => wvalid_interco_m(C_SPI_MASTER_IDX),
+      wdata  => wdata_interco_m(C_SPI_MASTER_IDX),
+      wstrb  => wstrb_interco_m(C_SPI_MASTER_IDX),
+      wready => wready_interco_m(C_SPI_MASTER_IDX),
+
+      -- Write Response Channel
+      bready => bready_interco_m(C_SPI_MASTER_IDX),
+      bvalid => bvalid_interco_m(C_SPI_MASTER_IDX),
+      bresp  => bresp_interco_m(C_SPI_MASTER_IDX),
+
+      -- Read Address Channel
+      arvalid => arvalid_interco_m(C_SPI_MASTER_IDX),
+      araddr  => araddr_interco_m(C_SPI_MASTER_IDX)(C_AXI4_LITE_SPI_MASTER_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_SPI_MASTER_IDX),
+      arready => arready_interco_m(C_SPI_MASTER_IDX),
+
+      -- Read Data Channel
+      rready => rready_interco_m(C_SPI_MASTER_IDX),
+      rvalid => rvalid_interco_m(C_SPI_MASTER_IDX),
+      rdata  => rdata_interco_m(C_SPI_MASTER_IDX),
+      rresp  => rresp_interco_m(C_SPI_MASTER_IDX),
+
+      -- SPI MASTER I/F
+      spi_clk  => spi_clk,
+      spi_cs_n => spi_cs_n,
+      spi_do   => spi_do,
+      spi_di   => spi_di
+      );
+
+
+
   -- ZIPCPU Single outputs
   ledr_int(0)           <= cmd_reset;
   ledr_int(1)           <= halted;
@@ -1536,11 +1598,12 @@ begin  -- architecture rtl
   ledr_int(4)           <= pf_stall;
   ledr_int(5)           <= i_count;
   ledr_int(17 downto 6) <= (others => '0');
+
   -- Outputs
-  ledr                  <= ledr_int;
-  o_lcd_on              <= lcd_on_int;
-  ledg(7 downto 0)      <= (others => '0');
-  ledg(8)               <= lcd_on_int;
+  ledr             <= ledr_int;
+  o_lcd_on         <= lcd_on_int;
+  ledg(7 downto 0) <= (others => '0');
+  ledg(8)          <= lcd_on_int;
 
 end architecture rtl;
 

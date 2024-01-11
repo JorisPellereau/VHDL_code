@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2024-01-10
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ begin  -- architecture rtl
 
       -- Set RDATA when reading REG4
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG4_ADDR) then
-        slv_rdata <= status_register;
+        slv_rdata <= x"000" & "000" & status_register;
 
       -- Otherwise REturn (others => '0');
       else
@@ -287,17 +287,18 @@ begin  -- architecture rtl
   -- ==========================
 
   -- Inputs
-  status_register <= x"000" & "000" & spi_busy & x"0" & "00" & fifo_rx_full & fifo_rx_empty & x"0" & "00" & fifo_tx_full & fifo_tx_empty;  -- FIFO A ajouter
+  status_register <= spi_busy & x"0" & "00" & fifo_rx_full & fifo_rx_empty & x"0" & "00" & fifo_tx_full & fifo_tx_empty;  -- FIFO A ajouter
 
   -- == OUTPUTS Affectation ==
-  start_spi     <= ctrl0_register(0);                                                -- Start SPI Bit
-  cpha          <= ctrl0_register(1);                                                -- CPHA Configuration
-  cpol          <= ctrl0_register(2);                                                -- CPOL Configuration
-  full_duplex   <= ctrl0_register(3);                                                -- FULL DUPLEX Configuration
-  clk_div       <= ctrl0_register(15 downto 8);                                      -- Clock Div Configuration
-  nb_wr         <= ctrl1_register(log2(G_FIFO_DEPTH) - 1 downto 0);                  -- nb_wr Configuration
-  nb_rd         <= ctrl1_register(G_DATA_WIDTH - log2(G_FIFO_DEPTH) - 1 downto 16);  -- nb_wr Configuration
-  wdata_fifo_tx <= fifo_tx_register;                                                 -- FIFO TX DATA TO Write
-  wr_en_fifo_tx <= wr_en_fifo_tx_int;                                                -- FIFO TX DATA Write Enable
+  start_spi     <= ctrl0_register(0);                                      -- Start SPI Bit
+  cpha          <= ctrl0_register(1);                                      -- CPHA Configuration
+  cpol          <= ctrl0_register(2);                                      -- CPOL Configuration
+  full_duplex   <= ctrl0_register(3);                                      -- FULL DUPLEX Configuration
+  clk_div       <= ctrl0_register(15 downto 8);                            -- Clock Div Configuration
+  nb_wr         <= ctrl1_register(log2(G_FIFO_DEPTH) - 1 downto 0);        -- nb_wr Configuration
+  nb_rd         <= ctrl1_register(16 + log2(G_FIFO_DEPTH) - 1 downto 16);  -- nb_wr Configuration
+  wdata_fifo_tx <= fifo_tx_register(G_FIFO_DATA_WIDTH - 1 downto 0);       -- FIFO TX DATA TO Write
+  wr_en_fifo_tx <= wr_en_fifo_tx_int;                                      -- FIFO TX DATA Write Enable
+  rd_en_fifo_rx <= '0';                                                    -- TBD a connecter
 
 end architecture rtl;

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-04
--- Last update: 2024-01-09
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -87,7 +87,6 @@ architecture rtl of spi_master_itf is
   signal clk_spi_int_p1    : std_logic;                                          -- Internal Clock SPI Piped one time
   signal clk_spi_r_edge    : std_logic;                                          -- R Edge of Internal Clock SPI
   signal clk_spi_f_edge    : std_logic;                                          -- F Edge of Internal Clock SPI
-  signal start_int         : std_logic;                                          -- Start piped one time
   signal fifo_tx_rd_en_int : std_logic;                                          -- FIFO TX Read Enable internal
   signal spi_tx_data_sr    : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to send and shifted
   signal spi_rx_data_int   : std_logic_vector(G_DATA_WIDTH - 1 downto 0);        -- SPI Data to received and shifted
@@ -135,11 +134,9 @@ begin  -- architecture rtl
   p_pipe_signals : process (clk_sys, rst_n_sys) is
   begin  -- process p_pipe_signals
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      start_int      <= '0';
       clk_spi_int_p1 <= '0';
       spi_di_p       <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
-      start_int      <= start;
       clk_spi_int_p1 <= clk_spi_int;
       spi_di_p       <= spi_di;
     end if;
@@ -443,18 +440,21 @@ begin  -- architecture rtl
 
           -- cpol = '1'
           else
+            fsm_ns <= ST_WR;
+          end if;
 
-            if(cnt_data_done = '1' and clk_spi_r_edge = '1') then
-              if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
-                fsm_ns <= ST_RD;
-              else
-                fsm_ns <= ST_END;
-              end if;
+        -- CPOL = '1'
+        else
 
+          if(cnt_data_done = '1' and clk_spi_r_edge = '1') then
+            if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
+              fsm_ns <= ST_RD;
             else
-              fsm_ns <= ST_WR;
+              fsm_ns <= ST_END;
             end if;
 
+          else
+            fsm_ns <= ST_WR;
           end if;
 
         end if;
@@ -475,20 +475,23 @@ begin  -- architecture rtl
               fsm_ns <= ST_END;
             end if;
 
-          -- cpol = '1'
+          -- Stay in the state
           else
+            fsm_ns <= ST_RD;
+          end if;
 
-            if(cnt_data_done = '1' and clk_spi_r_edge = '1') then
-              if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
-                fsm_ns <= ST_RD;
-              else
-                fsm_ns <= ST_END;
-              end if;
+        -- CPOL = '1'
+        else
 
-            else
+          if(cnt_data_done = '1' and clk_spi_r_edge = '1') then
+            if(nb_rd_int /= std_logic_vector(to_unsigned(0, nb_rd_int'length))) then
               fsm_ns <= ST_RD;
+            else
+              fsm_ns <= ST_END;
             end if;
 
+          else
+            fsm_ns <= ST_RD;
           end if;
 
         end if;
@@ -531,6 +534,8 @@ begin  -- architecture rtl
         en_cs        <= '1';            -- Enable Chip Select
         init_ongoing <= '0';            -- INIT Ongoing Flag
         en_do        <= '1';            -- Enable Data Out generation
+
+        fsm_ns <= ST_IDLE; -- Temporary - not tested
 
       when others =>
         wr_ongoing   <= '0';            -- WR Ongoing Flag

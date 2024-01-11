@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-03
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -240,6 +240,20 @@ begin  -- architecture rtl
     sel_idx_comb(1) <= (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
     sel_idx_comb(2) <= sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
                        and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  end generate;
+
+  -- Addr Decode for 6 Slaves
+  g_addr_decode_6_slaves : if(G_SLAVE_NB = 6) generate
+    sel_idx_comb(0) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+                       ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+                       (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+
+    sel_idx_comb(1) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+                       ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+
+
+    sel_idx_comb(2) <= ((not sel_idx_bit_comb(5)) and sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+                       (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
   end generate;
 
   -- purpose: Check if the address range is valid

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-05
--- Last update: 2024-01-05
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -40,12 +40,16 @@ entity spi_master is
     rst_n_sys : in std_logic;                          -- Asynchronous Reset
 
     -- FIFO TX Interface
-    wr_en_fifo_tx : in std_logic;                                         -- Write Enable FIFO TX
-    wdata_fifo_tx : in std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- FIFO Write Data
+    wr_en_fifo_tx : in  std_logic;                                         -- Write Enable FIFO TX
+    wdata_fifo_tx : in  std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- FIFO Write Data
+    fifo_tx_empty : out std_logic;                                         -- FIFO TX EMPTY FLAG
+    fifo_tx_full  : out std_logic;                                         -- FIFO TX FULL FLAG
 
     -- FIFO RX Interface
-    rd_en_fifo_rx     : in  std_logic;                                         -- read Enable FIFO RX
-    rdata_fifo_rx     : out std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- FIFO Read Data
+    rd_en_fifo_rx : in  std_logic;                                         -- read Enable FIFO RX
+    rdata_fifo_rx : out std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- FIFO Read Data
+    fifo_rx_empty : out std_logic;                                         -- FIFO RX EMPTY FLAG
+    fifo_rx_full  : out std_logic;                                         -- FIFO RX FULL FLAG
 
     -- SPI Control
     start       : in  std_logic;                                          -- Start the SPI transaction on pulse
@@ -89,10 +93,10 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- FIFO CTRL
-      wr_en     => wr_en_fifo_tx,
-      rd_en     => rd_en_fifo_tx,
-      wdata     => wdata_fifo_tx,
-      rdata     => rdata_fifo_tx,
+      wr_en => wr_en_fifo_tx,
+      rd_en => rd_en_fifo_tx,
+      wdata => wdata_fifo_tx,
+      rdata => rdata_fifo_tx,
 
       -- FIFO Status
       fifo_empty => fifo_empty_fifo_tx,
@@ -112,8 +116,8 @@ begin  -- architecture rtl
       rst_n_sys => rst_n_sys,
 
       -- FIFO TX Interface
-      fifo_tx_rd_en    => rd_en_fifo_tx,
-      fifo_tx_data     => rdata_fifo_tx,
+      fifo_tx_rd_en => rd_en_fifo_tx,
+      fifo_tx_data  => rdata_fifo_tx,
 
       -- FIFO RX Interface
       fifo_rx_wr_en => wr_en_fifo_rx,
@@ -145,14 +149,20 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- FIFO CTRL
-      wr_en     => wr_en_fifo_rx,
-      rd_en     => rd_en_fifo_rx,
-      wdata     => wdata_fifo_rx,
-      rdata     => rdata_fifo_rx,
-      
+      wr_en => wr_en_fifo_rx,
+      rd_en => rd_en_fifo_rx,
+      wdata => wdata_fifo_rx,
+      rdata => rdata_fifo_rx,
+
       -- FIFO Status
       fifo_empty => fifo_empty_fifo_rx,
       fifo_full  => fifo_full_fifo_rx
       );
+
+  -- Outputs affectations
+  fifo_tx_empty <= fifo_empty_fifo_tx;
+  fifo_tx_full  <= fifo_full_fifo_tx;
+  fifo_rx_empty <= fifo_empty_fifo_rx;
+  fifo_rx_full  <= fifo_full_fifo_rx;
 
 end architecture rtl;

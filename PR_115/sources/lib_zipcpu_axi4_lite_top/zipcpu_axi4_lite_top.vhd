@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-04
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -65,6 +65,11 @@ entity zipcpu_axi4_lite_top is
     i_rts_n_a : in  std_logic;          -- RTS Input - asynchronous
     o_cts_n   : out std_logic;          -- CTS Output
 
+    -- SPI MASTER I/F
+    spi_clk  : out std_logic;                                  -- MASTER SPI Clock
+    spi_cs_n : out std_logic;                                  -- MASTER SPI Chip Select
+    spi_do   : out std_logic_vector(C_SPI_SIZE - 1 downto 0);  -- SPI Data Out
+
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
 
@@ -122,12 +127,13 @@ begin  -- architecture rtl
       G_AXI_DATA_WIDTH        => C_AXI_DATA_WIDTH,
       G_AXI_ADDR_WIDTH        => C_AXI_ADDR_WIDTH,
       G_SLAVE_NB              => C_SLAVE_NB,
-      G_CLK_PERIOD_NS         => 20,                      -- Clock Period in ns
-      G_BIDIR_POLARITY_READ   => C_LCD_BIDIR_POLARITY,    -- BIDIR SEL Polarity
-      G_FIFO_ADDR_WIDTH       => 10,                      -- FIFO ADDR WIDTH      
-      G_ROM_ADDR_WIDTH        => C_ROM_ADDR_WIDTH,        -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
+      G_CLK_PERIOD_NS         => 20,                       -- Clock Period in ns
+      G_BIDIR_POLARITY_READ   => C_LCD_BIDIR_POLARITY,     -- BIDIR SEL Polarity
+      G_FIFO_ADDR_WIDTH       => 10,                       -- FIFO ADDR WIDTH      
+      G_ROM_ADDR_WIDTH        => C_ROM_ADDR_WIDTH,         -- ROM Addr Width - Shall have the size : G_AXI4_LITE_ADDR_WIDTH / 4
       G_ROM_INIT              => C_ROM_INIT,
-      G_EXTERNAL_INTERRUPT_NB => C_EXTERNAL_INTERRUPT_NB  -- Number of External Interrupt in ZIPCPU
+      G_EXTERNAL_INTERRUPT_NB => C_EXTERNAL_INTERRUPT_NB,  -- Number of External Interrupt in ZIPCPU
+      G_SPI_SIZE              => C_SPI_SIZE                -- SPI SIZE
       )
     port map (
       clk_sys   => clk,
@@ -162,6 +168,12 @@ begin  -- architecture rtl
       o_tx_uart => o_tx_uart,
       i_cts_n   => rts_n_clk_sys,       -- RTS Inputs from PR_115 board connected to the CTS input of the BLOCK (a modif ?)
       o_rts_n   => o_cts_n,             -- RTS from block connected to CTS of the PR_115 board
+
+      -- SPI MASTER I/F
+      spi_clk  => spi_clk,
+      spi_cs_n => spi_cs_n,
+      spi_do   => spi_do,
+      spi_di   => (others => '0'),
 
       -- RED LEDS
       ledr => ledr,

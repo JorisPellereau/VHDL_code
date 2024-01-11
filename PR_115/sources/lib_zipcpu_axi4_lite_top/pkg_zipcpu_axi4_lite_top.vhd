@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2024-01-04
+-- Last update: 2024-01-11
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,5 +80,11 @@ package pkg_zipcpu_axi4_lite_top is
   constant C_ZIPUART_HW_FLOW_CTRL   : std_logic_vector(0 downto 0)  := "1";                       -- HW Flow Hardware enable
   constant C_ZIPUART_OPT_SKIDBUFFER : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT SKIDBUFFER
   constant C_ZIPUART_LOWPOWER       : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT LOW POWER
+
+  -- SPI MASTER Configuration
+  constant C_SPI_SIZE            : integer := 4;     -- SPI SIZE
+  constant C_SPI_DATA_WIDTH      : integer := 8;     -- SPI DATA WIDTH
+  constant C_SPI_FIFO_DATA_WIDTH : integer := 8;     -- SPI FIFO DATA WIDTH
+  constant C_FIFO_DEPTH          : integer := 1024;  -- FIFO DEPTH
 
 end package;
