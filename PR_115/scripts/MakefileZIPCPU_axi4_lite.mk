@@ -76,6 +76,7 @@ LIB_LIST+=lib_axi4_lite_lcd
 LIB_LIST+=lib_axi4_lite_max7219
 LIB_LIST+=lib_axi4_lite_memory
 LIB_LIST+=lib_axi4_lite_spi_master
+LIB_LIST+=lib_axi4_lite_spi_slave
 LIB_LIST+=lib_CFAH1602_v2
 LIB_LIST+=lib_ram_intel
 LIB_LIST+=lib_fifo
@@ -86,6 +87,7 @@ LIB_LIST+=$(LIB_WISHBONE)
 LIB_LIST+=lib_rom_intel
 LIB_LIST+=lib_jtag_intel
 LIB_LIST+=lib_spi_master
+LIB_LIST+=lib_spi_slave
 # ================
 
 
@@ -121,6 +123,10 @@ SRC_AXI4_LITE_MAX7219_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lit
 # SPI MASTER
 SRC_LIB_SPI_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/SPI/sources/lib_spi_master/
 SRC_AXI4_LITE_SPI_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_spi_master/
+
+# SPI SLAVE
+SRC_LIB_SPI_SLAVE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/SPI/sources/lib_spi_slave/
+SRC_AXI4_LITE_SPI_SLAVE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_spi_slave/
 
 # -- ZIPCPU PATH --
 SRC_ZIPCPU_EX_DIR=$(SRC_ZIPCPU_DIR)/ex/
@@ -166,6 +172,7 @@ axi4_lite_src_vhd += axi4_lite_slave_itf.vhd
 axi4_lite_src_vhd += axi4_lite_master.vhd
 
 axi4_lite_src_vhd += pkg_axi4_lite_interco.vhd
+axi4_lite_src_vhd += slave_sel_decoder.vhd
 axi4_lite_src_vhd += axi4_lite_interco_1_to_n.vhd
 
 seg_src_vhd += seg7_lut.vhd
@@ -183,6 +190,7 @@ axi4_lite_7seg_src_vhd += axi4_lite_7segs.vhd
 
 src_pulse_extender_vhd += bit_extender.vhd
 
+# LCD
 src_lcd_vhd+=pkg_lcd_cfah_types_and_func.vhd
 src_lcd_vhd+=pkg_lcd_cfah.vhd
 src_lcd_vhd+=lcd_cfah_itf.vhd
@@ -205,12 +213,21 @@ src_axi4_lite_max7219_vhd+=axi4_lite_max7219.vhd
 src_axi4_lite_memory_vhd+=axi4_lite_rom_ctrl.vhd
 src_axi4_lite_memory_vhd+=axi4_lite_memory.vhd
 
+# SPI MASTER
 src_spi_master_vhd+=spi_master_itf.vhd
 src_spi_master_vhd+=spi_master.vhd
 
 src_axi4_lite_spi_master_vhd+=axi4_lite_spi_master_pkg.vhd
 src_axi4_lite_spi_master_vhd+=axi4_lite_spi_master_registers.vhd
 src_axi4_lite_spi_master_vhd+=axi4_lite_spi_master.vhd
+
+# SPI SLAVE
+src_spi_slave_vhd+=spi_slave_itf.vhd
+src_spi_slave_vhd+=spi_slave.vhd
+
+src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave_pkg.vhd
+src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave_registers.vhd
+src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave.vhd
 
 src_lib_jtag_intel_vhd+=vjtag_intf.vhd
 
@@ -336,7 +353,8 @@ compile_zipcpu_axi4_lite_top:
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_max7219_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_max7219 VHD_FILE_PATH=$(SRC_AXI4_LITE_MAX7219_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_spi_master_vhd)" VHD_DESIGN_LIB=lib_spi_master VHD_FILE_PATH=$(SRC_LIB_SPI_MASTER_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_spi_master_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_spi_master VHD_FILE_PATH=$(SRC_AXI4_LITE_SPI_MASTER_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
-
+	make compile_design_vhd_files SRC_VHD="$(src_spi_slave_vhd)" VHD_DESIGN_LIB=lib_spi_slave VHD_FILE_PATH=$(SRC_LIB_SPI_SLAVE_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_spi_slave_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_spi_slave VHD_FILE_PATH=$(SRC_AXI4_LITE_SPI_SLAVE_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_memory_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_memory VHD_FILE_PATH=$(SRC_AXI4_LITE_MEMORY_DIR); \
 	make compile_design_vhd_files SRC_VHD="$(src_zipcpu_axi4_lite_top_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_ZIPCPU_AXI4_LITE_TOP_DIR); \
 

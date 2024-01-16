@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-11
+-- Last update: 2024-01-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -69,6 +69,11 @@ entity zipcpu_axi4_lite_top is
     spi_clk  : out std_logic;                                  -- MASTER SPI Clock
     spi_cs_n : out std_logic;                                  -- MASTER SPI Chip Select
     spi_do   : out std_logic_vector(C_SPI_SIZE - 1 downto 0);  -- SPI Data Out
+
+    -- SPI SLAVE I/F
+    spi_slave_clk  : in std_logic;                                  -- SPI Slave input clock
+    spi_slave_cs_n : in std_logic;                                  -- SPI Slave Chip select
+    spi_slave_di   : in std_logic_vector(C_SPI_SIZE - 1 downto 0);  -- Input SPI SLAVE
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -174,6 +179,12 @@ begin  -- architecture rtl
       spi_cs_n => spi_cs_n,
       spi_do   => spi_do,
       spi_di   => (others => '0'),
+
+      -- SPI SLAVE I/F
+      spi_slave_clk  => spi_slave_clk,
+      spi_slave_cs_n => spi_slave_cs_n,
+      spi_slave_do   => open,           -- NOT USED YET
+      spi_slave_di   => spi_slave_di,
 
       -- RED LEDS
       ledr => ledr,

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-09
--- Last update: 2024-01-10
+-- Last update: 2024-01-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -19,7 +19,7 @@
 -- 2024-01-09  1.0      linux-jp        Created
 -------------------------------------------------------------------------------
 
-  library ieee;
+library ieee;
 use ieee.std_logic_1164.all;
 
 entity spi_mirror_top is
@@ -27,12 +27,13 @@ entity spi_mirror_top is
     G_SPI_SIZE : integer := 4
     );
   port (
-    clk_spi     : in  std_logic;                                   -- Clock SPI from PR_115 BOARD    
-    rst_n       : in  std_logic;                                   -- Asynchronous Reset
-    clk_spi_out : out std_logic;                                   -- Clock SPI return passthrough
-    spi_cs_n    : in  std_logic;                                   -- SPI Chip Select
-    spi_di      : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);   -- SPI Data In
-    spi_do      : out std_logic_vector(G_SPI_SIZE - 1 downto 0));  -- SPI Data Out
+    clk_spi      : in  std_logic;                                   -- Clock SPI from PR_115 BOARD    
+    rst_n        : in  std_logic;                                   -- Asynchronous Reset
+    clk_spi_out  : out std_logic;                                   -- Clock SPI return passthrough
+    spi_cs_n     : in  std_logic;                                   -- SPI Chip Select
+    spi_cs_n_out : out std_logic;                                   -- SPI CS N OUT
+    spi_di       : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);   -- SPI Data In
+    spi_do       : out std_logic_vector(G_SPI_SIZE - 1 downto 0));  -- SPI Data Out
 
 end entity spi_mirror_top;
 
@@ -41,8 +42,8 @@ architecture rtl of spi_mirror_top is
 begin  -- architecture rtl
 
 
-  clk_spi_out <= clk_spi;               -- Only passthrough
-
+  clk_spi_out  <= clk_spi;              -- Only passthrough
+  spi_cs_n_out <= spi_cs_n;             -- Only passthrough
 
   g_spi_do : if(G_SPI_SIZE = 4) generate
 

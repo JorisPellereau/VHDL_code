@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-11
+-- Last update: 2024-01-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,6 +36,7 @@ library lib_axi4_lite_lcd;
 library lib_axi4_lite_max7219;
 library lib_axi4_lite_memory;
 library lib_axi4_lite_spi_master;
+library lib_axi4_lite_spi_slave;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
 library lib_jtag_intel;
@@ -99,6 +100,12 @@ entity zipcpu_axi4_lite_core is
     spi_cs_n : out std_logic;                                  -- MASTER SPI Chip Select
     spi_do   : out std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- SPI Data Out
     spi_di   : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- SPI Data In
+
+    -- SPI SLAVE I/F
+    spi_slave_clk  : in  std_logic;                                  -- SPI Slave input clock
+    spi_slave_cs_n : in  std_logic;                                  -- SPI Slave Chip select
+    spi_slave_do   : out std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- Output SPI SLAVE
+    spi_slave_di   : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- Input SPI SLAVE
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -516,160 +523,160 @@ architecture rtl of zipcpu_axi4_lite_core is
 
   signal interrupt_vector : std_logic_vector(G_EXTERNAL_INTERRUPT_NB - 1 downto 0);  -- Vector of Interrupt
 
-  -- # AXI4 Lite ZIPCPU PERIPHERALS signals --
-  -- Write Address Channel signals
-  signal awvalid_periphs : std_logic;                                                      -- Address Write Valid
-  signal awaddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_periphs  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
-  signal awready_periphs : std_logic;                                                      -- Address Write Ready
+  -- -- # AXI4 Lite ZIPCPU PERIPHERALS signals --
+  -- -- Write Address Channel signals
+  -- signal awvalid_periphs : std_logic;                                                      -- Address Write Valid
+  -- signal awaddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  -- signal awprot_periphs  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  -- signal awready_periphs : std_logic;                                                      -- Address Write Ready
 
-  -- Write Data Channel
-  signal wvalid_periphs : std_logic;                                              -- Write Data Valid
-  signal wdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
-  signal wstrb_periphs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_periphs : std_logic;                                              -- Write data Ready
+  -- -- Write Data Channel
+  -- signal wvalid_periphs : std_logic;                                              -- Write Data Valid
+  -- signal wdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  -- signal wstrb_periphs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  -- signal wready_periphs : std_logic;                                              -- Write data Ready
 
-  -- Write Response Channel
-  signal bready_periphs : std_logic;                     -- Write Channel Response
-  signal bvalid_periphs : std_logic;                     -- Write Response Channel Valid
-  signal bresp_periphs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  -- -- Write Response Channel
+  -- signal bready_periphs : std_logic;                     -- Write Channel Response
+  -- signal bvalid_periphs : std_logic;                     -- Write Response Channel Valid
+  -- signal bresp_periphs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-  -- Read Address Channel
-  signal arvalid_periphs : std_logic;                                                      -- Read Channel Valid
-  signal araddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_periphs  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
-  signal arready_periphs : std_logic;                                                      -- Read Address Channel Ready
+  -- -- Read Address Channel
+  -- signal arvalid_periphs : std_logic;                                                      -- Read Channel Valid
+  -- signal araddr_periphs  : std_logic_vector(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  -- signal arprot_periphs  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  -- signal arready_periphs : std_logic;                                                      -- Read Address Channel Ready
 
-  -- Read Data Channel
-  signal rready_periphs : std_logic;                                        -- Read Data Channel Ready
-  signal rvalid_periphs : std_logic;                                        -- Read Data Channel Valid
-  signal rdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_periphs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
-  -- ------------------------
+  -- -- Read Data Channel
+  -- signal rready_periphs : std_logic;                                        -- Read Data Channel Ready
+  -- signal rvalid_periphs : std_logic;                                        -- Read Data Channel Valid
+  -- signal rdata_periphs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  -- signal rresp_periphs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- -- ------------------------
 
-  -- # AXI4 Lite LCD signals --
-  -- Write Address Channel signals
-  signal awvalid_lcd : std_logic;                                                  -- Address Write Valid
-  signal awaddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_lcd  : std_logic_vector(2 downto 0);                               -- Adress Write Prot
-  signal awready_lcd : std_logic;                                                  -- Address Write Ready
+  -- -- # AXI4 Lite LCD signals --
+  -- -- Write Address Channel signals
+  -- signal awvalid_lcd : std_logic;                                                  -- Address Write Valid
+  -- signal awaddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  -- signal awprot_lcd  : std_logic_vector(2 downto 0);                               -- Adress Write Prot
+  -- signal awready_lcd : std_logic;                                                  -- Address Write Ready
 
-  -- Write Data Channel
-  signal wvalid_lcd : std_logic;                                              -- Write Data Valid
-  signal wdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
-  signal wstrb_lcd  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_lcd : std_logic;                                              -- Write data Ready
+  -- -- Write Data Channel
+  -- signal wvalid_lcd : std_logic;                                              -- Write Data Valid
+  -- signal wdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  -- signal wstrb_lcd  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  -- signal wready_lcd : std_logic;                                              -- Write data Ready
 
-  -- Write Response Channel
-  signal bready_lcd : std_logic;                     -- Write Channel Response
-  signal bvalid_lcd : std_logic;                     -- Write Response Channel Valid
-  signal bresp_lcd  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  -- -- Write Response Channel
+  -- signal bready_lcd : std_logic;                     -- Write Channel Response
+  -- signal bvalid_lcd : std_logic;                     -- Write Response Channel Valid
+  -- signal bresp_lcd  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-  -- Read Address Channel
-  signal arvalid_lcd : std_logic;                                                  -- Read Channel Valid
-  signal araddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_lcd  : std_logic_vector(2 downto 0);                               --  Read Address channel Ready Prot
-  signal arready_lcd : std_logic;                                                  -- Read Address Channel Ready
+  -- -- Read Address Channel
+  -- signal arvalid_lcd : std_logic;                                                  -- Read Channel Valid
+  -- signal araddr_lcd  : std_logic_vector(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  -- signal arprot_lcd  : std_logic_vector(2 downto 0);                               --  Read Address channel Ready Prot
+  -- signal arready_lcd : std_logic;                                                  -- Read Address Channel Ready
 
-  -- Read Data Channel
-  signal rready_lcd : std_logic;                                        -- Read Data Channel Ready
-  signal rvalid_lcd : std_logic;                                        -- Read Data Channel Valid
-  signal rdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_lcd  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
-  -- ------------------------
+  -- -- Read Data Channel
+  -- signal rready_lcd : std_logic;                                        -- Read Data Channel Ready
+  -- signal rvalid_lcd : std_logic;                                        -- Read Data Channel Valid
+  -- signal rdata_lcd  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  -- signal rresp_lcd  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- -- ------------------------
 
-  -- # AXI4 Lite 7 SEGS signals --
-  -- Write Address Channel signals
-  signal awvalid_7segs : std_logic;                                                    -- Address Write Valid
-  signal awaddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_7segs  : std_logic_vector(2 downto 0);                                 -- Adress Write Prot
-  signal awready_7segs : std_logic;                                                    -- Address Write Ready
+  -- -- # AXI4 Lite 7 SEGS signals --
+  -- -- Write Address Channel signals
+  -- signal awvalid_7segs : std_logic;                                                    -- Address Write Valid
+  -- signal awaddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  -- signal awprot_7segs  : std_logic_vector(2 downto 0);                                 -- Adress Write Prot
+  -- signal awready_7segs : std_logic;                                                    -- Address Write Ready
 
-  -- Write Data Channel
-  signal wvalid_7segs : std_logic;                                              -- Write Data Valid
-  signal wdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
-  signal wstrb_7segs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_7segs : std_logic;                                              -- Write data Ready
+  -- -- Write Data Channel
+  -- signal wvalid_7segs : std_logic;                                              -- Write Data Valid
+  -- signal wdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  -- signal wstrb_7segs  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  -- signal wready_7segs : std_logic;                                              -- Write data Ready
 
-  -- Write Response Channel
-  signal bready_7segs : std_logic;                     -- Write Channel Response
-  signal bvalid_7segs : std_logic;                     -- Write Response Channel Valid
-  signal bresp_7segs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  -- -- Write Response Channel
+  -- signal bready_7segs : std_logic;                     -- Write Channel Response
+  -- signal bvalid_7segs : std_logic;                     -- Write Response Channel Valid
+  -- signal bresp_7segs  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-  -- Read Address Channel
-  signal arvalid_7segs : std_logic;                                                    -- Read Channel Valid
-  signal araddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_7segs  : std_logic_vector(2 downto 0);                                 --  Read Address channel Ready Prot
-  signal arready_7segs : std_logic;                                                    -- Read Address Channel Ready
+  -- -- Read Address Channel
+  -- signal arvalid_7segs : std_logic;                                                    -- Read Channel Valid
+  -- signal araddr_7segs  : std_logic_vector(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  -- signal arprot_7segs  : std_logic_vector(2 downto 0);                                 --  Read Address channel Ready Prot
+  -- signal arready_7segs : std_logic;                                                    -- Read Address Channel Ready
 
-  -- Read Data Channel
-  signal rready_7segs : std_logic;                                        -- Read Data Channel Ready
-  signal rvalid_7segs : std_logic;                                        -- Read Data Channel Valid
-  signal rdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_7segs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
-  -- ------------------------
+  -- -- Read Data Channel
+  -- signal rready_7segs : std_logic;                                        -- Read Data Channel Ready
+  -- signal rvalid_7segs : std_logic;                                        -- Read Data Channel Valid
+  -- signal rdata_7segs  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  -- signal rresp_7segs  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- -- ------------------------
 
-  -- # AXI4 Lite MAX7219 signals --
-  -- Write Address Channel signals
-  signal awvalid_max7219 : std_logic;                                                      -- Address Write Valid
-  signal awaddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_max7219  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
-  signal awready_max7219 : std_logic;                                                      -- Address Write Ready
+  -- -- # AXI4 Lite MAX7219 signals --
+  -- -- Write Address Channel signals
+  -- signal awvalid_max7219 : std_logic;                                                      -- Address Write Valid
+  -- signal awaddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  -- signal awprot_max7219  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  -- signal awready_max7219 : std_logic;                                                      -- Address Write Ready
 
-  -- Write Data Channel
-  signal wvalid_max7219 : std_logic;                                              -- Write Data Valid
-  signal wdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
-  signal wstrb_max7219  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_max7219 : std_logic;                                              -- Write data Ready
+  -- -- Write Data Channel
+  -- signal wvalid_max7219 : std_logic;                                              -- Write Data Valid
+  -- signal wdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  -- signal wstrb_max7219  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  -- signal wready_max7219 : std_logic;                                              -- Write data Ready
 
-  -- Write Response Channel
-  signal bready_max7219 : std_logic;                     -- Write Channel Response
-  signal bvalid_max7219 : std_logic;                     -- Write Response Channel Valid
-  signal bresp_max7219  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  -- -- Write Response Channel
+  -- signal bready_max7219 : std_logic;                     -- Write Channel Response
+  -- signal bvalid_max7219 : std_logic;                     -- Write Response Channel Valid
+  -- signal bresp_max7219  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-  -- Read Address Channel
-  signal arvalid_max7219 : std_logic;                                                      -- Read Channel Valid
-  signal araddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_max7219  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
-  signal arready_max7219 : std_logic;                                                      -- Read Address Channel Ready
+  -- -- Read Address Channel
+  -- signal arvalid_max7219 : std_logic;                                                      -- Read Channel Valid
+  -- signal araddr_max7219  : std_logic_vector(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  -- signal arprot_max7219  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  -- signal arready_max7219 : std_logic;                                                      -- Read Address Channel Ready
 
-  -- Read Data Channel
-  signal rready_max7219 : std_logic;                                        -- Read Data Channel Ready
-  signal rvalid_max7219 : std_logic;                                        -- Read Data Channel Valid
-  signal rdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_max7219  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
-  -- ------------------------
+  -- -- Read Data Channel
+  -- signal rready_max7219 : std_logic;                                        -- Read Data Channel Ready
+  -- signal rvalid_max7219 : std_logic;                                        -- Read Data Channel Valid
+  -- signal rdata_max7219  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  -- signal rresp_max7219  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- -- ------------------------
 
-  -- # AXI4 Lite ZIPUART signals --
-  -- Write Address Channel signals
-  signal awvalid_zipuart : std_logic;                                                      -- Address Write Valid
-  signal awaddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Address Write
-  signal awprot_zipuart  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
-  signal awready_zipuart : std_logic;                                                      -- Address Write Ready
+  -- -- # AXI4 Lite ZIPUART signals --
+  -- -- Write Address Channel signals
+  -- signal awvalid_zipuart : std_logic;                                                      -- Address Write Valid
+  -- signal awaddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Address Write
+  -- signal awprot_zipuart  : std_logic_vector(2 downto 0);                                   -- Adress Write Prot
+  -- signal awready_zipuart : std_logic;                                                      -- Address Write Ready
 
-  -- Write Data Channel
-  signal wvalid_zipuart : std_logic;                                              -- Write Data Valid
-  signal wdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
-  signal wstrb_zipuart  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
-  signal wready_zipuart : std_logic;                                              -- Write data Ready
+  -- -- Write Data Channel
+  -- signal wvalid_zipuart : std_logic;                                              -- Write Data Valid
+  -- signal wdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);        -- Write Data
+  -- signal wstrb_zipuart  : std_logic_vector((G_AXI_DATA_WIDTH / 8) - 1 downto 0);  -- Write Strobe
+  -- signal wready_zipuart : std_logic;                                              -- Write data Ready
 
-  -- Write Response Channel
-  signal bready_zipuart : std_logic;                     -- Write Channel Response
-  signal bvalid_zipuart : std_logic;                     -- Write Response Channel Valid
-  signal bresp_zipuart  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
+  -- -- Write Response Channel
+  -- signal bready_zipuart : std_logic;                     -- Write Channel Response
+  -- signal bvalid_zipuart : std_logic;                     -- Write Response Channel Valid
+  -- signal bresp_zipuart  : std_logic_vector(1 downto 0);  -- Write Response Channel resp
 
-  -- Read Address Channel
-  signal arvalid_zipuart : std_logic;                                                      -- Read Channel Valid
-  signal araddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
-  signal arprot_zipuart  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
-  signal arready_zipuart : std_logic;                                                      -- Read Address Channel Ready
+  -- -- Read Address Channel
+  -- signal arvalid_zipuart : std_logic;                                                      -- Read Channel Valid
+  -- signal araddr_zipuart  : std_logic_vector(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);  -- Read Address channel Ready
+  -- signal arprot_zipuart  : std_logic_vector(2 downto 0);                                   --  Read Address channel Ready Prot
+  -- signal arready_zipuart : std_logic;                                                      -- Read Address Channel Ready
 
-  -- Read Data Channel
-  signal rready_zipuart : std_logic;                                        -- Read Data Channel Ready
-  signal rvalid_zipuart : std_logic;                                        -- Read Data Channel Valid
-  signal rdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
-  signal rresp_zipuart  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
-  -- ------------------------
+  -- -- Read Data Channel
+  -- signal rready_zipuart : std_logic;                                        -- Read Data Channel Ready
+  -- signal rvalid_zipuart : std_logic;                                        -- Read Data Channel Valid
+  -- signal rdata_zipuart  : std_logic_vector(G_AXI_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
+  -- signal rresp_zipuart  : std_logic_vector(1 downto 0);                     -- Read Data Channel Response
+  -- -- ------------------------
 
   -- # AXI4 Lite Interconnect Masters signals
   signal awvalid_interco_m : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Address Write Valid
@@ -698,6 +705,9 @@ architecture rtl of zipcpu_axi4_lite_core is
   -- # ----------------------
 
 
+  -- SPI SLAVE --
+  signal spi_slave_it : std_logic;      -- SPI Slave Interruption  
+  ---------------
   signal start_clk    : std_logic;      -- Start in CLK clock domain
   signal start_clk_p1 : std_logic;      -- Start in CLK clock domain
   signal start_clk_p2 : std_logic;      -- Start in CLK clock domain
@@ -1133,156 +1143,156 @@ begin  -- architecture rtl
   -- Index 4 -> AXI4 Lite ZIPUART
   -- Index 5 -> AXI4 Lite SPI MASTER
 
-  -- # - SEGMENTS Interconnexion
-  -- Write Addr Channel
-  awvalid_7segs        <= awvalid_interco_m(0);
-  awaddr_7segs         <= awaddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
-  awprot_7segs         <= awprot_interco_m(0);
-  awready_interco_m(0) <= awready_7segs;
+  -- -- # - SEGMENTS Interconnexion
+  -- -- Write Addr Channel
+  -- awvalid_7segs        <= awvalid_interco_m(0);
+  -- awaddr_7segs         <= awaddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
+  -- awprot_7segs         <= awprot_interco_m(0);
+  -- awready_interco_m(0) <= awready_7segs;
 
-  -- Write Data Channel
-  wvalid_7segs        <= wvalid_interco_m(0);
-  wdata_7segs         <= wdata_interco_m(0);
-  wstrb_7segs         <= wstrb_interco_m(0);
-  wready_interco_m(0) <= wready_7segs;
+  -- -- Write Data Channel
+  -- wvalid_7segs        <= wvalid_interco_m(0);
+  -- wdata_7segs         <= wdata_interco_m(0);
+  -- wstrb_7segs         <= wstrb_interco_m(0);
+  -- wready_interco_m(0) <= wready_7segs;
 
-  -- Write Response Channel
-  bready_7segs        <= bready_interco_m(0);
-  bvalid_interco_m(0) <= bvalid_7segs;
-  bresp_interco_m(0)  <= bresp_7segs;
+  -- -- Write Response Channel
+  -- bready_7segs        <= bready_interco_m(0);
+  -- bvalid_interco_m(0) <= bvalid_7segs;
+  -- bresp_interco_m(0)  <= bresp_7segs;
 
-  -- Read Addr Channel
-  arvalid_7segs        <= arvalid_interco_m(0);
-  araddr_7segs         <= araddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
-  arprot_7segs         <= arprot_interco_m(0);
-  arready_interco_m(0) <= arready_7segs;
+  -- -- Read Addr Channel
+  -- arvalid_7segs        <= arvalid_interco_m(0);
+  -- araddr_7segs         <= araddr_interco_m(0)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0);
+  -- arprot_7segs         <= arprot_interco_m(0);
+  -- arready_interco_m(0) <= arready_7segs;
 
-  -- Read DAta Channel
-  rready_7segs        <= rready_interco_m(0);
-  rvalid_interco_m(0) <= rvalid_7segs;
-  rdata_interco_m(0)  <= rdata_7segs;
-  rresp_interco_m(0)  <= rresp_7segs;
+  -- -- Read DAta Channel
+  -- rready_7segs        <= rready_interco_m(0);
+  -- rvalid_interco_m(0) <= rvalid_7segs;
+  -- rdata_interco_m(0)  <= rdata_7segs;
+  -- rresp_interco_m(0)  <= rresp_7segs;
 
 
-  -- # - LCD Interconnexion
-  -- Write Addr Channel
-  awvalid_lcd          <= awvalid_interco_m(1);
-  awaddr_lcd           <= awaddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
-  awprot_lcd           <= awprot_interco_m(1);
-  awready_interco_m(1) <= awready_lcd;
+  -- -- # - LCD Interconnexion
+  -- -- Write Addr Channel
+  -- awvalid_lcd          <= awvalid_interco_m(1);
+  -- awaddr_lcd           <= awaddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
+  -- awprot_lcd           <= awprot_interco_m(1);
+  -- awready_interco_m(1) <= awready_lcd;
 
-  -- Write Data Channel
-  wvalid_lcd          <= wvalid_interco_m(1);
-  wdata_lcd           <= wdata_interco_m(1);
-  wstrb_lcd           <= wstrb_interco_m(1);
-  wready_interco_m(1) <= wready_lcd;
+  -- -- Write Data Channel
+  -- wvalid_lcd          <= wvalid_interco_m(1);
+  -- wdata_lcd           <= wdata_interco_m(1);
+  -- wstrb_lcd           <= wstrb_interco_m(1);
+  -- wready_interco_m(1) <= wready_lcd;
 
-  -- Write Response Channel
-  bready_lcd          <= bready_interco_m(1);
-  bvalid_interco_m(1) <= bvalid_lcd;
-  bresp_interco_m(1)  <= bresp_lcd;
+  -- -- Write Response Channel
+  -- bready_lcd          <= bready_interco_m(1);
+  -- bvalid_interco_m(1) <= bvalid_lcd;
+  -- bresp_interco_m(1)  <= bresp_lcd;
 
-  -- Read Addr Channel
-  arvalid_lcd          <= arvalid_interco_m(1);
-  araddr_lcd           <= araddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
-  arprot_lcd           <= arprot_interco_m(1);
-  arready_interco_m(1) <= arready_lcd;
+  -- -- Read Addr Channel
+  -- arvalid_lcd          <= arvalid_interco_m(1);
+  -- araddr_lcd           <= araddr_interco_m(1)(C_AXI4_LITE_LCD_ADDR_WIDTH - 1 downto 0);
+  -- arprot_lcd           <= arprot_interco_m(1);
+  -- arready_interco_m(1) <= arready_lcd;
 
-  -- Read DAta Channel
-  rready_lcd          <= rready_interco_m(1);
-  rvalid_interco_m(1) <= rvalid_lcd;
-  rdata_interco_m(1)  <= rdata_lcd;
-  rresp_interco_m(1)  <= rresp_lcd;
+  -- -- Read DAta Channel
+  -- rready_lcd          <= rready_interco_m(1);
+  -- rvalid_interco_m(1) <= rvalid_lcd;
+  -- rdata_interco_m(1)  <= rdata_lcd;
+  -- rresp_interco_m(1)  <= rresp_lcd;
 
-  -- # - ZIPCPU PERIPHERALS Interconnexion
-  -- Write Addr Channel
-  awvalid_periphs      <= awvalid_interco_m(2);
-  awaddr_periphs       <= awaddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
-  awprot_periphs       <= awprot_interco_m(2);
-  awready_interco_m(2) <= awready_periphs;
+  -- -- # - ZIPCPU PERIPHERALS Interconnexion
+  -- -- Write Addr Channel
+  -- awvalid_periphs      <= awvalid_interco_m(2);
+  -- awaddr_periphs       <= awaddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
+  -- awprot_periphs       <= awprot_interco_m(2);
+  -- awready_interco_m(2) <= awready_periphs;
 
-  -- Write Data Channel
-  wvalid_periphs      <= wvalid_interco_m(2);
-  wdata_periphs       <= wdata_interco_m(2);
-  wstrb_periphs       <= wstrb_interco_m(2);
-  wready_interco_m(2) <= wready_periphs;
+  -- -- Write Data Channel
+  -- wvalid_periphs      <= wvalid_interco_m(2);
+  -- wdata_periphs       <= wdata_interco_m(2);
+  -- wstrb_periphs       <= wstrb_interco_m(2);
+  -- wready_interco_m(2) <= wready_periphs;
 
-  -- Write Response Channel
-  bready_periphs      <= bready_interco_m(2);
-  bvalid_interco_m(2) <= bvalid_periphs;
-  bresp_interco_m(2)  <= bresp_periphs;
+  -- -- Write Response Channel
+  -- bready_periphs      <= bready_interco_m(2);
+  -- bvalid_interco_m(2) <= bvalid_periphs;
+  -- bresp_interco_m(2)  <= bresp_periphs;
 
-  -- Read Addr Channel
-  arvalid_periphs      <= arvalid_interco_m(2);
-  araddr_periphs       <= araddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
-  arprot_periphs       <= arprot_interco_m(2);
-  arready_interco_m(2) <= arready_periphs;
+  -- -- Read Addr Channel
+  -- arvalid_periphs      <= arvalid_interco_m(2);
+  -- araddr_periphs       <= araddr_interco_m(2)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0);
+  -- arprot_periphs       <= arprot_interco_m(2);
+  -- arready_interco_m(2) <= arready_periphs;
 
-  -- Read DAta Channel
-  rready_periphs      <= rready_interco_m(2);
-  rvalid_interco_m(2) <= rvalid_periphs;
-  rdata_interco_m(2)  <= rdata_periphs;
-  rresp_interco_m(2)  <= rresp_periphs;
+  -- -- Read DAta Channel
+  -- rready_periphs      <= rready_interco_m(2);
+  -- rvalid_interco_m(2) <= rvalid_periphs;
+  -- rdata_interco_m(2)  <= rdata_periphs;
+  -- rresp_interco_m(2)  <= rresp_periphs;
 
-  -- # - AXI4 LITE MAX7219 Interconnexion
-  -- Write Addr Channel
-  awvalid_max7219      <= awvalid_interco_m(3);
-  awaddr_max7219       <= awaddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
-  awprot_max7219       <= awprot_interco_m(3);
-  awready_interco_m(3) <= awready_max7219;
+  -- -- # - AXI4 LITE MAX7219 Interconnexion
+  -- -- Write Addr Channel
+  -- awvalid_max7219      <= awvalid_interco_m(3);
+  -- awaddr_max7219       <= awaddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
+  -- awprot_max7219       <= awprot_interco_m(3);
+  -- awready_interco_m(3) <= awready_max7219;
 
-  -- Write Data Channel
-  wvalid_max7219      <= wvalid_interco_m(3);
-  wdata_max7219       <= wdata_interco_m(3);
-  wstrb_max7219       <= wstrb_interco_m(3);
-  wready_interco_m(3) <= wready_max7219;
+  -- -- Write Data Channel
+  -- wvalid_max7219      <= wvalid_interco_m(3);
+  -- wdata_max7219       <= wdata_interco_m(3);
+  -- wstrb_max7219       <= wstrb_interco_m(3);
+  -- wready_interco_m(3) <= wready_max7219;
 
-  -- Write Response Channel
-  bready_max7219      <= bready_interco_m(3);
-  bvalid_interco_m(3) <= bvalid_max7219;
-  bresp_interco_m(3)  <= bresp_max7219;
+  -- -- Write Response Channel
+  -- bready_max7219      <= bready_interco_m(3);
+  -- bvalid_interco_m(3) <= bvalid_max7219;
+  -- bresp_interco_m(3)  <= bresp_max7219;
 
-  -- Read Addr Channel
-  arvalid_max7219      <= arvalid_interco_m(3);
-  araddr_max7219       <= araddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
-  arprot_max7219       <= arprot_interco_m(3);
-  arready_interco_m(3) <= arready_max7219;
+  -- -- Read Addr Channel
+  -- arvalid_max7219      <= arvalid_interco_m(3);
+  -- araddr_max7219       <= araddr_interco_m(3)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0);
+  -- arprot_max7219       <= arprot_interco_m(3);
+  -- arready_interco_m(3) <= arready_max7219;
 
-  -- Read DAta Channel
-  rready_max7219      <= rready_interco_m(3);
-  rvalid_interco_m(3) <= rvalid_max7219;
-  rdata_interco_m(3)  <= rdata_max7219;
-  rresp_interco_m(3)  <= rresp_max7219;
+  -- -- Read DAta Channel
+  -- rready_max7219      <= rready_interco_m(3);
+  -- rvalid_interco_m(3) <= rvalid_max7219;
+  -- rdata_interco_m(3)  <= rdata_max7219;
+  -- rresp_interco_m(3)  <= rresp_max7219;
 
-  -- # - AXI4 LITE ZIPUART Interconnexion
-  -- Write Addr Channel
-  awvalid_zipuart      <= awvalid_interco_m(4);
-  awaddr_zipuart       <= awaddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
-  awprot_zipuart       <= awprot_interco_m(4);
-  awready_interco_m(4) <= awready_zipuart;
+  -- -- # - AXI4 LITE ZIPUART Interconnexion
+  -- -- Write Addr Channel
+  -- awvalid_zipuart      <= awvalid_interco_m(4);
+  -- awaddr_zipuart       <= awaddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
+  -- awprot_zipuart       <= awprot_interco_m(4);
+  -- awready_interco_m(4) <= awready_zipuart;
 
-  -- Write Data Channel
-  wvalid_zipuart      <= wvalid_interco_m(4);
-  wdata_zipuart       <= wdata_interco_m(4);
-  wstrb_zipuart       <= wstrb_interco_m(4);
-  wready_interco_m(4) <= wready_zipuart;
+  -- -- Write Data Channel
+  -- wvalid_zipuart      <= wvalid_interco_m(4);
+  -- wdata_zipuart       <= wdata_interco_m(4);
+  -- wstrb_zipuart       <= wstrb_interco_m(4);
+  -- wready_interco_m(4) <= wready_zipuart;
 
-  -- Write Response Channel
-  bready_zipuart      <= bready_interco_m(4);
-  bvalid_interco_m(4) <= bvalid_zipuart;
-  bresp_interco_m(4)  <= bresp_zipuart;
+  -- -- Write Response Channel
+  -- bready_zipuart      <= bready_interco_m(4);
+  -- bvalid_interco_m(4) <= bvalid_zipuart;
+  -- bresp_interco_m(4)  <= bresp_zipuart;
 
-  -- Read Addr Channel
-  arvalid_zipuart      <= arvalid_interco_m(4);
-  araddr_zipuart       <= araddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
-  arprot_zipuart       <= arprot_interco_m(4);
-  arready_interco_m(4) <= arready_zipuart;
+  -- -- Read Addr Channel
+  -- arvalid_zipuart      <= arvalid_interco_m(4);
+  -- araddr_zipuart       <= araddr_interco_m(4)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0);
+  -- arprot_zipuart       <= arprot_interco_m(4);
+  -- arready_interco_m(4) <= arready_zipuart;
 
-  -- Read DAta Channel
-  rready_zipuart      <= rready_interco_m(4);
-  rvalid_interco_m(4) <= rvalid_zipuart;
-  rdata_interco_m(4)  <= rdata_zipuart;
-  rresp_interco_m(4)  <= rresp_zipuart;
+  -- -- Read DAta Channel
+  -- rready_zipuart      <= rready_interco_m(4);
+  -- rvalid_interco_m(4) <= rvalid_zipuart;
+  -- rdata_interco_m(4)  <= rdata_zipuart;
+  -- rresp_interco_m(4)  <= rresp_zipuart;
 
   interrupt_vector <= (others => '0');
 
@@ -1301,29 +1311,29 @@ begin  -- architecture rtl
       S_AXI_ACLK    => clk_sys,
       S_AXI_ARESETN => rst_n_sys,
 
-      S_AXI_AWVALID => awvalid_periphs,
-      S_AXI_AWREADY => awready_periphs,
-      S_AXI_AWADDR  => awaddr_periphs,
-      S_AXI_AWPROT  => awprot_periphs,
+      S_AXI_AWVALID => awvalid_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_AWREADY => awready_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_AWADDR  => awaddr_interco_m(C_ZIPCPU_PERIPH_IDX)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0),
+      S_AXI_AWPROT  => awprot_interco_m(C_ZIPCPU_PERIPH_IDX),
 
-      S_AXI_WVALID => wvalid_periphs,
-      S_AXI_WREADY => wready_periphs,
-      S_AXI_WDATA  => wdata_periphs,
-      S_AXI_WSTRB  => wstrb_periphs,
+      S_AXI_WVALID => wvalid_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_WREADY => wready_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_WDATA  => wdata_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_WSTRB  => wstrb_interco_m(C_ZIPCPU_PERIPH_IDX),
 
-      S_AXI_BVALID => bvalid_periphs,
-      S_AXI_BREADY => bready_periphs,
-      S_AXI_BRESP  => bresp_periphs,
+      S_AXI_BVALID => bvalid_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_BREADY => bready_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_BRESP  => bresp_interco_m(C_ZIPCPU_PERIPH_IDX),
 
-      S_AXI_ARVALID => arvalid_periphs,
-      S_AXI_ARREADY => arready_periphs,
-      S_AXI_ARADDR  => araddr_periphs,
-      S_AXI_ARPROT  => arprot_periphs,
+      S_AXI_ARVALID => arvalid_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_ARREADY => arready_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_ARADDR  => araddr_interco_m(C_ZIPCPU_PERIPH_IDX)(C_AXI4_LITE_PERIPHS_ADDR_WIDTH - 1 downto 0),
+      S_AXI_ARPROT  => arprot_interco_m(C_ZIPCPU_PERIPH_IDX),
 
-      S_AXI_RVALID => rvalid_periphs,
-      S_AXI_RREADY => rready_periphs,
-      S_AXI_RDATA  => rdata_periphs,
-      S_AXI_RRESP  => rresp_periphs,
+      S_AXI_RVALID => rvalid_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_RREADY => rready_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_RDATA  => rdata_interco_m(C_ZIPCPU_PERIPH_IDX),
+      S_AXI_RRESP  => rresp_interco_m(C_ZIPCPU_PERIPH_IDX),
 
       i_cpu_reset      => '0',
       i_cpu_halted     => '0',
@@ -1347,33 +1357,33 @@ begin  -- architecture rtl
       rst_n => rst_n_sys,
 
       -- Write Address Channel signals
-      awvalid => awvalid_7segs,
-      awaddr  => awaddr_7segs,
-      awprot  => awprot_7segs,
-      awready => awready_7segs,
+      awvalid => awvalid_interco_m(C_7SEGMENTS_IDX),
+      awaddr  => awaddr_interco_m(C_7SEGMENTS_IDX)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_7SEGMENTS_IDX),
+      awready => awready_interco_m(C_7SEGMENTS_IDX),
 
       -- Write Data Channel
-      wvalid => wvalid_7segs,
-      wdata  => wdata_7segs,
-      wstrb  => wstrb_7segs,
-      wready => wready_7segs,
+      wvalid => wvalid_interco_m(C_7SEGMENTS_IDX),
+      wdata  => wdata_interco_m(C_7SEGMENTS_IDX),
+      wstrb  => wstrb_interco_m(C_7SEGMENTS_IDX),
+      wready => wready_interco_m(C_7SEGMENTS_IDX),
 
       -- Write Response Channel
-      bready => bready_7segs,
-      bvalid => bvalid_7segs,
-      bresp  => bresp_7segs,
+      bready => bready_interco_m(C_7SEGMENTS_IDX),
+      bvalid => bvalid_interco_m(C_7SEGMENTS_IDX),
+      bresp  => bresp_interco_m(C_7SEGMENTS_IDX),
 
       -- Read Address Channel
-      arvalid => arvalid_7segs,
-      araddr  => araddr_7segs,
-      arprot  => arprot_7segs,
-      arready => arready_7segs,
+      arvalid => arvalid_interco_m(C_7SEGMENTS_IDX),
+      araddr  => araddr_interco_m(C_7SEGMENTS_IDX)(C_AXI4_LITE_7SEGS_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_7SEGMENTS_IDX),
+      arready => arready_interco_m(C_7SEGMENTS_IDX),
 
       -- Read Data Channel
-      rready => rready_7segs,
-      rvalid => rvalid_7segs,
-      rdata  => rdata_7segs,
-      rresp  => rresp_7segs,
+      rready => rready_interco_m(C_7SEGMENTS_IDX),
+      rvalid => rvalid_interco_m(C_7SEGMENTS_IDX),
+      rdata  => rdata_interco_m(C_7SEGMENTS_IDX),
+      rresp  => rresp_interco_m(C_7SEGMENTS_IDX),
 
       -- 7 Segments
       o_seg0 => o_seg0,
@@ -1400,33 +1410,33 @@ begin  -- architecture rtl
       rst_n_sys => rst_n_sys,
 
       -- Write Address Channel signals
-      awvalid => awvalid_lcd,
-      awaddr  => awaddr_lcd,
-      awprot  => awprot_lcd,
-      awready => awready_lcd,
+      awvalid => awvalid_interco_m(C_LCD_IDX),
+      awaddr  => awaddr_interco_m(C_LCD_IDX)(C_AXI4_LITE_LCD_ADDR_WIDTH -1 downto 0),
+      awprot  => awprot_interco_m(C_LCD_IDX),
+      awready => awready_interco_m(C_LCD_IDX),
 
       -- Write Data Channel
-      wvalid => wvalid_lcd,
-      wdata  => wdata_lcd,
-      wstrb  => wstrb_lcd,
-      wready => wready_lcd,
+      wvalid => wvalid_interco_m(C_LCD_IDX),
+      wdata  => wdata_interco_m(C_LCD_IDX),
+      wstrb  => wstrb_interco_m(C_LCD_IDX),
+      wready => wready_interco_m(C_LCD_IDX),
 
       -- Write Response Channel
-      bready => bready_lcd,
-      bvalid => bvalid_lcd,
-      bresp  => bresp_lcd,
+      bready => bready_interco_m(C_LCD_IDX),
+      bvalid => bvalid_interco_m(C_LCD_IDX),
+      bresp  => bresp_interco_m(C_LCD_IDX),
 
       -- Read Address Channel
-      arvalid => arvalid_lcd,
-      araddr  => araddr_lcd,
-      arprot  => arprot_lcd,
-      arready => arready_lcd,
+      arvalid => arvalid_interco_m(C_LCD_IDX),
+      araddr  => araddr_interco_m(C_LCD_IDX)(C_AXI4_LITE_LCD_ADDR_WIDTH -1 downto 0),
+      arprot  => arprot_interco_m(C_LCD_IDX),
+      arready => arready_interco_m(C_LCD_IDX),
 
       -- Read Data Channel
-      rready => rready_lcd,
-      rvalid => rvalid_lcd,
-      rdata  => rdata_lcd,
-      rresp  => rresp_lcd,
+      rready => rready_interco_m(C_LCD_IDX),
+      rvalid => rvalid_interco_m(C_LCD_IDX),
+      rdata  => rdata_interco_m(C_LCD_IDX),
+      rresp  => rresp_interco_m(C_LCD_IDX),
 
       -- LCD I/F
       i_lcd_data  => i_lcd_data,
@@ -1450,33 +1460,33 @@ begin  -- architecture rtl
       rst_n_sys => rst_n_sys,
 
       -- Write Address Channel signals
-      awvalid => awvalid_max7219,
-      awaddr  => awaddr_max7219,
-      awprot  => awprot_max7219,
-      awready => awready_max7219,
+      awvalid => awvalid_interco_m(C_MAX7219_IDX),
+      awaddr  => awaddr_interco_m(C_MAX7219_IDX)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_MAX7219_IDX),
+      awready => awready_interco_m(C_MAX7219_IDX),
 
       -- Write Data Channel
-      wvalid => wvalid_max7219,
-      wdata  => wdata_max7219,
-      wstrb  => wstrb_max7219,
-      wready => wready_max7219,
+      wvalid => wvalid_interco_m(C_MAX7219_IDX),
+      wdata  => wdata_interco_m(C_MAX7219_IDX),
+      wstrb  => wstrb_interco_m(C_MAX7219_IDX),
+      wready => wready_interco_m(C_MAX7219_IDX),
 
       -- Write Response Channel
-      bready => bready_max7219,
-      bvalid => bvalid_max7219,
-      bresp  => bresp_max7219,
+      bready => bready_interco_m(C_MAX7219_IDX),
+      bvalid => bvalid_interco_m(C_MAX7219_IDX),
+      bresp  => bresp_interco_m(C_MAX7219_IDX),
 
       -- Read Address Channel
-      arvalid => arvalid_max7219,
-      araddr  => araddr_max7219,
-      arprot  => arprot_max7219,
-      arready => arready_max7219,
+      arvalid => arvalid_interco_m(C_MAX7219_IDX),
+      araddr  => araddr_interco_m(C_MAX7219_IDX)(C_AXI4_LITE_MAX7219_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_MAX7219_IDX),
+      arready => arready_interco_m(C_MAX7219_IDX),
 
       -- Read Data Channel
-      rready => rready_max7219,
-      rvalid => rvalid_max7219,
-      rdata  => rdata_max7219,
-      rresp  => rresp_max7219,
+      rready => rready_interco_m(C_MAX7219_IDX),
+      rvalid => rvalid_interco_m(C_MAX7219_IDX),
+      rdata  => rdata_interco_m(C_MAX7219_IDX),
+      rresp  => rresp_interco_m(C_MAX7219_IDX),
 
       -- MAX7219 I/F
       o_max7219_load => o_max7219_load,
@@ -1501,29 +1511,29 @@ begin  -- architecture rtl
       S_AXI_ACLK    => clk_sys,
       S_AXI_ARESETN => rst_n_sys,
 
-      S_AXI_AWVALID => awvalid_zipuart,
-      S_AXI_AWREADY => awready_zipuart,
-      S_AXI_AWADDR  => awaddr_zipuart,
-      S_AXI_AWPROT  => awprot_zipuart,
+      S_AXI_AWVALID => awvalid_interco_m(C_ZIPUART_IDX),
+      S_AXI_AWREADY => awready_interco_m(C_ZIPUART_IDX),
+      S_AXI_AWADDR  => awaddr_interco_m(C_ZIPUART_IDX)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0),
+      S_AXI_AWPROT  => awprot_interco_m(C_ZIPUART_IDX),
 
-      S_AXI_WVALID => wvalid_zipuart,
-      S_AXI_WREADY => wready_zipuart,
-      S_AXI_WDATA  => wdata_zipuart,
-      S_AXI_WSTRB  => wstrb_zipuart,
+      S_AXI_WVALID => wvalid_interco_m(C_ZIPUART_IDX),
+      S_AXI_WREADY => wready_interco_m(C_ZIPUART_IDX),
+      S_AXI_WDATA  => wdata_interco_m(C_ZIPUART_IDX),
+      S_AXI_WSTRB  => wstrb_interco_m(C_ZIPUART_IDX),
 
-      S_AXI_BVALID => bvalid_zipuart,
-      S_AXI_BREADY => bready_zipuart,
-      S_AXI_BRESP  => bresp_zipuart,
+      S_AXI_BVALID => bvalid_interco_m(C_ZIPUART_IDX),
+      S_AXI_BREADY => bready_interco_m(C_ZIPUART_IDX),
+      S_AXI_BRESP  => bresp_interco_m(C_ZIPUART_IDX),
 
-      S_AXI_ARVALID => arvalid_zipuart,
-      S_AXI_ARREADY => arready_zipuart,
-      S_AXI_ARADDR  => araddr_zipuart,
-      S_AXI_ARPROT  => arprot_zipuart,
+      S_AXI_ARVALID => arvalid_interco_m(C_ZIPUART_IDX),
+      S_AXI_ARREADY => arready_interco_m(C_ZIPUART_IDX),
+      S_AXI_ARADDR  => araddr_interco_m(C_ZIPUART_IDX)(C_AXI4_LITE_ZIPUART_ADDR_WIDTH - 1 downto 0),
+      S_AXI_ARPROT  => arprot_interco_m(C_ZIPUART_IDX),
 
-      S_AXI_RVALID => rvalid_zipuart,
-      S_AXI_RREADY => rready_zipuart,
-      S_AXI_RDATA  => rdata_zipuart,
-      S_AXI_RRESP  => rresp_zipuart,
+      S_AXI_RVALID => rvalid_interco_m(C_ZIPUART_IDX),
+      S_AXI_RREADY => rready_interco_m(C_ZIPUART_IDX),
+      S_AXI_RDATA  => rdata_interco_m(C_ZIPUART_IDX),
+      S_AXI_RRESP  => rresp_interco_m(C_ZIPUART_IDX),
 
       i_uart_rx => i_rx_uart,
       o_uart_tx => o_tx_uart,
@@ -1589,6 +1599,58 @@ begin  -- architecture rtl
       );
 
 
+  -- Instanciation AXI4 Lite SPI Slave
+  i_axi4_lite_spi_slave_0 : entity lib_axi4_lite_spi_slave.axi4_lite_spi_slave
+    generic map (
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_SPI_SLAVE_ADDR_WIDTH,  -- AXI4 Lite ADDR WIDTH
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,                  -- AXI4 Lite DATA WIDTH
+      G_SPI_SIZE             => 4,                                 -- SPI Size
+      G_SPI_DATA_WIDTH       => 8,                                 -- SPI DATA WIDTH
+      G_FIFO_DATA_WIDTH      => 8,                                 -- FIFO DATA WIDTH
+      G_FIFO_DEPTH           => 1024,                              -- FIFO DEPTH
+      G_CPHA                 => '0',                               -- CPHA HARD Configuration
+      G_CPOL                 => '0'                                -- CPOL HARD Configuration
+      )
+    port map(
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_interco_m(C_SPI_SLAVE_IDX),
+      awaddr  => awaddr_interco_m(C_SPI_SLAVE_IDX)(C_AXI4_LITE_SPI_SLAVE_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_SPI_SLAVE_IDX),
+      awready => awready_interco_m(C_SPI_SLAVE_IDX),
+
+      -- Write Data Channel
+      wvalid => wvalid_interco_m(C_SPI_SLAVE_IDX),
+      wdata  => wdata_interco_m(C_SPI_SLAVE_IDX),
+      wstrb  => wstrb_interco_m(C_SPI_SLAVE_IDX),
+      wready => wready_interco_m(C_SPI_SLAVE_IDX),
+
+      -- Write Response Channel
+      bready => bready_interco_m(C_SPI_SLAVE_IDX),
+      bvalid => bvalid_interco_m(C_SPI_SLAVE_IDX),
+      bresp  => bresp_interco_m(C_SPI_SLAVE_IDX),
+
+      -- Read Address Channel
+      arvalid => arvalid_interco_m(C_SPI_SLAVE_IDX),
+      araddr  => araddr_interco_m(C_SPI_SLAVE_IDX)(C_AXI4_LITE_SPI_SLAVE_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_SPI_SLAVE_IDX),
+      arready => arready_interco_m(C_SPI_SLAVE_IDX),
+
+      -- Read Data Channel
+      rready => rready_interco_m(C_SPI_SLAVE_IDX),
+      rvalid => rvalid_interco_m(C_SPI_SLAVE_IDX),
+      rdata  => rdata_interco_m(C_SPI_SLAVE_IDX),
+      rresp  => rresp_interco_m(C_SPI_SLAVE_IDX),
+
+      -- SPI SLAVE I/F
+      spi_clk      => spi_slave_clk,
+      spi_cs_n     => spi_slave_cs_n,
+      spi_do       => spi_slave_do,
+      spi_di       => spi_slave_di,
+      spi_slave_it => spi_slave_it
+      );
 
   -- ZIPCPU Single outputs
   ledr_int(0)           <= cmd_reset;

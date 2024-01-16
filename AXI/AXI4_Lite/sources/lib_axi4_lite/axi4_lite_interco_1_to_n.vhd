@@ -116,10 +116,11 @@ architecture rtl of axi4_lite_interco_1_to_n is
   signal slv_status : std_logic_vector(1 downto 0);                           -- Status
 
   -- Decoder signals
-  signal sel_idx_bit_comb   : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Slave Bit detection
-  signal sel_idx_comb       : unsigned(log2(G_SLAVE_NB) - 1 downto 0);    -- Slave Index Selection combinatory
-  signal sel_idx_latch      : unsigned(log2(G_SLAVE_NB) - 1 downto 0);    -- Slave Index Selection combinatory
-  signal sel_idx_comb_valid : std_logic;                                  -- A flag that indicates if the idx selection is valid
+  signal sel_idx_bit_comb   : std_logic_vector(G_SLAVE_NB - 1 downto 0);        -- Slave Bit detection
+  signal sel_idx_comb       : unsigned(log2(G_SLAVE_NB) - 1 downto 0);          -- Slave Index Selection combinatory
+  signal sel_idx_slv_comb   : std_logic_vector(log2(G_SLAVE_NB) - 1 downto 0);  -- Slave Index Selection combinatory
+  signal sel_idx_latch      : unsigned(log2(G_SLAVE_NB) - 1 downto 0);          -- Slave Index Selection combinatory
+  signal sel_idx_comb_valid : std_logic;                                        -- A flag that indicates if the idx selection is valid
 
   -- Masters signals
   signal start_master         : std_logic_vector(G_SLAVE_NB - 1 downto 0);  -- Start Master Pulse
@@ -212,49 +213,59 @@ begin  -- architecture rtl
   -- "1000"          --> "11" 
   -- etc..
 
-  -- Addr Decode for 2 Slaves
-  g_addr_decode_2_slaves : if(G_SLAVE_NB = 2) generate
-    sel_idx_comb(0) <= sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
-    sel_idx_comb(1) <= '0';
-  end generate;
+  i_slave_sel_decoder_0 : entity lib_axi4_lite.slave_sel_decoder
+    generic map (
+      G_SLAVE_NB => G_SLAVE_NB
+      )
+    port map (
+      sel_idx_bit_comb => sel_idx_bit_comb,
+      sel_idx_comb     => sel_idx_slv_comb
+      );
 
-  -- Addr Decode for 3 Slaves
-  g_addr_decode_3_slaves : if(G_SLAVE_NB = 3) generate
-    sel_idx_comb(0) <= (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
-    sel_idx_comb(1) <= sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
-  end generate;
+  sel_idx_comb <= unsigned(sel_idx_slv_comb);
+  -- -- Addr Decode for 2 Slaves
+  -- g_addr_decode_2_slaves : if(G_SLAVE_NB = 2) generate
+  --   sel_idx_comb(0) <= sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
+  --   sel_idx_comb(1) <= '0';
+  -- end generate;
 
-  -- Addr Decode for 4 Slaves 
-  g_addr_decode_4_slaves : if(G_SLAVE_NB = 4) generate
-    sel_idx_comb(0) <= ((not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
-                       (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
-    sel_idx_comb(1) <= (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
-  end generate;
+  -- -- Addr Decode for 3 Slaves
+  -- g_addr_decode_3_slaves : if(G_SLAVE_NB = 3) generate
+  --   sel_idx_comb(0) <= (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0));
+  --   sel_idx_comb(1) <= sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  -- end generate;
 
-  -- Addr Decode for 5 Slaves
-  g_addr_decode_5_slaves : if(G_SLAVE_NB = 5) generate
-    sel_idx_comb(0) <= ((not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
-                        and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
-                       (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1))
-                        and (not sel_idx_bit_comb(0)));
-    sel_idx_comb(1) <= (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
-    sel_idx_comb(2) <= sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
-                       and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
-  end generate;
+  -- -- Addr Decode for 4 Slaves 
+  -- g_addr_decode_4_slaves : if(G_SLAVE_NB = 4) generate
+  --   sel_idx_comb(0) <= ((not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+  --                      (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+  --   sel_idx_comb(1) <= (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  -- end generate;
 
-  -- Addr Decode for 6 Slaves
-  g_addr_decode_6_slaves : if(G_SLAVE_NB = 6) generate
-    sel_idx_comb(0) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
-                       ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
-                       (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+  -- -- Addr Decode for 5 Slaves
+  -- g_addr_decode_5_slaves : if(G_SLAVE_NB = 5) generate
+  --   sel_idx_comb(0) <= ((not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
+  --                       and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+  --                      (sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1))
+  --                       and (not sel_idx_bit_comb(0)));
+  --   sel_idx_comb(1) <= (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  --   sel_idx_comb(2) <= sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2))
+  --                      and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0));
+  -- end generate;
 
-    sel_idx_comb(1) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
-                       ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+  -- -- Addr Decode for 6 Slaves
+  -- g_addr_decode_6_slaves : if(G_SLAVE_NB = 6) generate
+  --   sel_idx_comb(0) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and sel_idx_bit_comb(1) and (not sel_idx_bit_comb(0))) or
+  --                      ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+  --                      (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+
+  --   sel_idx_comb(1) <= ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and sel_idx_bit_comb(2) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+  --                      ((not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and sel_idx_bit_comb(3) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
 
 
-    sel_idx_comb(2) <= ((not sel_idx_bit_comb(5)) and sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
-                       (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
-  end generate;
+  --   sel_idx_comb(2) <= ((not sel_idx_bit_comb(5)) and sel_idx_bit_comb(4) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+  --                      (sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
+  -- end generate;
 
   -- purpose: Check if the address range is valid
   -- If the slv_addr is greater than C_SLV_ADDR_MAX_ARRAY(G_SLAVE_NB-1), the valid signal is not set
