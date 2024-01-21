@@ -445,13 +445,13 @@ run_tb_zipcpu_axi4_lite_top:
 
 
 compile_s: 
-	$(AS) ../scenarios/$(SCN_LIB_DIR)/$(TEST).s -o $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
+	$(AS) ../scenarios/$(SCN_LIB_DIR)/$(TEST).s -o $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).s.o
 
 OBJDUMP_ARGS+=
 OBJDUMP_ARGS+=-S -D -g
 
 disasemble:
-	$(OBJDUMP) $(OBJDUMP_ARGS) $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).o
+	$(OBJDUMP) $(OBJDUMP_ARGS) $(HDL_SIMU_PATH)/$(PROJECT_NAME)/scenarios/$(TEST).s.o
 
 
 addr_to_line:

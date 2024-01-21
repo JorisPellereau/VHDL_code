@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2024-01-12
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -99,6 +99,8 @@ architecture rtl of axi4_lite_spi_slave is
   signal rdata_fifo_rx_val : std_logic;                                                  -- FIFO RX Data Valid
   signal rd_en_fifo_rx     : std_logic;                                                  -- FIFO RX Read Enable
   signal spi_busy          : std_logic;                                                  -- SPI BUSY Flag
+  signal fifo_rx_empty     : std_logic;                                                  -- FIFO RX Empty Flag
+  signal fifo_rx_full      : std_logic;                                                  -- FIFO RX Full Flag
 
 begin  -- architecture rtl
 
@@ -177,8 +179,8 @@ begin  -- architecture rtl
       slv_status => slv_status,
 
       -- FIFO RX FLAG
-      fifo_rx_empty => '0',             -- Not used yet
-      fifo_rx_full  => '0',             -- Not used yet
+      fifo_rx_empty => fifo_rx_empty,
+      fifo_rx_full  => fifo_rx_full,
 
       -- FIFO TX FLAG
       fifo_tx_empty => '0',             -- Not used yet
@@ -209,6 +211,8 @@ begin  -- architecture rtl
       spi_rd_en     => rd_en_fifo_rx,
       spi_rdata     => rdata_fifo_rx,
       spi_rdata_val => rdata_fifo_rx_val,
+      fifo_rx_empty => fifo_rx_empty,
+      fifo_rx_full  => fifo_rx_full,
 
       -- SPI Control
       spi_clk      => spi_clk,

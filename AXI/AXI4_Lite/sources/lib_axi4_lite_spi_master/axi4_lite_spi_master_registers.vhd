@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2024-01-11
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ begin  -- architecture rtl
   p_reg1_wr_mngt : process (clk, rst_n) is
   begin  -- process p_reg1_wr_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
-      ctrl1_register <= (others => '0');
+      ctrl1_register <= C_REG1_INIT_VALUE;
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Write in CTRL1 Register
@@ -180,7 +180,7 @@ begin  -- architecture rtl
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Write in FIFO TX Register
-      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
+      if(reg_wr_sel(C_REG2_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
         fifo_tx_register  <= slv_wdata(C_FIFO_TX_WIDTH - 1 downto 0);
         wr_en_fifo_tx_int <= '1';
       else

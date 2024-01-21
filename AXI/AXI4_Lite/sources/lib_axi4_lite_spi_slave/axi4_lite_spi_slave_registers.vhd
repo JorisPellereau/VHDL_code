@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2024-01-12
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -76,13 +76,13 @@ architecture rtl of axi4_lite_spi_slave_registers is
   signal reg_wr_sel_error : std_logic;                                -- Reg Write Selection error
 
   -- Internal Registers
-  signal fifo_rx_register     : std_logic_vector(C_FIFO_RX_WIDTH - 1 downto 0);  -- FIFO RX Register
-  signal fifo_rx_register_val : std_logic;                                       -- FIFO RX Updated occurs
-  signal status_register      : std_logic_vector(C_STATUS_WIDTH - 1 downto 0);   -- STATUS Register
-  signal slv_wr_access_error  : std_logic;                                       -- Slave Write Access Error
-
-  signal rd_fifo_rx_en_int : std_logic;  -- Read FIFO RX
-  signal regular_reg_sel   : std_logic;  -- Regular Register selected
+  signal fifo_rx_register        : std_logic_vector(C_FIFO_RX_WIDTH - 1 downto 0);  -- FIFO RX Register
+  signal fifo_rx_register_val    : std_logic;                                       -- FIFO RX Updated occurs
+  signal status_register         : std_logic_vector(C_STATUS_WIDTH - 1 downto 0);   -- STATUS Register
+  signal slv_wr_access_error     : std_logic;                                       -- Slave Write Access Error
+  signal rd_fifo_rx_en_int       : std_logic;                                       -- Read FIFO RX
+  signal regular_reg_sel         : std_logic;                                       -- Regular Register selected
+  signal fifo_rx_rd_access_error : std_logic;                                       -- FIFO RX Read access Error FLAG
 
 begin  -- architecture rtl
 
@@ -134,11 +134,13 @@ begin  -- architecture rtl
       fifo_rx_register_val <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
+      -- On the valid signal, update fifo_rx_register
+      -- This signal is set to one only if rd_fifo_rx_en was set previously AND if the FIFO is not empty
       if(rdata_fifo_rx_val = '1') then
         fifo_rx_register     <= x"000000" & rdata_fifo_rx;  -- Update FIFO RX register
         fifo_rx_register_val <= '1';
       else
-        fifo_rx_register_val <= '0';                           -- Reset the flag
+        fifo_rx_register_val <= '0';                        -- Reset the flag
       end if;
 
     end if;
@@ -155,7 +157,8 @@ begin  -- architecture rtl
 
       -- Generates the enable bit only during a read_access (slv_rw = '1') and if the correct
       -- register (REG0) is selected. Otherwise no generatio of the bit
-      if(reg_sel(C_REG0_IDX) = '1' and slv_start = '1' and slv_rw = '1') then
+      -- Perform a read access only if the FIFO RX is not empty
+      if(reg_sel(C_REG0_IDX) = '1' and slv_start = '1' and slv_rw = '1' and fifo_rx_empty = '0') then
         rd_fifo_rx_en_int <= '1';
       else
         rd_fifo_rx_en_int <= '0';
@@ -163,6 +166,23 @@ begin  -- architecture rtl
 
     end if;
   end process p_fifo_rx_en_mngt;
+
+  -- purpose: FIFO RX Read access error because of empty FIFO
+  p_fifo_rx_read_access_error : process (clk_sys, rst_n_sys) is
+  begin  -- process p_fifo_rx_read_access_error
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      fifo_rx_rd_access_error <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+
+      -- If a read access if perform on the REG0 and if the fifo is EMPTY -> abort the access and generate an error flag
+      if(reg_sel(C_REG0_IDX) = '1' and slv_start = '1' and slv_rw = '1' and fifo_rx_empty = '1') then
+        fifo_rx_rd_access_error <= '1';
+      else
+        fifo_rx_rd_access_error <= '0';
+      end if;
+
+    end if;
+  end process p_fifo_rx_read_access_error;
 
   -- Slave WRite Access error :
   -- Wrong Write selection
@@ -190,8 +210,9 @@ begin  -- architecture rtl
       elsif(slv_start = '1' and slv_rw = '1' and regular_reg_sel = '1') then
         slv_done <= '1';
 
-      -- Ack from a read FIFO RX access
-      elsif(fifo_rx_register_val = '1') then
+      -- Ack from a read FIFO RX access - Case an access to the FIFO RX was generated
+      -- Or if an FIFO RX RD Access error is set
+      elsif(fifo_rx_register_val = '1' or fifo_rx_rd_access_error = '1') then
         slv_done <= '1';
 
       else
@@ -214,8 +235,15 @@ begin  -- architecture rtl
 
       -- Ack for a read access into a regular register
       -- Generates an error if the addr is greater than the last accessible addr C_REG1_ADDR
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG1_ADDR) then
+      -- OR
+      -- if a FIFO READ RX Read Access is generated
+      elsif((slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG1_ADDR)
+            or
+            fifo_rx_rd_access_error = '1'
+            ) then
         slv_status <= "10";
+
+
 
       -- No Error generated
       else

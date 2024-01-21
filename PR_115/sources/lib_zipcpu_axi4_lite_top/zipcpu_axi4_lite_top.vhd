@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-12
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -95,11 +95,12 @@ architecture rtl of zipcpu_axi4_lite_top is
   end component;
 
   -- == INTERNAL SIGNALS ==
-  signal rst_n_clk_sys : std_logic;                     -- REset in clk_sys clock domain
-  signal lcd_rdata     : std_logic_vector(7 downto 0);  -- LCD Read Data
-  signal lcd_wdata     : std_logic_vector(7 downto 0);  -- LCD Write Data
-  signal lcd_bidir_sel : std_logic;                     -- LCD Bidir Selector
-  signal rts_n_clk_sys : std_logic;                     -- RTS signal resynchronized in clk_sys clock domain
+  signal rst_n_clk_sys          : std_logic;                     -- REset in clk_sys clock domain
+  signal lcd_rdata              : std_logic_vector(7 downto 0);  -- LCD Read Data
+  signal lcd_wdata              : std_logic_vector(7 downto 0);  -- LCD Write Data
+  signal lcd_bidir_sel          : std_logic;                     -- LCD Bidir Selector
+  signal rts_n_clk_sys          : std_logic;                     -- RTS signal resynchronized in clk_sys clock domain
+  signal spi_slave_cs_n_clk_sys : std_logic;                     -- SPI SLAVE Chip select n resynchronized in clk_sys clock domain
 
 begin  -- architecture rtl
 
@@ -117,7 +118,11 @@ begin  -- architecture rtl
       rst_n_clk_sys   => rst_n_clk_sys,
       clk_sys         => clk,
       i_rts_n_a       => i_rts_n_a,
-      o_rts_n_clk_sys => rts_n_clk_sys
+      o_rts_n_clk_sys => rts_n_clk_sys,
+
+      -- SPI SLAVE CS N resynchronization
+      spi_slave_cs_n         => spi_slave_cs_n,
+      spi_slave_cs_n_clk_sys => spi_slave_cs_n_clk_sys
       );
 
   -- BIDIR MNGT
@@ -182,7 +187,7 @@ begin  -- architecture rtl
 
       -- SPI SLAVE I/F
       spi_slave_clk  => spi_slave_clk,
-      spi_slave_cs_n => spi_slave_cs_n,
+      spi_slave_cs_n => spi_slave_cs_n_clk_sys,
       spi_slave_do   => open,           -- NOT USED YET
       spi_slave_di   => spi_slave_di,
 

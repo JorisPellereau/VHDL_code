@@ -23,7 +23,7 @@
 
 // DUT GENERIC Configuration
 `define C_SIMULATION 1
-
+`define C_SPI_SIZE 4 // Size of the SPI BUS - QUAD
 // AXI4 Lite Master PATH
 //`define C_AXI4_LITE_MASTER_PATH i_dut.i_jtag_axi4_lite_core_0.i_axi4_lite_master_0
 

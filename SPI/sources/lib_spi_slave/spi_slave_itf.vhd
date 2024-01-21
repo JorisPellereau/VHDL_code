@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-09
--- Last update: 2024-01-12
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -120,7 +120,9 @@ begin  -- architecture rtl
       -- Stay in IDLE state until the detection of a falling edge of SPI CS
       when ST_IDLE =>
         en_it <= '0';                   -- Enable IT
-        if(spi_cs_n_r_edge = '1') then
+
+        -- Go to Read State if a falling edge is detected
+        if(spi_cs_n_f_edge = '1') then
           fsm_ns <= ST_RD;
         else
           fsm_ns <= ST_IDLE;
@@ -130,7 +132,7 @@ begin  -- architecture rtl
       -- Stay in this state until the reception of a rising edge of spi cs
       when ST_RD =>
         en_it <= '0';                   -- Enable IT
-        if(spi_cs_n_f_edge = '1') then
+        if(spi_cs_n_r_edge = '1') then
           fsm_ns <= ST_IT;
         else
           fsm_ns <= ST_RD;

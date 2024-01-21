@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-09
--- Last update: 2024-01-12
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -42,6 +42,8 @@ entity spi_slave is
     spi_rd_en     : in  std_logic;                                         -- FIFO RX Read Rnable
     spi_rdata     : out std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- SPI Read Dzta from FIFO
     spi_rdata_val : out std_logic;                                         -- SPI Read Data from FIFO Valid
+    fifo_rx_empty : out std_logic;                                         -- FIFO RX Empty Flag
+    fifo_rx_full  : out std_logic;                                         -- FIFO RX Full Flag
 
     -- SPI Control
     spi_clk      : in  std_logic;                                  -- MASTER SPI Clock
@@ -57,10 +59,10 @@ end entity spi_slave;
 architecture rtl of spi_slave is
 
   -- == INTERNAL Signals ==
-  signal wr_rx_en       : std_logic;                                        -- FIFO Write RX enable
-  signal wdata_rx       : std_logic_vector(G_FIFO_DATA_WIDTH -1 downto 0);  -- Write DATA FIFO RX
-  signal fifo_empty_int : std_logic;                                        -- FIFO EMPTY FLAG
-  signal fifo_full_int  : std_logic;                                        -- FIFO FULL FLAG
+  signal wr_rx_en          : std_logic;                                        -- FIFO Write RX enable
+  signal wdata_rx          : std_logic_vector(G_FIFO_DATA_WIDTH -1 downto 0);  -- Write DATA FIFO RX
+  signal fifo_rx_empty_int : std_logic;                                        -- FIFO RX EMPTY FLAG
+  signal fifo_rx_full_int  : std_logic;                                        -- FIFO RX FULL FLAG
 
 begin  -- architecture rtl
 
@@ -82,8 +84,8 @@ begin  -- architecture rtl
       rdata_val => spi_rdata_val,
 
       -- FIFO Status
-      fifo_empty => fifo_empty_int,
-      fifo_full  => fifo_full_int
+      fifo_empty => fifo_rx_empty_int,
+      fifo_full  => fifo_rx_full_int
       );
 
   -- SPI Interface instanciation
@@ -116,5 +118,9 @@ begin  -- architecture rtl
       spi_busy     => spi_busy,
       spi_slave_it => spi_slave_it
       );
+
+  -- == OUTPUTS Affectation ==
+  fifo_rx_empty <= fifo_rx_empty_int;
+  fifo_rx_full  <= fifo_rx_full_int;
 
 end architecture rtl;

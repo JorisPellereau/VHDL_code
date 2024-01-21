@@ -43,6 +43,20 @@ module tb_top
    wire       lcd_on_dut;   
    wire [17:0] ledr_dut;
    wire [8:0]  ledg_dut;
+   wire        max7219_clk_dut;
+   wire        max7219_load_dut;
+   wire        max7219_data_dut;
+   wire        rx_uart_dut;
+   wire        tx_uart_dut;
+   wire        rts_n_a_dut;
+   wire        cts_n_dut;
+   wire        spi_master_clk_dut;
+   wire        spi_master_cs_n_dut;
+   wire [`C_SPI_SIZE-1:0] spi_master_do_dut;
+   wire 		  spi_slave_clk_dut;
+   wire 		  spi_slave_cs_n_dut;
+   wire [`C_SPI_SIZE-1:0] spi_slave_di_dut;
+   
    
 
   // == CLK GEN INST ==
@@ -170,15 +184,12 @@ module tb_top
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "DONE_MASTER",      2);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "LCD_VAL",          3);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "S_DURATION_DONE",  4); 
-
      							       
       // Check Level Alias				       
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "RDATA_MASTER",    0);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "STATUS_MASTER",   1);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "LCD_RDATA",       2);
-     
-     
-            
+              
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
    end
@@ -207,33 +218,57 @@ module tb_top
 		    );
    
    // == DUT ==
-   zipcpu_axi4_lite_top # (
-			 .SEL_ALTERA_VJTAG (0),
-			 .G_SIMULATION     (`C_SIMULATION)
-			 )
-   i_dut (
-	  .clk   (clk),
-	  .rst_n (rst_n),
-	  	  
-	  .o_seg0 (seg0_dut),
-	  .o_seg1 (seg1_dut),
-	  .o_seg2 (seg2_dut),
-	  .o_seg3 (seg3_dut),
-	  .o_seg4 (seg4_dut),
-	  .o_seg5 (seg5_dut),
-	  .o_seg6 (seg6_dut),
-	  .o_seg7 (seg7_dut),
-  
-	  .io_lcd_data (lcd_data_dut),   
-	  .o_lcd_rw    (lcd_rw_dut),
-	  .o_lcd_en    (lcd_en_dut),
-	  .o_lcd_rs    (lcd_rs_dut),
-	  .o_lcd_on    (lcd_on_dut),	  
-    
-	  .ledr (ledr_dut),
-	 	  
-	  .ledg (ledg_dut)
-	  );
+   zipcpu_axi4_lite_top 
+     i_dut (
+	    .clk   (clk),
+	    .rst_n (rst_n),
+	    
+	    .o_seg0 (seg0_dut),
+	    .o_seg1 (seg1_dut),
+	    .o_seg2 (seg2_dut),
+	    .o_seg3 (seg3_dut),
+	    .o_seg4 (seg4_dut),
+	    .o_seg5 (seg5_dut),
+	    .o_seg6 (seg6_dut),
+	    .o_seg7 (seg7_dut),
+	    
+	    .io_lcd_data (lcd_data_dut),   
+	    .o_lcd_rw    (lcd_rw_dut),
+	    .o_lcd_en    (lcd_en_dut),
+	    .o_lcd_rs    (lcd_rs_dut),
+	    .o_lcd_on    (lcd_on_dut),	  
+	    
+	    // MAX7219 Interface
+	    .o_max7219_clk  (max7219_clk_dut),
+	    .o_max7219_load (max7219_load_dut),
+	    .o_max7219_data (max7219_data_dut),
+	    
+	    // UART Interface
+	    .i_rx_uart (rx_uart_dut),
+	    .o_tx_uart (tx_uart_dut),
+	    .i_rts_n_a (rts_n_a_dut),
+	    .o_cts_n   (cts_n_dut),
+	    
+	    // SPI MASTER I/F
+	    .spi_clk  (spi_master_clk_dut),
+	    .spi_cs_n (spi_master_cs_n_dut),
+	    .spi_do   (spi_master_do_dut),
+	    
+	    // SPI SLAVE I/F
+	    .spi_slave_clk  (spi_slave_clk_dut),
+	    .spi_slave_cs_n (spi_slave_cs_n_dut),
+	    .spi_slave_di   (spi_slave_di_dut),
+	    
+	    .ledr (ledr_dut),
+	    
+	    .ledg (ledg_dut)
+	    );
 
+
+
+   // DE0 NANO ?
+   assign spi_slave_clk_dut  = 0;
+   assign spi_slave_cs_n_dut = 1;
+   assign spi_slave_di_dut   = 0;
    
 endmodule // tb_top

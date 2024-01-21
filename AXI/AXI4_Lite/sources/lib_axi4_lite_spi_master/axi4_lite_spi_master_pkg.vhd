@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2024-01-10
+-- Last update: 2024-01-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -47,5 +47,8 @@ package axi4_lite_spi_master_pkg is
   constant C_FIFO_TX_WIDTH : integer := 32;  -- Width of the FIFO TX Register
   constant C_FIFO_RX_WIDTH : integer := 32;  -- Width of the FIFO RX Register
   constant C_STATUS_WIDTH  : integer := 17;  -- Width of the Status Register
+
+  -- REgister Initial Values
+  constant C_REG1_INIT_VALUE : std_logic_vector(C_CTRL1_WIDTH - 1 downto 0) := (0 => '1', others => '0');  -- One Write initialized by default
 
 end package;
