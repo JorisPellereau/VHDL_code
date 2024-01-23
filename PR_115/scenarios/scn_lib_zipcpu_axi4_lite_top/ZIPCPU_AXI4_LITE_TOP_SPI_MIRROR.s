@@ -37,34 +37,37 @@
 	.global	_start
 	
 	;; Base Addr
-	.equ segments_base_addr, 0x0000 ; Segments Base ADDR
-	.equ LCD_base_addr, 0x1000 ; LCD Base Addr
-	.equ zipcpu_periph_base_addr, 0x2000 ; ZIPCPU Peripherals Base Addr
-	.equ max7219_base_addr, 0x3000	     ; MAX7219 BASE addr
-	.equ zipuart_base_addr, 0x4000	     ; ZIPUART BASE addr
-	.equ spi_master_base_addr, 0x5000    ; SPI MASTER Base Addr
-	.equ spi_slave_base_addr, 0x6000     ; SPI SLAVE Base Addr
+	.equ segments_base_addr, 0x0000 	; Segments Base ADDR
+	.equ LCD_base_addr, 0x1000 		; LCD Base Addr
+	.equ zipcpu_periph_base_addr, 0x2000 	; ZIPCPU Peripherals Base Addr
+	.equ max7219_base_addr, 0x3000	     	; MAX7219 BASE addr
+	.equ zipuart_base_addr, 0x4000	     	; ZIPUART BASE addr
+	.equ spi_master_base_addr, 0x5000    	; SPI MASTER Base Addr
+	.equ spi_slave_base_addr, 0x6000     	; SPI SLAVE Base Addr
 	
 	;; INITIAL Values
 	.equ segment_init_value, 0x00000000	   ; Segment Initial Value
 
 	;; CONSTANTS
-	.equ C_EN_IT_0, 0x80018001   ; Enable IT 0 - Clear bit 0 status (IT 0 status)
-	.equ C_TEST_OK, 0x000DEA15 ; DEALS  == OK
-	.equ C_TEST_KO, 0x00FA11ED ; FAILED == KO
+	.equ C_EN_IT_0, 0x80018001   	; Enable IT 0 - Clear bit 0 status (IT 0 status)
+	.equ C_INIT_DONE, 0x0000D043  	; Initialisation done code 
 
 ;;; Register Utilization :
 ;;; R2 : Data to send through SPI MASTER
 ;;; R3 : Temporary register
+;;; R4 : Inform if an initialization was already performed - 
 
 ;; Perform after a reset of the CPU (cpu_reset, bus error etc)
 _start:
 	NOOP
+	CMP C_INIT_DONE, R4	; Compare R4 with the constant of INitialization done
+	BGE send_spi_data	; Init R4 == C_INIT_DINE -> Goto Send data
 	jsr clr_reg		; Clear All registers expect r13 r14 r15
 	jsr init_7segs		; INIT 7Segments Slave
 	jsr init_spi_master	; INIT SPI MASTER
 	jsr init_spi_slave	; INIT SPI SLAVE	
 	jsr init_it		; INIT Interruption
+	jsr init_done
 	jsr send_spi_data	; Send SPI DATA
 
 ;;; == SUBROUTINES ==
@@ -114,6 +117,11 @@ init_spi_slave:
 init_it:
 	LDI C_EN_IT_0, r3
 	SW r3, zipcpu_periph_base_addr
+	RETN
+
+;;; INIT_DONE Flag - Write into R4 1 == Initialization already done
+init_done:
+	MOV C_INIT_DONE, R4
 	RETN
 
 ;;; READ Data from SPI Slave and update 7 segments

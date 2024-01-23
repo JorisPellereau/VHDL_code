@@ -52,8 +52,8 @@ scn.WTRS("RST_N")
 scn.WAIT(200, "n")
 
 # Temporary for DEBUG purpose
-scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/rresp 0 0")
-scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset 0 0")
+#scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/rresp 0 0")
+#scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset 0 0")
 
 scn.WAIT(200, "us")
 
