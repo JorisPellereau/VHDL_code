@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-21
+-- Last update: 2024-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -36,6 +36,11 @@ entity zipcpu_axi4_lite_top is
   port (
     clk   : in std_logic;               -- Clock System
     rst_n : in std_logic;               -- Asynchronous Reset
+
+    -- Push-buttons
+    key_1_a : in std_logic;             -- KEY 1 - Asynchronous Input
+    key_2_a : in std_logic;             -- KEY 2 - Asynchronous Input    
+    key_3_a : in std_logic;             -- KEY 3 - Asynchronous Input
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -101,6 +106,9 @@ architecture rtl of zipcpu_axi4_lite_top is
   signal lcd_bidir_sel          : std_logic;                     -- LCD Bidir Selector
   signal rts_n_clk_sys          : std_logic;                     -- RTS signal resynchronized in clk_sys clock domain
   signal spi_slave_cs_n_clk_sys : std_logic;                     -- SPI SLAVE Chip select n resynchronized in clk_sys clock domain
+  signal key_1_clk_sys          : std_logic;                     -- KEY 1 in clk_sys clock domain
+  signal key_2_clk_sys          : std_logic;                     -- KEY 2 in clk_sys clock domain
+  signal key_3_clk_sys          : std_logic;                     -- KEY 3 in clk_sys clock domain
 
 begin  -- architecture rtl
 
@@ -115,8 +123,18 @@ begin  -- architecture rtl
   -- Instanciation of RESYNCHRONIZATION Block
   i_resynchro_0 : entity lib_zipcpu_axi4_lite_top.resynchro
     port map(
-      rst_n_clk_sys   => rst_n_clk_sys,
-      clk_sys         => clk,
+      rst_n_clk_sys => rst_n_clk_sys,
+      clk_sys       => clk,
+
+      -- Push Buttons resynchronization
+      key_1_a       => key_1_a,
+      key_1_clk_sys => key_1_clk_sys,
+      key_2_a       => key_2_a,
+      key_2_clk_sys => key_2_clk_sys,
+      key_3_a       => key_3_a,
+      key_3_clk_sys => key_3_clk_sys,
+
+
       i_rts_n_a       => i_rts_n_a,
       o_rts_n_clk_sys => rts_n_clk_sys,
 
@@ -148,6 +166,11 @@ begin  -- architecture rtl
     port map (
       clk_sys   => clk,
       rst_n_sys => rst_n_clk_sys,
+
+      -- PUSH-BUTTONS
+      key_1 => key_1_clk_sys,
+      key_2 => key_2_clk_sys,
+      key_3 => key_3_clk_sys,
 
       -- 7 Segments
       o_seg0 => o_seg0,

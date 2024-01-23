@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-22
+-- Last update: 2024-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -64,6 +64,11 @@ entity zipcpu_axi4_lite_core is
   port (
     clk_sys   : in std_logic;                                 -- Clock System
     rst_n_sys : in std_logic;                                 -- Asynchronous Reset
+
+    -- PUSH-BUTTONS
+    key_1 : in std_logic;               -- KEY 1 - clk_sys clock domain
+    key_2 : in std_logic;               -- KEY 2 - clk_sys clock domain    
+    key_3 : in std_logic;               -- KEY 3 - clk_sys clock domain
 
     -- 7 Segments
     o_seg0 : out std_logic_vector(6 downto 0);  -- SEG 0
@@ -968,7 +973,9 @@ begin  -- architecture rtl
       );
 
 
-  interrupt_vector(0) <= spi_slave_it;     -- Interrupt vector connected to the SPI SLAVE Interrupt
+  -- Interruption vector affectation
+  interrupt_vector(0) <= spi_slave_it;  -- Interrupt vector connected to the SPI SLAVE Interrupt
+  interrupt_vector(1) <= not key_1;     -- Interruption from KEY 1 - low level activation
 
   -- Instanciation of AXIPERIPH
   i_axilperiphs_0 : axilperiphs

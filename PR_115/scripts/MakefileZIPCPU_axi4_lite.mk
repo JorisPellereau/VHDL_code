@@ -310,6 +310,10 @@ src_lib_zipcpu_v+= zipsystem.v
 # -> OPT_MMU
 # -> FORMAL
 
+# == TESTBENCH VHD MODULES FILES LIST ==
+SRC_LIB_SPI_MIRROR_TOP_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/DE0_nano/sources/lib_spi_mirror_top/
+src_spi_mirror_top_vhd+=spi_mirror_top.vhd
+# ======================================
 
 # == TESTBENCH MODULES V FILES LIST ==
 SRC_LCD_EMUL_DIR=/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/TB_modules/LCD_CFAH_checker/
@@ -396,6 +400,9 @@ compile_generic_tb_v_files:
 compile_generic_tb_v_files_jtag_axi4_lite_top:
 	make compile_tb_v_files SRC_TB_V="$(GEN_MODULE_LIST)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=/home/linux-jp/Documents/GitHub WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP INC_DIR_TB_EN=ON
 
+compile_tb_zipcpu_axi4lite_vhd_files:
+	make compile_tb_vhd_files SRC_TB_VHD="$(src_spi_mirror_top_vhd)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_LIB_SPI_MIRROR_TOP_DIR)
+
 compile_tb_zipcpu_axi4_lite_top:
 	make compile_tb_v_files SRC_TB_V="$(src_lcd_emul_v)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=$(SRC_LCD_EMUL_DIR)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_zipcpu_axi4_lite_top_v)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_zipcpu_axi4_lite_top/
@@ -412,6 +419,7 @@ compile_all_zipcpu_axi4_lite_top :
 	make libs ; \
 	make compile_zipcpu_axi4_lite_top ; \
 	make compile_generic_tb_v_files_jtag_axi4_lite_top ; \
+	make compile_tb_zipcpu_axi4lite_vhd_files ; \
 	make compile_tb_zipcpu_axi4_lite_top ; \
 	make print_compile_logs_file
 

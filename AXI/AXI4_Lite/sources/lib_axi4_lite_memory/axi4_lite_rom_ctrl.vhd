@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-28
--- Last update: 2023-09-28
+-- Last update: 2024-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -68,8 +68,9 @@ begin  -- architecture rtl
       addr_rom <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
+      -- On start valid signal, get the slv_addr / 4 resize on the addr_rom width
       if(slv_start = '1') then
-        addr_rom <= std_logic_vector(to_unsigned(0, log2(G_AXI4_LITE_ADDR_WIDTH/8))) & slv_addr(G_ROM_ADDR_WIDTH - 1 downto log2(G_AXI4_LITE_ADDR_WIDTH/8));
+        addr_rom <=  std_logic_vector(resize(unsigned(slv_addr(G_AXI4_LITE_ADDR_WIDTH - 1 downto 2)), addr_rom'length)); -- / 4
       end if;
 
     end if;

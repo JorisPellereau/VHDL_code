@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-04
--- Last update: 2024-01-21
+-- Last update: 2024-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -27,6 +27,14 @@ entity resynchro is
     rst_n_clk_sys : in std_logic;       -- Reset synchronized in clk_sys clock domain
     clk_sys       : in std_logic;       -- clk_sys clock
 
+    -- Push Buttons resynchronization
+    key_1_a       : in  std_logic;      -- KEY 1 Asynchronous
+    key_1_clk_sys : out std_logic;      -- KEY 2 Resynchronized in clk_sys clock domain
+    key_2_a       : in  std_logic;      -- KEY 1 Asynchronous
+    key_2_clk_sys : out std_logic;      -- KEY 2 Resynchronized in clk_sys clock domain
+    key_3_a       : in  std_logic;      -- KEY 1 Asynchronous
+    key_3_clk_sys : out std_logic;      -- KEY 2 Resynchronized in clk_sys clock domain
+
     -- RTS signals
     i_rts_n_a       : in  std_logic;    -- RTS asynchronous input
     o_rts_n_clk_sys : out std_logic;    -- RTS resynchronized in clk_sys clock domain
@@ -44,6 +52,12 @@ architecture rtl of resynchro is
   signal rts_n_p2          : std_logic;  -- RTS N P2
   signal spi_slave_cs_n_p1 : std_logic;  -- SPI SLAVE CS P1
   signal spi_slave_cs_n_p2 : std_logic;  -- SPI SLAVE CS P2
+  signal key_1_p1          : std_logic;  -- KEY 1 P1
+  signal key_1_p2          : std_logic;  -- KEY 1 P2
+  signal key_2_p1          : std_logic;  -- KEY 2 P1
+  signal key_2_p2          : std_logic;  -- KEY 2 P2
+  signal key_3_p1          : std_logic;  -- KEY 3 P1
+  signal key_3_p2          : std_logic;  -- KEY 3 P2
 
 begin  -- architecture rtl
 
@@ -71,6 +85,45 @@ begin  -- architecture rtl
     end if;
   end process p_resynch_spi_slave_cs_n;
 
-  spi_slave_cs_n_clk_sys <= spi_slave_cs_n_p2; -- Connect to Output
+  spi_slave_cs_n_clk_sys <= spi_slave_cs_n_p2;  -- Connect to Output
+
+  p_resynch_key_1 : process (clk_sys, rst_n_clk_sys) is
+  begin  -- process p_resynch_key_1
+    if rst_n_clk_sys = '0' then         -- asynchronous reset (active low)
+      key_1_p1 <= '0';
+      key_1_p2 <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      key_1_p1 <= key_1_a;
+      key_1_p2 <= key_1_p1;
+    end if;
+  end process p_resynch_key_1;
+
+  key_1_clk_sys <= key_1_p2;
+
+  p_resynch_key_2 : process (clk_sys, rst_n_clk_sys) is
+  begin  -- process p_resynch_key_2
+    if rst_n_clk_sys = '0' then         -- asynchronous reset (active low)
+      key_2_p1 <= '0';
+      key_2_p2 <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      key_2_p1 <= key_2_a;
+      key_2_p2 <= key_2_p1;
+    end if;
+  end process p_resynch_key_2;
+
+  key_2_clk_sys <= key_2_p2;
+
+  p_resynch_key_3 : process (clk_sys, rst_n_clk_sys) is
+  begin  -- process p_resynch_key_3
+    if rst_n_clk_sys = '0' then         -- asynchronous reset (active low)
+      key_3_p1 <= '0';
+      key_3_p2 <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      key_3_p1 <= key_3_a;
+      key_3_p2 <= key_3_p1;
+    end if;
+  end process p_resynch_key_3;
+
+  key_3_clk_sys <= key_3_p2;
 
 end architecture rtl;

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-09
--- Last update: 2024-01-21
+-- Last update: 2024-01-23
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -34,8 +34,8 @@ entity spi_slave_itf is
     G_DATA_WIDTH      : integer               := 8;     -- Data Width
     G_FIFO_DATA_WIDTH : integer range 8 to 32 := 8;     -- FIFO DATA WIDTH
     G_FIFO_DEPTH      : integer               := 1024;  -- FIFO DEPTH
-    G_CPHA            : std_logic;                      -- CPHA HARD Configuration
-    G_CPOL            : std_logic                       -- CPOL HARD Configuration
+    G_CPHA            : std_logic             := '0';   -- CPHA HARD Configuration
+    G_CPOL            : std_logic             := '0'    -- CPOL HARD Configuration
     );
   port (
     clk_sys   : in std_logic;                           -- Clock System
@@ -197,7 +197,7 @@ begin  -- architecture rtl
 
   -- == Shift register in spi_clk clock domain ==
 
-  spi_clk_rst <= '0' when spi_cs_n = '0' else '1';  -- TBD a chier
+  spi_clk_rst <= '1' when spi_cs_n = '0' else '0';  -- TBD a chier
 
   g_sr_on_r_edge : if((G_CPOL = '0' and G_CPHA = '0') or (G_CPOL = '1' and G_CPHA = '1')) generate
 

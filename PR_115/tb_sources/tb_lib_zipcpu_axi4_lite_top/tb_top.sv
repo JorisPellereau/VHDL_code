@@ -28,6 +28,9 @@ module tb_top
    
    
    // -- DUT SIGNALS
+   wire       key_1_a_dut;
+   wire       key_2_a_dut;
+   wire       key_3_a_dut;
    wire [6:0] seg0_dut;
    wire [6:0] seg1_dut;
    wire [6:0] seg2_dut;
@@ -56,6 +59,9 @@ module tb_top
    wire 		  spi_slave_clk_dut;
    wire 		  spi_slave_cs_n_dut;
    wire [`C_SPI_SIZE-1:0] spi_slave_di_dut;
+   reg 		  spi_slave_clk_dut_delay;
+   reg 		  spi_slave_cs_n_dut_delay;
+   reg [`C_SPI_SIZE-1:0] spi_slave_di_dut_delay;
    
    
 
@@ -222,6 +228,11 @@ module tb_top
      i_dut (
 	    .clk   (clk),
 	    .rst_n (rst_n),
+
+	    // Push-buttons
+	    .key_1_a  (key_1_a_dut),
+	    .key_2_a  (key_2_a_dut),    
+	    .key_3_a  (key_3_a_dut),
 	    
 	    .o_seg0 (seg0_dut),
 	    .o_seg1 (seg1_dut),
@@ -255,9 +266,9 @@ module tb_top
 	    .spi_do   (spi_master_do_dut),
 	    
 	    // SPI SLAVE I/F
-	    .spi_slave_clk  (spi_slave_clk_dut),
-	    .spi_slave_cs_n (spi_slave_cs_n_dut),
-	    .spi_slave_di   (spi_slave_di_dut),
+	    .spi_slave_clk  (spi_slave_clk_dut_delay),
+	    .spi_slave_cs_n (spi_slave_cs_n_dut_delay),
+	    .spi_slave_di   (spi_slave_di_dut_delay),
 	    
 	    .ledr (ledr_dut),
 	    
@@ -265,10 +276,38 @@ module tb_top
 	    );
 
 
+   assign key_1_a_dut = 1;
+   assign key_2_a_dut = 1;
+   assign key_3_a_dut = 1;
 
+
+   // Simulate the delay on the line
+   always @(spi_slave_clk_dut) begin
+      spi_slave_clk_dut_delay <= #100000 spi_slave_clk_dut;
+   end
+
+   always @(spi_slave_cs_n_dut) begin
+      spi_slave_cs_n_dut_delay <= #100000 spi_slave_cs_n_dut;
+   end
+
+   always @(spi_slave_di_dut) begin
+      spi_slave_di_dut_delay <= #100000 spi_slave_di_dut;
+   end
+
+     
    // DE0 NANO ?
-   assign spi_slave_clk_dut  = 0;
-   assign spi_slave_cs_n_dut = 1;
-   assign spi_slave_di_dut   = 0;
+   spi_mirror_top #(
+		    .G_SPI_SIZE (4)
+		    )
+   i_de0_nano_0 (
+		 .clk_spi      (spi_master_clk_dut),   
+		 .rst_n        (rst_n),
+		 .clk_spi_out  (spi_slave_clk_dut),
+		 .spi_cs_n     (spi_master_cs_n_dut),
+		 .spi_cs_n_out (spi_slave_cs_n_dut),
+		 .spi_di       (spi_master_do_dut),
+		 .spi_do       (spi_slave_di_dut)
+		);
+   
    
 endmodule // tb_top
