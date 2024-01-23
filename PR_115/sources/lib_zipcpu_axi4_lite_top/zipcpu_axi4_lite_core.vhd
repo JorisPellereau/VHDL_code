@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-21
+-- Last update: 2024-01-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -739,14 +739,14 @@ begin  -- architecture rtl
       OPT_SHIFTS           => "1",
       OPT_LOCK             => "1",
       OPT_FPU              => "0",
-      OPT_EARLY_BRANCHING  => "1",
+      OPT_EARLY_BRANCHING  => C_OPT_EARLY_BRANCHING,
       OPT_CIS              => "1",        --"0",      -- Compressed Instruction not used
       OPT_LOWPOWER         => "0",
       OPT_DISTRIBUTED_REGS => "1",
       OPT_DBGPORT          => "0",        -- Same as start halted
       OPT_TRACE_PORT       => "0",
       OPT_PROFILER         => "0",
-      OPT_USERMODE         => "1",
+      OPT_USERMODE         => C_OPT_USERMODE,
       RESET_DURATION       => 10,
       OPT_SIM              => "0",
       OPT_CLKGATE          => "0"

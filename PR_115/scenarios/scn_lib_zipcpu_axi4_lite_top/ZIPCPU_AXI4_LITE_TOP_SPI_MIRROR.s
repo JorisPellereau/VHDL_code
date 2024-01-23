@@ -57,7 +57,7 @@
 ;;; R2 : Data to send through SPI MASTER
 ;;; R3 : Temporary register
 
-	;; Main program
+;; Perform after a reset of the CPU (cpu_reset, bus error etc)
 _start:
 	NOOP
 	jsr clr_reg		; Clear All registers expect r13 r14 r15
@@ -65,10 +65,10 @@ _start:
 	jsr init_spi_master	; INIT SPI MASTER
 	jsr init_spi_slave	; INIT SPI SLAVE	
 	jsr init_it		; INIT Interruption
-	jsr idle_task 		; JUMP to IDLE Task
-	WAIT
+	jsr send_spi_data	; Send SPI DATA
 
 ;;; == SUBROUTINES ==
+
 	
 ;;; CLEAR REGISTERS
 clr_reg:	
@@ -85,7 +85,10 @@ clr_reg:
 	clr r11			; R11 is used for the result of the test
 	clr r12
 	clr CC 			; Initialized the status register (not mandatory but cleaner)
+	MOV idle_task(PC), uPC	; Initialized the Uer Program Counter to the idle task
+	MOV r12, uCC
 	RETN
+
 
 
 ;;; INIT Segments Slave
@@ -115,53 +118,45 @@ init_it:
 
 ;;; READ Data from SPI Slave and update 7 segments
 ;;; Enter in this subroutine on interrution
+;;; Supervisor Task
 read_spi_slave_to_7_segs:
+	;; Disable GIE
+	AND 0xFFFFFFDF, sCC
 	LW zipcpu_periph_base_addr, r3 	; Store the value of the PIC IT into R3
 	AND 0xFFFF7FFE,r3	       	; Reset the bit 0 (SPI SLAVE interrupt)
-	SW r3, zipcpu_periph_base_addr	; Clear the interrupt 1 in the PIC
+	SW R3, zipcpu_periph_base_addr	; Clear the interrupt 1 in the PIC
 	LDI C_EN_IT_0, r3		; Write the Enable value in R3
-	SW r3, zipcpu_periph_base_addr	; Load the content of R3 to ZIPPERIPH (enable IT 0)
-	LW spi_slave_base_addr, r3 	; STORE Data from SPI Slave into r3
-	SW r3, segments_base_addr  	; Update segments data
-	add $1, r2			; Add 1 into R2
-	RTU	
-	jsr idle_task
-
-	;; force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/i_spi_slave_itf_0/spi_slave_it 1 0 -cancel 20ns
+	SW R3, zipcpu_periph_base_addr	; Load the content of R3 to ZIPPERIPH (enable IT 0)
+	LW spi_slave_base_addr, R3 	; STORE Data from SPI Slave into r3
+	SW R3, segments_base_addr  	; Update segments data
+	add $1, R2			; Add 1 into R2
+	jsr send_spi_data
+	;; MOV idle_task(PC), uPC;
 	
-;;; Task that send a SPI Frame on the SPI MASTER and wait for the interruption of SPI SLAVE
-idle_task:
+
+; force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/i_spi_slave_itf_0/spi_slave_it 1 0 -cancel 20ns
+; force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/rresp 0 0
+; force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset 0 0
+
+
+;;; SEND SPI DATA
+send_spi_data:
 	;; Send Data through SPI MASTER
 	SW r2, spi_master_base_addr + 0x8 ; Write the data into R2 to the FIFO WRITE Data
 	LDI 0x00000101, r3		  ; Prepare the register R3 for the SPI Start access
 	SW r3, spi_master_base_addr	  ; PErform a SPI Start and keep the clk_div at 1
+	RTU				  	; Go to USER Mode
+	MOV read_spi_slave_to_7_segs(PC), sPC 	; Load the sPC to the read_spi_slave sub routine
+	jsr idle_task			      	; Go to IDLE Task
 	
+;;; Wait for the interruption of SPI SLAVE
+;;; We entered in this task when we are in USER MODE
+idle_task:
 	; Wait for the next interrupt, then switch to supervisor task
 	WAIT
-	JSR read_spi_slave_to_7_segs
 	
         ; When WAIT completes, the CPU will switch to supervisor mode.
         ; If the supervisor then re-enables this task, it will be because
         ; the supervisor wishes to wait for an interrupt again. For
         ; this reason, we loop back to the top.
 	BRA idle_task
-	
-;;; == CHECK TEST SECTION ==
-;; This function increments Error if the previous comparison is wrong
-;; Error register is R10
-inc_error:	
-	add $1, r10
-	RETN
-
-;;; This function Check the result of the test
-check_test:
-	cmp 0, r10
-	BZ success_test 	; If ok goto success_test subroutines
-	LDI C_TEST_KO, r11 	; Else write KO
-	BUSY
-
-;;; Success : Write value 1 in r11
-success_test:
-	LDI C_TEST_OK, r11
-	BUSY
-;;; ========================

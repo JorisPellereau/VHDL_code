@@ -8,6 +8,7 @@ quietly virtual signal -install /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxi
 quietly virtual signal -install /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder { /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction[13:0]} i_instruction_imm_14bits
 quietly virtual signal -install /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder { /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction[17:14]} i_instruction_B_reg
 quietly virtual signal -install /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder { /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction[12:0]} i_instruction_13bits_sign_imm
+quietly virtual signal -install /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core {/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/regset[5]  } regset_15_15
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -group INSTR_AXI4_LITE /tb_top/i_dut/clk
 add wave -noupdate -group INSTR_AXI4_LITE -group WR_RESP_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BVALID
@@ -21,14 +22,14 @@ add wave -noupdate -group INSTR_AXI4_LITE -expand -group READ_CHAN /tb_top/i_dut
 add wave -noupdate -group INSTR_AXI4_LITE -expand -group READ_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RREADY
 add wave -noupdate -group INSTR_AXI4_LITE -expand -group READ_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RDATA
 add wave -noupdate -group INSTR_AXI4_LITE -expand -group READ_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RRESP
-add wave -noupdate -group INSTR_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWVALID
-add wave -noupdate -group INSTR_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWREADY
-add wave -noupdate -group INSTR_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWADDR
-add wave -noupdate -group INSTR_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWPROT
-add wave -noupdate -group INSTR_AXI4_LITE -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WVALID
-add wave -noupdate -group INSTR_AXI4_LITE -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WREADY
-add wave -noupdate -group INSTR_AXI4_LITE -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WDATA
-add wave -noupdate -group INSTR_AXI4_LITE -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WSTRB
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWVALID
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWREADY
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWADDR
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWPROT
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WVALID
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WREADY
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WDATA
+add wave -noupdate -group INSTR_AXI4_LITE -expand -group WR_DATA_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WSTRB
 add wave -noupdate -group DATA_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWREADY
 add wave -noupdate -group DATA_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWVALID
 add wave -noupdate -group DATA_AXI4_LITE -group AW_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWADDR
@@ -40,16 +41,22 @@ add wave -noupdate -group DATA_AXI4_LITE -group WD_CHAN /tb_top/i_dut/i_zipcpu_a
 add wave -noupdate -group DATA_AXI4_LITE -group WR_RESP_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BVALID
 add wave -noupdate -group DATA_AXI4_LITE -group WR_RESP_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BRESP
 add wave -noupdate -group DATA_AXI4_LITE -group WR_RESP_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BREADY
-add wave -noupdate -group DATA_AXI4_LITE -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARREADY
-add wave -noupdate -group DATA_AXI4_LITE -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARVALID
-add wave -noupdate -group DATA_AXI4_LITE -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARADDR
-add wave -noupdate -group DATA_AXI4_LITE -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARPROT
-add wave -noupdate -group DATA_AXI4_LITE -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RREADY
-add wave -noupdate -group DATA_AXI4_LITE -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RRESP
-add wave -noupdate -group DATA_AXI4_LITE -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RVALID
-add wave -noupdate -group DATA_AXI4_LITE -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RDATA
-add wave -noupdate /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/regset
+add wave -noupdate -group DATA_AXI4_LITE -expand -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARREADY
+add wave -noupdate -group DATA_AXI4_LITE -expand -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARVALID
+add wave -noupdate -group DATA_AXI4_LITE -expand -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARADDR
+add wave -noupdate -group DATA_AXI4_LITE -expand -group AR_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARPROT
+add wave -noupdate -group DATA_AXI4_LITE -expand -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RREADY
+add wave -noupdate -group DATA_AXI4_LITE -expand -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RRESP
+add wave -noupdate -group DATA_AXI4_LITE -expand -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RVALID
+add wave -noupdate -group DATA_AXI4_LITE -expand -group RD_CHAN /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RDATA
+add wave -noupdate /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_interrupt
+add wave -noupdate {/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/regset[14][5]}
+add wave -noupdate -subitemconfig {{/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/regset[14]} -expand} /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/regset
 add wave -noupdate /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_uflags
+add wave -noupdate -group decoder_instr /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction
+add wave -noupdate -group decoder_instr /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_valid
+add wave -noupdate -group decoder_instr /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_illegal
+add wave -noupdate -group decoder_instr /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_pc
 add wave -noupdate /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_iflags
 add wave -noupdate -group {INSTR DECOD} /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_13bits_sign_imm
 add wave -noupdate -group {INSTR DECOD} -label _instruction_31_0_immediate_18bits /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_31_0_immediate
@@ -1421,8 +1428,6 @@ add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group 
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_spi_slave_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/spi_slave_it
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_spi_slave_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/wr_rx_en
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_spi_slave_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/wdata_rx
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_spi_slave_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/fifo_empty_int
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_spi_slave_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_spi_slave_0/fifo_full_int
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_axi4_lite_spi_slave_registers_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_axi4_lite_spi_slave_registers_0/clk_sys
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_axi4_lite_spi_slave_registers_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_axi4_lite_spi_slave_registers_0/rst_n_sys
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_spi_slave_0 -group i_axi4_lite_spi_slave_registers_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/i_axi4_lite_spi_slave_registers_0/slv_start
@@ -2246,671 +2251,671 @@ add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group 
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_bit_extender_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_bit_extender_0/pulse_out
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_bit_extender_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_bit_extender_0/counter_pulse
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_bit_extender_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_bit_extender_0/en_cnt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/w_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgarskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/w_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgawskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_a
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_b
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_hi
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_a
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_b
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_c
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_f
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_brev_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/z
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/n
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/v
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/vx
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/c
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/pre_sign
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/set_ovfl
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/keep_sgn_on_ovfl
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_lsr_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_asr_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_lsl_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpy_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpyhi
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpybusy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpydone
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/this_is_a_multiply_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/r_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_stalled
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_pf_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_31_0_immediate
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_cond
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_opcode
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_DR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_imm_14bits
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_B_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_13bits_sign_imm
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_preA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_preB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_I
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_zI
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_cond
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_wF
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_ALU
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_M
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_DV
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_FP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_wR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_rA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_rB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_early_branch
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_early_branch_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_branch_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_ljmp
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_pipe
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_sim_immv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group InOuts /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group InOuts /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ldi
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mov
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cmptst
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ldilo
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ALU
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_brev
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_noop
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_special
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_add
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mpy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cond
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wF
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mem
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_sto
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_div
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_fpu
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_rA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_rB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wR_n
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ljmp
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ljmp_dly
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cis_ljmp
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/iword
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/pf_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_nxt_half
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cis_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_I
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_fullI
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_I
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_Iz
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_immsrc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/insn_is_pipeable
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/illegal_shift
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/possibly_unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_wr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_signed
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_numerator
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_denominator
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_quotient
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_divisor
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_dividend
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/diff
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_sign
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/pre_sign
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_z
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_c
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/last_bit
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_bit
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/zero_divisor
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/w_n
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_interrupt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_halt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_clear_cache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_wreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_we
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_rreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_instruction
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_instruction_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_rdbusy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_pipe_stalled
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_bus_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_wreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clken
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_new_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clear_icache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_request_address
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clear_dcache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_bus_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_lock_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_op_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_i_count
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_debug
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_ticks
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/iflags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_uflags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_iflags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/break_en
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/user_step
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/sleep
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_halted
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/break_pending
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/trap
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ubreak
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pending_interrupt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/stepped
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/step
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ill_err_u
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ill_err_i
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ibus_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ubus_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/idiv_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/udiv_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ifpu_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ufpu_err_flag
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ihalt_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/uhalt_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/master_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/master_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pf_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/new_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/clear_pipeline
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_stalled
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pf_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_opn
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_A
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_B
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_R
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_preA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_preB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Acc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Bcc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Apc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Bpc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Rcc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Rpc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_F
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_wR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_rA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_rB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ALU
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_M
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_DIV
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_FP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_wF
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_pipe
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ljmp
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_I
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_zI
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_A_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_B_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_F_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_early_branch
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_early_branch_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_branch_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_sim_immv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/prelock_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/last_lock_insn
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cc_invalid_for_dcd
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pending_sreg_write
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_mem
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_alu
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_div
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_fpu
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_opn
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_R
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Rcc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Aid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Bid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_rA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_rB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_Av
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_Bv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_Av
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_Bv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Av
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Bv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_pcB_v
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_pcA_v
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_BnI
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_wR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_wF
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Fl
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_F
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_F
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_pipe
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_lowpower_clear
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_cpu_info
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_sim_immv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_sim_immv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_alu_pc_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_pc_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_pc_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_phase
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/set_cond
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_wR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_wF
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_stalled
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_error
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_error
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/adf_ce_unconditional
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbgv
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbg_clear_pipe
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbg_val
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/debug_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_dbg_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_scc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_ucc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_reg_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_flags_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_flags
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_index
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_reg_id
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_gpreg_vl
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_spreg_vl
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_switch_to_interrupt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_release_from_interrupt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ipc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/upc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/last_write_to_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cc_write_hold
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_clear_icache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pfpcset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pfpcsrc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_clken
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_R
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_A
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_B
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/avsrc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/bvsrc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/bisrc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cpu_sim
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/w_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group dbgwskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_AXI_ACLK
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_AXI_ARESETN
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_interrupt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_cpu_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WSTRB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WSTRB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WSTRB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_cmd_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_halted
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_gie
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_op_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_pf_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_i_count
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_cpu_debug
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_ticks
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/awskd_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/arskd_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/awskd_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/arskd_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_strb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_blkram_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_dbg_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_break
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_dbg_cc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/reset_hold
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/halt_on_fault
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_catch
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_clken
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_clock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clk_gate
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/reset_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/release_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/halt_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/step_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_cache_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_has_halted
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_halt
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_step
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_clear_cache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_status
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_write
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cpu_write
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_strb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_new_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_icache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_request_address
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_instruction
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_instruction_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_dcache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/bus_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_cpu_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_lock_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_wdata
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_reg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_pipe_stalled
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_bus_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_ce
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_rdbusy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_wreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/r_blkram_stall
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_bus_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_bus_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_bus_strb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/S_AXI_ACLK
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/S_AXI_ARESETN
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_cpu_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_new_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_clear_cache
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_ready
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_insn
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_illegal
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/new_flushcount
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/outstanding
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/next_outstanding
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flushcount
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flushing
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flush_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/full_bus
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/shift
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_wr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_rd
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/ign_fifo_full
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_empty
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/ign_fifo_fill
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/pending_new_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/pending_pc
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fill
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/out_fill
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/out_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/endian_swapped_rdata
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/unused
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/S_AXI_ACLK
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/S_AXI_ARESETN
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_cpu_reset
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_stb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_lock
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_addr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_data
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_oreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RRESP
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_busy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_rdbusy
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_valid
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_wreg
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WDATA
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WSTRB
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARVALID
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARADDR
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARPROT
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RREADY
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_clk
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/w_misaligned
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/w_misalignment_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_aw_request
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_response_pending
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/pending_err
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_read
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/r_flushing
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/r_op
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/next_wdata
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/next_wstrb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/last_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_word
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_halfword
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_byte
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_word
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_halfword
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_byte
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/axi_wdata
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/axi_wstrb
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapaddr
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/endian_swapped_rdata
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/pre_result
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/wide_return
-add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/i_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/o_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/w_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgarskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgarskd/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/i_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/o_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/w_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgawskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgawskd/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_a
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/i_b
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group thempy -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/thempy/o_hi
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_a
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/i_b
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_c
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_f
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/o_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_brev_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/z
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/n
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/v
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/vx
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/c
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/pre_sign
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/set_ovfl
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/keep_sgn_on_ovfl
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_lsr_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_asr_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/w_lsl_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpy_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpyhi
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpybusy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/mpydone
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/this_is_a_multiply_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group doalu -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/doalu/r_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_stalled
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_pf_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_31_0_immediate
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_cond
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_opcode
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_DR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_imm_14bits
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_B_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_13bits_sign_imm
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_dcdB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_preA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_preB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_I
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_zI
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_cond
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_wF
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_ALU
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_M
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_DV
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_FP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_wR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_rA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_rB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_early_branch
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_early_branch_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_branch_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_ljmp
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_pipe
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/o_sim_immv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -expand -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group InOuts /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group InOuts /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ldi
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mov
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cmptst
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ldilo
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ALU
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_brev
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_noop
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_special
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_add
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mpy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdR_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdA_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_dcdB_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cond
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wF
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_mem
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_sto
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_div
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_fpu
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_rA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_rB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_wR_n
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ljmp
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_ljmp_dly
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cis_ljmp
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/iword
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/pf_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_nxt_half
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_cis_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_I
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_fullI
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_I
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_Iz
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/w_immsrc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/r_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/insn_is_pipeable
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/illegal_shift
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/possibly_unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_18
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group instruction_decoder -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/instruction_decoder/i_instruction_bit_31
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_wr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_signed
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_numerator
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/i_denominator
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_quotient
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/o_flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_divisor
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_dividend
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/diff
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_sign
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/pre_sign
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_z
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_c
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/last_bit
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/r_bit
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/zero_divisor
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group DIVIDE -group thedivide -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/DIVIDE/thedivide/w_n
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_interrupt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_halt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_clear_cache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_wreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_we
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_dbg_rreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_instruction
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_pf_instruction_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_rdbusy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_pipe_stalled
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_bus_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_wreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -expand -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_mem_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clken
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_dbg_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_new_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clear_icache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_request_address
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_clear_dcache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_bus_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_lock_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_mem_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_op_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_pf_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_i_count
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_debug
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/o_prof_ticks
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/iflags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_uflags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_iflags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/break_en
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/user_step
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/sleep
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_halted
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/break_pending
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/trap
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ubreak
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pending_interrupt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/stepped
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/step
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ill_err_u
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ill_err_i
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ibus_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ubus_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/idiv_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/udiv_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ifpu_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ufpu_err_flag
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ihalt_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/uhalt_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/master_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/master_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pf_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/new_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/clear_pipeline
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_stalled
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pf_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_opn
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_A
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_B
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_R
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_preA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_preB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Acc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Bcc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Apc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Bpc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Rcc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_Rpc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_F
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_wR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_rA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_rB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ALU
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_M
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_DIV
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_FP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_wF
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_pipe
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_ljmp
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_I
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_zI
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_A_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_B_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_F_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_early_branch
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_early_branch_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_branch_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_sim_immv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/prelock_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/last_lock_insn
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cc_invalid_for_dcd
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pending_sreg_write
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_mem
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_alu
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_div
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_valid_fpu
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_opn
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_R
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Rcc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Aid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Bid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_rA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_rB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_Av
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_Bv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_Av
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_Bv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Av
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Bv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_pcB_v
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_pcA_v
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_BnI
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_wR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_wF
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_Fl
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_F
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_F
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_pipe
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_op_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_op_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_lowpower_clear
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_cpu_info
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/op_sim_immv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_sim_immv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_alu_pc_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_pc_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_pc_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_phase
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/set_cond
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_wR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_wF
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/alu_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/mem_stalled
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_error
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/div_flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_error
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/fpu_flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/adf_ce_unconditional
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbgv
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbg_clear_pipe
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dbg_val
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/debug_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_dbg_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_scc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_write_ucc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_reg_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_flags_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_flags
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_index
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_reg_id
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_gpreg_vl
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/wr_spreg_vl
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_switch_to_interrupt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_release_from_interrupt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/ipc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/upc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/last_write_to_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cc_write_hold
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/r_clear_icache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pfpcset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/pfpcsrc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/w_clken
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_R
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_A
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/dcd_full_B
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/avsrc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/bvsrc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/bisrc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/cpu_sim
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -expand -group core -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/i_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/o_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/w_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group dbgwskd -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbgwskd/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_AXI_ACLK
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_AXI_ARESETN
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_interrupt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_cpu_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WSTRB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_AWREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_WREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_BRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_ARREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/S_DBG_RRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_AWPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_WSTRB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_BREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_ARPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_INSN_RREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_AWPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_WSTRB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_BREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_ARPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/M_DATA_RREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_cmd_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_halted
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_gie
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_op_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_pf_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_i_count
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_cpu_debug
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_prof_ticks
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/awskd_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/arskd_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/awskd_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/arskd_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/wskd_strb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_blkram_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_read_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_dbg_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_break
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_write_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_dbg_cc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/reset_hold
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/halt_on_fault
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_catch
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_clken
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_clock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clk_gate
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/reset_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/release_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/halt_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/step_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_cache_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_has_halted
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_halt
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_step
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cmd_clear_cache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/cpu_status
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_write
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cpu_write
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/dbg_cmd_strb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_new_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_icache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_request_address
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_instruction
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_instruction_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/clear_dcache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/bus_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_cpu_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_lock_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_wdata
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_reg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_pipe_stalled
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_bus_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_ce
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_rdbusy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_wreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/mem_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/r_blkram_stall
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/i_bus_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_bus_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/o_bus_strb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/S_AXI_ACLK
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/S_AXI_ARESETN
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_cpu_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_new_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_clear_cache
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_ready
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/i_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_insn
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/o_illegal
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_ARPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/M_AXI_RREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/new_flushcount
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/outstanding
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/next_outstanding
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flushcount
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flushing
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/flush_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/full_bus
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/shift
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_wr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_rd
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/ign_fifo_full
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_empty
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/ign_fifo_fill
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fifo_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/pending_new_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/pending_pc
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/fill
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/out_fill
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/out_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/endian_swapped_rdata
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group pf -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/pf/unused
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/S_AXI_ACLK
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/S_AXI_ARESETN
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_cpu_reset
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_stb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_lock
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_addr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_data
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_oreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RRESP
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_busy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_rdbusy
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_valid
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_wreg
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/o_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_AWPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WDATA
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_WSTRB
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_BREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARVALID
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARADDR
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_ARPROT
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Outputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/M_AXI_RREADY
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/i_clk
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/w_misaligned
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/w_misalignment_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_aw_request
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_response_pending
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/pending_err
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/misaligned_read
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/r_flushing
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/r_op
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/next_wdata
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/next_wstrb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/last_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_word
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_halfword
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/shifted_wstrb_byte
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_word
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_halfword
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapped_wstrb_byte
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/axi_wdata
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/axi_wstrb
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/swapaddr
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/endian_swapped_rdata
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/pre_result
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/wide_return
+add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -expand -group i_zipaxil_0 -group BARE_MEM -group domem -group Internal /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/BARE_MEM/domem/unused
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_master_0/clk
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_master_0/rst_n
 add wave -noupdate -group i_dut -expand -group i_zipcpu_axi4_lite_core_0 -group i_axi4_lite_master_0 -group Inputs /tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_master_0/start
@@ -3150,7 +3155,7 @@ add wave -noupdate -group i_dut -group i_reset_gen_0 -group Outputs /tb_top/i_du
 add wave -noupdate -group i_dut -group i_reset_gen_0 -group Internal /tb_top/i_dut/i_reset_gen_0/s_rst_n_p1
 add wave -noupdate -group i_dut -group i_reset_gen_0 -group Internal /tb_top/i_dut/i_reset_gen_0/s_rst_n_p2
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {17184878 ps} 0}
+WaveRestoreCursors {{Cursor 2} {6737076 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 259
 configure wave -valuecolwidth 100
@@ -3166,4 +3171,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ms
 update
-WaveRestoreZoom {0 ps} {29830500 ps}
+WaveRestoreZoom {6434901 ps} {7056658 ps}

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2024-01-11
+-- Last update: 2024-01-22
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -77,9 +77,11 @@ package pkg_zipcpu_axi4_lite_top is
   constant C_ZIPUART_INIT_SETUP     : std_logic_vector(30 downto 0) := "100" & x"0" & x"0001B2";  -- ZIPUART Initial Value
   constant C_ZIPUART_LGFLEN         : std_logic_vector(3 downto 0)  := x"4";                      -- ZIPUART LGFLEN FIFO SIZE log based 2 -
                                                                                                   -- MAX 10
-  constant C_ZIPUART_HW_FLOW_CTRL   : std_logic_vector(0 downto 0)  := "1";                       -- HW Flow Hardware enable
-  constant C_ZIPUART_OPT_SKIDBUFFER : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT SKIDBUFFER
-  constant C_ZIPUART_LOWPOWER       : std_logic_vector(0 downto 0)  := "0";                       -- ZIPUART OPT LOW POWER
+  constant C_ZIPUART_HW_FLOW_CTRL   : std_logic_vector(0 downto 0)  := "1";  -- HW Flow Hardware enable
+  constant C_ZIPUART_OPT_SKIDBUFFER : std_logic_vector(0 downto 0)  := "0";  -- ZIPUART OPT SKIDBUFFER
+  constant C_ZIPUART_LOWPOWER       : std_logic_vector(0 downto 0)  := "0";  -- ZIPUART OPT LOW POWER
+  constant C_OPT_USERMODE           : std_logic_vector(0 downto 0)  := "1";  -- 1 : Use user regs
+  constant C_OPT_EARLY_BRANCHING    : std_logic_vector(0 downto 0)  := "1";  -- 1 : the ZipCPU may branch on an unconditional branch instruction as soon as it is recognized by the instruction decoder
 
   -- SPI MASTER Configuration
   constant C_SPI_SIZE            : integer := 4;     -- SPI SIZE

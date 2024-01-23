@@ -41,12 +41,19 @@ scn.CREATE_MODELSIM_MEMORY(mem_file        = mem_file,
                             default_data   = 0x77C00000)
 
 
+
 scn.LOAD_MEMORY(memory_rtl_path = rtl_mem_path,
                 mem_file        = mem_file)
   
 scn.print_step("Wait for Reset")
 
 scn.WTRS("RST_N")
+
+scn.WAIT(200, "n")
+
+# Temporary for DEBUG purpose
+scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_axi4_lite_spi_slave_0/rresp 0 0")
+scn.MODELSIM_CMD("force -freeze sim:/tb_top/i_dut/i_zipcpu_axi4_lite_core_0/i_zipaxil_0/core/i_reset 0 0")
 
 scn.WAIT(200, "us")
 
