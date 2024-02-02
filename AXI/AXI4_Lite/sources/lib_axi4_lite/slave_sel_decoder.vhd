@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-11
--- Last update: 2024-01-12
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -102,12 +102,84 @@ begin  -- architecture rtl
                         and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
 
 
-    sel_idx_comb(2) <= ((not sel_idx_bit_comb(6)) and sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3))
+    sel_idx_comb(2) <= (sel_idx_bit_comb(6) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3))
+                        and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
+
+                       ((not sel_idx_bit_comb(6)) and sel_idx_bit_comb(5) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3))
                         and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))) or
 
                        (sel_idx_bit_comb(6) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3))
                         and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0)));
 
   end generate;
+
+  -- Addr Decode for 8 Slaves
+  g_addr_decode_8_slaves : if(G_SLAVE_NB = 8) generate
+
+    sel_idx_comb(0) <=
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        );
+
+    sel_idx_comb(1) <=
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        );
+
+    sel_idx_comb(2) <=
+      (
+        (not sel_idx_bit_comb(7)) and (sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        ) or
+
+      (
+        (sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
+        (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        );
+
+  end generate;
+
 
 end architecture rtl;

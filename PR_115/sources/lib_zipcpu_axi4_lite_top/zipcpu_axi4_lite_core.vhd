@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-23
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -37,6 +37,7 @@ library lib_axi4_lite_max7219;
 library lib_axi4_lite_memory;
 library lib_axi4_lite_spi_master;
 library lib_axi4_lite_spi_slave;
+library lib_axi4_lite_i2c_master;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
 library lib_jtag_intel;
@@ -111,6 +112,13 @@ entity zipcpu_axi4_lite_core is
     spi_slave_cs_n : in  std_logic;                                  -- SPI Slave Chip select
     spi_slave_do   : out std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- Output SPI SLAVE
     spi_slave_di   : in  std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- Input SPI SLAVE
+
+    -- I2C Master EEPROM I/F
+    sclk_eeprom    : out std_logic;     -- SCLK
+    sclk_en_eeprom : out std_logic;     -- Enable SCLK
+    sda_in_eeprom  : in  std_logic;     -- Input Data
+    sda_out_eeprom : out std_logic;     -- Output Data
+    sda_en_eeprom  : out std_logic;     -- Enable SDA
 
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
@@ -413,6 +421,8 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal master_wdata        : std_logic_vector(32 - 1 downto 0);
   signal start_master        : std_logic;  -- Start Master
 
+  signal key_1_p      : std_logic;      -- KEY 1 piped one time
+  signal key_1_f_edge : std_logic;      -- Rising edge of KEY 1 f edge
 
 
   -- ZIPAXIL Signals
@@ -577,6 +587,11 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal shift_reg  : std_logic_vector(31 downto 0);  -- Get TDI data
   signal lcd_on_int : std_logic;                      -- Internal LCD ON
 
+
+  -- == DEBUG ==
+  signal spi_wdata    : std_logic_vector(7 downto 0);
+  signal spi_wdata_p  : std_logic_vector(7 downto 0);
+  signal spi_write_en : std_logic;
 begin  -- architecture rtl
 
 
@@ -752,7 +767,7 @@ begin  -- architecture rtl
       OPT_TRACE_PORT       => "0",
       OPT_PROFILER         => "0",
       OPT_USERMODE         => C_OPT_USERMODE,
-      RESET_DURATION       => 10,
+      RESET_DURATION       => C_RESET_DURATION,
       OPT_SIM              => "0",
       OPT_CLKGATE          => "0"
       )
@@ -973,9 +988,20 @@ begin  -- architecture rtl
       );
 
 
+  p_pipe_key_1 : process (clk_sys, rst_n_sys) is
+  begin  -- process p_pipe_key_1
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      key_1_p <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      key_1_p <= key_1;
+    end if;
+  end process p_pipe_key_1;
+
+  key_1_f_edge <= not key_1 and key_1_p;
+
   -- Interruption vector affectation
   interrupt_vector(0) <= spi_slave_it;  -- Interrupt vector connected to the SPI SLAVE Interrupt
-  interrupt_vector(1) <= not key_1;     -- Interruption from KEY 1 - low level activation
+  interrupt_vector(1) <= key_1_f_edge;  -- Interruption from KEY 1 - on falling edge of KEY1
 
   -- Instanciation of AXIPERIPH
   i_axilperiphs_0 : axilperiphs
@@ -1289,7 +1315,7 @@ begin  -- architecture rtl
       G_SPI_DATA_WIDTH       => 8,                                 -- SPI DATA WIDTH
       G_FIFO_DATA_WIDTH      => 8,                                 -- FIFO DATA WIDTH
       G_FIFO_DEPTH           => 1024,                              -- FIFO DEPTH
-      G_CPHA                 => '0',                               -- CPHA HARD Configuration
+      G_CPHA                 => '1',                               -- CPHA HARD Configuration
       G_CPOL                 => '0'                                -- CPOL HARD Configuration
       )
     port map(
@@ -1330,17 +1356,86 @@ begin  -- architecture rtl
       spi_cs_n     => spi_slave_cs_n,
       spi_do       => spi_slave_do,
       spi_di       => spi_slave_di,
-      spi_slave_it => spi_slave_it
+      spi_slave_it => spi_slave_it,
+      -- DEBUG PURPOSE
+      spi_wdata    => spi_wdata,
+      spi_write_en => spi_write_en
       );
 
+  -- Instanciation of I2C Master AXI4 Lite - EEPROM management
+  i_axi4_lite_i2c_master_eeprom_0 : entity lib_axi4_lite_i2c_master.axi4_lite_i2c_master
+    generic map(
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH,
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_NB_DATA              => 256,      -- FIFO DATA WIDTH
+      G_FIFO_DATA_WIDTH      => 8,        -- FIFO DATA WIDTH
+      G_FIFO_DEPTH           => 1024,     -- FIFO DEPTH
+      G_I2C_FREQ             => 400000,   -- '0' : 100kHz - '1' : 400kHz
+      G_CLKSYS_FREQ          => 50000000  -- clk_sys frequency
+      )
+    port map(
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_interco_m(C_I2C_MASTER_EEPROM),
+      awaddr  => awaddr_interco_m(C_I2C_MASTER_EEPROM)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_I2C_MASTER_EEPROM),
+      awready => awready_interco_m(C_I2C_MASTER_EEPROM),
+
+      -- Write Data Channel
+      wvalid => wvalid_interco_m(C_I2C_MASTER_EEPROM),
+      wdata  => wdata_interco_m(C_I2C_MASTER_EEPROM),
+      wstrb  => wstrb_interco_m(C_I2C_MASTER_EEPROM),
+      wready => wready_interco_m(C_I2C_MASTER_EEPROM),
+
+      -- Write Response Channel
+      bready => bready_interco_m(C_I2C_MASTER_EEPROM),
+      bvalid => bvalid_interco_m(C_I2C_MASTER_EEPROM),
+      bresp  => bresp_interco_m(C_I2C_MASTER_EEPROM),
+
+      -- Read Address Channel
+      arvalid => arvalid_interco_m(C_I2C_MASTER_EEPROM),
+      araddr  => araddr_interco_m(C_I2C_MASTER_EEPROM)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_I2C_MASTER_EEPROM),
+      arready => arready_interco_m(C_I2C_MASTER_EEPROM),
+
+      -- Read Data Channel
+      rready => rready_interco_m(C_I2C_MASTER_EEPROM),
+      rvalid => rvalid_interco_m(C_I2C_MASTER_EEPROM),
+      rdata  => rdata_interco_m(C_I2C_MASTER_EEPROM),
+      rresp  => rresp_interco_m(C_I2C_MASTER_EEPROM),
+
+      -- I2C MASTER I/F   
+      sclk    => sclk_eeprom,
+      sclk_en => sclk_en_eeprom,
+      sda_in  => sda_in_eeprom,
+      sda_out => sda_out_eeprom,
+      sda_en  => sda_en_eeprom
+      );
+
+  -- == DEBUG ==
+  p_spi_wdata_mngt : process (clk_sys, rst_n_sys) is
+  begin  -- process p_spi_wdata_mngt
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      spi_wdata_p <= (others => '0');
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      if(spi_write_en = '1') then
+        spi_wdata_p <= spi_wdata;
+      end if;
+    end if;
+  end process p_spi_wdata_mngt;
+
   -- ZIPCPU Single outputs
-  ledr_int(0)           <= cmd_reset;
-  ledr_int(1)           <= halted;
-  ledr_int(2)           <= gie;
-  ledr_int(3)           <= op_stall;
-  ledr_int(4)           <= pf_stall;
-  ledr_int(5)           <= i_count;
-  ledr_int(17 downto 6) <= (others => '0');
+  ledr_int(0)            <= cmd_reset;
+  ledr_int(1)            <= halted;
+  ledr_int(2)            <= gie;
+  ledr_int(3)            <= op_stall;
+  ledr_int(4)            <= pf_stall;
+  ledr_int(5)            <= i_count;
+  ledr_int(17 downto 10) <= spi_wdata_p;  -- DEBUG PURPOSE
+
+  ledr_int(9 downto 6) <= (others => '0');
 
   -- Outputs
   ledr             <= ledr_int;

@@ -77,6 +77,7 @@ LIB_LIST+=lib_axi4_lite_max7219
 LIB_LIST+=lib_axi4_lite_memory
 LIB_LIST+=lib_axi4_lite_spi_master
 LIB_LIST+=lib_axi4_lite_spi_slave
+LIB_LIST+=lib_axi4_lite_i2c_master
 LIB_LIST+=lib_CFAH1602_v2
 LIB_LIST+=lib_ram_intel
 LIB_LIST+=lib_fifo
@@ -88,6 +89,7 @@ LIB_LIST+=lib_rom_intel
 LIB_LIST+=lib_jtag_intel
 LIB_LIST+=lib_spi_master
 LIB_LIST+=lib_spi_slave
+LIB_LIST+=lib_i2c
 # ================
 
 
@@ -127,6 +129,10 @@ SRC_AXI4_LITE_SPI_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_
 # SPI SLAVE
 SRC_LIB_SPI_SLAVE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/SPI/sources/lib_spi_slave/
 SRC_AXI4_LITE_SPI_SLAVE_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_spi_slave/
+
+# I2C Master
+SRC_LIB_I2C_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/I2C/sources/lib_i2c/
+SRC_AXI4_LITE_I2C_MASTER_DIR=/home/linux-jp/Documents/GitHub/VHDL_code/AXI/AXI4_Lite/sources/lib_axi4_lite_i2c_master/
 
 # -- ZIPCPU PATH --
 SRC_ZIPCPU_EX_DIR=$(SRC_ZIPCPU_DIR)/ex/
@@ -229,11 +235,21 @@ src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave_pkg.vhd
 src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave_registers.vhd
 src_axi4_lite_spi_slave_vhd+=axi4_lite_spi_slave.vhd
 
+# I2C MASTER
+src_lib_i2c_vhd+=i2c_master_itf.vhd
+src_lib_i2c_vhd+=i2c_master.vhd
+
+src_lib_axi4_lite_i2c_master_vhd+=axi4_lite_i2c_master_pkg.vhd
+src_lib_axi4_lite_i2c_master_vhd+=axi4_lite_i2c_master_registers.vhd
+src_lib_axi4_lite_i2c_master_vhd+=axi4_lite_i2c_master.vhd
+
+
 src_lib_jtag_intel_vhd+=vjtag_intf.vhd
 
 src_zipcpu_axi4_lite_top_vhd += pkg_zipcpu_axi4_lite_top.vhd
 src_zipcpu_axi4_lite_top_vhd += zipcpu_axi4_lite_core.vhd
 src_zipcpu_axi4_lite_top_vhd += resynchro.vhd
+src_zipcpu_axi4_lite_top_vhd += tristate.vhd
 src_zipcpu_axi4_lite_top_vhd += zipcpu_axi4_lite_top.vhd
 
 src_lib_wishbone_vhd+=wb_slv_memory.vhd
@@ -318,6 +334,9 @@ src_spi_mirror_top_vhd+=spi_mirror_top.vhd
 # == TESTBENCH MODULES V FILES LIST ==
 SRC_LCD_EMUL_DIR=/home/linux-jp/Documents/GitHub/RTL_Testbench/sources/TB_modules/LCD_CFAH_checker/
 src_lcd_emul_v+=LCD_CFAH_emul.sv
+
+SRC_SLAVE_I2C_DIR=$(RTL_Testbench_path)
+
 # ====================================
 
 
@@ -359,6 +378,8 @@ compile_zipcpu_axi4_lite_top:
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_spi_master_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_spi_master VHD_FILE_PATH=$(SRC_AXI4_LITE_SPI_MASTER_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_spi_slave_vhd)" VHD_DESIGN_LIB=lib_spi_slave VHD_FILE_PATH=$(SRC_LIB_SPI_SLAVE_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_spi_slave_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_spi_slave VHD_FILE_PATH=$(SRC_AXI4_LITE_SPI_SLAVE_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_lib_i2c_vhd)" VHD_DESIGN_LIB=lib_i2c VHD_FILE_PATH=$(SRC_LIB_I2C_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
+	make compile_design_vhd_files SRC_VHD="$(src_lib_axi4_lite_i2c_master_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_i2c_master VHD_FILE_PATH=$(SRC_AXI4_LITE_I2C_MASTER_DIR) WORK_DIR=ZIPCPU_AXI4_LITE_TOP_WORK PROJECT_NAME=ZIPCPU_AXI4_LITE_TOP; \
 	make compile_design_vhd_files SRC_VHD="$(src_axi4_lite_memory_vhd)" VHD_DESIGN_LIB=lib_axi4_lite_memory VHD_FILE_PATH=$(SRC_AXI4_LITE_MEMORY_DIR); \
 	make compile_design_vhd_files SRC_VHD="$(src_zipcpu_axi4_lite_top_vhd)" VHD_DESIGN_LIB=lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_ZIPCPU_AXI4_LITE_TOP_DIR); \
 
@@ -404,6 +425,7 @@ compile_tb_zipcpu_axi4lite_vhd_files:
 	make compile_tb_vhd_files SRC_TB_VHD="$(src_spi_mirror_top_vhd)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top VHD_FILE_PATH=$(SRC_LIB_SPI_MIRROR_TOP_DIR)
 
 compile_tb_zipcpu_axi4_lite_top:
+	make compile_tb_v_files SRC_TB_V="$(I2C_SLAVE_FILE_LIST)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=$(SRC_SLAVE_I2C_DIR)
 	make compile_tb_v_files SRC_TB_V="$(src_lcd_emul_v)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=$(SRC_LCD_EMUL_DIR)
 	make compile_tb_v_files SRC_TB_V="$(src_tb_lib_zipcpu_axi4_lite_top_v)" LIB_TB_TOP=tb_lib_zipcpu_axi4_lite_top V_FILE_PATH=$(TB_SRC_DIR)/tb_lib_zipcpu_axi4_lite_top/
 

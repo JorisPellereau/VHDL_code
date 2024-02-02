@@ -63,6 +63,9 @@ module tb_top
    reg 		  spi_slave_cs_n_dut_delay;
    reg [`C_SPI_SIZE-1:0] spi_slave_di_dut_delay;
    
+   // I2C EEPROM TB signals
+   wire 		 sclk_eeprom_dut;
+   wire 		 sda_eeprom_dut;
    
 
   // == CLK GEN INST ==
@@ -164,7 +167,9 @@ module tb_top
                       .G_WAIT_WIDTH      (`C_WAIT_WIDTH), 
                       .G_CLK_PERIOD      (`C_TB_CLK_PERIOD),
                       .G_CHECK_SIZE      (`C_CHECK_SIZE),
-                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH)
+                      .G_CHECK_WIDTH     (`C_CHECK_WIDTH),
+
+		      .G_SLAVE_I2C_FIFO_WIDTH (16)
 		      )
    
    tb_class_inst = new (i_wait_event_0.wait_event_if, 
@@ -195,6 +200,11 @@ module tb_top
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "RDATA_MASTER",    0);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "STATUS_MASTER",   1);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "LCD_RDATA",       2);
+
+      // I2C Slave EEPROM Module configuration
+      tb_class_inst.tb_modules_custom_inst.init_slave_i2c_custom_class(i_i2c_slave_eeprom_0.i2c_slave_if,
+								       "I2C_SLAVE_EEPROM"
+								       );
               
       // RUN Testbench Sequencer
       tb_class_inst.tb_sequencer(SCN_FILE_PATH);
@@ -269,6 +279,10 @@ module tb_top
 	    .spi_slave_clk  (spi_slave_clk_dut_delay),
 	    .spi_slave_cs_n (spi_slave_cs_n_dut_delay),
 	    .spi_slave_di   (spi_slave_di_dut_delay),
+
+	    // I2C MASTER EEPROM I/F
+	    .sclk_io_eeprom (sclk_eeprom_dut),
+	    .sda_io_eeprom  (sda_eeprom_dut),
 	    
 	    .ledr (ledr_dut),
 	    
@@ -294,6 +308,19 @@ module tb_top
       spi_slave_di_dut_delay <= #100000 spi_slave_di_dut;
    end
 
+
+   pullup(sclk_eeprom_dut);
+   pullup(sda_eeprom_dut);
+   
+   // Instanciation of an I2C Slave : EEPROM simulation
+   i2c_slave #(
+	       .G_SLAVE_I2C_FIFO_WIDTH (256)
+	       )
+   i_i2c_slave_eeprom_0
+     (
+      .sclk (sclk_eeprom_dut),
+      .sda  (sda_eeprom_dut)
+      );
      
    // DE0 NANO ?
    spi_mirror_top #(

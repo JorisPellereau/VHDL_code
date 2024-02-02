@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-01-31
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author  Description
--- 2024-01-31  1.0      linux-jp	Created
+-- 2024-01-31  1.0      linux-jp        Created
 -------------------------------------------------------------------------------
 
 
@@ -30,20 +30,20 @@ use ieee.numeric_std.all;
 library lib_fifo_wrapper;
 
 library lib_i2c;
-use lib_i2c.pkg_i2c.all;
-
-library lib_utils;
-use lib_utils.pkg_utils.all;
+library lib_pkg_utils;
+use lib_pkg_utils.pkg_utils.all;
 
 entity i2c_master is
   generic (
-    G_I2C_FREQ    : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
-    G_CLKSYS_FREQ : integer                        := 50000000;  -- clk_sys frequency
-    G_NB_DATA     : integer                        := 256        -- Number of MAXIMUM data to transmit    
+    G_I2C_FREQ        : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
+    G_CLKSYS_FREQ     : integer                        := 50000000;  -- clk_sys frequency
+    G_NB_DATA         : integer                        := 256;       -- Number of MAXIMUM data to transmit
+    G_FIFO_DATA_WIDTH : integer                        := 8;         -- FIFO DATA WIDTH
+    G_FIFO_DEPTH      : integer                        := 1024       -- FIFO DPETH
     );
   port (
-    clk_sys   : in std_logic;                                    -- Clock
-    rst_n_sys : in std_logic;                                    -- Asynchronous Reset
+    clk_sys   : in std_logic;                                        -- Clock
+    rst_n_sys : in std_logic;                                        -- Asynchronous Reset
 
     -- Control Signals
     start     : in std_logic;                                       -- Start I2C Transaction
@@ -79,10 +79,10 @@ end entity i2c_master;
 architecture behv of i2c_master is
 
   -- == INTERNAL Signals ==
-  signal rd_en_fifo_tx : std_logic;                     -- Read Enable FIFO TX
-  signal rdata_fifo_rx : std_logic_vector(7 downto 0);  -- Read Data FIFO TX
-  signal wr_en_fifo_rx : std_logic;                     -- Write Enable FIFO RX
-  signal wdata_fifo_rx : std_logic_vector(7 downto 0);  -- Write DATA FIFO RX
+  signal rd_en_fifo_tx : std_logic;                                     -- Read Enable FIFO TX
+  signal wr_en_fifo_rx : std_logic;                                     -- Write Enable FIFO RX
+  signal wdata_fifo_rx : std_logic_vector(G_FIFO_DATA_WIDTH downto 0);  -- Write DATA FIFO RX
+  signal rdata_fifo_tx : std_logic_vector(G_FIFO_DATA_WIDTH downto 0);  -- Read Data FIFO TX
 
 begin  -- architecture behv
 

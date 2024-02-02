@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-30
--- Last update: 2024-01-31
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -24,8 +24,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library lib_utils;
-use lib_utils.pkg_utils.all;
+library lib_pkg_utils;
+use lib_pkg_utils.pkg_utils.all;
 
 entity i2c_master_itf is
   generic(
@@ -70,7 +70,7 @@ architecture rtl of i2c_master_itf is
 
   -- == INTERNAL Signals ==
   signal chip_addr_int   : std_logic_vector(6 downto 0);                               -- Chip Addr
-  signal nb_data_int     : std_logic_vector(G_NB_DATA_WIDTH - 1 downto 0);             -- Number of Data width
+  signal nb_data_int     : std_logic_vector(G_NB_DATA - 1 downto 0);                   -- Number of Data width
   signal rw_int          : std_logic;   -- Read = '1' or write = '0'
   signal fsm_cs          : t_fsm_states;                                               -- FSM Current State
   signal fsm_ns          : t_fsm_states;                                               -- FSM Next State
@@ -94,7 +94,7 @@ architecture rtl of i2c_master_itf is
   signal sclk_change_en  : std_logic;   -- Enable sclk_change only in state /= ST_STOP
   signal wr_ongoing      : std_logic;   -- Write ongoing flag - indicate that the FSM is in RD/WR or CTRL state
   signal rd_ongoing      : std_logic;   -- Read Ongoing flag
-
+  signal sclk_en_int     : std_logic;   -- SCLK EN internal
 begin  -- architecture rtl
 
   p_latch_inputs : process (clk_sys, rst_n_sys) is
@@ -342,7 +342,7 @@ begin  -- architecture rtl
   end process p_cnt_sclk;
 
 
-  sclk_change <= '1' when sclk_cnt = (others => '0') else '0';  -- When 0 is reach the flag is set to 1
+  sclk_change <= '1' when sclk_cnt = to_unsigned(0, sclk_cnt'length) else '0';  -- When 0 is reach the flag is set to 1
 
   -- Sampling pulse is generated during a high value of sclk and when the counter reach its half value
   sampling_pulse <= '1' when sclk_int = '1' and sclk_cnt = to_unsigned((G_CLKSYS_FREQ / G_I2C_FREQ) / 4, sclk_cnt'length) else '0';
@@ -354,18 +354,18 @@ begin  -- architecture rtl
   sclk_generation : process (clk_sys, rst_n_sys) is
   begin  -- process sclk_generation
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      sclk_int <= '1';
-      sclk_en  <= '0';
+      sclk_int    <= '1';
+      sclk_en_int <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       -- When Disable, set to '1' by default
       if(sclk_change_en = '0') then
-        sclk_int <= '1';
-        sclk_en  <= '0';
+        sclk_int    <= '1';
+        sclk_en_int <= '0';
       -- Change the state of the sclk clock
       elsif(sclk_change = '1' and sclk_change_en = '1') then
-        sclk_int <= not sclk_int;
-        sclk_en  <= not sclk_en;
+        sclk_int    <= not sclk_int;
+        sclk_en_int <= not sclk_en_int;
       end if;
 
     end if;
@@ -493,23 +493,23 @@ begin  -- architecture rtl
   begin  -- process p_sda_out_mngt
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       sda_out <= '1';
-      sda_en <= '0';
+      sda_en  <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       -- Generation of the start condition
       if(gen_start = '1') then
         sda_out <= '0';
-        sda_en <= '1';
-        
+        sda_en  <= '1';
+
       -- Generation of the stop condition
       elsif(gen_stop = '1') then
         sda_out <= '1';
-        sda_en <= '0';
-        
+        sda_en  <= '0';
+
       -- Enable only on the sr_en_pulse and if we are in write mode
       elsif(sr_en = '1' and wr_ongoing = '1') then
         sda_out <= sr_wdata(7);         -- Send MSB
-        sda_en <= '1';
+        sda_en  <= '1';
 
       elsif(wr_ongoing = '0') then
         sda_en <= '0';
@@ -519,6 +519,6 @@ begin  -- architecture rtl
   end process p_sda_out_mngt;
 
   -- == OUTPUTS affectation ==
-  sclk <= sclk_int;
-
+  sclk    <= sclk_int;
+  sclk_en <= sclk_en_int;
 end architecture rtl;

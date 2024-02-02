@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-01-31
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -31,14 +31,15 @@ use lib_axi4_lite_i2c_master.axi4_lite_i2c_master_pkg.all;
 
 entity axi4_lite_i2c_master_registers is
   generic (
-    G_ADDR_WIDTH : integer range 4 to 16  := 4;    -- USEFULL ADDR WIDTH
-    G_DATA_WIDTH : integer range 32 to 64 := 32;   -- AXI4 Lite DATA WIDTH
-    G_NB_DATA    : integer                := 256;  -- FIFO DATA WIDTH
-    G_FIFO_DEPTH : integer                := 1024  -- FIFO DEPTH
+    G_ADDR_WIDTH      : integer range 4 to 16  := 4;    -- USEFULL ADDR WIDTH
+    G_DATA_WIDTH      : integer range 32 to 64 := 32;   -- AXI4 Lite DATA WIDTH
+    G_NB_DATA         : integer                := 256;  -- NB DATA WIDTH
+    G_FIFO_DATA_WIDTH : integer                := 8;    -- FIFO DATA WIDTH
+    G_FIFO_DEPTH      : integer                := 1024  -- FIFO DEPTH
     );
   port (
-    clk   : in std_logic;                          -- Clock
-    rst_n : in std_logic;                          -- Asynchronous Reset
+    clk   : in std_logic;                               -- Clock
+    rst_n : in std_logic;                               -- Asynchronous Reset
 
     -- Slave Registers Interface
     slv_start  : in std_logic;                                          -- Start the access
@@ -51,24 +52,27 @@ entity axi4_lite_i2c_master_registers is
     slv_rdata  : out std_logic_vector(G_DATA_WIDTH - 1 downto 0);  -- Slave RDATA
     slv_status : out std_logic_vector(1 downto 0);                 -- Slave status
 
-    -- Registers Interface
-    start_spi         : out std_logic;                                          -- Start SPI Transaction
-    cpha              : out std_logic;                                          -- CPHA Configuration
-    cpol              : out std_logic;                                          -- CPOL Configuration
-    full_duplex       : out std_logic;                                          -- Full Duplex Configuration
-    clk_div           : out std_logic_vector(7 downto 0);                       -- Clock Division Configuration
-    nb_wr             : out std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of Write to perform
-    nb_rd             : out std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);  -- Number of Read to perform
-    wdata_fifo_tx     : out std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);   -- FIFO TX Data
-    wr_en_fifo_tx     : out std_logic;                                          -- FIFO TX Write Enable    
-    rdata_fifo_rx     : in  std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);   -- FIFO RX Data
-    rdata_fifo_rx_val : in  std_logic;                                          -- FIFO RX Data Valid
-    rd_en_fifo_rx     : out std_logic;                                          -- FIFO RX Read Enable
-    fifo_tx_empty     : in  std_logic;                                          -- FIFO TX Empty Flag
-    fifo_tx_full      : in  std_logic;                                          -- FIFO TX Full Flag
-    fifo_rx_empty     : in  std_logic;                                          -- FIFO RX Empty Flag
-    fifo_rx_full      : in  std_logic;                                          -- FIFO RX Full Flag
-    spi_busy          : in  std_logic                                           -- SPI BUSY Flag
+    -- I2C Control
+    start_i2c : out std_logic;                                       -- START I2C Transaction
+    rw        : out std_logic;                                       -- R/W acces
+    chip_addr : out std_logic_vector(6 downto 0);                    -- Chip addr to request
+    nb_data   : out std_logic_vector(log2(G_NB_DATA) - 1 downto 0);  -- Number of Bytes to Read or Write
+
+    -- FIFO ITF
+    wr_en_fifo_tx : out std_logic;                     -- Write Enable to the FIFO TX
+    wdata_fifo_tx : out std_logic_vector(7 downto 0);  -- Write DAta FIFO TX
+
+    rd_en_fifo_rx     : out std_logic;                     -- Read Enable to the FIFO RX
+    rdata_fifo_rx     : in  std_logic_vector(7 downto 0);  -- Read Data FIFO RX
+    rdata_fifo_rx_val : in  std_logic;                     -- Read DAta FIFO RX Valid
+
+    -- Status
+    fifo_tx_empty : in std_logic;       -- FIFO TX Empty Flag
+    fifo_tx_full  : in std_logic;       -- FIFO TX Full Flag
+    fifo_rx_empty : in std_logic;       -- FIFO RX Empty Flag
+    fifo_rx_full  : in std_logic;       -- FIFO RX Full Flag
+    sack_error    : in std_logic;       -- SACK Error Flag
+    i2c_busy      : in std_logic        -- SPI BUSY Flag
     );
 
 end entity axi4_lite_i2c_master_registers;
@@ -106,9 +110,9 @@ begin  -- architecture rtl
       -- check addr modulo 4 (0-4-8-C)
       if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) = to_unsigned((i*G_DATA_WIDTH)/8, C_USEFUL_LSBITS)) then
 
-        -- If lower or equals than REG2 ADDR -> Write access is authorized
+        -- If lower or equals than REG3 ADDR -> Write access is authorized
         -- otherwise it is forbidden ('0')
-        if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) <= unsigned(C_REG2_ADDR)) then
+        if(unsigned(slv_addr(C_USEFUL_LSBITS - 1 downto 0)) <= unsigned(C_REG3_ADDR)) then
           reg_wr_sel(i) <= '1';
         else
           reg_wr_sel(i) <= '0';
@@ -150,35 +154,16 @@ begin  -- architecture rtl
     end if;
   end process p_reg0_wr_mngt;
 
-
-  -- purpose: REG1 Write Management
-  -- Write in register :
-  -- command register
+  -- purpose: Write Management
   p_reg1_wr_mngt : process (clk, rst_n) is
   begin  -- process p_reg1_wr_mngt
-    if rst_n = '0' then                 -- asynchronous reset (active low)
-      ctrl1_register <= C_REG1_INIT_VALUE;
-    elsif rising_edge(clk) then         -- rising clock edge
-
-      -- Write in CTRL1 Register
-      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
-        ctrl1_register <= slv_wdata(C_CTRL1_WIDTH - 1 downto 0);
-      end if;
-
-    end if;
-  end process p_reg1_wr_mngt;
-
-
-  -- purpose: Write Management
-  p_reg2_wr_mngt : process (clk, rst_n) is
-  begin  -- process p_reg2_wr_mngt
     if rst_n = '0' then                 -- asynchronous reset (active low)
       fifo_rx_register  <= (others => '0');
       wr_en_fifo_tx_int <= '0';
     elsif rising_edge(clk) then         -- rising clock edge
 
       -- Write in FIFO TX Register
-      if(reg_wr_sel(C_REG2_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
+      if(reg_wr_sel(C_REG1_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
         fifo_tx_register  <= slv_wdata(C_FIFO_TX_WIDTH - 1 downto 0);
         wr_en_fifo_tx_int <= '1';
       else
@@ -187,7 +172,7 @@ begin  -- architecture rtl
       end if;
 
     end if;
-  end process p_reg2_wr_mngt;
+  end process p_reg1_wr_mngt;
 
   -- ===========================
 
@@ -235,7 +220,7 @@ begin  -- architecture rtl
 
       -- Ack for a read access into a regular register
       -- Generates an error if the addr is greater than the last accessible addr C_REG2_ADDR
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG4_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG3_ADDR) then
         slv_status <= "10";
 
       -- No Error generated
@@ -260,18 +245,14 @@ begin  -- architecture rtl
 
       -- Set RDATA when reading REG1
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG1_ADDR) then
-        slv_rdata <= ctrl1_register;
-
-      -- Set RDATA when reading REG2
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
         slv_rdata <= fifo_tx_register;
 
-      -- Set RDATA when reading REG3 -- TBD FIFO ...
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG3_ADDR) then
+      -- Set RDATA when reading REG2 -- TBD FIFO ...
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG2_ADDR) then
         slv_rdata <= fifo_rx_register;
 
-      -- Set RDATA when reading REG4
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG4_ADDR) then
+      -- Set RDATA when reading REG3
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG3_ADDR) then
         slv_rdata <= x"000" & "000" & status_register;
 
       -- Otherwise REturn (others => '0');
@@ -285,18 +266,14 @@ begin  -- architecture rtl
   -- ==========================
 
   -- Inputs
-  status_register <= spi_busy & x"0" & "00" & fifo_rx_full & fifo_rx_empty & x"0" & "00" & fifo_tx_full & fifo_tx_empty;  -- FIFO A ajouter
+  status_register <= i2c_busy & sack_error & x"0" & "00" & fifo_rx_full & fifo_rx_empty & x"0" & "00" & fifo_tx_full & fifo_tx_empty;  -- FIFO A ajouter
 
   -- == OUTPUTS Affectation ==
-  start_spi     <= ctrl0_register(0);                                      -- Start SPI Bit
-  cpha          <= ctrl0_register(1);                                      -- CPHA Configuration
-  cpol          <= ctrl0_register(2);                                      -- CPOL Configuration
-  full_duplex   <= ctrl0_register(3);                                      -- FULL DUPLEX Configuration
-  clk_div       <= ctrl0_register(15 downto 8);                            -- Clock Div Configuration
-  nb_wr         <= ctrl1_register(log2(G_FIFO_DEPTH) - 1 downto 0);        -- nb_wr Configuration
-  nb_rd         <= ctrl1_register(16 + log2(G_FIFO_DEPTH) - 1 downto 16);  -- nb_wr Configuration
-  wdata_fifo_tx <= fifo_tx_register(G_FIFO_DATA_WIDTH - 1 downto 0);       -- FIFO TX DATA TO Write
-  wr_en_fifo_tx <= wr_en_fifo_tx_int;                                      -- FIFO TX DATA Write Enable
-  rd_en_fifo_rx <= '0';                                                    -- TBD a connecter
+  start_i2c     <= ctrl0_register(0);                                   -- Start I2C Transaction
+  rw            <= ctrl0_register(1);                                   -- Read or Write I2C Access
+  chip_addr     <= ctrl0_register(14 downto 8);                         -- Chip Addr
+  nb_data       <= ctrl0_register(16 + log2(G_NB_DATA) - 1 downto 16);  -- Number of data parameter
+  wdata_fifo_tx <= fifo_tx_register(G_FIFO_DATA_WIDTH - 1 downto 0);    -- FIFO TX DATA TO Write
+  wr_en_fifo_tx <= wr_en_fifo_tx_int;                                   -- FIFO TX DATA Write Enable
 
 end architecture rtl;

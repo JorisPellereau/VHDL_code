@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
--- Title      : AXI4 Lite SPI MASTER
+-- Title      : AXI4 Lite I2C MASTER
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : axi4_lite_spi_master.vhd
+-- File       : axi4_lite_i2c_master.vhd
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-17
--- Last update: 2024-01-11
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: AXI4 Lite SPI MASTER
+-- Description: AXI4 Lite I2C MASTER
 -------------------------------------------------------------------------------
 -- Copyright (c) 2023 
 -------------------------------------------------------------------------------
@@ -23,25 +23,26 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 library lib_axi4_lite;
-library lib_axi4_lite_spi_master;
+library lib_axi4_lite_i2c_master;
 
-library lib_spi_master;
+library lib_i2c;
 
 library lib_pkg_utils;
 use lib_pkg_utils.pkg_utils.all;
 
-entity axi4_lite_spi_master is
+entity axi4_lite_i2c_master is
   generic (
-    G_AXI4_LITE_ADDR_WIDTH : integer range 5 to 64  := 5;    -- AXI4 Lite ADDR WIDTH
-    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32;   -- AXI4 Lite DATA WIDTH
-    G_SPI_SIZE             : integer range 1 to 4   := 4;    -- SPI Size
-    G_SPI_DATA_WIDTH       : integer                := 8;    -- SPI DATA WIDTH
-    G_FIFO_DATA_WIDTH      : integer range 8 to 32  := 8;    -- FIFO DATA WIDTH
-    G_FIFO_DEPTH           : integer                := 1024  -- FIFO DEPTH
+    G_AXI4_LITE_ADDR_WIDTH : integer range 5 to 64          := 5;        -- AXI4 Lite ADDR WIDTH
+    G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64         := 32;       -- AXI4 Lite DATA WIDTH
+    G_NB_DATA              : integer                        := 256;      -- FIFO DATA WIDTH
+    G_FIFO_DATA_WIDTH      : integer                        := 8;        -- FIFO DATA WIDTH
+    G_FIFO_DEPTH           : integer                        := 1024;     -- FIFO DEPTH
+    G_I2C_FREQ             : integer range 100000 to 400000 := 400000;   -- '0' : 100kHz - '1' : 400kHz
+    G_CLKSYS_FREQ          : integer                        := 50000000  -- clk_sys frequency
     );
   port (
-    clk_sys   : in std_logic;                                -- System Clock
-    rst_n_sys : in std_logic;                                -- Asynchronous Reset
+    clk_sys   : in std_logic;                                            -- System Clock
+    rst_n_sys : in std_logic;                                            -- Asynchronous Reset
 
     -- Write Address Channel signals
     awvalid : in  std_logic;                                              -- Address Write Valid
@@ -72,44 +73,43 @@ entity axi4_lite_spi_master is
     rdata  : out std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);  -- Read Data Channel rdata
     rresp  : out std_logic_vector(1 downto 0);                           -- Read Data Channel Response
 
-    -- SPI MASTER I/F
-    spi_clk  : out std_logic;                                  -- MASTER SPI Clock
-    spi_cs_n : out std_logic;                                  -- MASTER SPI Chip Select
-    spi_do   : out std_logic_vector(G_SPI_SIZE - 1 downto 0);  -- SPI Data Oute
-    spi_di   : in  std_logic_vector(G_SPI_SIZE - 1 downto 0)   -- SPI Data In
+    -- I2C MASTER I/F   
+    sclk    : out std_logic;            -- SCLK
+    sclk_en : out std_logic;            -- Enable SCLK
+    sda_in  : in  std_logic;            -- Input Data
+    sda_out : out std_logic;            -- Output Data
+    sda_en  : out std_logic             -- Enable SDA
     );
 
-end entity axi4_lite_spi_master;
+end entity axi4_lite_i2c_master;
 
-architecture rtl of axi4_lite_spi_master is
+architecture rtl of axi4_lite_i2c_master is
 
   -- == INTERNAL Signals ==
-  signal slv_start         : std_logic;                                                  -- Start the access
-  signal slv_rw            : std_logic;                                                  -- Read or Write Access
-  signal slv_addr          : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      -- ADDR to reach
-  signal slv_wdata         : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Write Data
-  signal slv_strobe        : std_logic_vector((G_AXI4_LITE_DATA_WIDTH/8) - 1 downto 0);  -- Write Strobe
-  signal slv_done          : std_logic;                                                  -- Access done
-  signal slv_rdata         : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
-  signal slv_status        : std_logic_vector(1 downto 0);                               -- Slave status
-  signal start_spi         : std_logic;                                                  -- Start SPI
-  signal cpha              : std_logic;                                                  -- CPHA Configuration
-  signal cpol              : std_logic;                                                  -- CPOL Configuration
-  signal full_duplex       : std_logic;                                                  -- Full Duplex Configuration
-  signal clk_div           : std_logic_vector(7 downto 0);                               -- Clock Division Configuration
-  signal nb_wr             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Number of Write to perform
-  signal nb_rd             : std_logic_vector(log2(G_FIFO_DEPTH) - 1 downto 0);          -- Number of Read to perform
-  signal wdata_fifo_tx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);           -- FIFO TX Data
-  signal wr_en_fifo_tx     : std_logic;                                                  -- FIFO TX Write Enable    
-  signal rdata_fifo_rx     : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);           -- FIFO RX Data
-  signal rdata_fifo_rx_val : std_logic;                                                  -- FIFO RX Data Valid
-  signal rd_en_fifo_rx     : std_logic;                                                  -- FIFO RX Read Enable
-  signal fifo_tx_empty     : std_logic;                                                  -- FIFO TX Empty Flag
-  signal fifo_tx_full      : std_logic;                                                  -- FIFO TX Full Flag
-  signal fifo_rx_empty     : std_logic;                                                  -- FIFO RX Empty Flag
-  signal fifo_rx_full      : std_logic;                                                  -- FIFO RX Full Flag
-  signal spi_busy          : std_logic;                                                  -- SPI BUSY Flag
+  signal slv_start  : std_logic;                                                  -- Start the access
+  signal slv_rw     : std_logic;                                                  -- Read or Write Access
+  signal slv_addr   : std_logic_vector(G_AXI4_LITE_ADDR_WIDTH - 1 downto 0);      -- ADDR to reach
+  signal slv_wdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Write Data
+  signal slv_strobe : std_logic_vector((G_AXI4_LITE_DATA_WIDTH/8) - 1 downto 0);  -- Write Strobe
+  signal slv_done   : std_logic;                                                  -- Access done
+  signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
+  signal slv_status : std_logic_vector(1 downto 0);                               -- Slave status
 
+  signal start_i2c         : std_logic;                                -- START I2C Transaction
+  signal rw                : std_logic;                                -- I2C Read or Write access
+  signal chip_addr         : std_logic_vector(6 downto 0);             -- I2C Slave Chip Addr
+  signal nb_data           : std_logic_vector(G_NB_DATA -1 downto 0);  -- Number of data on the I2C Access
+  signal wr_en_fifo_tx     : std_logic;                                -- Write Enable FIFO TX
+  signal wdata_fifo_tx     : std_logic_vector(7 downto 0);             -- Write DATA FIFO TX
+  signal rd_en_fifo_rx     : std_logic;                                -- Read Enable FIFO RX
+  signal rdata_fifo_rx     : std_logic_vector(7 downto 0);             -- Read DATA FIFO RX
+  signal rdata_fifo_rx_val : std_logic;                                -- Read DATA Valid FIFO RX
+  signal fifo_tx_empty     : std_logic;                                -- FIFO TX Empty flag
+  signal fifo_tx_full      : std_logic;                                -- FIFO TX Full flag
+  signal fifo_rx_empty     : std_logic;                                -- FIFO RX Empty flag
+  signal fifo_rx_full      : std_logic;                                -- FIFO RX Full flag
+  signal sack_error        : std_logic;                                -- Salve ACK Error flag
+  signal i2c_busy          : std_logic;                                -- I2C Access ongoing flag
 begin  -- architecture rtl
 
   -- Instanciation of AXI4 Lite Slave interface
@@ -165,11 +165,11 @@ begin  -- architecture rtl
 
 
   -- Instanciation of LCD REGISTERS
-  i_axi4_lite_spi_master_registers_0 : entity lib_axi4_lite_spi_master.axi4_lite_spi_master_registers
+  i_axi4_lite_i2c_master_registers_0 : entity lib_axi4_lite_i2c_master.axi4_lite_i2c_master_registers
     generic map(
       G_ADDR_WIDTH      => G_AXI4_LITE_ADDR_WIDTH,
       G_DATA_WIDTH      => G_AXI4_LITE_DATA_WIDTH,
-      G_SPI_DATA_WIDTH  => G_SPI_DATA_WIDTH,
+      G_NB_DATA         => G_NB_DATA,
       G_FIFO_DATA_WIDTH => G_FIFO_DATA_WIDTH,
       G_FIFO_DEPTH      => G_FIFO_DEPTH
       )
@@ -189,30 +189,35 @@ begin  -- architecture rtl
       slv_status => slv_status,
 
       -- Registers Interface
-      start_spi         => start_spi,
-      cpha              => cpha,
-      cpol              => cpol,
-      full_duplex       => full_duplex,
-      clk_div           => clk_div,
-      nb_wr             => nb_wr,
-      nb_rd             => nb_rd,
-      wdata_fifo_tx     => wdata_fifo_tx,
-      wr_en_fifo_tx     => wr_en_fifo_tx,
+      -- I2C Control
+      start_i2c => start_i2c,
+      rw        => rw,
+      chip_addr => chip_addr,
+      nb_data   => nb_data,
+
+      -- FIFO ITF
+      wr_en_fifo_tx => wr_en_fifo_tx,
+      wdata_fifo_tx => wdata_fifo_tx,
+
+      rd_en_fifo_rx     => rd_en_fifo_rx,
       rdata_fifo_rx     => rdata_fifo_rx,
       rdata_fifo_rx_val => rdata_fifo_rx_val,
-      rd_en_fifo_rx     => rd_en_fifo_rx,
-      fifo_tx_empty     => fifo_tx_empty,
-      fifo_tx_full      => fifo_tx_full,
-      fifo_rx_empty     => fifo_rx_empty,
-      fifo_rx_full      => fifo_rx_full,
-      spi_busy          => spi_busy
+
+      -- Status
+      fifo_tx_empty => fifo_tx_empty,
+      fifo_tx_full  => fifo_tx_full,
+      fifo_rx_empty => fifo_rx_empty,
+      fifo_rx_full  => fifo_rx_full,
+      sack_error    => sack_error,
+      i2c_busy      => i2c_busy
       );
 
-  -- Instanciation of SPI MASTER
-  i_spi_master_0 : entity lib_spi_master.spi_master
-    generic map (
-      G_SPI_SIZE        => G_SPI_SIZE,
-      G_SPI_DATA_WIDTH  => G_SPI_DATA_WIDTH,
+  -- Instanciation of I2C MASTER
+  i_i2c_master_0 : entity lib_i2c.i2c_master
+    generic map(
+      G_I2C_FREQ        => G_I2C_FREQ,
+      G_CLKSYS_FREQ     => G_CLKSYS_FREQ,
+      G_NB_DATA         => G_NB_DATA,
       G_FIFO_DATA_WIDTH => G_FIFO_DATA_WIDTH,
       G_FIFO_DEPTH      => G_FIFO_DEPTH
       )
@@ -220,30 +225,33 @@ begin  -- architecture rtl
       clk_sys   => clk_sys,
       rst_n_sys => rst_n_sys,
 
-      -- FIFO TX Interface
-      wr_en_fifo_tx => wr_en_fifo_tx,
-      wdata_fifo_tx => wdata_fifo_tx,
-      fifo_tx_empty => fifo_tx_empty,
-      fifo_tx_full  => fifo_tx_full,
+      -- Control Signals
+      start     => start_i2c,
+      rw        => rw,
+      chip_addr => chip_addr,
+      nb_data   => nb_data,
 
-      -- FIFO RX Interface
-      rd_en_fifo_rx => rd_en_fifo_rx,
-      rdata_fifo_rx => rdata_fifo_rx,
-      fifo_rx_empty => fifo_rx_empty,
-      fifo_rx_full  => fifo_rx_full,
+      -- FIFO TX Control and Status
+      wr_en_fifo_tx      => wr_en_fifo_tx,
+      wdata_fifo_tx      => wdata_fifo_tx,
+      fifo_empty_fifo_tx => fifo_tx_empty,
+      fifo_full_fifo_tx  => fifo_tx_full,
 
-      -- SPI Control
-      start       => start_spi,
-      nb_wr       => nb_wr,
-      nb_rd       => nb_rd,
-      full_duplex => full_duplex,
-      cpha        => cpha,
-      cpol        => cpol,
-      clk_div     => clk_div,
-      spi_clk     => spi_clk,
-      spi_cs_n    => spi_cs_n,
-      spi_do      => spi_do,
-      spi_di      => spi_di,
-      spi_busy    => spi_busy
+      -- FIFO RX Control and Status
+      rd_en_fifo_rx      => rd_en_fifo_rx,
+      rdata_fifo_rx      => rdata_fifo_rx,
+      fifo_empty_fifo_rx => fifo_rx_empty,
+      fifo_full_fifo_rx  => fifo_rx_full,
+
+      -- Status and data
+      sack_error => sack_error,
+
+      -- I2C Interface    
+      sclk    => sclk,
+      sclk_en => sclk_en,
+      sda_in  => sda_in,
+      sda_out => sda_out,
+      sda_en  => sda_en
       );
+
 end architecture rtl;

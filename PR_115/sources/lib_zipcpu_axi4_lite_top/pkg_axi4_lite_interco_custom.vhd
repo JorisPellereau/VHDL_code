@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-19
--- Last update: 2024-01-12
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ package pkg_axi4_lite_interco_cutom is
   constant C_AXI_ADDR_WIDTH : integer := 32;  -- AXI ADDR WIDTH
   constant C_AXI_DATA_WIDTH : integer := 32;  -- AXI DATA WIDTH
 
-  constant C_SLAVE_NB : integer := 7;   -- Number of Slave
+  constant C_SLAVE_NB : integer := 8;   -- Number of Slave
 
   -- Index 0 -> AXI4 Lite 7SEGMENTS
   -- Index 1 -> AXI4 Lite LCD
@@ -41,6 +41,7 @@ package pkg_axi4_lite_interco_cutom is
   -- Index 4 -> AXI4 Lite ZIPUART
   -- Index 5 -> AXI4 Lite SPI MASTER
   -- Index 6 -> AXI4 Lite SPI SLAVE
+  -- Index 7 -> AXI4 Lite I2C MASTER - EEPROM
   constant C_7SEGMENTS_IDX     : integer := 0;  -- Index Connection of 7Segments
   constant C_LCD_IDX           : integer := 1;  -- Index Connection of LCD
   constant C_ZIPCPU_PERIPH_IDX : integer := 2;  -- Index Connection of ZIPCPU PERIPH
@@ -48,6 +49,7 @@ package pkg_axi4_lite_interco_cutom is
   constant C_ZIPUART_IDX       : integer := 4;  -- Index Connection of ZIPUART
   constant C_SPI_MASTER_IDX    : integer := 5;  -- Index Connection of SPI MASTER
   constant C_SPI_SLAVE_IDX     : integer := 6;  -- Index Connection of SPI SLAVE
+  constant C_I2C_MASTER_EEPROM : integer := 7;  -- Index Connection of I2C MASTER EEPROM
 
   -- == TYPES ==
   type t_slv_addr is array (0 to C_SLAVE_NB - 1) of std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0);  -- Array of Slave Addr
@@ -61,6 +63,7 @@ package pkg_axi4_lite_interco_cutom is
   constant C_BASE_ADDR_SLAVE_4 : std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0) := x"00004000";  -- SLAVE 4 Base address
   constant C_BASE_ADDR_SLAVE_5 : std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0) := x"00005000";  -- SLAVE 5 Base address
   constant C_BASE_ADDR_SLAVE_6 : std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0) := x"00006000";  -- SLAVE 6 Base address
+  constant C_BASE_ADDR_SLAVE_7 : std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0) := x"00007000";  -- SLAVE 7 Base address
   constant C_SLAVE_ADDR_RANGE  : std_logic_vector(C_AXI_ADDR_WIDTH - 1 downto 0) := x"00000FFF";  -- ADDR Range
 
   -- Slave Addr MIN
@@ -70,7 +73,8 @@ package pkg_axi4_lite_interco_cutom is
                                                  3 => C_BASE_ADDR_SLAVE_3,
                                                  4 => C_BASE_ADDR_SLAVE_4,
                                                  5 => C_BASE_ADDR_SLAVE_5,
-                                                 6 => C_BASE_ADDR_SLAVE_6
+                                                 6 => C_BASE_ADDR_SLAVE_6,
+                                                 7 => C_BASE_ADDR_SLAVE_7
                                                  );
 
   -- Slave Addr MAX
@@ -80,7 +84,8 @@ package pkg_axi4_lite_interco_cutom is
                                                  3 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_3) + unsigned(C_SLAVE_ADDR_RANGE)),
                                                  4 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_4) + unsigned(C_SLAVE_ADDR_RANGE)),
                                                  5 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_5) + unsigned(C_SLAVE_ADDR_RANGE)),
-                                                 6 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_6) + unsigned(C_SLAVE_ADDR_RANGE))
+                                                 6 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_6) + unsigned(C_SLAVE_ADDR_RANGE)),
+                                                 7 => std_logic_vector(unsigned(C_BASE_ADDR_SLAVE_7) + unsigned(C_SLAVE_ADDR_RANGE))
                                                  );
 
   -- 7 segments Configuration
@@ -103,6 +108,9 @@ package pkg_axi4_lite_interco_cutom is
 
   -- AXI4 Lite SPI SLAVE Configuration
   constant C_AXI4_LITE_SPI_SLAVE_ADDR_WIDTH : integer := 16;  -- SPI SLAVE ADDR WIDTH
+
+  -- AXI4 Lite I2C MASTER EEPROM Configuration
+  constant C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH : integer := 16;  -- I2C MASTER EEPROM ADDR WIDTH
 
 end package;
 

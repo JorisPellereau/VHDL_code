@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-01-31
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -16,7 +16,7 @@
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author  Description
--- 2024-01-31  1.0      linux-jp	Created
+-- 2024-01-31  1.0      linux-jp        Created
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -29,10 +29,10 @@ package axi4_lite_i2c_master_pkg is
 
   constant C_USEFUL_LSBITS : integer := 4;  -- 5 LSBITS of usefull addr
 
-  constant C_REG0_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) :=   x"0";  -- REG0 ADDR
-  constant C_REG1_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) :=   x"4";  -- REG1 ADDR
-  constant C_REG2_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) :=   x"8";  -- REG2 ADDR
-  constant C_REG3_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) :=   x"C";  -- REG3 ADDR
+  constant C_REG0_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) := x"0";  -- REG0 ADDR
+  constant C_REG1_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) := x"4";  -- REG1 ADDR
+  constant C_REG2_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) := x"8";  -- REG2 ADDR
+  constant C_REG3_ADDR : std_logic_vector(C_USEFUL_LSBITS - 1 downto 0) := x"C";  -- REG3 ADDR
 
   -- Register Index (32bits wide)
   constant C_REG0_IDX : integer := 0;   -- Index number of REG 0
@@ -46,6 +46,6 @@ package axi4_lite_i2c_master_pkg is
   constant C_STATUS_WIDTH  : integer := 18;  -- Width of the Status Register
 
   -- REgister Initial Values
-  constant C_REG1_INIT_VALUE : std_logic_vector(C_CTRL1_WIDTH - 1 downto 0) := x"00010000";  -- One Write initialized by default
+  constant C_REG1_INIT_VALUE : std_logic_vector(C_CTRL0_WIDTH - 1 downto 0) := x"00010000";  -- One Write initialized by default
 
 end package;

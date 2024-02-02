@@ -6,7 +6,7 @@
 -- Author     :   <JorisPC@JORISP>
 -- Company    : 
 -- Created    : 2019-07-22
--- Last update: 2019-07-30
+-- Last update: 2024-01-24
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -327,7 +327,7 @@ begin  -- architecture arch_max7219_controller
             end if;
           end if;
 
-          -- Gestion des trames à envoyer
+          -- Gestion des trames a envoyer
           if(cnt_config_s = 0 and en_start_frame_s = '1') then -- and cnt_matrix_sel_s = 0) then
             wdata_s        <= C_DECODE_MODE_ADDR & decode_mode_s;
             start_frame_s  <= '1';

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-01-23
+-- Last update: 2024-02-02
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -80,6 +80,10 @@ entity zipcpu_axi4_lite_top is
     spi_slave_cs_n : in std_logic;                                  -- SPI Slave Chip select
     spi_slave_di   : in std_logic_vector(C_SPI_SIZE - 1 downto 0);  -- Input SPI SLAVE
 
+    -- I2C MASTER EEPROM I/F
+    sclk_io_eeprom : inout std_logic;   -- SCLK EEPROM I/O
+    sda_io_eeprom  : inout std_logic;   -- SDA EEPROM I/O
+
     -- RED LEDS
     ledr : out std_logic_vector(17 downto 0);  -- RED LEDS
 
@@ -109,6 +113,11 @@ architecture rtl of zipcpu_axi4_lite_top is
   signal key_1_clk_sys          : std_logic;                     -- KEY 1 in clk_sys clock domain
   signal key_2_clk_sys          : std_logic;                     -- KEY 2 in clk_sys clock domain
   signal key_3_clk_sys          : std_logic;                     -- KEY 3 in clk_sys clock domain
+  signal sclk_eeprom            : std_logic;                     -- SCLK EEPROM Out
+  signal sclk_en_eeprom         : std_logic;                     -- Enable Tristate SCLK EEPROM
+  signal sda_in_eeprom          : std_logic;                     -- SDA IN EEPROM
+  signal sda_out_eeprom         : std_logic;                     -- SDA OUT EEPROM
+  signal sda_en_eeprom          : std_logic;                     -- Enable Tristate SDA EEPROM
 
 begin  -- architecture rtl
 
@@ -134,7 +143,6 @@ begin  -- architecture rtl
       key_3_a       => key_3_a,
       key_3_clk_sys => key_3_clk_sys,
 
-
       i_rts_n_a       => i_rts_n_a,
       o_rts_n_clk_sys => rts_n_clk_sys,
 
@@ -143,10 +151,26 @@ begin  -- architecture rtl
       spi_slave_cs_n_clk_sys => spi_slave_cs_n_clk_sys
       );
 
-  -- BIDIR MNGT
-  -- BIDIR Management -- Write access when not G_POL
-  io_lcd_data <= lcd_wdata when lcd_bidir_sel = not C_LCD_BIDIR_POLARITY else (others => 'Z');
-  lcd_rdata   <= io_lcd_data;  -- io LCD DATA not synchronized in clk clock domain (50MHz) because it's dynamic is slewer than the clock
+
+  -- Instanciation of the tristate block
+  i_tristate_0 : entity lib_zipcpu_axi4_lite_top.tristate
+    port map(
+      -- LCD Tristate
+      io_lcd_data   => io_lcd_data,
+      lcd_rdata     => lcd_rdata,
+      lcd_wdata     => lcd_wdata,
+      lcd_bidir_sel => lcd_bidir_sel,
+
+      -- I2C MASTER EEPROM Tristate
+      sclk_io_eeprom => sclk_io_eeprom,
+      sclk_eeprom    => sclk_eeprom,
+      sclk_en_eeprom => sclk_en_eeprom,
+      sda_io_eeprom  => sda_io_eeprom,
+      sda_in_eeprom  => sda_in_eeprom,
+      sda_out_eeprom => sda_out_eeprom,
+      sda_en_eeprom  => sda_en_eeprom
+      );
+
 
   -- Instanciation of the CORE
   -- Zipcpu CORE doesnt access an ADDR_WIDTh lower than 16 (idecode multiplier concat : AW-15 < 0 -> BUG !
@@ -213,6 +237,13 @@ begin  -- architecture rtl
       spi_slave_cs_n => spi_slave_cs_n_clk_sys,
       spi_slave_do   => open,           -- NOT USED YET
       spi_slave_di   => spi_slave_di,
+
+      -- I2C Master EEPROM I/F
+      sclk_eeprom    => sclk_eeprom,
+      sclk_en_eeprom => sclk_en_eeprom,
+      sda_in_eeprom  => sda_in_eeprom,  -- TBD a resynchro ?????????????
+      sda_out_eeprom => sda_out_eeprom,
+      sda_en_eeprom  => sda_en_eeprom,
 
       -- RED LEDS
       ledr => ledr,
