@@ -81,8 +81,8 @@ architecture behv of i2c_master is
   -- == INTERNAL Signals ==
   signal rd_en_fifo_tx : std_logic;                                     -- Read Enable FIFO TX
   signal wr_en_fifo_rx : std_logic;                                     -- Write Enable FIFO RX
-  signal wdata_fifo_rx : std_logic_vector(G_FIFO_DATA_WIDTH downto 0);  -- Write DATA FIFO RX
-  signal rdata_fifo_tx : std_logic_vector(G_FIFO_DATA_WIDTH downto 0);  -- Read Data FIFO TX
+  signal wdata_fifo_rx : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- Write DATA FIFO RX
+  signal rdata_fifo_tx : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- Read Data FIFO TX
 
 begin  -- architecture behv
 

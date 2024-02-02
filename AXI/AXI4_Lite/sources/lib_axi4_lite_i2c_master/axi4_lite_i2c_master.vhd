@@ -95,21 +95,21 @@ architecture rtl of axi4_lite_i2c_master is
   signal slv_rdata  : std_logic_vector(G_AXI4_LITE_DATA_WIDTH - 1 downto 0);      -- Slave read data
   signal slv_status : std_logic_vector(1 downto 0);                               -- Slave status
 
-  signal start_i2c         : std_logic;                                -- START I2C Transaction
-  signal rw                : std_logic;                                -- I2C Read or Write access
-  signal chip_addr         : std_logic_vector(6 downto 0);             -- I2C Slave Chip Addr
-  signal nb_data           : std_logic_vector(G_NB_DATA -1 downto 0);  -- Number of data on the I2C Access
-  signal wr_en_fifo_tx     : std_logic;                                -- Write Enable FIFO TX
-  signal wdata_fifo_tx     : std_logic_vector(7 downto 0);             -- Write DATA FIFO TX
-  signal rd_en_fifo_rx     : std_logic;                                -- Read Enable FIFO RX
-  signal rdata_fifo_rx     : std_logic_vector(7 downto 0);             -- Read DATA FIFO RX
-  signal rdata_fifo_rx_val : std_logic;                                -- Read DATA Valid FIFO RX
-  signal fifo_tx_empty     : std_logic;                                -- FIFO TX Empty flag
-  signal fifo_tx_full      : std_logic;                                -- FIFO TX Full flag
-  signal fifo_rx_empty     : std_logic;                                -- FIFO RX Empty flag
-  signal fifo_rx_full      : std_logic;                                -- FIFO RX Full flag
-  signal sack_error        : std_logic;                                -- Salve ACK Error flag
-  signal i2c_busy          : std_logic;                                -- I2C Access ongoing flag
+  signal start_i2c         : std_logic;                                      -- START I2C Transaction
+  signal rw                : std_logic;                                      -- I2C Read or Write access
+  signal chip_addr         : std_logic_vector(6 downto 0);                   -- I2C Slave Chip Addr
+  signal nb_data           : std_logic_vector(log2(G_NB_DATA) -1 downto 0);  -- Number of data on the I2C Access
+  signal wr_en_fifo_tx     : std_logic;                                      -- Write Enable FIFO TX
+  signal wdata_fifo_tx     : std_logic_vector(7 downto 0);                   -- Write DATA FIFO TX
+  signal rd_en_fifo_rx     : std_logic;                                      -- Read Enable FIFO RX
+  signal rdata_fifo_rx     : std_logic_vector(7 downto 0);                   -- Read DATA FIFO RX
+  signal rdata_fifo_rx_val : std_logic;                                      -- Read DATA Valid FIFO RX
+  signal fifo_tx_empty     : std_logic;                                      -- FIFO TX Empty flag
+  signal fifo_tx_full      : std_logic;                                      -- FIFO TX Full flag
+  signal fifo_rx_empty     : std_logic;                                      -- FIFO RX Empty flag
+  signal fifo_rx_full      : std_logic;                                      -- FIFO RX Full flag
+  signal sack_error        : std_logic;                                      -- Salve ACK Error flag
+  signal i2c_busy          : std_logic;                                      -- I2C Access ongoing flag
 begin  -- architecture rtl
 
   -- Instanciation of AXI4 Lite Slave interface

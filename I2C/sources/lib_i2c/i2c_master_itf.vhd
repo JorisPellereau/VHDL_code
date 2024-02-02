@@ -70,7 +70,7 @@ architecture rtl of i2c_master_itf is
 
   -- == INTERNAL Signals ==
   signal chip_addr_int   : std_logic_vector(6 downto 0);                               -- Chip Addr
-  signal nb_data_int     : std_logic_vector(G_NB_DATA - 1 downto 0);                   -- Number of Data width
+  signal nb_data_int     : std_logic_vector(log2(G_NB_DATA) - 1 downto 0);                   -- Number of Data width
   signal rw_int          : std_logic;   -- Read = '1' or write = '0'
   signal fsm_cs          : t_fsm_states;                                               -- FSM Current State
   signal fsm_ns          : t_fsm_states;                                               -- FSM Next State
