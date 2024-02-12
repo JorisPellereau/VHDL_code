@@ -20,6 +20,8 @@
 `define C_CHECK_SIZE     3
 `define C_CHECK_WIDTH    32
 
+// I2C SLAVE EEPROM Configuration
+`define C_SLAVE_I2C_FIFO_WIDTH 16
 
 // DUT GENERIC Configuration
 `define C_SIMULATION 1
