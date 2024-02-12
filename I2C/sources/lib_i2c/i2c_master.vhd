@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-02-02
+-- Last update: 2024-02-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -65,6 +65,7 @@ entity i2c_master is
 
     -- Status and data
     sack_error : out std_logic;         -- Slave ACK Error
+    busy       : out std_logic;         -- I2C Master BUSY Flag
 
     -- I2C Interface    
     sclk    : out std_logic;            -- SCLK
@@ -79,8 +80,8 @@ end entity i2c_master;
 architecture behv of i2c_master is
 
   -- == INTERNAL Signals ==
-  signal rd_en_fifo_tx : std_logic;                                     -- Read Enable FIFO TX
-  signal wr_en_fifo_rx : std_logic;                                     -- Write Enable FIFO RX
+  signal rd_en_fifo_tx : std_logic;                                         -- Read Enable FIFO TX
+  signal wr_en_fifo_rx : std_logic;                                         -- Write Enable FIFO RX
   signal wdata_fifo_rx : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- Write DATA FIFO RX
   signal rdata_fifo_tx : std_logic_vector(G_FIFO_DATA_WIDTH - 1 downto 0);  -- Read Data FIFO TX
 
@@ -155,6 +156,7 @@ begin  -- architecture behv
 
       -- I2C Status
       sack_error => sack_error,
+      busy       => busy,
 
       -- I2C Interface    
       sclk    => sclk,

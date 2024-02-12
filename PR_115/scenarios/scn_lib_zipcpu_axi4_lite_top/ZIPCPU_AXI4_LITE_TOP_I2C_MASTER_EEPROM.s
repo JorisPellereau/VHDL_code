@@ -4,7 +4,7 @@
 ;; {{{
 ;; Project:	Zip CPU -- a small, lightweight, RISC CPU soft core
 ;;
-;; Purpose:	SPI MIRROR Function
+;; Purpose:	Test of single write access on I2C MASTER EEPROM
 ;;
 ;;
 ;; Creator:	Dan Gisselquist, Ph.D.
@@ -50,22 +50,14 @@
 	.equ segment_init_value, 0x00000000	   ; Segment Initial Value
 
 	;; CONSTANTS
-	;; External_IT[0] => IT_0
-	;; External_IT[1] => IT_6 (Generic EXTERNAL_INTERRUPTS > 1)
-	.equ C_EN_IT_0, 0x80018001   	; Enable IT 0 - Clear bit 0  status (IT 0 status)
-	.equ C_EN_IT_6, 0x80408040	; Enable IT 6 - Clear bit 6  status (IT 6 status)
-	.equ C_EN_IT,   0x80418041	; Enable IT 0 and 6
-	.equ C_INIT_DONE, 0x0000D043  	; Initialisation done code
-	.equ C_MASK_IT_0, 0x00000001	; Mask for IT 0
-	.equ C_MASK_IT_6, 0x00000040	; Mask for IT 6
-	.equ C_RST_IT_0, 0x00000001	; Mask for reseting IT 0
-	.equ C_RST_IT_6, 0x00000040	; Mask for reseting IT 6
+	.equ C_I2C_MASTER_EEPROM_STS_MSK, 0x00020000
+	.equ C_MAX_LOOP_IDX, 256
 	
 ;;; Register Utilization :
-;;; R2 : Data to send through SPI MASTER
+;;; R2 : Temporary register for AXI4 access
 ;;; R3 : Temporary register
 ;;; R4 : Inform if an initialization was already performed - 
-;;; R5 : Temporary zone for IT check
+;;; R5 : Counter index
 	
 ;; Perform after a reset of the CPU (cpu_reset, bus error etc)
 _start:
@@ -124,11 +116,14 @@ init_spi_slave:
 	RETN
 
 ;;; INIT I2C MASTER EEPROM
+;;; Load data into the FIFO TX Data 0 to 255
 init_i2c_master_eeprom:
-	LDI 1, r2
-	SW r2, i2c_master_eeprom_base_addr + 4
-	LDI 0x55, r2
-	SW r2, i2c_master_eeprom_base_addr + 4
+	MOV r5, r2					; Copy r5 to R2
+	SW r2, i2c_master_eeprom_base_addr + 4 		; Load the data to the TX FIFO
+	ADD $1, R5					; Inc the Counter
+	CMP C_MAX_LOOP_IDX, R5					; Compare R5 with C_MAX_LOOP_IDX
+	BLT init_i2c_master_eeprom			; Return to init_i2c_master_eeprom if not equals the 255
+	MOV 0, R5					; Re init the counter to 0
 	RETN
 
 ;;; INIT_DONE Flag - Write into R4 1 == Initialization already done
@@ -136,9 +131,21 @@ init_done:
 	MOV C_INIT_DONE, R4
 	RETN
 
+;;; Polling I2C Master busy
+polling_i2c_master_busy:
+	LW i2c_master_eeprom_base_addr + 12, r2		; Load Status data into R2
+	AND C_I2C_MASTER_EEPROM_STS_MSK, r2		; Mask bit 17
+	CMP $0, r2					; Test if R2 == 0x00000000
+	BZ  i2c_master_eeprom_write_access		; If Equal to 0x00000000 -> I2C not busy anymore, so go to write access
+	BRA polling_i2c_master_busy			; otherwise return polling
 
 ;;; SEND I2C MASTER Data
 i2c_master_eeprom_write_access:
-	LDI 0x00010A01,r2
+	LDI 0x00010A01,r2				; Send a write access on the I2C MASTER EEPROM with 1 data
 	SW r2, i2c_master_eeprom_base_addr
-	RETN
+	ADD $1, R5					; Add 1 to R5
+	CMP C_MAX_LOOP_IDX, R5					; Compare if R5 Equals to MAX idx
+	BLT polling_i2c_master_busy			; If less than MAX idx -> Return to polling
+	BUSY
+
+

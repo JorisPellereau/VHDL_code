@@ -12,6 +12,7 @@
 -------------------------------------------------------------------------------
 -- Description: I2C Master Interface
 -- /!\ Limitations : Data are send MSB First and store MSB first
+-- Start input shall be a pulse
 -------------------------------------------------------------------------------
 -- Copyright (c) 2024 
 -------------------------------------------------------------------------------
@@ -53,6 +54,7 @@ entity i2c_master_itf is
 
     -- I2C Status
     sack_error : out std_logic;         -- SACK Error Occurs
+    busy       : out std_logic;         -- I2C Master busy flag
 
     -- I2C Interface    
     sclk    : out std_logic;            -- SCLK
@@ -101,6 +103,7 @@ architecture rtl of i2c_master_itf is
   signal sack_ongoing      : std_logic;  -- SACK Ongoing flag
   signal ctrl_byte_ongoing : std_logic;  -- Control Byte ongoing
   signal idle_ongoing      : std_logic;  -- IDLE ongoing flag
+  signal start_ongoing     : std_logic;  -- Start Ongoing
 
 begin  -- architecture rtl
 
@@ -120,6 +123,17 @@ begin  -- architecture rtl
       end if;
     end if;
   end process p_latch_inputs;
+
+  -- purpose: Pipe start signal one time
+  -- Use in order to reset internal counters
+  p_pipe_start : process (clk_sys, rst_n_sys) is
+  begin  -- process p_pipe_start
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      gen_start <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+      gen_start <= start;               -- Pipe start input
+    end if;
+  end process p_pipe_start;
 
   p_pipe_sclk_int : process (clk_sys, rst_n_sys) is
   begin  -- process p_pipe_sclk_int
@@ -154,7 +168,6 @@ begin  -- architecture rtl
       -- Wait for the start pulse
       when ST_IDLE =>
         en_sclk_gen       <= '0';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -164,6 +177,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '1';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         if(start = '1') then
           fsm_ns <= ST_START;
@@ -174,7 +188,6 @@ begin  -- architecture rtl
       -- On ST_START state go directly to ST_CTRL state
       when ST_START =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '1';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -184,14 +197,19 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '1';       -- Start ongoing flag
 
-        fsm_ns <= ST_CTRL;
+        -- Leave this state on the next falling edge of sclk
+        if(sclk_int_f_edge = '1') then
+          fsm_ns <= ST_CTRL;
+        else
+          fsm_ns <= ST_START;
+        end if;
 
 
       -- Genenation of the Control Byte
       when ST_CTRL =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '1';       -- Write Ongoing Flag
@@ -201,6 +219,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '1';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         -- Go to ST_SACK State
         if(sclk_int_f_edge = '1' and sack_synch = '1') then
@@ -211,7 +230,6 @@ begin  -- architecture rtl
 
       when ST_SACK =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -221,6 +239,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '1';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         -- Correct sampling : ACK is here and go to READ state
         if(sampling_pulse = '1' and sda_in = '0' and rw_int = '1' and cnt_data_done = '0') then
@@ -247,7 +266,6 @@ begin  -- architecture rtl
       -- In Write State wait until the end of the 8th bit to go to SACK state
       when ST_WR =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '1';       -- Write Ongoing Flag
@@ -257,6 +275,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         -- When all bits are transmitted go to SACK state
         -- Go to ST_SACK State
@@ -269,7 +288,6 @@ begin  -- architecture rtl
       -- In Read State : wait until the end of the 8th bit to go to MACK state
       when ST_RD =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -279,6 +297,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         if(cnt_bit_done = '1') then
           fsm_ns <= ST_MACK;
@@ -289,7 +308,6 @@ begin  -- architecture rtl
       -- In MACK State : generate the ACK and go to RD state if needed
       when ST_MACK =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '1';       -- Write Ongoing Flag
@@ -299,6 +317,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         if(sclk_change = '1' and cnt_data_done = '0') then
           fsm_ns <= ST_RD;
@@ -309,7 +328,6 @@ begin  -- architecture rtl
       -- Synchronization on the last sclk clock pulse
       when ST_SYNCH_END =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -319,6 +337,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         -- Go to ST_END on the falling edge
         if(sclk_int_r_edge = '1') then
@@ -329,7 +348,6 @@ begin  -- architecture rtl
 
       when ST_END =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -339,6 +357,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         -- Go to ST_STOP on the fallinf edge of SCLK
         if(sclk_change = '1') then
@@ -350,7 +369,6 @@ begin  -- architecture rtl
       -- Generate the STOP Condition
       when ST_STOP =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '1';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -360,6 +378,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         if(sclk_change = '1') then
           fsm_ns <= ST_IDLE;
@@ -369,7 +388,6 @@ begin  -- architecture rtl
 
       when others =>
         en_sclk_gen       <= '0';       -- Enable SCLK generation
-        gen_start         <= '0';       -- Generation of the start condition
         gen_stop          <= '0';       -- Generation of the stop condition
         sack_error_int    <= '0';       -- SACK ERROR
         wr_ongoing        <= '0';       -- Write Ongoing Flag
@@ -379,6 +397,7 @@ begin  -- architecture rtl
         sack_ongoing      <= '0';       -- SACK Ongoing
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '1';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
 
         fsm_ns <= ST_IDLE;
     end case;
@@ -580,6 +599,7 @@ begin  -- architecture rtl
         fifo_rx_wr_en <= '0';
         fifo_rx_data  <= (others => '0');
       end if;
+      
     end if;
   end process p_write_fifo_rx;
 
@@ -592,8 +612,8 @@ begin  -- architecture rtl
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       -- Generation of the start condition
-      -- Set sda_out at '0' on gen_start or on end_going and sclk_int_f_edge = '1' (initialized stop condition generation)
-      if(gen_start = '1' or (end_ongoing = '1' and sclk_int_f_edge = '1')) then
+      -- Set sda_out at '0' on start_ongoing or on end_going and sclk_int_f_edge = '1' (initialized stop condition generation)
+      if(start_ongoing = '1' or (end_ongoing = '1' and sclk_int_f_edge = '1')) then
         sda_out <= '0';
         sda_en  <= '1';
 
@@ -602,7 +622,7 @@ begin  -- architecture rtl
         sda_out <= '1';
         sda_en  <= '1';
 
-      -- Enable only if we are in write mode
+      -- Enable only if we are in write mode (BYTE CTRL or ST_WR)
       elsif(wr_ongoing = '1') then
         sda_out <= sr_wdata(7);         -- Send MSB
         sda_en  <= '1';
@@ -618,5 +638,6 @@ begin  -- architecture rtl
   sclk       <= sclk_int;
   sclk_en    <= sclk_en_int;
   sack_error <= sack_error_int;
+  busy       <= not idle_ongoing;
 
 end architecture rtl;

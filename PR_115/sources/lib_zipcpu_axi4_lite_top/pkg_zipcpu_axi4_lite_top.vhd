@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-20
--- Last update: 2024-01-25
+-- Last update: 2024-02-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -67,12 +67,15 @@ package pkg_zipcpu_axi4_lite_top is
   constant C_ZIPUART_LOWPOWER       : std_logic_vector(0 downto 0)  := "0";  -- ZIPUART OPT LOW POWER
   constant C_OPT_USERMODE           : std_logic_vector(0 downto 0)  := "1";  -- 1 : Use user regs
   constant C_OPT_EARLY_BRANCHING    : std_logic_vector(0 downto 0)  := "1";  -- 1 : the ZipCPU may branch on an unconditional branch instruction as soon as it is recognized by the instruction decoder
-  constant C_RESET_DURATION         : integer                       := 10000;                     -- RESET DURATION of ZIPCPU
+  constant C_RESET_DURATION         : integer                       := 100;  -- RESET DURATION of ZIPCPU
 
   -- SPI MASTER Configuration
   constant C_SPI_SIZE            : integer := 4;     -- SPI SIZE
   constant C_SPI_DATA_WIDTH      : integer := 8;     -- SPI DATA WIDTH
   constant C_SPI_FIFO_DATA_WIDTH : integer := 8;     -- SPI FIFO DATA WIDTH
   constant C_FIFO_DEPTH          : integer := 1024;  -- FIFO DEPTH
+
+  -- GPO Configuration
+  constant C_GPO_WIDTH : integer := 8;  -- GPO Width
 
 end package;

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-09-18
--- Last update: 2024-02-02
+-- Last update: 2024-02-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -587,6 +587,7 @@ architecture rtl of zipcpu_axi4_lite_core is
   signal shift_reg  : std_logic_vector(31 downto 0);  -- Get TDI data
   signal lcd_on_int : std_logic;                      -- Internal LCD ON
 
+  signal leds_gpo_int : std_logic_vector(C_GPO_WIDTH - 1 downto 0);  -- LEDS GPO outputs
 
   -- == DEBUG ==
   signal spi_wdata    : std_logic_vector(7 downto 0);
@@ -1356,10 +1357,7 @@ begin  -- architecture rtl
       spi_cs_n     => spi_slave_cs_n,
       spi_do       => spi_slave_do,
       spi_di       => spi_slave_di,
-      spi_slave_it => spi_slave_it,
-      -- DEBUG PURPOSE
-      spi_wdata    => spi_wdata,
-      spi_write_en => spi_write_en
+      spi_slave_it => spi_slave_it
       );
 
   -- Instanciation of I2C Master AXI4 Lite - EEPROM management
@@ -1378,33 +1376,33 @@ begin  -- architecture rtl
       rst_n_sys => rst_n_sys,
 
       -- Write Address Channel signals
-      awvalid => awvalid_interco_m(C_I2C_MASTER_EEPROM),
-      awaddr  => awaddr_interco_m(C_I2C_MASTER_EEPROM)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
-      awprot  => awprot_interco_m(C_I2C_MASTER_EEPROM),
-      awready => awready_interco_m(C_I2C_MASTER_EEPROM),
+      awvalid => awvalid_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      awaddr  => awaddr_interco_m(C_I2C_MASTER_EEPROM_IDX)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      awready => awready_interco_m(C_I2C_MASTER_EEPROM_IDX),
 
       -- Write Data Channel
-      wvalid => wvalid_interco_m(C_I2C_MASTER_EEPROM),
-      wdata  => wdata_interco_m(C_I2C_MASTER_EEPROM),
-      wstrb  => wstrb_interco_m(C_I2C_MASTER_EEPROM),
-      wready => wready_interco_m(C_I2C_MASTER_EEPROM),
+      wvalid => wvalid_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      wdata  => wdata_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      wstrb  => wstrb_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      wready => wready_interco_m(C_I2C_MASTER_EEPROM_IDX),
 
       -- Write Response Channel
-      bready => bready_interco_m(C_I2C_MASTER_EEPROM),
-      bvalid => bvalid_interco_m(C_I2C_MASTER_EEPROM),
-      bresp  => bresp_interco_m(C_I2C_MASTER_EEPROM),
+      bready => bready_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      bvalid => bvalid_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      bresp  => bresp_interco_m(C_I2C_MASTER_EEPROM_IDX),
 
       -- Read Address Channel
-      arvalid => arvalid_interco_m(C_I2C_MASTER_EEPROM),
-      araddr  => araddr_interco_m(C_I2C_MASTER_EEPROM)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
-      arprot  => arprot_interco_m(C_I2C_MASTER_EEPROM),
-      arready => arready_interco_m(C_I2C_MASTER_EEPROM),
+      arvalid => arvalid_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      araddr  => araddr_interco_m(C_I2C_MASTER_EEPROM_IDX)(C_AXI4_LITE_I2C_MASTER_EEPROM_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      arready => arready_interco_m(C_I2C_MASTER_EEPROM_IDX),
 
       -- Read Data Channel
-      rready => rready_interco_m(C_I2C_MASTER_EEPROM),
-      rvalid => rvalid_interco_m(C_I2C_MASTER_EEPROM),
-      rdata  => rdata_interco_m(C_I2C_MASTER_EEPROM),
-      rresp  => rresp_interco_m(C_I2C_MASTER_EEPROM),
+      rready => rready_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      rvalid => rvalid_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      rdata  => rdata_interco_m(C_I2C_MASTER_EEPROM_IDX),
+      rresp  => rresp_interco_m(C_I2C_MASTER_EEPROM_IDX),
 
       -- I2C MASTER I/F   
       sclk    => sclk_eeprom,
@@ -1413,6 +1411,51 @@ begin  -- architecture rtl
       sda_out => sda_out_eeprom,
       sda_en  => sda_en_eeprom
       );
+
+  -- Instanciation of GPO AXI4 Lite
+  i_axi4_lite_gpo_0 : entity lib_axi4_lite_gpio.axi4_lite_gpo
+    generic map (
+      G_AXI4_LITE_ADDR_WIDTH => C_AXI4_LITE_GPO_ADDR_WIDTH,
+      G_AXI4_LITE_DATA_WIDTH => G_AXI_DATA_WIDTH,
+      G_GPO_WIDTH            => C_GPO_WIDTH
+      )
+    port map(
+      clk_sys   => clk_sys,
+      rst_n_sys => rst_n_sys,
+
+      -- Write Address Channel signals
+      awvalid => awvalid_interco_m(C_GPO_IDX),
+      awaddr  => awaddr_interco_m(C_GPO_IDX)(C_AXI4_LITE_GPO_ADDR_WIDTH - 1 downto 0),
+      awprot  => awprot_interco_m(C_GPO_IDX),
+      awready => awready_interco_m(C_GPO_IDX),
+
+      -- Write Data Channel
+      wvalid => wvalid_interco_m(C_GPO_IDX),
+      wdata  => wdata_interco_m(C_GPO_IDX),
+      wstrb  => wstrb_interco_m(C_GPO_IDX),
+      wready => wready_interco_m(C_GPO_IDX),
+
+      -- Write Response Channel
+      bready => bready_interco_m(C_GPO_IDX),
+      bvalid => bvalid_interco_m(C_GPO_IDX),
+      bresp  => bresp_interco_m(C_GPO_IDX),
+
+      -- Read Address Channel
+      arvalid => arvalid_interco_m(C_GPO_IDX),
+      araddr  => araddr_interco_m(C_GPO_IDX)(C_AXI4_LITE_GPO_ADDR_WIDTH - 1 downto 0),
+      arprot  => arprot_interco_m(C_GPO_IDX),
+      arready => arready_interco_m(C_GPO_IDX),
+
+      -- Read Data Channel
+      rready => rready_interco_m(C_GPO_IDX),
+      rvalid => rvalid_interco_m(C_GPO_IDX),
+      rdata  => rdata_interco_m(C_GPO_IDX),
+      rresp  => rresp_interco_m(C_GPO_IDX),
+
+      -- GPO Control
+      gpo => leds_gpo_int
+      );
+
 
   -- == DEBUG ==
   p_spi_wdata_mngt : process (clk_sys, rst_n_sys) is
@@ -1437,10 +1480,10 @@ begin  -- architecture rtl
 
   ledr_int(9 downto 6) <= (others => '0');
 
-  -- Outputs
+  -- == Outputs Affectations ==
   ledr             <= ledr_int;
   o_lcd_on         <= lcd_on_int;
-  ledg(7 downto 0) <= (others => '0');
+  ledg(7 downto 0) <= leds_gpo_int; -- FROM GPO
   ledg(8)          <= lcd_on_int;
 
 end architecture rtl;

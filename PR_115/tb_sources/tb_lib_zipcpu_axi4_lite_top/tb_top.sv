@@ -169,7 +169,7 @@ module tb_top
                       .G_CHECK_SIZE      (`C_CHECK_SIZE),
                       .G_CHECK_WIDTH     (`C_CHECK_WIDTH),
 
-		      .G_SLAVE_I2C_FIFO_WIDTH (`C_SLAVE_I2C_FIFO_WIDTH)
+		      .G_SLAVE_I2C_FIFO_DEPTH (`C_SLAVE_I2C_FIFO_DEPTH)
 		      )
    
    tb_class_inst = new (i_wait_event_0.wait_event_if, 
@@ -314,7 +314,7 @@ module tb_top
    
    // Instanciation of an I2C Slave : EEPROM simulation
    i2c_slave #(
-	       .G_SLAVE_I2C_FIFO_WIDTH (`C_SLAVE_I2C_FIFO_WIDTH)
+	       .G_SLAVE_I2C_FIFO_DEPTH (`C_SLAVE_I2C_FIFO_DEPTH)
 	       )
    i_i2c_slave_eeprom_0
      (

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-11
--- Last update: 2024-02-02
+-- Last update: 2024-02-12
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -113,8 +113,9 @@ begin  -- architecture rtl
 
   end generate;
 
-  -- Addr Decode for 8 Slaves
-  g_addr_decode_8_slaves : if(G_SLAVE_NB = 8) generate
+  -- Addr Decode for 8 Slaves or 9 Slaves
+  -- Bits 2-1-0 of sel_idx_comb are the same for 8 or 9 Slaves
+  g_addr_decode_8_or_9_slaves : if(G_SLAVE_NB = 8 or G_SLAVE_NB = 9) generate
 
     sel_idx_comb(0) <=
       (
@@ -177,6 +178,20 @@ begin  -- architecture rtl
       (
         (sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and (not sel_idx_bit_comb(4)) and
         (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and (not sel_idx_bit_comb(0))
+        );
+
+  end generate;
+
+
+  -- Addr Decode for 9 Slaves
+  -- Bits 3 of sel_idx_comb is used for 9 slaves
+  g_addr_decode_9_slaves : if(G_SLAVE_NB = 8 or G_SLAVE_NB = 9) generate
+
+    sel_idx_comb(3) <=
+      (
+        (sel_idx_bit_comb(8)) and (not sel_idx_bit_comb(7)) and (not sel_idx_bit_comb(6)) and (not sel_idx_bit_comb(5)) and
+        (not sel_idx_bit_comb(4)) and (not sel_idx_bit_comb(3)) and (not sel_idx_bit_comb(2)) and (not sel_idx_bit_comb(1)) and
+        (not sel_idx_bit_comb(0))
         );
 
   end generate;
