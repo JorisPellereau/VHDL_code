@@ -45,6 +45,7 @@
 	.equ spi_master_base_addr, 0x5000    		; SPI MASTER Base Addr
 	.equ spi_slave_base_addr, 0x6000     		; SPI SLAVE Base Addr
 	.equ i2c_master_eeprom_base_addr, 0x7000	; I2C MASTER EEPROM Addr
+	.equ gpo_base_addr, 0x8000			; GPO BASE ADDR
 	
 	;; INITIAL Values
 	.equ segment_init_value, 0x00000000	   ; Segment Initial Value
@@ -67,9 +68,10 @@ _start:
 	jsr clr_reg				; Clear All registers expect r13 r14 r15
 	jsr init_7segs				; INIT 7Segments Slave
 	jsr init_spi_master			; INIT SPI MASTER
-	jsr init_spi_slave			; INIT SPI SLAVE	
+	jsr init_spi_slave			; INIT SPI SLAVE
+	MOV $0, r6				; Initialisation of R6 for data to send to FIFO TX I2C
 	jsr init_i2c_master_eeprom 		; INIT I2C MASTER EEPROM
-	jsr init_done
+	jsr init_done	
 	jsr i2c_master_eeprom_write_access
 	WAIT
 	
@@ -118,12 +120,13 @@ init_spi_slave:
 ;;; INIT I2C MASTER EEPROM
 ;;; Load data into the FIFO TX Data 0 to 255
 init_i2c_master_eeprom:
-	MOV r5, r2					; Copy r5 to R2
+	MOV r6, r2					; Copy r5 to R2
 	SW r2, i2c_master_eeprom_base_addr + 4 		; Load the data to the TX FIFO
-	ADD $1, R5					; Inc the Counter
-	CMP C_MAX_LOOP_IDX, R5					; Compare R5 with C_MAX_LOOP_IDX
+	ADD $1, r6					; R6 store the value to send into the TX FIFO
+	ADD $1, r5					; Inc the Counter
+	CMP C_MAX_LOOP_IDX, r5					; Compare R5 with C_MAX_LOOP_IDX
 	BLT init_i2c_master_eeprom			; Return to init_i2c_master_eeprom if not equals the 255
-	MOV 0, R5					; Re init the counter to 0
+	MOV 0, r5					; Re init the counter to 0
 	RETN
 
 ;;; INIT_DONE Flag - Write into R4 1 == Initialization already done
@@ -144,8 +147,10 @@ i2c_master_eeprom_write_access:
 	LDI 0x00010A01,r2				; Send a write access on the I2C MASTER EEPROM with 1 data
 	SW r2, i2c_master_eeprom_base_addr
 	ADD $1, R5					; Add 1 to R5
-	CMP C_MAX_LOOP_IDX, R5					; Compare if R5 Equals to MAX idx
+	CMP C_MAX_LOOP_IDX + 1, R5					; Compare if R5 Equals to MAX idx
 	BLT polling_i2c_master_busy			; If less than MAX idx -> Return to polling
+	MOV 255, r2
+	SW  r2, gpo_base_addr				; Write the Value 0xFF into GPO (on leds)
 	BUSY
 
 

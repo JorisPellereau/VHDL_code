@@ -241,7 +241,7 @@ begin  -- architecture rtl
       -- RDATA for Regular registers
       -- Set RDATA when reading REG0
       if(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG0_ADDR) then
-        slv_rdata <= x"0000" & ctrl0_register;
+        slv_rdata <= ctrl0_register;
 
       -- Set RDATA when reading REG1
       elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) = C_REG1_ADDR) then

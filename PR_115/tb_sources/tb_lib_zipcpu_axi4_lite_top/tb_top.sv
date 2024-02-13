@@ -117,20 +117,9 @@ module tb_top
    // SET WAIT EVENT SIGNALS
    assign i_wait_event_0.wait_event_if.wait_signals[0] = rst_n;
    assign i_wait_event_0.wait_event_if.wait_signals[1] = clk;
-   //assign i_wait_event_0.wait_event_if.wait_signals[2] = `C_AXI4_LITE_MASTER_PATH.done;
-   assign i_wait_event_0.wait_event_if.wait_signals[3] = rdata_val_emul;
-   //assign i_wait_event_0.wait_event_if.wait_signals[4] = `C_DURATION_DONE_PATH;
-   
-   
-   
-   // SET SET_INJECTOR SIGNALS
-/* -----\/----- EXCLUDED -----\/-----
-   assign `C_AXI4_LITE_MASTER_PATH.start         = i_set_injector_0.set_injector_if.set_signals_synch[0];
-   assign `C_AXI4_LITE_MASTER_PATH.addr          = i_set_injector_0.set_injector_if.set_signals_synch[1];
-   assign `C_AXI4_LITE_MASTER_PATH.rnw           = i_set_injector_0.set_injector_if.set_signals_synch[2];
-   assign `C_AXI4_LITE_MASTER_PATH.strobe        = i_set_injector_0.set_injector_if.set_signals_synch[3];
-   assign `C_AXI4_LITE_MASTER_PATH.master_wdata  = i_set_injector_0.set_injector_if.set_signals_synch[4];
- -----/\----- EXCLUDED -----/\----- */
+   assign i_wait_event_0.wait_event_if.wait_signals[2] = rdata_val_emul;
+   assign i_wait_event_0.wait_event_if.wait_signals[3] = ledg_dut[0];
+ 
    assign wdata_lcd_emul                         = i_set_injector_0.set_injector_if.set_signals_synch[5];
    assign wdata_sel_emul                         = i_set_injector_0.set_injector_if.set_signals_synch[6];
    assign busy_flag_duration                     = i_set_injector_0.set_injector_if.set_signals_synch[7];
@@ -145,11 +134,7 @@ module tb_top
    assign i_set_injector_0.set_injector_if.set_signals_asynch_init_value[6]  = 0;
    assign i_set_injector_0.set_injector_if.set_signals_asynch_init_value[7]  = 0;
   
-   // SET CHECK_SIGNALS
-/* -----\/----- EXCLUDED -----\/-----
-   assign i_check_level_0.check_level_if.check_signals[0] = `C_AXI4_LITE_MASTER_PATH.master_rdata;
-   assign i_check_level_0.check_level_if.check_signals[1] = `C_AXI4_LITE_MASTER_PATH.access_status;
- -----/\----- EXCLUDED -----/\----- */
+   
    assign i_check_level_0.check_level_if.check_signals[2] = rdata_lcd_emul;
    
 
@@ -192,9 +177,8 @@ module tb_top
       // ADD ALias of WAIT Module        
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",            0);
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "CLK",              1);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "DONE_MASTER",      2);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "LCD_VAL",          3);
-      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "S_DURATION_DONE",  4); 
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "LCD_VAL",          2);
+      tb_class_inst.ADD_ALIAS("WAIT_EVENT", "LEDG_DUT_0",       3); 
      							       
       // Check Level Alias				       
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "RDATA_MASTER",    0);

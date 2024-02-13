@@ -2,11 +2,11 @@
 -- Title      : AXI4 Lite GPO Registers
 -- Project    : 
 -------------------------------------------------------------------------------
--- File       : axi4_lite_i2c_gpo_registers.vhd
+-- File       : axi4_lite_gpo_registers.vhd
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-02-12
--- Last update: 2024-02-12
+-- Last update: 2024-02-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ use lib_pkg_utils.pkg_utils.all;
 library lib_axi4_lite_gpio;
 use lib_axi4_lite_gpio.axi4_lite_gpo_pkg.all;
 
-entity axi4_lite_i2c_gpo_registers is
+entity axi4_lite_gpo_registers is
   generic (
     G_ADDR_WIDTH : integer range 4 to 16  := 4;   -- USEFULL ADDR WIDTH
     G_DATA_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite DATA WIDTH
@@ -56,7 +56,7 @@ entity axi4_lite_i2c_gpo_registers is
 
 end entity axi4_lite_gpo_registers;
 
-architecture rtl of axi4_lite_i2c_gpo_registers is
+architecture rtl of axi4_lite_gpo_registers is
 
   -- == INTERNAL Signals ==
   signal reg_wr_sel       : std_logic_vector(C_NB_REG - 1 downto 0);  -- Write register selection
@@ -123,8 +123,6 @@ begin  -- architecture rtl
       -- Write in CTRL0 Register
       if(reg_wr_sel(C_REG0_IDX) = '1' and slv_start = '1' and slv_rw = '0') then
         ctrl0_register <= slv_wdata(C_CTRL0_WIDTH - 1 downto 0);
-      else
-        ctrl0_register(0) <= '0';       -- Cleared on Write Bit
       end if;
 
     end if;
@@ -172,7 +170,7 @@ begin  -- architecture rtl
 
       -- Ack for a read access into a regular register
       -- Generates an error if the addr is greater than the last accessible addr C_REG2_ADDR
-      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG3_ADDR) then
+      elsif(slv_start = '1' and slv_rw = '1' and slv_addr(C_USEFUL_LSBITS - 1 downto 0) > C_REG0_ADDR) then
         slv_status <= "10";
 
       -- No Error generated

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-30
--- Last update: 2024-02-12
+-- Last update: 2024-02-13
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -485,6 +485,10 @@ begin  -- architecture rtl
       -- Shift the register on sr_en_pulse
       elsif(sr_en = '1' and wr_ongoing = '1' and cnt_bit /= to_unsigned(0, cnt_bit'length)) then
         sr_wdata(7 downto 1) <= sr_wdata(6 downto 0);  -- Shift on MSB
+
+      -- At the end of the frame, reset the SR
+      elsif(end_ongoing = '1') then
+        sr_wdata <= (others => '0');
       end if;
 
     end if;
@@ -579,6 +583,10 @@ begin  -- architecture rtl
       if(rd_ongoing = '1' and sampling_pulse = '1') then
         sr_rdata(0)          <= sda_in;
         sr_rdata(7 downto 1) <= sr_rdata(6 downto 0);  -- Shift it
+
+      -- During the end state reset the SR
+      elsif(end_ongoing = '1') then
+        sr_rdata <= (others => '0');
       end if;
 
     end if;
@@ -599,7 +607,7 @@ begin  -- architecture rtl
         fifo_rx_wr_en <= '0';
         fifo_rx_data  <= (others => '0');
       end if;
-      
+
     end if;
   end process p_write_fifo_rx;
 

@@ -38,6 +38,7 @@ library lib_axi4_lite_memory;
 library lib_axi4_lite_spi_master;
 library lib_axi4_lite_spi_slave;
 library lib_axi4_lite_i2c_master;
+library lib_axi4_lite_gpio;
 library lib_zipcpu_axi4_lite_top;
 library lib_zipcpu;
 library lib_jtag_intel;
@@ -914,9 +915,6 @@ begin  -- architecture rtl
       rdata  => rdata_master_instr,
       rresp  => rresp_master_instr
       );
-
-
-
 
 
   -- AXI4 Lite Interconnect

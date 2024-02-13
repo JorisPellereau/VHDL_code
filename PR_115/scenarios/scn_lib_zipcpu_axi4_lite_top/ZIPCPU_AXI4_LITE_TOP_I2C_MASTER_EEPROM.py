@@ -1,6 +1,6 @@
 # ZIPCPU_AXI4_LITE_TOP_I2C_MASTER_EEPROM
 #
-# Use asm script : 
+# Use asm script : load 256 data into the I2C Master FIFO TX and send 256 I2C Access with one data per frame. No Error on I2C ADDR
 #
 import sys
 import os
@@ -51,8 +51,9 @@ scn.I2C_SLAVE_LOAD_TX_DATA("I2C_SLAVE_EEPROM", [i for i in range(10)])
 
 scn.WAIT(200, "ns")
 
-
-scn.WAIT(1, "ms")
+scn.print_step("Wait until the ledg[0] rise")
+scn.WTRS("LEDG_DUT_0", 20, "ms")
+scn.I2C_SLAVE_CHECK_RX_DATA("I2C_SLAVE_EEPROM", [i for i in range(256)])
 
 scn.END_TEST()
 

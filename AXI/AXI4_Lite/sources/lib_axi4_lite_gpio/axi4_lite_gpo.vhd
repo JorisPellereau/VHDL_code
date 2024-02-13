@@ -28,7 +28,7 @@ library lib_axi4_lite;
 library lib_axi4_lite_gpio;
 
 
-entity axi4_lite_i2c_master is
+entity axi4_lite_gpo is
   generic (
     G_AXI4_LITE_ADDR_WIDTH : integer range 5 to 64  := 5;   -- AXI4 Lite ADDR WIDTH
     G_AXI4_LITE_DATA_WIDTH : integer range 32 to 64 := 32;  -- AXI4 Lite DATA WIDTH
@@ -140,7 +140,7 @@ begin  -- architecture rtl
 
 
   -- Instanciation of LCD REGISTERS
-  i_axi4_lite_gpo_registers_0 : entity lib_axi4_lite_gpio.axi4_lite_i2c_gpo_registers
+  i_axi4_lite_gpo_registers_0 : entity lib_axi4_lite_gpio.axi4_lite_gpo_registers
     generic map(
       G_ADDR_WIDTH => G_AXI4_LITE_ADDR_WIDTH,
       G_DATA_WIDTH => G_AXI4_LITE_DATA_WIDTH,

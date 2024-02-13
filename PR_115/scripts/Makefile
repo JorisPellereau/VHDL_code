@@ -6,6 +6,7 @@ include /home/linux-jp/Documents/GitHub/RTL_Testbench/scripts/makefiles/i2c_slav
 include MakefileJTAG_7seg.mk
 include MakefileJTAG_axi4_lite.mk
 include MakefileZIPCPU_axi4_lite.mk
+include ZIPCPU_axi4_lite_design_file_list.mk
 # --------------
 
 
