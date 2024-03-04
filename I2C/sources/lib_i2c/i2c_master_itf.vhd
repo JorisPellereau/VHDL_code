@@ -6,13 +6,15 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-30
--- Last update: 2024-02-13
+-- Last update: 2024-03-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- Description: I2C Master Interface
--- /!\ Limitations : Data are send MSB First and store MSB first
--- Start input shall be a pulse
+-- /!\ Limitations : - Data are send MSB First and store MSB first
+--                   - Start input shall be a pulse
+--                   - No SACK Polling
+--                   - Only 8 bits data are supported
 -------------------------------------------------------------------------------
 -- Copyright (c) 2024 
 -------------------------------------------------------------------------------
@@ -47,10 +49,10 @@ entity i2c_master_itf is
     fifo_rx_data  : out std_logic_vector(7 downto 0);  -- FIFO RX DATA
 
     -- Control Signals
-    start     : in std_logic;                                       -- Start I2C Transaction
-    rw        : in std_logic;                                       -- R/W acces
-    chip_addr : in std_logic_vector(6 downto 0);                    -- Chip addr to request
-    nb_data   : in std_logic_vector(log2(G_NB_DATA) - 1 downto 0);  -- Number of Bytes to Read or Write
+    start     : in std_logic;                                   -- Start I2C Transaction
+    rw        : in std_logic;                                   -- R/W acces
+    chip_addr : in std_logic_vector(6 downto 0);                -- Chip addr to request
+    nb_data   : in std_logic_vector(log2(G_NB_DATA) downto 0);  -- Number of Bytes to Read or Write
 
     -- I2C Status
     sack_error : out std_logic;         -- SACK Error Occurs
@@ -68,7 +70,7 @@ end entity i2c_master_itf;
 architecture rtl of i2c_master_itf is
 
   -- == TYPES ==
-  type t_fsm_states is (ST_IDLE, ST_START, ST_CTRL, ST_SACK, ST_MACK, ST_WR, ST_RD, ST_STOP, ST_SYNCH_END, ST_END);  -- FSM States
+  type t_fsm_states is (ST_IDLE, ST_START, ST_CTRL, ST_SACK, ST_MACK, ST_WR, ST_RD, ST_STOP, ST_SYNCH_END, ST_END, ST_SYNCH_WR, ST_SYNCH_RD);  -- FSM States
 
   -- == INTERNAL Signals ==
   signal chip_addr_int     : std_logic_vector(6 downto 0);                                 -- Chip Addr
@@ -83,7 +85,7 @@ architecture rtl of i2c_master_itf is
   signal gen_stop          : std_logic;  -- Gen stop pulse
   signal cnt_bit           : unsigned(3 downto 0);                                         -- Bit counter (until 8)
   signal cnt_bit_done      : std_logic;  -- Indicates that 8 bits was counted
-  signal sack_synch        : std_logic;  -- Signal use for the synchronization of for the SACK
+  signal ack_synch         : std_logic;  -- Signal use for the synchronization of for the SACK/MACK
   signal sampling_pulse    : std_logic;  -- Sampling pulse
   signal sack_error_int    : std_logic;  -- Slave ACK Error
   signal cnt_data          : unsigned(log2(G_NB_DATA) downto 0);                           -- Data Counter
@@ -104,6 +106,7 @@ architecture rtl of i2c_master_itf is
   signal ctrl_byte_ongoing : std_logic;  -- Control Byte ongoing
   signal idle_ongoing      : std_logic;  -- IDLE ongoing flag
   signal start_ongoing     : std_logic;  -- Start Ongoing
+  signal mack_ongoing      : std_logic;  -- MACK Ongoing
 
 begin  -- architecture rtl
 
@@ -160,7 +163,7 @@ begin  -- architecture rtl
 
   -- Next state computation
   p_fsm_ns_update : process (fsm_cs, start, cnt_bit_done, sampling_pulse, sda_in, rw_int,
-                             cnt_data_done, sclk_change, sclk_int_r_edge, sclk_int_f_edge, sack_synch) is
+                             cnt_data_done, sclk_change, sclk_int_r_edge, sclk_int_f_edge, ack_synch) is
   begin  -- process p_fsm_ns_update
 
     case fsm_cs is
@@ -178,6 +181,7 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '1';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         if(start = '1') then
           fsm_ns <= ST_START;
@@ -198,6 +202,7 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '1';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         -- Leave this state on the next falling edge of sclk
         if(sclk_int_f_edge = '1') then
@@ -220,9 +225,10 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '1';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         -- Go to ST_SACK State
-        if(sclk_int_f_edge = '1' and sack_synch = '1') then
+        if(sclk_int_f_edge = '1' and ack_synch = '1') then
           fsm_ns <= ST_SACK;
         else
           fsm_ns <= ST_CTRL;
@@ -240,14 +246,15 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         -- Correct sampling : ACK is here and go to READ state
         if(sampling_pulse = '1' and sda_in = '0' and rw_int = '1' and cnt_data_done = '0') then
-          fsm_ns <= ST_RD;
+          fsm_ns <= ST_SYNCH_RD;
 
-        -- Correct sampling : AXK is here and go to WRITE state
+        -- Correct sampling : ACK is here and go to SYNCH Write State
         elsif(sampling_pulse = '1' and sda_in = '0' and rw_int = '0'and cnt_data_done = '0') then
-          fsm_ns <= ST_WR;
+          fsm_ns <= ST_SYNCH_WR;
 
         -- NO ACK From Slave : go to STOP STATE
         elsif(sampling_pulse = '1' and sda_in = '1') then
@@ -263,6 +270,29 @@ begin  -- architecture rtl
           fsm_ns <= ST_SACK;
         end if;
 
+        -- SYnchronization on the falling edge of sclk before ging to ST_WR state
+
+      when ST_SYNCH_WR =>
+        en_sclk_gen       <= '1';       -- Enable SCLK generation
+        gen_stop          <= '0';       -- Generation of the stop condition
+        sack_error_int    <= '0';       -- SACK ERROR
+        wr_ongoing        <= '0';       -- Write Ongoing Flag
+        rd_ongoing        <= '0';       -- Read Ongoing Flag
+        sclk_change_en    <= '1';       -- Enable SCLK CHANGE
+        end_ongoing       <= '0';       -- End Ongoing flag
+        sack_ongoing      <= '0';       -- SACK Ongoing
+        ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
+        idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
+
+        -- In this state on the falling edge of SCLK_int -> Go to ST_WR State
+        if(sclk_int_f_edge = '1') then
+          fsm_ns <= ST_WR;
+        else
+          fsm_ns <= ST_SYNCH_WR;
+        end if;
+
       -- In Write State wait until the end of the 8th bit to go to SACK state
       when ST_WR =>
         en_sclk_gen       <= '1';       -- Enable SCLK generation
@@ -276,13 +306,36 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         -- When all bits are transmitted go to SACK state
         -- Go to ST_SACK State
-        if(sclk_int_f_edge = '1' and sack_synch = '1') then
+        if(sclk_int_f_edge = '1' and ack_synch = '1') then
           fsm_ns <= ST_SACK;
         else
           fsm_ns <= ST_WR;
+        end if;
+
+      -- ST_SYNCH_RD State : 
+      when ST_SYNCH_RD =>
+        en_sclk_gen       <= '1';       -- Enable SCLK generation
+        gen_stop          <= '0';       -- Generation of the stop condition
+        sack_error_int    <= '0';       -- SACK ERROR
+        wr_ongoing        <= '0';       -- Write Ongoing Flag
+        rd_ongoing        <= '0';       -- Read Ongoing Flag
+        sclk_change_en    <= '1';       -- Enable SCLK CHANGE
+        end_ongoing       <= '0';       -- End Ongoing flag
+        sack_ongoing      <= '1';       -- SACK Ongoing
+        ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
+        idle_ongoing      <= '0';       -- Idle Ongoing
+        start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
+
+        -- In this state wait for the next falling edge and then go to ST_RD state
+        if(sclk_int_f_edge = '1') then
+          fsm_ns <= ST_RD;
+        else
+          fsm_ns <= ST_SYNCH_RD;
         end if;
 
       -- In Read State : wait until the end of the 8th bit to go to MACK state
@@ -298,12 +351,16 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
-        if(cnt_bit_done = '1') then
+        -- When all bits are received go to MACK state
+        -- Go to ST_SACK State
+        if(sclk_int_f_edge = '1' and ack_synch = '1') then
           fsm_ns <= ST_MACK;
         else
           fsm_ns <= ST_RD;
         end if;
+
 
       -- In MACK State : generate the ACK and go to RD state if needed
       when ST_MACK =>
@@ -318,9 +375,17 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '1';       -- MACK Ongoing
 
-        if(sclk_change = '1' and cnt_data_done = '0') then
+        -- Case : there is pending data to read -> Return in RD state
+        if(sampling_pulse = '1' and cnt_data_done = '0') then
           fsm_ns <= ST_RD;
+
+        -- Case : there is no pending data to read -> Go to ST_SYNCH_END state
+        elsif(sampling_pulse = '1' and cnt_data_done = '1') then
+          fsm_ns <= ST_SYNCH_END;
+
+        -- Stay in this state until sampling_pulse is set to '1'
         else
           fsm_ns <= ST_MACK;
         end if;
@@ -338,6 +403,7 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         -- Go to ST_END on the falling edge
         if(sclk_int_r_edge = '1') then
@@ -358,8 +424,9 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
-        -- Go to ST_STOP on the fallinf edge of SCLK
+        -- Go to ST_STOP on the falling edge of SCLK
         if(sclk_change = '1') then
           fsm_ns <= ST_STOP;
         else
@@ -379,6 +446,7 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         if(sclk_change = '1') then
           fsm_ns <= ST_IDLE;
@@ -398,6 +466,7 @@ begin  -- architecture rtl
         ctrl_byte_ongoing <= '0';       -- Control Byte Ongoing
         idle_ongoing      <= '1';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
+        mack_ongoing      <= '0';       -- MACK Ongoing
 
         fsm_ns <= ST_IDLE;
     end case;
@@ -525,7 +594,7 @@ begin  -- architecture rtl
         cnt_bit <= (others => '0');     -- Reset the counter
 
       -- Inc. the counter on sr_en pulse
-      elsif(sr_en = '1' and (wr_ongoing = '1' or rd_ongoing = '1')) then
+      elsif(sr_en = '1' and ((wr_ongoing = '1' and mack_ongoing = '0') or rd_ongoing = '1')) then
         cnt_bit <= cnt_bit + 1;
       end if;
 
@@ -535,23 +604,23 @@ begin  -- architecture rtl
 
   cnt_bit_done <= '1' when cnt_bit = to_unsigned(8, cnt_bit'length) else '0';  -- This flag is set to '1' when the value 8 is reach
 
-  -- SACK Synchronization signal
-  p_sack_synch : process (clk_sys, rst_n_sys) is
-  begin  -- process p_sack_synch
+  -- SACK/MACK Synchronization signal
+  p_ack_synch : process (clk_sys, rst_n_sys) is
+  begin  -- process p_ack_synch
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
-      sack_synch <= '0';
+      ack_synch <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- Latch cnt_bit_done into sack_synch
+      -- Latch cnt_bit_done into ack_synch
       if(cnt_bit_done = '1') then
-        sack_synch <= '1';
+        ack_synch <= '1';
 
       -- On sack_sych and sclk_falling edge detection -> Rrset it
-      elsif(sack_synch = '1' and sclk_int_f_edge = '1') then
-        sack_synch <= '0';
+      elsif(ack_synch = '1' and sclk_int_f_edge = '1') then
+        ack_synch <= '0';
       end if;
     end if;
-  end process p_sack_synch;
+  end process p_ack_synch;
 
   -- purpose: Counter of DATA
   p_cnt_data : process (clk_sys, rst_n_sys) is
@@ -599,8 +668,8 @@ begin  -- architecture rtl
       fifo_rx_data  <= (others => '0');
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
-      -- On the end of a bit and during a read access -> perform an access to the FIFO RX
-      if(cnt_bit_done = '1' and rw_int = '1' and rd_ongoing = '1') then
+      -- During a read access, on the transition to go to the MACK state -> Store the sr_data into the RX FIFO
+      if(sclk_int_f_edge = '1' and ack_synch = '1' and rd_ongoing = '1') then
         fifo_rx_wr_en <= '1';
         fifo_rx_data  <= sr_rdata;
       else
@@ -625,8 +694,8 @@ begin  -- architecture rtl
         sda_out <= '0';
         sda_en  <= '1';
 
-      -- Generation of the stop condition
-      elsif(gen_stop = '1') then
+      -- Generation of the stop condition or generation of the MACK 
+      elsif(gen_stop = '1' or mack_ongoing = '1') then
         sda_out <= '1';
         sda_en  <= '1';
 

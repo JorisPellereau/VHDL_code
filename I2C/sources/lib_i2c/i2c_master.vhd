@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-02-12
+-- Last update: 2024-03-01
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -46,10 +46,10 @@ entity i2c_master is
     rst_n_sys : in std_logic;                                        -- Asynchronous Reset
 
     -- Control Signals
-    start     : in std_logic;                                       -- Start I2C Transaction
-    rw        : in std_logic;                                       -- R/W acces
-    chip_addr : in std_logic_vector(6 downto 0);                    -- Chip addr to request
-    nb_data   : in std_logic_vector(log2(G_NB_DATA) - 1 downto 0);  -- Number of Bytes to Read or Write
+    start     : in std_logic;                                   -- Start I2C Transaction
+    rw        : in std_logic;                                   -- R/W acces
+    chip_addr : in std_logic_vector(6 downto 0);                -- Chip addr to request
+    nb_data   : in std_logic_vector(log2(G_NB_DATA) downto 0);  -- Number of Bytes to Read or Write
 
     -- FIFO TX Control and Status
     wr_en_fifo_tx      : in  std_logic;                     -- Write Enable to the FIFO TX

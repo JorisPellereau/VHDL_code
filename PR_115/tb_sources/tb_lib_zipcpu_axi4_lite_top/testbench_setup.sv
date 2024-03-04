@@ -16,8 +16,8 @@
 `define C_WAIT_WIDTH    4
 
 // CHECK LEVEL Configuration
-`define C_CHECK_ALIAS_NB 3
-`define C_CHECK_SIZE     3
+`define C_CHECK_ALIAS_NB 4
+`define C_CHECK_SIZE     4
 `define C_CHECK_WIDTH    32
 
 // I2C SLAVE EEPROM Configuration

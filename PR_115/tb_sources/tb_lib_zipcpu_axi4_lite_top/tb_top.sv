@@ -66,7 +66,7 @@ module tb_top
    // I2C EEPROM TB signals
    wire 		 sclk_eeprom_dut;
    wire 		 sda_eeprom_dut;
-   
+   reg [$clog2(256):0] 	 nb_data_i2c_slave; // Same size as the function inside the DUT
 
   // == CLK GEN INST ==
    clk_gen #(
@@ -134,9 +134,9 @@ module tb_top
    assign i_set_injector_0.set_injector_if.set_signals_asynch_init_value[6]  = 0;
    assign i_set_injector_0.set_injector_if.set_signals_asynch_init_value[7]  = 0;
   
-   
+   // Check Signals affectation
    assign i_check_level_0.check_level_if.check_signals[2] = rdata_lcd_emul;
-   
+   assign i_check_level_0.check_level_if.check_signals[3] = ledg_dut;   
 
    // WAIT DURATION Connection
    assign i_wait_duration_0.wait_duration_if.clk = clk; // Assign Clock
@@ -184,6 +184,7 @@ module tb_top
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "RDATA_MASTER",    0);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "STATUS_MASTER",   1);
       tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "LCD_RDATA",       2);
+      tb_class_inst.ADD_ALIAS("CHECK_LEVEL", "LEDG",            3);
 
       // I2C Slave EEPROM Module configuration
       tb_class_inst.tb_modules_custom_inst.init_slave_i2c_custom_class(i_i2c_slave_eeprom_0.i2c_slave_if,
@@ -302,9 +303,10 @@ module tb_top
 	       )
    i_i2c_slave_eeprom_0
      (
-      .rst_n (rst_n),
-      .sclk  (sclk_eeprom_dut),
-      .sda   (sda_eeprom_dut)
+      .rst_n   (rst_n),
+      .nb_data (nb_data_i2c_slave),
+      .sclk    (sclk_eeprom_dut),
+      .sda     (sda_eeprom_dut)
       );
      
    // DE0 NANO ?
@@ -321,5 +323,9 @@ module tb_top
 		 .spi_do       (spi_slave_di_dut)
 		);
    
+   // Latch nb_data for the I2C Slave on start_dut pulse inside the DUT
+   always @(posedge i_dut.i_zipcpu_axi4_lite_core_0.i_axi4_lite_i2c_master_eeprom_0.start_i2c) begin
+      nb_data_i2c_slave <= i_dut.i_zipcpu_axi4_lite_core_0.i_axi4_lite_i2c_master_eeprom_0.nb_data;
+   end
    
 endmodule // tb_top
