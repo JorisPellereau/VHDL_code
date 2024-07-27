@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-09
--- Last update: 2024-01-23
+-- Last update: 2024-01-25
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -112,43 +112,43 @@ begin  -- architecture rtl
 
 
   -- purpose: FSM NS update
-  p_fsm_ns : process (fsm_cs, spi_cs_n_r_edge, spi_cs_n_f_edge) is
-  begin  -- process p_fsm_ns
+  -- p_fsm_ns : process (fsm_cs, spi_cs_n_r_edge, spi_cs_n_f_edge) is
+  -- begin  -- process p_fsm_ns
 
-    case fsm_cs is
+  --   case fsm_cs is
 
-      -- Stay in IDLE state until the detection of a falling edge of SPI CS
-      when ST_IDLE =>
-        en_it <= '0';                   -- Enable IT
+  --     -- Stay in IDLE state until the detection of a falling edge of SPI CS
+  --     when ST_IDLE =>
+  --       en_it <= '0';                   -- Enable IT
 
-        -- Go to Read State if a falling edge is detected
-        if(spi_cs_n_f_edge = '1') then
-          fsm_ns <= ST_RD;
-        else
-          fsm_ns <= ST_IDLE;
-        end if;
+  --       -- Go to Read State if a falling edge is detected
+  --       if(spi_cs_n_f_edge = '1') then
+  --         fsm_ns <= ST_RD;
+  --       else
+  --         fsm_ns <= ST_IDLE;
+  --       end if;
 
 
-      -- Stay in this state until the reception of a rising edge of spi cs
-      when ST_RD =>
-        en_it <= '0';                   -- Enable IT
-        if(spi_cs_n_r_edge = '1') then
-          fsm_ns <= ST_IT;
-        else
-          fsm_ns <= ST_RD;
-        end if;
+  --     -- Stay in this state until the reception of a rising edge of spi cs
+  --     when ST_RD =>
+  --       en_it <= '0';                   -- Enable IT
+  --       if(spi_cs_n_r_edge = '1') then
+  --         fsm_ns <= ST_IT;
+  --       else
+  --         fsm_ns <= ST_RD;
+  --       end if;
 
-      when ST_IT =>
-        en_it  <= '1';                  -- Enable IT
-        fsm_ns <= ST_IDLE;
+  --     when ST_IT =>
+  --       en_it  <= '1';                  -- Enable IT
+  --       fsm_ns <= ST_IDLE;
 
-      when others =>
-        en_it  <= '0';                  -- Enable IT
-        fsm_ns <= ST_IDLE;
+  --     when others =>
+  --       en_it  <= '0';                  -- Enable IT
+  --       fsm_ns <= ST_IDLE;
 
-    end case;
+  --   end case;
 
-  end process p_fsm_ns;
+  -- end process p_fsm_ns;
 
 
   -- == spi_clk to clk_sys clock domain ==
@@ -174,7 +174,7 @@ begin  -- architecture rtl
     if rst_n_sys = '0' then             -- asynchronous reset (active low)
       spi_slave_it <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
-      spi_slave_it <= en_it;
+      spi_slave_it <= cnt_bit_done_r_edge;--en_it;
     end if;
   end process p_it_mngt;
 
