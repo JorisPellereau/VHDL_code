@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-31
--- Last update: 2024-03-01
+-- Last update: 2024-03-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -35,21 +35,23 @@ use lib_pkg_utils.pkg_utils.all;
 
 entity i2c_master is
   generic (
-    G_I2C_FREQ        : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
-    G_CLKSYS_FREQ     : integer                        := 50000000;  -- clk_sys frequency
-    G_NB_DATA         : integer                        := 256;       -- Number of MAXIMUM data to transmit
-    G_FIFO_DATA_WIDTH : integer                        := 8;         -- FIFO DATA WIDTH
-    G_FIFO_DEPTH      : integer                        := 1024       -- FIFO DPETH
+    G_I2C_FREQ         : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
+    G_CLKSYS_FREQ      : integer                        := 50000000;  -- clk_sys frequency
+    G_NB_DATA          : integer                        := 256;       -- Number of MAXIMUM data to transmit
+    G_MAX_POLL_ATTEMPT : integer range 1 to 255         := 10;        -- Maximal number of polling attempt before stopping the polling
+    G_FIFO_DATA_WIDTH  : integer                        := 8;         -- FIFO DATA WIDTH
+    G_FIFO_DEPTH       : integer                        := 1024       -- FIFO DPETH
     );
   port (
-    clk_sys   : in std_logic;                                        -- Clock
-    rst_n_sys : in std_logic;                                        -- Asynchronous Reset
+    clk_sys   : in std_logic;                                         -- Clock
+    rst_n_sys : in std_logic;                                         -- Asynchronous Reset
 
     -- Control Signals
     start     : in std_logic;                                   -- Start I2C Transaction
     rw        : in std_logic;                                   -- R/W acces
     chip_addr : in std_logic_vector(6 downto 0);                -- Chip addr to request
     nb_data   : in std_logic_vector(log2(G_NB_DATA) downto 0);  -- Number of Bytes to Read or Write
+    polling   : in std_logic;                                   -- Enable to poll on the ACK of after the CTRL Byte
 
     -- FIFO TX Control and Status
     wr_en_fifo_tx      : in  std_logic;                     -- Write Enable to the FIFO TX
@@ -132,9 +134,10 @@ begin  -- architecture behv
   -- I2C Master Itf instanciation
   i_i2c_master_itf_0 : entity lib_i2c.i2c_master_itf
     generic map(
-      G_I2C_FREQ    => G_I2C_FREQ,
-      G_CLKSYS_FREQ => G_CLKSYS_FREQ,
-      G_NB_DATA     => G_NB_DATA
+      G_I2C_FREQ         => G_I2C_FREQ,
+      G_CLKSYS_FREQ      => G_CLKSYS_FREQ,
+      G_NB_DATA          => G_NB_DATA,
+      G_MAX_POLL_ATTEMPT => G_MAX_POLL_ATTEMPT
       )
     port map (
       clk_sys   => clk_sys,
@@ -153,6 +156,7 @@ begin  -- architecture behv
       rw        => rw,
       chip_addr => chip_addr,
       nb_data   => nb_data,
+      polling   => polling,
 
       -- I2C Status
       sack_error => sack_error,

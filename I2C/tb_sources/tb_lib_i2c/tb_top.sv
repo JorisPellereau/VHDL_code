@@ -1,4 +1,4 @@
-
+// Unitary Testbench for I2C Master block
 
 `timescale 1ps/1ps
 
@@ -22,6 +22,7 @@ module tb_top
    wire rw_dut;
    wire [6:0] chip_addr_dut;
    wire [$clog2(`C_NB_DATA):0] nb_data_dut;
+   wire 		       polling_dut;
    wire 		       wr_en_fito_tx_dut;
    wire [7:0] 		       wdata_fifo_tx_dut;
    wire 		       fifo_empty_fifo_tx_dut;
@@ -42,7 +43,10 @@ module tb_top
    wire 		       sclk;
    wire 		       sda;
    
-   reg 	[$clog2(`C_NB_DATA):0]      nb_data_i2c_slave;
+   reg [$clog2(`C_NB_DATA):0]  nb_data_i2c_slave;
+   reg 				    polling_i2c_slave;
+   wire [$clog2(`C_SLAVE_I2C_MAX_POLLING):0] max_polling_i2c_slave;
+   
    
 
   // == CLK GEN INST ==
@@ -97,17 +101,19 @@ module tb_top
    assign i_wait_event_0.wait_event_if.wait_signals[2] = busy_dut;
    
    // SET SET_INJECTOR SIGNALS
-   assign start_dut           = i_set_injector_0.set_injector_if.set_signals_synch[0];
-   assign rw_dut              = i_set_injector_0.set_injector_if.set_signals_synch[1];
-   assign chip_addr_dut       = i_set_injector_0.set_injector_if.set_signals_synch[2];
-   assign nb_data_dut         = i_set_injector_0.set_injector_if.set_signals_synch[3];
-   assign wr_en_fifo_tx_dut   = i_set_injector_0.set_injector_if.set_signals_synch[4];
-   assign wdata_fifo_tx_dut   = i_set_injector_0.set_injector_if.set_signals_synch[5];
-   assign rd_en_fifo_rx_dut   = i_set_injector_0.set_injector_if.set_signals_synch[6];
+   assign start_dut             = i_set_injector_0.set_injector_if.set_signals_synch[0];
+   assign rw_dut                = i_set_injector_0.set_injector_if.set_signals_synch[1];
+   assign chip_addr_dut         = i_set_injector_0.set_injector_if.set_signals_synch[2];
+   assign nb_data_dut           = i_set_injector_0.set_injector_if.set_signals_synch[3];
+   assign wr_en_fifo_tx_dut     = i_set_injector_0.set_injector_if.set_signals_synch[4];
+   assign wdata_fifo_tx_dut     = i_set_injector_0.set_injector_if.set_signals_synch[5];
+   assign rd_en_fifo_rx_dut     = i_set_injector_0.set_injector_if.set_signals_synch[6];
+   assign polling_dut           = i_set_injector_0.set_injector_if.set_signals_synch[7];
+   assign max_polling_i2c_slave = i_set_injector_0.set_injector_if.set_signals_synch[8];
   
    // SET SET_INJECTOR INITIAL VALUES
    genvar 			 i;
-   for(i = 0; i < 7 ; i++) begin
+   for(i = 0; i < `C_SET_ALIAS_NB ; i++) begin
       assign i_set_injector_0.set_injector_if.set_signals_asynch_init_value[i]  = 0;
    end
   
@@ -140,13 +146,15 @@ module tb_top
 
    initial begin
       // Add Alias of Generic TB Modules
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START",         0);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RW",            1);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "CHIP_ADDR",     2);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "NB_DATA",       3);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WR_EN_FIFO_TX", 4);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA_FIFO_TX", 5);
-      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RD_EN_FIFO_RX", 6);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "START",                 0);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RW",                    1);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "CHIP_ADDR",             2);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "NB_DATA",               3);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WR_EN_FIFO_TX",         4);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "WDATA_FIFO_TX",         5);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "RD_EN_FIFO_RX",         6);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "POLLING",               7);
+      tb_class_inst.ADD_ALIAS("SET_INJECTOR", "MAX_POLLING_I2C_SLAVE", 8);
         
       // ADD ALias of WAIT Module        
       tb_class_inst.ADD_ALIAS("WAIT_EVENT", "RST_N",            0);
@@ -166,11 +174,12 @@ module tb_top
 
    // == DUT ==
    i2c_master #(
-		.G_I2C_FREQ        (`C_I2C_FREQ), 
-		.G_CLKSYS_FREQ     (`C_CLKSYS_FREQ), 
-		.G_NB_DATA         (`C_NB_DATA), 
-		.G_FIFO_DATA_WIDTH (`C_FIFO_DATA_WIDTH),
-		.G_FIFO_DEPTH      (`C_FIFO_DEPTH)
+		.G_I2C_FREQ         (`C_I2C_FREQ), 
+		.G_CLKSYS_FREQ      (`C_CLKSYS_FREQ), 
+		.G_NB_DATA          (`C_NB_DATA),
+		.G_MAX_POLL_ATTEMPT (`C_MAX_POLL_ATTEMPT),
+		.G_FIFO_DATA_WIDTH  (`C_FIFO_DATA_WIDTH),
+		.G_FIFO_DEPTH       (`C_FIFO_DEPTH)
 		) 
    i_dut (
 	  .clk_sys   (clk),
@@ -181,6 +190,7 @@ module tb_top
 	  .rw        (rw_dut),
 	  .chip_addr (chip_addr_dut),
 	  .nb_data   (nb_data_dut),
+	  .polling   (polling_dut),
 	  
 	  // FIFO TX Control and Status
 	  .wr_en_fifo_tx      (wr_en_fifo_tx_dut),
@@ -214,23 +224,27 @@ module tb_top
    pullup(sclk);
    pullup(sda);
    
-   // I2C Slave Checker
-
+   // I2C Slave Checker 
    // Instanciation of an I2C Slave
    i2c_slave #(
-	       .G_SLAVE_I2C_FIFO_DEPTH (`C_SLAVE_I2C_FIFO_DEPTH)
+	       .G_SLAVE_I2C_FIFO_DEPTH (`C_SLAVE_I2C_FIFO_DEPTH),
+	       .G_NB_DATA              (`C_SLAVE_I2C_NB_DATA),
+	       .G_MAX_POLLING          (`C_SLAVE_I2C_MAX_POLLING)
 	       )
    i_i2c_slave_0
      (
-      .rst_n   (rst_n),
-      .nb_data (nb_data_i2c_slave),
-      .sclk    (sclk),
-      .sda     (sda)
+      .rst_n       (rst_n),
+      .nb_data     (nb_data_i2c_slave),
+      .polling     (polling_i2c_slave),
+      .max_polling (max_polling_i2c_slave), // Controled by set_injector
+      .sclk        (sclk),
+      .sda         (sda)
       );
 
-   // Latch nb_data for the I2C Slave on start_dut pulse
+   // Latch nb_data  and polling for the I2C Slave on start_dut pulse
    always @(posedge start_dut) begin
-      nb_data_i2c_slave <= nb_data_dut;    
+      nb_data_i2c_slave <= nb_data_dut;
+      polling_i2c_slave <= polling_dut;
    end
    
 endmodule // tb_top

@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-01-30
--- Last update: 2024-03-01
+-- Last update: 2024-03-07
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -32,13 +32,14 @@ use lib_pkg_utils.pkg_utils.all;
 
 entity i2c_master_itf is
   generic(
-    G_I2C_FREQ    : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
-    G_CLKSYS_FREQ : integer                        := 50000000;  -- clk_sys frequency
-    G_NB_DATA     : integer                        := 256        -- Number of MAXIMUM data to transmit
+    G_I2C_FREQ         : integer range 100000 to 400000 := 400000;    -- '0' : 100kHz - '1' : 400kHz
+    G_CLKSYS_FREQ      : integer                        := 50000000;  -- clk_sys frequency
+    G_NB_DATA          : integer                        := 256;       -- Number of MAXIMUM data to transmit
+    G_MAX_POLL_ATTEMPT : integer range 1 to 255         := 10         -- Maximal number of polling attempt before stopping the polling
     );
   port(
-    clk_sys   : in std_logic;                                    -- Clock System
-    rst_n_sys : in std_logic;                                    -- Asynchronous Reset
+    clk_sys   : in std_logic;                                         -- Clock System
+    rst_n_sys : in std_logic;                                         -- Asynchronous Reset
 
     -- FIFO TX Interface
     fifo_tx_rd_en : out std_logic;                     -- FIFO TX Read Enable
@@ -53,6 +54,7 @@ entity i2c_master_itf is
     rw        : in std_logic;                                   -- R/W acces
     chip_addr : in std_logic_vector(6 downto 0);                -- Chip addr to request
     nb_data   : in std_logic_vector(log2(G_NB_DATA) downto 0);  -- Number of Bytes to Read or Write
+    polling   : in std_logic;                                   -- Enable to poll on the ACK of after the CTRL Byte
 
     -- I2C Status
     sack_error : out std_logic;         -- SACK Error Occurs
@@ -76,6 +78,7 @@ architecture rtl of i2c_master_itf is
   signal chip_addr_int     : std_logic_vector(6 downto 0);                                 -- Chip Addr
   signal nb_data_int       : std_logic_vector(log2(G_NB_DATA) downto 0);                   -- Number of Data width
   signal rw_int            : std_logic;  -- Read = '1' or write = '0'
+  signal polling_int       : std_logic;  -- Polling 
   signal fsm_cs            : t_fsm_states;                                                 -- FSM Current State
   signal fsm_ns            : t_fsm_states;                                                 -- FSM Next State
   signal sr_rdata          : std_logic_vector(7 downto 0);                                 -- Shift register rdata
@@ -99,6 +102,10 @@ architecture rtl of i2c_master_itf is
   signal sclk_change       : std_logic;  -- SCLK Change pulse flag
   signal sclk_change_en    : std_logic;  -- Enable sclk_change only in state /= ST_STOP
   signal sclk_en_int       : std_logic;  -- SCLK EN internal
+  signal cnt_polling       : unsigned(log2(G_MAX_POLL_ATTEMPT) downto 0);                  -- Counter for polling attemp
+  signal cnt_polling_done  : std_logic;  -- Counter of MAX Polling REACH flag
+  signal polling_done      : std_logic;  -- Polling done flag
+  signal polling_ok        : std_logic;  -- When set to '1' polling was done and is OK
   signal wr_ongoing        : std_logic;  -- Write ongoing flag - indicate that the FSM is in RD/WR or CTRL state
   signal rd_ongoing        : std_logic;  -- Read Ongoing flag
   signal end_ongoing       : std_logic;  -- ST_END State ongoing
@@ -116,6 +123,7 @@ begin  -- architecture rtl
       chip_addr_int <= (others => '0');
       nb_data_int   <= (others => '0');
       rw_int        <= '0';
+      polling_int   <= '0';
     elsif rising_edge(clk_sys) then     -- rising clock edge
 
       -- On start save inputs
@@ -123,6 +131,7 @@ begin  -- architecture rtl
         chip_addr_int <= chip_addr;
         nb_data_int   <= std_logic_vector(to_unsigned((to_integer(unsigned(nb_data)) + 1), nb_data_int'length));  -- Add +1 because the ctrl byte is counted
         rw_int        <= rw;
+        polling_int   <= polling;
       end if;
     end if;
   end process p_latch_inputs;
@@ -162,8 +171,9 @@ begin  -- architecture rtl
 
 
   -- Next state computation
-  p_fsm_ns_update : process (fsm_cs, start, cnt_bit_done, sampling_pulse, sda_in, rw_int,
-                             cnt_data_done, sclk_change, sclk_int_r_edge, sclk_int_f_edge, ack_synch) is
+  p_fsm_ns_update : process (fsm_cs, start, sampling_pulse, sda_in, rw_int,
+                             cnt_data_done, sclk_change, sclk_int_r_edge, sclk_int_f_edge, ack_synch,
+                             polling_int) is
   begin  -- process p_fsm_ns_update
 
     case fsm_cs is
@@ -182,6 +192,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '1';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         if(start = '1') then
           fsm_ns <= ST_START;
@@ -203,6 +214,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '1';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- Leave this state on the next falling edge of sclk
         if(sclk_int_f_edge = '1') then
@@ -226,6 +238,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- Go to ST_SACK State
         if(sclk_int_f_edge = '1' and ack_synch = '1') then
@@ -247,23 +260,37 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
-        -- Correct sampling : ACK is here and go to READ state
-        if(sampling_pulse = '1' and sda_in = '0' and rw_int = '1' and cnt_data_done = '0') then
-          fsm_ns <= ST_SYNCH_RD;
+        -- Evaluation of the next_state only during the sampling pulse
+        if(sampling_pulse = '1') then
 
-        -- Correct sampling : ACK is here and go to SYNCH Write State
-        elsif(sampling_pulse = '1' and sda_in = '0' and rw_int = '0'and cnt_data_done = '0') then
-          fsm_ns <= ST_SYNCH_WR;
+          -- Correct sampling : ACK is here and go to READ state
+          if(sda_in = '0' and rw_int = '1' and cnt_data_done = '0') then
+            fsm_ns       <= ST_SYNCH_RD;
+            polling_done <= '1';        -- Polling Done Flag
 
-        -- NO ACK From Slave : go to STOP STATE
-        elsif(sampling_pulse = '1' and sda_in = '1') then
-          sack_error_int <= '1';        -- SACK ERROR
-          fsm_ns         <= ST_SYNCH_END;
+          -- Correct sampling : ACK is here and go to SYNCH Write State
+          elsif(sda_in = '0' and rw_int = '0'and cnt_data_done = '0') then
+            fsm_ns       <= ST_SYNCH_WR;
+            polling_done <= '1';        -- Polling Done Flag
 
-        -- ACK is correct and no data to send/read
-        elsif(sampling_pulse = '1' and sda_in = '0' and cnt_data_done = '1') then
-          fsm_ns <= ST_SYNCH_END;
+          -- NO ACK From Slave : go to STOP STATE and NO POLLING
+          elsif(sda_in = '1' and (polling_int = '0' or (polling_int = '1' and cnt_polling_done = '1'))) then
+            sack_error_int <= '1';      -- SACK ERROR
+            fsm_ns         <= ST_SYNCH_END;
+
+          -- NO ACK From Slave during a polling -> Return to START state
+          elsif(sda_in = '1' and polling_int = '1') then
+            sack_error_int <= '0';      -- NO SACK ERROR
+            fsm_ns         <= ST_START;
+            polling_done   <= '1';      -- Polling Done Flag
+
+          -- ACK is correct and no data to send/read
+          elsif(sda_in = '0' and cnt_data_done = '1') then
+            fsm_ns       <= ST_SYNCH_END;
+            polling_done <= '1';        -- Polling Done Flag
+          end if;
 
         -- Stay in the state
         else
@@ -285,6 +312,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- In this state on the falling edge of SCLK_int -> Go to ST_WR State
         if(sclk_int_f_edge = '1') then
@@ -307,6 +335,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- When all bits are transmitted go to SACK state
         -- Go to ST_SACK State
@@ -330,6 +359,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- In this state wait for the next falling edge and then go to ST_RD state
         if(sclk_int_f_edge = '1') then
@@ -352,6 +382,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- When all bits are received go to MACK state
         -- Go to ST_SACK State
@@ -376,6 +407,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '1';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- Case : there is pending data to read -> Return in RD state
         if(sampling_pulse = '1' and cnt_data_done = '0') then
@@ -404,6 +436,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- Go to ST_END on the falling edge
         if(sclk_int_r_edge = '1') then
@@ -425,6 +458,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         -- Go to ST_STOP on the falling edge of SCLK
         if(sclk_change = '1') then
@@ -447,6 +481,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '0';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         if(sclk_change = '1') then
           fsm_ns <= ST_IDLE;
@@ -467,6 +502,7 @@ begin  -- architecture rtl
         idle_ongoing      <= '1';       -- Idle Ongoing
         start_ongoing     <= '0';       -- Start ongoing flag
         mack_ongoing      <= '0';       -- MACK Ongoing
+        polling_done      <= '0';       -- Polling Done Flag
 
         fsm_ns <= ST_IDLE;
     end case;
@@ -633,8 +669,8 @@ begin  -- architecture rtl
       if(gen_start = '1') then
         cnt_data <= (others => '0');
 
-      -- Inc it
-      elsif(cnt_bit_done = '1') then
+      -- Inc it only if polling_int equals to '0' or when the polling_ok is set when polling_int = '1'
+      elsif(cnt_bit_done = '1' and (polling_int = '0' or (polling_int = '1' and polling_ok = '1'))) then
         cnt_data <= cnt_data + 1;       -- Inc by one
       end if;
 
@@ -710,6 +746,51 @@ begin  -- architecture rtl
 
     end if;
   end process p_sda_out_mngt;
+
+  -- purpose: Counter of POLLING
+  p_cnt_polling_mngt : process (clk_sys, rst_n_sys) is
+  begin  -- process p_cnt_polling_mngt
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      cnt_polling <= (others => '0');
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+
+      -- Counts only if polling_int is set
+      if(polling_int = '1') then
+
+        -- In the SACK State, on the sampling pulse, if NO ACK -> Inc the counter
+        if(sack_ongoing = '1' and polling_ok = '0' and sampling_pulse = '1' and sda_in = '1') then
+          cnt_polling <= cnt_polling + 1;  -- Inc by one the counter
+        end if;
+
+      -- Reset the counter during IDLE state of if polling_int is not set
+      elsif(idle_ongoing = '1' or polling_int = '0') then
+        cnt_polling <= (others => '0');
+      end if;
+
+    end if;
+  end process p_cnt_polling_mngt;
+
+  -- Set to '1' if cnt_polling reach the MAX Value of the counter
+  cnt_polling_done <= '1' when cnt_polling = to_unsigned(G_MAX_POLL_ATTEMPT, cnt_polling'length) else '0';
+
+  -- purpose: Polling OK Management
+  p_polling_ok_mngt : process (clk_sys, rst_n_sys) is
+  begin  -- process p_polling_ok_mngt
+    if rst_n_sys = '0' then             -- asynchronous reset (active low)
+      polling_ok <= '0';
+    elsif rising_edge(clk_sys) then     -- rising clock edge
+
+      -- Set polling OK flag
+      if(polling_ok = '0' and polling_done = '1') then
+        polling_ok <= '1';
+
+      -- Reset polling_ok flag
+      elsif(idle_ongoing = '1') then
+        polling_ok <= '0';
+      end if;
+
+    end if;
+  end process p_polling_ok_mngt;
 
   -- == OUTPUTS affectation ==
   sclk       <= sclk_int;
