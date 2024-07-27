@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-05-12
--- Last update: 2024-05-22
+-- Last update: 2024-05-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -24,6 +24,8 @@ use ieee.std_logic_1164.all;
 
 library lib_top_watch;
 use lib_top_watch.watch_pkg.all;
+
+library lib_max7219_interface;
 
 entity watch_core is
 
@@ -55,21 +57,21 @@ architecture rtl of watch_core is
   signal mins_unity_digit  : std_logic_vector(3 downto 0);  -- Minutes unity digit
   signal watch_24h_done    : std_logic;                     -- Watch 24h next update done
 
-  signal watch24h_data_array : t_uint_data_array;  -- Array of data from watch24h block resize on 4 bits per vector
-  signal char_data_0_array   : t_uint_data_array;  -- Array of Char DATA 0
-  signal char_data_1_array   : t_uint_data_array;  -- Array of Char DATA 1
-  signal char_data_2_array   : t_uint_data_array;  -- Array of Char DATA 2
-  signal char_data_3_array   : t_uint_data_array;  -- Array of Char DATA 3
-  signal char_data_4_array   : t_uint_data_array;  -- Array of Char DATA 4
+  signal watch24h_data_array : t_uint_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of data from watch24h block resize on 4 bits per vector
+  signal char_data_0_array   : t_char_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of Char DATA 0
+  signal char_data_1_array   : t_char_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of Char DATA 1
+  signal char_data_2_array   : t_char_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of Char DATA 2
+  signal char_data_3_array   : t_char_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of Char DATA 3
+  signal char_data_4_array   : t_char_data_array(0 to C_NB_UINT2MAX7219_DATA - 1);  -- Array of Char DATA 4
 
   signal framebuffer_data      : t_framebuffer_array;  -- Frame Buffer Data array
   signal framebuffer_init_data : t_framebuffer_array;  -- Frame Buffer Init Data array
   signal framebuffer           : t_framebuffer_array;  -- Frame Buffer Data array at the input of the MAX7219 Controller
 
-  signal max7219_start   : std_logic;                      -- MAX7219 Start
-  signal max7219_en_load : std_logic;                      -- MAX7219 load enable
-  signal max7219_data    : std_logic_vector(15 downto 0);  -- MAX7219 Data to send
-  signal max7219_done    : std_logic;                      -- MAX7219 ITF done
+  signal max7219_start    : std_logic;                      -- MAX7219 Start
+  signal max7219_en_load  : std_logic;                      -- MAX7219 load enable
+  signal max7219_data_int : std_logic_vector(15 downto 0);  -- MAX7219 Data to send
+  signal max7219_done     : std_logic;                      -- MAX7219 ITF done
 
   signal init_ongoing : std_logic;      -- Init Ongoing
   signal run_ongoing  : std_logic;      -- Run ongoing
@@ -126,7 +128,7 @@ begin  -- architecture rtl
       done => watch_24h_done
       );
 
-  -- Affecation of output vector of watch24h to watch24h_data_array signal
+  -- Affectation of output vector of watch24h to watch24h_data_array signal
   watch24h_data_array(C_HOURS_TENS_DIGIT_IDX)  <= "00" & hours_tens_digit;
   watch24h_data_array(C_HOURS_UNITY_DIGIT_IDX) <= "0" & hours_unity_digit;
   watch24h_data_array(C_MINS_TENS_DIGIT_IDX)   <= "0" & mins_tens_digit;
@@ -141,7 +143,6 @@ begin  -- architecture rtl
         clk_sys   => clk_sys,
         rst_n_sys => rst_n_sys,
 
-        start     => watch_24h_done,
         uint_data => watch24h_data_array(i),
 
         -- Output Data character
@@ -189,7 +190,7 @@ begin  -- architecture rtl
       -- MAX7219 Interface
       max7219_done    => max7219_done,
       max7219_load_en => max7219_load,
-      max7219_data    => max7219_data,
+      max7219_data    => max7219_data_int,
       max7219_start   => max7219_start
       );
 
@@ -207,7 +208,7 @@ begin  -- architecture rtl
       -- Input commands
       i_start   => max7219_start,
       i_en_load => max7219_en_load,
-      i_data    => max7219_data,
+      i_data    => max7219_data_int,
 
       -- MAX7219 I/F
       o_max7219_load => max7219_load,

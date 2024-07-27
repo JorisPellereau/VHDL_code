@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-05-12
--- Last update: 2024-05-12
+-- Last update: 2024-05-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -33,17 +33,17 @@ package watch_pkg is
   constant C_HOURS_TENS_DIGIT_IDX  : integer := 0;  -- Index of Hours Tens digit
   constant C_HOURS_UNITY_DIGIT_IDX : integer := 1;  -- Index of Hours Unity Digit
   constant C_MINS_TENS_DIGIT_IDX   : integer := 2;  -- Index of Minutes Tens Digit
-  constant C_MINS_UNITTY_DIGIT_IDX : integer := 3;  -- Index of Minutes Unity Digit
+  constant C_MINS_UNITY_DIGIT_IDX  : integer := 3;  -- Index of Minutes Unity Digit
 
   -- == TYPES ==
   type t_char_data_array is array (natural range <>) of std_logic_vector(7 downto 0);  -- Array of std_logic_vector(7 downto 0) with a not defined array length
   type t_uint_data_array is array(natural range <>) of std_logic_vector(3 downto 0);  -- Array of std_logic_vector(3 downto 0) with a not defined array length
 
-  type t_framebuffer_array is array(0 to 31) of std_logic_vector(15 downto 0); -- Array of std_logic_vector(15 downto 0) with a depth of 32
+  type t_framebuffer_array is array(0 to 31) of std_logic_vector(15 downto 0);  -- Array of std_logic_vector(15 downto 0) with a depth of 32
 
 
   -- MAX7219 Configuration
-  constant C_MAX_HALF_PERIOD : integer := 4; -- clk_sys / (2*4) => 1.25MHz clock output
-  constant C_LOAD_DURATION : integer := 1; -- Min 50ns (clk_sys == 10MHz -> 100ns -> OK)
-  
+  constant C_MAX_HALF_PERIOD : integer := 4;  -- clk_sys / (2*4) => 1.25MHz clock output
+  constant C_LOAD_DURATION   : integer := 1;  -- Min 50ns (clk_sys == 10MHz -> 100ns -> OK)
+
 end package watch_pkg;

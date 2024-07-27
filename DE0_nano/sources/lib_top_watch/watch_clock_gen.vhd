@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-05-12
--- Last update: 2024-05-12
+-- Last update: 2024-05-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -21,6 +21,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+
+library lib_top_watch;
 
 entity watch_clock_gen is
   port (

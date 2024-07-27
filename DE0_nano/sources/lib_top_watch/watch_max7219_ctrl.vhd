@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2024-05-12
--- Last update: 2024-05-12
+-- Last update: 2024-05-26
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -22,14 +22,15 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library lib_top_watch;
 use lib_top_watch.watch_pkg.all;
 
 entity watch_max7219_ctrl is
   port (
-    clk_sys     : in std_logic;            -- System Clock
-    rst_n_sys   : in std_logic;            -- Reset of clk_sys clock domain
+    clk_sys   : in std_logic;           -- System Clock
+    rst_n_sys : in std_logic;           -- Reset of clk_sys clock domain
 
     -- Control Interface
     init_sel    : in std_logic;            -- Framebuffer selection
@@ -39,7 +40,7 @@ entity watch_max7219_ctrl is
     -- MAX7219 Interface
     max7219_done    : in  std_logic;                      -- MAX7219 DONE
     max7219_load_en : out std_logic;                      -- MAX7219 Load enable
-    max7219_data    : out std_logic_vector(16 downto 0);  -- MAX7219 Data
+    max7219_data    : out std_logic_vector(15 downto 0);  -- MAX7219 Data
     max7219_start   : out std_logic                       -- MAX7219 Start
     );
 end entity watch_max7219_ctrl;
@@ -156,7 +157,7 @@ begin  -- architecture rtl
   -- Output affectation
   max7219_start   <= start_int;
   max7219_data    <= data_int;
-  max7219_en_load <= load_en_int;
+  max7219_load_en <= load_en_int;
 
 
 end architecture rtl;
