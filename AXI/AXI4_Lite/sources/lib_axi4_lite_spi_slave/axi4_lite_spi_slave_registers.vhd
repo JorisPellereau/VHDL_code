@@ -6,7 +6,7 @@
 -- Author     : Linux-JP  <linux-jp@linuxjp>
 -- Company    : 
 -- Created    : 2023-08-29
--- Last update: 2024-01-21
+-- Last update: 2024-02-21
 -- Platform   : 
 -- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
@@ -242,8 +242,6 @@ begin  -- architecture rtl
             fifo_rx_rd_access_error = '1'
             ) then
         slv_status <= "10";
-
-
 
       -- No Error generated
       else
