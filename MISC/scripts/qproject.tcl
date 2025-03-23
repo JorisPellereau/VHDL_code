@@ -1,0 +1,3 @@
+project_new -family CYCLONEIVE -revision REV0 synth_blocks
+export_assignments
+project_close

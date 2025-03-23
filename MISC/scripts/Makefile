@@ -4,6 +4,9 @@
 #
 # ========================================== #
 
+# Intel Tools Path
+INTEL_TOOL_PATH = /home/linux-jp/Documents/GitHub/Python/FPGA_environment/
+
 # MakefileInel Configuration
 
 QUARTUS_PATH=/opt/Quartus/Quartus_20_1_1_nios_eds/quartus/bin
@@ -99,6 +102,10 @@ all_flow:
 	make sh_script_test
 	make map_test
 	make fit_test
+
+
+create_project_file:
+	python3 $(INTEL_TOOL_PATH)/intel_tools.py --create_project_file $(FAMILY) $(REVISION) $(Q_PROJECT_NAME) qproject.tcl
 
 #include ~/Documents/GitHub/VHDL_code/Makefile/MakefileGeneric
 include /home/linux-jp/Documents/GitHub/Generics_Makefiles/Makefiles/MakefileIntel

@@ -1,0 +1,40 @@
+{
+  head: {text: 'SPI 1 Write - CPO0 CPHA=0 - G_DATA_WIDTH = 8 - G_SPI_SIZE = 4'
+},
+  
+  signal: [
+  
+  {name: 'clk',            wave: 'p..........'},
+  
+  ['INPUTS',
+   {name: 'i_aw_valid[0]',    wave: '01...............'},
+   {name: 'i_aw_valid[1]',    wave: '01..........', },
+   {name: 'o_aw_ready[0]',    wave: '0.................', },
+   {name: 'o_aw_ready[1]',    wave: '0.................', },
+   
+   {name: 'sel[1:0]',         wave: 'x3.................', data: [0, 1]},
+   
+   {name: 'fsm_cs',           wave: '4.44................', data:["IDLE","ON","DONE"]},
+   
+   {name: 'i_aw_ready[0]',    wave: '1.................', },
+   {name: 'i_aw_ready[1]',    wave: '1.................', },
+   
+  {name: 'nb_wr',          wave: 'x66...............', data: ['0x01', '0x00']},
+  {name: 'nb_rd',          wave: 'x77...................', data: ['0x00', '0x00']},
+  {name: 'fifo_tx_data',   wave: 'x88..............', data: ['0x19', '0x00']}, 
+  ],
+  {},
+ 
+    {},
+    ['FIFO_TX_ITF',
+  {name: 'clk',            wave: 'p............................'},
+  {name: 'fifo_tx_data',   wave: 'x8...............', data: ['0x19', 'NXT_DATA']},
+      
+  ],
+    
+  {},
+    
+],
+    edge:['a-b','a-d'],
+    
+    }
